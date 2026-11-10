@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {best,compare,deal,act,moves} from './game.mjs';
-import {rank5} from './hand.mjs';
+import {rank5} from './engine/hand.mjs';
 const arr=s=>s.split(' ');
 const ordered=['As Jd 9c 7h 3h','As Ad 9c 7h 3h','As Ad 9c 9h 3h','As Ad Ac 7h 3h','As 2d 3c 4h 5s','As Js 9s 7s 3s','As Ad Ac 7h 7s','As Ad Ac Ah 3h','As 2s 3s 4s 5s'];
 ordered.forEach((s,i)=>{if(i)assert.equal(compare(rank5(arr(s)),rank5(arr(ordered[i-1]))),1)});

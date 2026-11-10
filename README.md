@@ -19,3 +19,4 @@ Not a 1:1 recreation. Next: document the visible lobby and table flows and their
 ## Reference inventory
 
 Visible lobby labels confirmed in the installed client include Hold’em, tournaments, Rush, Spin, Battle Royale, a leaderboard and cashier. These labels establish a feature inventory, not production behavior or access to operator controls. No screenshots, credentials or operator assets are distributed here.
+The verified scoring module lives in engine/hand.mjs; the root hand.mjs is an unshipped T3 scratch file.
