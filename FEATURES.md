@@ -5,7 +5,7 @@ Target: reproduce player-visible workflows using independent code and an owner-c
 | Workflow | Current coverage | Missing for parity |
 |---|---|---|
 | Lobby | List locally owned tables, show buy-in and blind, join an open table | Reference layout, filters, occupancy, waiting lists |
-| Hold’em | Heads-up fixed-limit practice; blinds, betting, burn/deal, showdown | Multi-seat no-limit, variable bets, unequal stacks, all-in side pots, reconnect |
+| Hold’em | Heads-up fixed-limit practice; blinds, betting, burn/deal, showdown and uncalled-chip returns. Settlement engine supports multi-seat side pots and tied winners | Playable multi-seat no-limit, variable bets, unequal starting stacks, reconnect |
 | Tournaments, Rush, Spin, Battle Royale | Reference labels observed | Rules, registration, scheduling, timers, payouts in play chips |
 | Leaderboard | Reference label observed | Player identity, standings and durable results |
 | Owner console | Local owner key, create/update/close tables, durable settings | Multi-user permissions, audit trail, moderation, backups |

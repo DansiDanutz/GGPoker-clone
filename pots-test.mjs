@@ -1,0 +1,22 @@
+import assert from 'node:assert/strict';
+import {splitPots,settlePots} from './engine/pots.mjs';
+const pot = (amount,...eligible) => ({amount,eligible});
+const check = (chips,folded,pots,returns) =>
+  assert.deepEqual(splitPots(chips,folded),{pots,returns});
+check([30,70,100],[false,false,false],[pot(90,0,1,2),pot(80,1,2)],[0,0,30]);
+check([30,70,100],[false,true,false],[pot(90,0,2),pot(80,2)],[0,0,30]);
+check([100,30,70],[false,false,false],[pot(90,0,1,2),pot(80,0,2)],[30,0,0]);
+check([10,25,40,40],[false,false,false,false],[pot(40,0,1,2,3),pot(45,1,2,3),pot(30,2,3)],[0,0,0,0]);
+check([12,0],[false,true],[],[12,0]);
+check([0,0],[false,false],[],[0,0]);
+assert.throws(()=>splitPots([1,2,2],[false,true,true]),RangeError);
+assert.throws(()=>splitPots([Number.MAX_SAFE_INTEGER,1],[false,false]),RangeError);
+assert.throws(()=>splitPots([1,,3],[false,false,false]),TypeError);
+assert.throws(()=>splitPots([1],[0]),TypeError);
+console.log('PASS: unequal all-ins, folded contributions, multiple side pots, uncalled returns and input validation');
+const settle=(chips,folded,button,scores)=>settlePots(chips,folded,button,(a,b)=>scores[a]-scores[b]).payouts;
+assert.deepEqual(settle([30,70,100],[false,false,false],0,[3,2,1]),[90,80,30]);
+assert.deepEqual(settle([30,70,100],[false,true,false],0,[2,9,1]),[90,0,110]);
+assert.deepEqual(settle([5,5,5],[false,true,false],0,[3,9,3]),[7,0,8]);
+assert.deepEqual(settle([5,5,5],[false,true,false],2,[3,9,3]),[8,0,7]);
+console.log('PASS: distinct pot winners, folded best hand excluded, odd chips clockwise');

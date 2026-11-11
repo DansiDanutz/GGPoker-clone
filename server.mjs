@@ -11,7 +11,7 @@ try{writeFileSync(keyPath,randomBytes(32).toString('hex'),{mode:0o600,flag:'wx'}
 const key=readFileSync(keyPath,'utf8').trim();
 let tables=[{id:'practice',name:'Green Felt',stack:200,blind:4,open:true}];
 try{tables=JSON.parse(readFileSync(db,'utf8'))}catch(e){if(e.code!=='ENOENT')throw e}
-const files=new Set(['index.html','ui.mjs','game.mjs','engine/hand.mjs','lobby.html','lobby.mjs']);
+const files=new Set(['index.html','ui.mjs','game.mjs','engine/hand.mjs','engine/pots.mjs','lobby.html','lobby.mjs']);
 http.createServer(async(req,res)=>{
  const json=(code,data)=>{res.writeHead(code,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data))};
  try{
