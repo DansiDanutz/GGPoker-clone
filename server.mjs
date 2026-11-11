@@ -1,24 +1,41 @@
+import {openRooms} from './rooms.mjs';
 import http from 'node:http';
 import {randomBytes,timingSafeEqual} from 'node:crypto';
 import {readFileSync,writeFileSync,renameSync,mkdirSync} from 'node:fs';
 import {join} from 'node:path';
 import {homedir} from 'node:os';
 import {fileURLToPath} from 'node:url';
-const port=Number(process.env.PORT||18765),host='127.0.0.1',origin='http://'+host+':'+port;
+const port=Number(process.env.PORT||18765),host=process.env.POKER_BIND_HOST||'127.0.0.1', origin=process.env.POKER_PUBLIC_ORIGIN||('http://'+host+':'+port);
 const directory=process.env.POKER_DATA_DIR||join(homedir(),'.local/share/river-room');mkdirSync(directory,{recursive:true,mode:0o700});
+const roomRequest=openRooms(join(directory,'rooms.json'));
 const keyPath=join(directory,'owner.key'),db=join(directory,'tables.json');
 try{writeFileSync(keyPath,randomBytes(32).toString('hex'),{mode:0o600,flag:'wx'})}catch(e){if(e.code!=='EEXIST')throw e}
 const key=readFileSync(keyPath,'utf8').trim();
 let tables=[{id:'practice',name:'Green Felt',stack:200,blind:4,open:true}];
 try{tables=JSON.parse(readFileSync(db,'utf8'))}catch(e){if(e.code!=='ENOENT')throw e}
-const files=new Set(['index.html','ui.mjs','game.mjs','engine/hand.mjs','engine/pots.mjs','engine/deck.mjs','engine/table.mjs','nolimit.html','nolimit.mjs','lobby.html','lobby.mjs']);
+const files=new Set(['index.html','ui.mjs','game.mjs','engine/hand.mjs','engine/pots.mjs','engine/deck.mjs','engine/table.mjs','network.html','network.mjs','nolimit.html','nolimit.mjs','lobby.html','lobby.mjs']);
 http.createServer(async(req,res)=>{
  const json=(code,data)=>{res.writeHead(code,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data))};
  try{
- if(req.headers.host!==host+':'+port)return json(403,{error:'Local host required'});
+ if(req.headers.host!==new URL(origin).host)return json(403,{error:'Local host required'});
  const path=new URL(req.url,origin).pathname;
+ const match=/^\/api\/rooms\/([0-9a-f]{48})\/(join|state|act|ready|leave)$/.exec(path);
+ if(match){
+  const [,id,op]=match;
+  if(req.method!==(op==='state'?'GET':'POST'))return json(405,{error:'Method not allowed'});
+  if(req.headers.origin&&req.headers.origin!==origin)return json(403,{error:'Origin not allowed'});
+  let body={};
+  if(req.method==='POST'){
+   if(!req.headers['content-type']?.startsWith('application/json'))return json(415,{error:'Expected JSON'});
+   let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>2048)return json(413,{error:'Request too large'});chunks.push(chunk)}
+   try{body=JSON.parse(Buffer.concat(chunks));if(!body||typeof body!=='object'||Array.isArray(body))throw Error()}catch{return json(400,{error:'Invalid JSON'})}
+  }
+  try{return json(200,roomRequest(id,op,(req.headers.authorization||'').replace(/^Bearer /,''),body))}
+  catch(e){if(e.status)return json(e.status,{error:e.message});throw e}
+ }
  if(path==='/api/tables'&&req.method==='GET')return json(200,tables);
  if(path==='/api/tables'&&req.method==='POST'){
+  if(origin!=='http://127.0.0.1:'+port||host!=='127.0.0.1')return json(403,{error:'Owner changes require local-only mode'});
   const token=Buffer.from((req.headers.authorization||'').replace(/^Bearer /,''));const expected=Buffer.from(key);
   if(req.headers.origin&&req.headers.origin!==origin)return json(403,{error:'Local origin required'});
   if(token.length!==expected.length||!timingSafeEqual(token,expected))return json(401,{error:'Owner key required'});

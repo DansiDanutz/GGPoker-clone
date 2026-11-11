@@ -1,0 +1,8 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>River Room · Private table</title>
+<style>body{background:#142a25;color:#faf6e9;font:17px/1.5 system-ui;max-width:50rem;margin:auto;padding:2rem}button,input{font:inherit;padding:.4rem;margin:.2rem}a{color:#ffdc90}section{border-block-start:1px solid #81988a;padding:1rem 0}#invite{width:min(100%,38rem)}#error{color:#ffc6b9}</style>
+<a href="/">← Lobby</a><h1>Private no-limit table</h1><p>Four human seats · practice chips · blinds 2 / 4. Share this invitation with the other three players.</p>
+<label>Invitation <input id="invite" readonly></label> <button id="copy">Copy link</button>
+<form id="join"><label>Player name <input id="name" required maxlength="24" autocomplete="nickname"></label><button>Take a seat</button></form>
+<p id="error" role="alert"></p><section><p id="status" aria-live="polite"></p><strong id="board"></strong><ol id="seats"></ol><div id="actions"></div></section>
+<details><summary>Action history</summary><ol id="history"></ol></details><details><summary>Standings · net chips over last 20 hands</summary><ol id="standings"></ol></details><details><summary>Last 20 hand results</summary><ol id="results"></ol></details>
+<script type="module" src="network.mjs"></script></html>
