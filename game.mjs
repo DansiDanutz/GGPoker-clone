@@ -1,11 +1,11 @@
+import {shuffleDeck} from "./engine/deck.mjs";
 import {settlePots} from './engine/pots.mjs';
 import {rank5} from './engine/hand.mjs';
 export function compare(a,b){for(let i=0;i<Math.max(a.length,b.length);i++){const d=(a[i]??0)-(b[i]??0);if(d)return Math.sign(d)}return 0}
 export function best(cards){let high=null;for(let i=0;i<7;i++)for(let j=i+1;j<7;j++){const rank=rank5(cards.filter((_,k)=>k!==i&&k!==j));if(!high||compare(rank,high)>0)high=rank}return high}
 export function deal(stack=200,blind=4,button=0){
  if(!Number.isSafeInteger(stack)||!Number.isSafeInteger(blind)||blind<2||blind%2||stack<blind*4||stack>1000000||![0,1].includes(button))throw Error('Invalid table limits');
- const deck=[...'23456789TJQKA'].flatMap(r=>[...'cdhs'].map(s=>r+s));
- for(let i=51;i;i--){const n=i+1,limit=2**32-2**32%n;let x;do{x=crypto.getRandomValues(new Uint32Array(1))[0]}while(x>=limit);let j=x%n;[deck[i],deck[j]]=[deck[j],deck[i]]}
+ const deck=shuffleDeck();
  const bets=[blind,blind];bets[button]=blind/2;
  return {button,blind,deck,hands:[[deck.pop(),deck.pop()],[deck.pop(),deck.pop()]],board:[],stacks:bets.map(x=>stack-x),pot:bets[0]+bets[1],bets,committed:[...bets],turn:button,acted:[false,false],raises:0,log:['Blinds posted'],end:null}
 }

@@ -4,7 +4,7 @@ An independent local poker practice client. Open the directory in T3 or run:
 
     node server.mjs
 
-Open http://127.0.0.1:18765. In the lobby, choose **Take a seat**. The **Owner console** can create, close, or update tables; its key is kept outside Git in `~/.local/share/river-room/owner.key`. Table settings persist there across restarts. Run `node pots-test.mjs`, `node test.mjs` and `node owner-test.mjs` to check the game and owner API. No packages, player account or internet connection are required to play.
+Open http://127.0.0.1:18765. In the lobby, choose **Take a seat**. The **Owner console** can create, close, or update tables; its key is kept outside Git in `~/.local/share/river-room/owner.key`. Table settings persist there across restarts. Choose **Play no-limit** in the lobby for four-seat local practice against three computer seats. Enter the total bet for the current street, or use **All in**. A new practice hand rotates the button and resets the stacks. Run `node nolimit-test.mjs`, `node pots-test.mjs`, `node test.mjs` and `node owner-test.mjs` to check the game and owner API. No packages, player account or internet connection are required to play.
 
 ## Implemented
 
@@ -14,7 +14,7 @@ Heads-up fixed-limit Hold’em against a computer opponent, blinds and alternati
 
 The installed reference is GGPoker.app (PLAYGG.RO). This is original code and design; there is no connection to the operator, its accounts, player balances, cashier or private admin systems. No customer data or credentials belong in this repository.
 
-Not a 1:1 recreation. Next: document the visible lobby and table flows and their acceptance criteria; implement no-limit bet sizing, multi-seat tables using the tested side-pot settlement engine; add an independently hosted authoritative game server, authenticated owner roles, audit history and tournament scheduling. Real-money transactions are outside this prototype.
+Not a 1:1 recreation. Next: document the visible lobby and table flows and their acceptance criteria; extend local no-limit practice to networked tables; add an independently hosted authoritative game server, authenticated owner roles, audit history and tournament scheduling. Real-money transactions are outside this prototype.
 
 ## Reference inventory
 
