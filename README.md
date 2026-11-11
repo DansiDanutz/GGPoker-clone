@@ -18,6 +18,12 @@ Open that LAN URL before creating the invitation. For HTTPS behind a reverse pro
 
 Run `node network-browser-test.mjs` from this directory to test four isolated Chrome sessions on an ephemeral server. Set CHROME_BIN if Chrome is installed outside the macOS default path.
 
+## Four-player tournament
+
+Choose **Register for tournament** from the lobby and send the invitation to the other three players. Players can withdraw until the fourth registration starts the freezeout. Each registration adds 25 simulated prize credits to the pool; the event starts with 100 tournament chips per player. There is no wallet or real-money entry. Big blinds progress 4 → 8 → 16 → 32 → 64 → 128 → 256 by elapsed minutes, with changes applied only at the next deal. Players with zero chips are eliminated and may watch. The remaining players automatically advance to the next hand after a three-second showdown display when a client contacts the server. The last player receives the 100-credit prize once, separately from their final stack. Refresh and server restart preserve the result.
+
+Run `node tournament-test.mjs` and `node network-browser-test.mjs --tournament` to verify the registration rules and play the tournament through four isolated Chrome sessions. The browser test accelerates the blind clock.
+
 ## Implemented
 
 Heads-up fixed-limit Hold’em against a computer opponent, blinds and alternating dealer, fold/check/call/raise, four betting streets, seven-card showdown, split pots, hand history, and owner settings for next-hand buy-in and blind size. These are browser-local play chips; each hand resets both stacks. The lobby uses owner-authenticated table settings. Standalone practice (index.html without a table ID) uses browser-local preferences. The separate private-room mode is server-authoritative and uses four human sessions.
@@ -26,7 +32,7 @@ Heads-up fixed-limit Hold’em against a computer opponent, blinds and alternati
 
 The installed reference is GGPoker.app (PLAYGG.RO). This is original code and design; there is no connection to the operator, its accounts, player balances, cashier or private admin systems. No customer data or credentials belong in this repository.
 
-Not a 1:1 recreation. Next: document the visible lobby and table flows and their acceptance criteria; add tournament registration, blind levels, eliminations, owner roles and audit history. Real-money transactions are outside this prototype.
+Not a 1:1 recreation. Next: document the visible lobby and table flows and their acceptance criteria; add multi-table tournament seating, owner roles and audit history. Real-money transactions are outside this prototype.
 
 ## Reference inventory
 

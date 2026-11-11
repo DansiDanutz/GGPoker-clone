@@ -1,4 +1,5 @@
 const $=id=>document.getElementById(id);
+const tournamentLink=new URLSearchParams(location.search).get('mode')==='tournament';
 let room=location.hash.slice(1);
 if(!/^[a-f0-9]{48}$/.test(room)){
  room=Array.from(crypto.getRandomValues(new Uint8Array(24)),b=>b.toString(16).padStart(2,'0')).join('');
@@ -21,15 +22,23 @@ async function operate(op,body){if(op==='state'&&busy)return;const version=state
 function btn(text,fn){const b=document.createElement('button');b.textContent=text;b.onclick=fn;$('actions').append(b)}
 function list(id,items){$(id).replaceChildren(...items.map(v=>{const li=document.createElement('li');li.textContent=v;return li}))}
 function render(){
- $('join').hidden=!!state;$('actions').replaceChildren();const g=state?.hand;
+ $('join').hidden=!!state;$('actions').replaceChildren();const g=state?.hand,t=state?.tournament;
+ const tournament=state?!!t:tournamentLink;
+ document.querySelector('h1').textContent=tournament?'Four-player freezeout':'Private no-limit table';
+ $('format').textContent=tournament?'Four registrations start the event. Each seat gets 100 tournament chips. Four 25-credit entries fund a 100-credit winner-take-all practice prize. No rebuys.':'Four human seats · practice chips · blinds 2 / 4.';
+ $('join').querySelector('button').textContent=tournament?'Register':'Take a seat';
+ $('level').textContent=t&&g?'Level '+t.level+' · Blinds '+g.blind/2+' / '+g.blind+(t.winner==null&&t.level<7?' · Next level scheduled '+new Date(t.startedAt+t.level*t.intervalMs).toLocaleTimeString()+' (new hands only)':''):'';
+
  $('board').textContent=g?'Board: '+(g.board.join(' ')||'Preflop'):'';
- list('seats',(state?.names||[]).map((p,i)=>(p||'Open seat')+(i===state.me?' (you)':'')+(g?' · '+g.stacks[i]+' chips · in pot '+g.committed[i]+(g.folded[i]?' · folded':'')+(g.cards[i]?' · '+g.cards[i].join(' '):''):'')));
+ list('seats',(state?.names||[]).map((p,i)=>(p||'Open seat')+(i===state.me?' (you)':'')+(g?' · '+g.stacks[i]+' chips · in pot '+g.committed[i]+(t?.out[i]?' · eliminated in hand '+t.out[i]:g.folded[i]?' · folded':'')+(g.cards[i]?' · '+g.cards[i].join(' '):''):'')));
  list('history',g?.history||[]);list('results',(state?.results||[]).map(r=>'Hand '+r.number+' · Board: '+(r.board?.join(' ')||'no board')+' · Final stacks: '+r.stacks.join(', ')+' · '+(r.history||[]).join('; ')));
  const net=[0,0,0,0];for(const r of state?.results||[])r.payouts.forEach((v,i)=>net[i]+=v-r.committed[i]);
  list('standings',(state?.names||[]).map((name,i)=>({name,score:net[i]})).filter(x=>x.name).sort((a,b)=>b.score-a.score).map(x=>x.name+': '+(x.score>0?'+':'')+x.score));
  if(!state){$('status').textContent='Take a seat to join the room.';return}
- if(!g){$('status').textContent='Waiting for four players ('+state.names.filter(Boolean).length+'/4).';btn('Leave seat',()=>operate('leave'));return}
+ if(!g){$('status').textContent=(t?'Prize pool '+t.pool+' credits · Registration open (':'Waiting for four players (')+state.names.filter(Boolean).length+'/4).';btn(t?'Withdraw registration':'Leave seat',()=>operate('leave'));return}
+ if(t?.winner!=null){$('status').textContent='Tournament winner: '+state.names[t.winner]+' · Prize: '+t.prizes[t.winner]+' practice credits.';return}
  if(g.end){$('status').textContent='Hand '+state.number+' settled. '+g.end.payouts.flatMap((p,i)=>p?[state.names[i]+': won '+(p-g.end.returns[i])+(g.end.returns[i]?', returned '+g.end.returns[i]:'')]:[]).join('; ');
+ if(t){$('status').textContent+=' Next hand starts automatically.';return}
  if(!state.ready[state.me])btn('Ready for next hand',()=>operate('ready'));else $('status').textContent+=' Waiting for other players.';return}
  $('status').textContent='Hand '+state.number+' · Pot '+g.committed.reduce((a,b)=>a+b,0)+' · '+(state.me===g.turn?'Your turn':state.names[g.turn]+' to act');
  const o=g.options;if(!o)return;
@@ -37,5 +46,5 @@ function render(){
  btn(o.due?'Call '+o.call:'Check',()=>act(o.due?'call':'check'));if(o.due)btn('Fold',()=>act('fold'));
  if(o.raise){const label=document.createElement('label'),n=document.createElement('input');label.textContent='Bet total ';Object.assign(n,{type:'number',min:o.min,max:o.max,step:1,value:o.min,required:true});label.append(n);$('actions').append(label);btn('Bet / raise',()=>{if(n.reportValidity())act('raise',n.valueAsNumber)});btn('All in',()=>act('raise',o.max))}
 }
-$('join').onsubmit=e=>{e.preventDefault();operate('join',{name:$('name').value})};
+$('join').onsubmit=e=>{e.preventDefault();operate('join',{name:$('name').value,mode:tournamentLink?'tournament':'cash'})};
 render();async function poll(){if(token&&!busy)await operate('state');setTimeout(poll,400)}poll();

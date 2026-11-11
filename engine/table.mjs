@@ -3,13 +3,15 @@ import {best,compare} from '../game.mjs';
 import {settlePots} from './pots.mjs';
 
 export function startHand(stacks,blind=4,button=0){
-  if(!Array.isArray(stacks)||stacks.length<3||stacks.length>9||![...stacks].every(n=>Number.isSafeInteger(n)&&n>0)||!Number.isSafeInteger(stacks.reduce((a,b)=>a+b,0))) throw Error('Invalid stacks');
-  if(!Number.isSafeInteger(blind)||blind<2||blind%2||!Number.isInteger(button)||button<0||button>=stacks.length) throw Error('Invalid blinds or button');
+  if(!Array.isArray(stacks)||stacks.length<2||stacks.length>9||![...stacks].every(n=>Number.isSafeInteger(n)&&n>=0)||stacks.filter(n=>n>0).length<2||!Number.isSafeInteger(stacks.reduce((a,b)=>a+b,0))) throw Error('Invalid stacks');
+  if(!Number.isSafeInteger(blind)||blind<2||blind%2||!Number.isInteger(button)||button<0||button>=stacks.length||!stacks[button]) throw Error('Invalid blinds or button');
   const deck=shuffleDeck(), n=stacks.length;
-  const g={stacks:[...stacks],blind,button,deck,hands:stacks.map(()=>[]),board:[],folded:stacks.map(()=>false),committed:stacks.map(()=>0),bets:stacks.map(()=>0),actedAt:stacks.map(()=>null),price:blind,increment:blind,turn:null,end:null,history:[]};
-  for(let round=0;round<2;round++)for(let j=1;j<=n;j++)g.hands[(button+j)%n].push(deck.pop());
-  pay(g,(button+1)%n,blind/2); pay(g,(button+2)%n,blind);
-  advance(g,(button+2)%n);return g;
+  const g={stacks:[...stacks],blind,button,deck,hands:stacks.map(()=>[]),board:[],folded:stacks.map(s=>s===0),committed:stacks.map(()=>0),bets:stacks.map(()=>0),actedAt:stacks.map(()=>null),price:blind,increment:blind,turn:null,end:null,history:[]};
+  const live=stacks.map((_,j)=>(button+j+1)%n).filter(i=>stacks[i]>0);
+  for(let round=0;round<2;round++)for(const i of live)g.hands[i].push(deck.pop());
+  const sb=live.length===2?button:live[0],bb=live.length===2?live[0]:live[1];
+  g.bigBlindSeat=bb;pay(g,sb,blind/2);pay(g,bb,blind);
+  advance(g,bb);return g;
 }
 function pay(g,i,n){const v=Math.min(n,g.stacks[i]);g.stacks[i]-=v;g.bets[i]+=v;g.committed[i]+=v}
 function street(g){g.deck.pop();const n=g.board.length?1:3;for(let i=0;i<n;i++)g.board.push(g.deck.pop())}

@@ -6,7 +6,8 @@ Target: reproduce player-visible workflows using independent code and an owner-c
 |---|---|---|
 | Lobby | List locally owned tables, show buy-in and blind, join an open table | Reference layout, filters, occupancy, waiting lists |
 | Hold’em | Heads-up fixed-limit practice; blinds, betting, burn/deal, showdown and uncalled-chip returns. Four-seat no-limit practice with computer opponents, variable bets, unequal stacks, side pots and tied winners | Private network rooms support four humans, reconnect, durable stacks, auto-check/fold and hand review. Missing: public matchmaking and account-based seat recovery |
-| Tournaments, Rush, Spin, Battle Royale | Reference labels observed | Rules, registration, scheduling, timers, payouts in play chips |
+| Tournaments | Four-seat freezeout registration and withdrawal, scheduled blind levels, eliminations, heads-up play and persisted practice prize | Multi-table events, scheduled event starts and configurable prize structures |
+| Rush, Spin, Battle Royale | Reference labels observed | Game rules and formats |
 | Leaderboard | Private room standings (net chips over last 20 hands), durable hand results | Cross-room rankings and account identity |
 | Owner console | Local owner key, create/update/close tables, durable settings | Multi-user permissions, audit trail, moderation, backups |
 | Cashier | Reference label observed | No wallet, payment integration or real funds |
