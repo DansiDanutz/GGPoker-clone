@@ -106,3 +106,9 @@ export function quickFold(g,seat){
  g.history.push('Seat '+(seat+1)+': fold');recordAction(g,seat,'fold');
  advance(g,(g.turn+g.stacks.length-1)%g.stacks.length);
 }
+
+export function preflopRaised(game,seat){
+ const actions=game?.historyTrace?.actions;
+ if(!Number.isInteger(seat)||!game?.hands?.[seat]?.length||!Array.isArray(actions)||!Array.isArray(game.history)||actions.length!==game.history.length||!actions.every(a=>a&&Number.isInteger(a.seat)&&a.seat>=0&&a.seat<game.hands.length&&[0,3,4,5].includes(a.street)&&['fold','check','call','raise'].includes(a.action)))return null;
+ return actions.some(a=>a.seat===seat&&a.street===0&&a.action==='raise');
+}

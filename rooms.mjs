@@ -2,7 +2,7 @@ import {cashWallet} from './cash-wallet.mjs';
 import {prizeAmounts} from './engine/prizes.mjs';
 import {readFileSync,writeFileSync,renameSync} from 'node:fs';
 import {createHash,randomBytes} from 'node:crypto';
-import {startHand,act,options,nextDealer,omahaRank} from './engine/table.mjs';
+import {startHand,act,options,nextDealer,omahaRank,preflopRaised} from './engine/table.mjs';
 import {bestShortDeck} from './engine/hand.mjs';
 import {eliminationPlaces} from './engine/eliminations.mjs';
 import {best} from './game.mjs';
@@ -32,7 +32,7 @@ function record(room){
   if(g.vpip){result.voluntary=g.vpip.filter(Boolean).length;result.dealt=g.hands.filter(h=>h.length).length}
   if(g.hudSubjects&&!g.hudRecorded){
     room.hud??={};
-    g.hudSubjects.forEach((subject,i)=>{if(!subject||!g.hands[i].length)return;const stats=room.hud[subject]??={hands:0,wins:0,voluntary:0};stats.hands++;if(g.end.payouts[i]>g.end.returns[i])stats.wins++;if(g.vpip?.[i])stats.voluntary++});
+    g.hudSubjects.forEach((subject,i)=>{if(!subject||!g.hands[i].length)return;const stats=room.hud[subject]??={hands:0,wins:0,voluntary:0};stats.hands++;if(g.end.payouts[i]>g.end.returns[i])stats.wins++;if(g.vpip?.[i])stats.voluntary++;const raised=preflopRaised(g,i);if(raised!==null){stats.pfrHands=(stats.pfrHands??0)+1;stats.preflopRaises=(stats.preflopRaises??0)+Number(raised)}});
     room.hudHistory??=[];for(const h of room.hudHistory)if(!h.result){const prior=room.results.find(r=>r.number===h.number);if(prior)h.result=structuredClone(prior)}room.hudHistory.push({result:structuredClone(result),historyEvents:structuredClone(g.historyEvents||[]),...(Number.isSafeInteger(g.hudStartedAt)&&g.hudStartedAt>=0?{startedAt:g.hudStartedAt}:{}),...(g.historyTrace?{historyTrace:structuredClone(g.historyTrace)}:{}),blind:g.blind,variant:g.variant,button:g.button,folded:[...g.folded],...(g.initialStacks?{initialStacks:[...g.initialStacks]}:{}),...(g.hudAvatars?{avatars:[...g.hudAvatars]}:{}),number:room.number,at:Date.now(),subjects:g.hudSubjects.map((subject,i)=>g.hands[i].length?subject:null),names:[...(g.hudNames||room.players.map(p=>p?.name??null))],cards:visibleCards(g,null).map(hand=>hand?[...hand]:null),privateCards:g.hands.map(hand=>[...hand])});if(room.hudHistory.length>30)room.hudHistory.shift();
     g.hudRecorded=true;
   }
