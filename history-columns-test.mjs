@@ -11,3 +11,19 @@ const paused=startHand(Array(6).fill(120),4,0,'holdem',0,[false,true,false,true,
 const flopReturn=startHand([20,50,100]);act(flopReturn,'call');act(flopReturn,'call');act(flopReturn,'check');act(flopReturn,'raise',46);act(flopReturn,'raise',96);act(flopReturn,'call');const flopColumns=historyActionColumns(record(flopReturn));assert.deepEqual(flopColumns[2].rows.filter(r=>r.kind==='action').map(r=>r.displayAction),['bet','raise','call']);assert.deepEqual(flopColumns.map(c=>c.amount),[null,6,12,120,120]);assert.equal(flopColumns[2].rows.find(r=>r.kind==='return').amount,50);
 const fold=startHand(Array(6).fill(120));while(!fold.end)act(fold,'fold');const foldColumns=historyActionColumns(record(fold));assert.equal(foldColumns[1].rows.filter(r=>r.kind==='win').reduce((n,r)=>n+r.amount,0),4);assert.equal(foldColumns[4].rows.filter(r=>r.kind==='win').length,0,'Uncontestedpreflopwin nevermoves toRiver');
 console.log('PASS native five-column model:sevenvariants,startingpots,posts/actions/returns/wins,runoutreturnstreet,immutable data andincompleteguards');
+
+const revealed=record(fold);revealed.cards=fold.hands.map((cards,i)=>i===1?[cards[0],null]:null);revealed.historyEvents=[{type:'show-cards',seat:1,street:0,afterAction:fold.history.length,indices:[0]}];
+const showRows=h=>historyActionColumns(h).flatMap(c=>c.rows).filter(r=>r.kind==='show-cards');
+assert.deepEqual(showRows(revealed),[{kind:'show-cards',seat:1,cards:[fold.hands[1][0],null]}]);
+for(const patch of [{seat:9},{street:5},{afterAction:0},{indices:[1]},{indices:[0,0]},{indices:['0']}]){const h=structuredClone(revealed);Object.assign(h.historyEvents[0],patch);assert.deepEqual(showRows(h),[],'Reject invalid or concealed reveal metadata')}
+const hiddenReveal=structuredClone(revealed);hiddenReveal.cards[1]=null;assert.deepEqual(showRows(hiddenReveal),[]);
+const copyReveal=structuredClone(revealed);showRows(revealed)[0].cards[0]='2c';assert.deepEqual(revealed,copyReveal,'Card rows cannot mutate private history');
+console.log('PASS reveal rows:accepted original indices only,concealed/malformed metadata skipped,immutable cards');
+const wrongHole=structuredClone(revealed);wrongHole.cards[1].push(null,null);assert.deepEqual(showRows(wrongHole),[],'Wrong variant card count cannot create a reveal row');
+
+const reacting=record(fold);reacting.historyEvents=[{type:'reaction',seat:1,street:0,afterAction:0,reaction:3},{type:'reaction',seat:1,street:0,afterAction:1,reaction:1},{type:'reaction',seat:0,street:0,afterAction:fold.history.length,reaction:2}];
+const reactionRows=historyActionColumns(reacting)[1].rows;assert.equal(reactionRows[0].kind,'reaction');assert.equal(reactionRows[0].reaction,3);assert.equal(reactionRows[1].kind,'action');assert.equal(reactionRows[2].kind,'reaction');assert.equal(reactionRows[2].reaction,1);assert.equal(reactionRows.at(-2).reaction,2);assert.equal(reactionRows.at(-1).kind,'win');
+for(const patch of [{seat:-1},{street:3},{afterAction:-1},{afterAction:999},{afterAction:.5},{reaction:'3'},{reaction:99}]){const h=structuredClone(reacting);h.historyEvents=[{...h.historyEvents[0],...patch}];assert.equal(historyActionColumns(h)[1].rows.some(r=>r.kind==='reaction'),false)}
+console.log('PASS reaction chronology:beforefirst/betweenactions/afterlast beforewin,invalid metadata skipped');
+
+const clockEvent=record(fold);clockEvent.historyEvents=[{type:'clock-limit-disabled',seat:0,street:0,afterAction:0}];assert.deepEqual(historyActionColumns(clockEvent),historyActionColumns(record(fold)),'No invented native TimeBank orTimeChip cell forDisableGameClockLimit');

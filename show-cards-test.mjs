@@ -11,15 +11,20 @@ try{for(const [variant,count]of [['cash',2],['plo',4],['plo5',5],['plo6',6]]){
  for(const indices of [null,[],Array(1),[0,0],[-1],[count],[.5],['0']])assert.throws(()=>show(1,indices),e=>e.status===400);
  assert.throws(()=>req(id,'show-cards',null,{number:s.number,version:s.version,indices:[0]},table),e=>e.status===401);
  assert.throws(()=>show(1,[0],{number:s.number-1}),e=>e.status===409);
- assert.equal(state(0).version,version,'Rejected reveals never change version');
+ assert.equal(state(0).version,version,'Rejected reveals never change version');assert.deepEqual(req(id,'notes',tokens[0],{},table,account(0)).players.find(p=>p.seat===1).hands[0].historyEvents,[],'Rejected reveals create no history events');
  s=show(1,[0]);const partial=Array(count).fill(null);partial[0]=own[0];assert.deepEqual(watch().hand.cards[1],partial);assert.deepEqual(state(1).hand.cards[1],own);assert.deepEqual(s.hand.end,before.end);assert.deepEqual(s.hand.stacks,before.stacks);assert.deepEqual(s.hand.committed,before.committed);assert.equal(s.version,version+1);
  assert.deepEqual(req(id,'notes',tokens[0],{},table,account(0)).players.find(p=>p.seat===1).hands[0].cards[1],partial,'Public history shows only selected original index');
- assert.equal(show(1,[0]).version,s.version,'Same selection retry is idempotent');assert.throws(()=>show(1,[1]),e=>e.status===409,'Cannot replace selection');
- req=openRooms(file);assert.deepEqual(watch().hand.cards[1],partial,'Partial reveal survives cold room reopen');assert.deepEqual(state(1).hand.cards[1],own);assert.equal(JSON.stringify(watch()).includes('publicCards'),false);
+ const history=()=>req(id,'notes',tokens[0],{},table,account(0)).players.find(p=>p.seat===1).hands.find(h=>h.number===s.number);
+ const events=[{type:'show-cards',seat:1,street:s.hand.board.length,afterAction:s.hand.history.length,indices:[0]}];
+ assert.deepEqual(history().historyEvents,events,'Accepted reveal is recorded independently of betting actions');
+ const detached=history();detached.historyEvents[0].indices.push(1);assert.deepEqual(history().historyEvents,events,'History event reads cannot mutate storage');
+ assert.equal(JSON.stringify(events).includes(JSON.stringify(own[1])),false,'Event contains indices, never unrevealed card faces');
+ assert.equal(show(1,[0]).version,s.version,'Same selection retry is idempotent');assert.deepEqual(history().historyEvents,events,'Retry never duplicates an event');assert.throws(()=>show(1,[1]),e=>e.status===409,'Cannot replace selection');
+ req=openRooms(file);assert.deepEqual(history().historyEvents,events,'Reveal event survives cold room reopen');assert.deepEqual(watch().hand.cards[1],partial,'Partial reveal survives cold room reopen');assert.deepEqual(state(1).hand.cards[1],own);assert.equal(JSON.stringify(watch()).includes('publicCards'),false);
  for(let i=0;i<6;i++)s=req(id,'ready',tokens[i],{number:s.number,version:s.version},table);
- assert.equal(watch().hand.cards[1],null,'Selection never carries into a new hand');
+ assert.equal(watch().hand.cards[1],null,'Selection never carries into a new hand');assert.deepEqual(req(id,'notes',tokens[0],{},table,account(0)).players.find(p=>p.seat===1).hands[0].historyEvents,events,'Next deal preserves prior reveal history');
  while(!s.hand.end){const i=s.hand.turn,o=state(i).hand.options;s=req(id,'act',tokens[i],{version:s.version,action:i!==0?'fold':o.raise?'raise':o.due?'call':'check',target:o.min},table)}
- assert.equal(watch().hand.cards[0],null);const end=structuredClone(s.hand.end),whole=state(0).hand.cards[0];s=show(0,Array.from({length:count},(_,i)=>i));assert.deepEqual(watch().hand.cards[0],whole);assert.deepEqual(s.hand.end,end);assert.equal(watch().hand.cards[1],null);
+ assert.equal(watch().hand.cards[0],null);const end=structuredClone(s.hand.end),whole=state(0).hand.cards[0];s=show(0,Array.from({length:count},(_,i)=>i));assert.deepEqual(watch().hand.cards[0],whole);assert.deepEqual(s.hand.end,end);assert.equal(watch().hand.cards[1],null);assert.deepEqual(history().historyEvents,[{type:'show-cards',seat:0,street:s.hand.board.length,afterAction:s.hand.history.length,indices:Array.from({length:count},(_,i)=>i)}],'New hand has its own event list');
 
  }
  console.log('PASS voluntary show cards:four variants,private originals,partial public selection,history,restart,invalid/stale/auth guards,idempotency and unchanged payouts');

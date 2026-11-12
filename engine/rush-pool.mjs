@@ -11,7 +11,7 @@ export function rushPool(entries,blind=4,checkpoint=null,variant='holdem'){
   const ids=[id,...[...players.keys()].filter(other=>other!==id&&available(other)&&(!waitingIds||waitingIds.includes(other))).slice(0,5)];
   if(ids.length<6)return null;
   const tableId=++serial,game=startHand(ids.map(key=>players.get(key).balance),blind,(tableId-1)%6,variant==='plo'?'plo':'rush');game.rush=true;
-  tables.set(tableId,{ids,game,detached:[],settled:false});
+  tables.set(tableId,{ids,game,startedAt:Date.now(),detached:[],settled:false});
   for(const key of ids){players.get(key).balance=0;players.get(key).table=tableId}
   settle(tableId);return tableId;
  }
@@ -49,7 +49,7 @@ export function rushPool(entries,blind=4,checkpoint=null,variant='holdem'){
   for(const [id,player] of restoredPlayers)if(!known.has(id)||!Number.isSafeInteger(player.balance)||player.balance<0||(player.table!==null&&!restoredTables.has(player.table)))throw Error('Invalid Rush checkpoint');
   for(const [id,table] of restoredTables)if(!Number.isSafeInteger(id)||id<1||id>saved.serial||!Array.isArray(table.ids)||table.ids.length!==6||new Set(table.ids).size!==6||!table.ids.every(id=>known.has(id))||!Array.isArray(table.detached)||!table.detached.every(i=>Number.isInteger(i)&&i>=0&&i<6)||table.game?.variant!==(variant==='plo'?'plo':'rush')||!Array.isArray(table.game?.stacks)||table.game.stacks.length!==6||!Array.isArray(table.game.committed)||table.game.committed.length!==6||![...table.game.stacks,...table.game.committed].every(n=>Number.isSafeInteger(n)&&n>=0))throw Error('Invalid Rush checkpoint');
   for(const [tableId,table] of restoredTables){
-   if(typeof table.settled!=='boolean'||new Set(table.detached).size!==table.detached.length||table.detached.some(seat=>table.game.folded?.[seat]!==true)||table.settled&&!table.game.end)throw Error('Invalid Rush checkpoint');
+   if(table.startedAt!==undefined&&(!Number.isSafeInteger(table.startedAt)||table.startedAt<0||table.startedAt>8640000000000000)||typeof table.settled!=='boolean'||new Set(table.detached).size!==table.detached.length||table.detached.some(seat=>table.game.folded?.[seat]!==true)||table.settled&&!table.game.end)throw Error('Invalid Rush checkpoint');
    if(!table.settled)table.ids.forEach((id,seat)=>{if(!table.detached.includes(seat)&&restoredPlayers.get(id).table!==tableId)throw Error('Invalid Rush assignment')});
   }
   players.clear();for(const [id,player] of restoredPlayers)players.set(id,player);
