@@ -11,3 +11,5 @@ assert.deepEqual(readHotkeyGroups(),{table:true,functions:true,options:true});as
 assert.deepEqual(readHotkeys().timeBank,[]);assert.equal(hotkeyGroup("timeBank"),"functions");
 
 assert.deepEqual(readHotkeys().lastHands,[]);assert.equal(hotkeyGroup("lastHands"),"functions");
+
+assert.deepEqual(readHotkeys().addChips,[]);assert.equal(hotkeyGroup("addChips"),"functions");assert.deepEqual(readHotkeys(JSON.stringify(assignHotkey(readHotkeys(),"addChips",[17,71]))).addChips,[17,71]);
