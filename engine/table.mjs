@@ -43,7 +43,7 @@ export function startHand(stacks,blind=4,button=0,variant='holdem',ante=0,sittin
   advance(g,g.bigBlindSeat);
   return g;
 }
-function recordAction(g,seat,action,paid=0){if(g.historyTrace)g.historyTrace.actions.push({seat,street:g.board.length,action,paid,bet:g.bets[seat],stack:g.stacks[seat],pot:g.committed.reduce((a,b)=>a+b,0),allIn:paid>0&&g.stacks[seat]===0})}
+function recordAction(g,seat,action,paid=0,canRaise=false){if(g.historyTrace)g.historyTrace.actions.push({seat,street:g.board.length,action,paid,canRaise,bet:g.bets[seat],stack:g.stacks[seat],pot:g.committed.reduce((a,b)=>a+b,0),allIn:paid>0&&g.stacks[seat]===0})}
 function pay(g,i,n){const v=Math.min(n,g.stacks[i]);g.stacks[i]-=v;g.bets[i]+=v;g.committed[i]+=v}
 function street(g){g.deck.pop();const n=g.board.length?1:3;for(let i=0;i<n;i++)g.board.push(g.deck.pop())}
 function advance(g,last){
@@ -92,7 +92,7 @@ export function act(g,action,target){
   if(g.allIns&&action!=='fold'&&g.stacks[i]===0)g.allIns[i]=true;
   if(g.vpip&&!g.board.length&&(action==='call'||action==='raise'))g.vpip[i]=true;
   g.history.push('Seat '+(i+1)+': '+action+(action==='raise'?' to '+target:action==='call'?' '+o.call:''));
-  recordAction(g,i,action,before-g.stacks[i]);g.actedAt[i]=g.price;advance(g,i);
+  recordAction(g,i,action,before-g.stacks[i],o.raise);g.actedAt[i]=g.price;advance(g,i);
 }
 
 
@@ -102,13 +102,27 @@ export function canQuickFold(g,seat){
 }
 export function quickFold(g,seat){
  if(!canQuickFold(g,seat))throw Error('Cannot quick fold');
+ const canRaise=g.turn===seat&&options(g)?.raise===true;
  g.folded[seat]=true;
- g.history.push('Seat '+(seat+1)+': fold');recordAction(g,seat,'fold');
+ g.history.push('Seat '+(seat+1)+': fold');recordAction(g,seat,'fold',0,canRaise);
  advance(g,(g.turn+g.stacks.length-1)%g.stacks.length);
 }
 
 export function preflopRaised(game,seat){
  const actions=game?.historyTrace?.actions;
- if(!Number.isInteger(seat)||!game?.hands?.[seat]?.length||!Array.isArray(actions)||!Array.isArray(game.history)||actions.length!==game.history.length||!actions.every(a=>a&&Number.isInteger(a.seat)&&a.seat>=0&&a.seat<game.hands.length&&[0,3,4,5].includes(a.street)&&['fold','check','call','raise'].includes(a.action)))return null;
+ if(!Number.isInteger(seat)||!Array.isArray(game?.hands)||!game.hands.every(Array.isArray)||!game.hands[seat]?.length||!Array.isArray(actions)||!Array.isArray(game.history)||actions.length!==game.history.length||!actions.every(a=>a&&Number.isInteger(a.seat)&&a.seat>=0&&a.seat<game.hands.length&&[0,3,4,5].includes(a.street)&&['fold','check','call','raise'].includes(a.action)))return null;
  return actions.some(a=>a.seat===seat&&a.street===0&&a.action==='raise');
+}
+
+export function preflopOpportunities(game,seat){
+ if(!['holdem','plo','plo5','plo6','rush'].includes(game?.variant)||preflopRaised(game,seat)===null)return null;
+ const actions=game.historyTrace.actions.filter(a=>a.street===0);if(!actions.every(a=>typeof a.canRaise==='boolean'))return null;
+ const seats=game.hands.flatMap((cards,i)=>cards.length?[i]:[]),button=seats.indexOf(game.button);if(button<0)return null;
+ const late=new Set([game.button,seats.length===2?game.button:seats[(button+1)%seats.length]]);if(seats.length>=4)late.add(seats[(button+seats.length-1)%seats.length]);
+ const stats={stealOpportunities:0,stealRaises:0,threeBetOpportunities:0,threeBets:0};let raises=0,unopened=true;
+ for(const a of actions){
+  if(a.seat===seat&&a.canRaise){if(unopened&&late.has(seat)){stats.stealOpportunities++;if(a.action==='raise')stats.stealRaises++}if(raises===1){stats.threeBetOpportunities++;if(a.action==='raise')stats.threeBets++}}
+  if(a.action==='raise')raises++;if(a.action==='raise'||a.action==='call')unopened=false;
+ }
+ return stats;
 }
