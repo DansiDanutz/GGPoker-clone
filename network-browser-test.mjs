@@ -15,6 +15,8 @@ const aofReserve=process.argv.includes('--aof-reserve');
 const bots=!!variant||process.argv.includes('--bots'),hosted=aofReserve||bots||headsUp||process.argv.includes('--hosted');
 const tournament=process.argv.includes('--tournament'),eventSeats=Number(process.argv.find(v=>v.startsWith('--event-seats='))?.split('=')[1]||4);
 assert.ok([3,4,6].includes(eventSeats));
+if(process.argv.includes('--history-report')||process.argv.includes('--history-report-names'))assert.ok(process.argv.includes('--history-limit')&&process.argv.includes('--native-history-preview'),'History report requires --history-limit and --native-history-preview');
+if(process.argv.includes('--history-report-names'))assert.ok(process.argv.includes('--history-report'),'Report names require --history-report');
 if(process.argv.includes('--payout-oracle-only')){
  const check=(cards,board,payouts,variant)=>verifyHandPayout({cards,board,committed:[1,1],folded:[false,false],button:1,end:{payouts}},2,variant);
  check([['Ac','Qd'],['Kh','Kd']],['6c','7d','8h','9s','Kc'],[2,0],'shortdeck');
