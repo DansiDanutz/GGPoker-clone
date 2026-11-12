@@ -869,7 +869,23 @@ console.log('PASS selected-table comparison: loaded original/local images, equal
   const cardPoses=await c.run("(()=>{const f=document.querySelector('.felt').getBoundingClientRect(),k=f.width/1700;return [...document.querySelectorAll('.seat')].map(s=>{const p=Number([...s.classList].find(c=>/^s[0-3]$/.test(c)).slice(1));return {p,folded:s.classList.contains('folded'),centers:[...s.querySelectorAll('.cards .card')].map(c=>{const r=c.getBoundingClientRect();return {y:(r.y+r.height/2-f.y)/k,selected:c.dataset.bestFive==='1'}})}})})()");
   for(const r of cardPoses){const [y,k]=[[952,1.1],[502,1],[154,1],[502,1]][r.p];if(r.folded&&r.p!==0)assert.equal(r.centers.length,0,'Folded opponent cards must remain private');for(const card of r.centers)assert.ok(Math.abs(card.y-(y+((r.folded?20.6743328:-1.3256672)-(card.selected?33*Math.cos(5*Math.PI/180):0))*k))<.3,JSON.stringify(r))}
   const stacks=await c.run("[...document.querySelectorAll('.stack')].map(e=>e.textContent)");
-  assert.equal(stacks.reduce((sum,text)=>sum+Number(text.match(/(\d+) chips/)[1]),0),128);
+  assert.deepEqual(await c.run("[...document.querySelectorAll('.stack [data-chips]')].map(e=>Number(e.dataset.chips))"),settled.hand.stacks);assert.equal(settled.hand.stacks.reduce((sum,n)=>sum+n,0),128);
+  let aofPngSaved=false;
+  const inspectAofHistory=async()=>{
+   if(!process.argv.includes('--aof-history'))return;
+   await c.size(1196,929);await until(()=>c.run("!!document.querySelector('#tableHandHistory:not([disabled])')"));await c.run("document.querySelector('#tableHandHistory').click()");await until(()=>c.run("!!document.querySelector('.historyPreview')"));
+   const pose=await c.run("(async()=>{const v=document.querySelector('.historyPreview'),r=v.getBoundingClientRect(),i=new Image();i.src=getComputedStyle(v).backgroundImage.slice(5,-2);await i.decode();return {src:i.src,size:[i.naturalWidth,i.naturalHeight],seats:[...v.querySelectorAll('.historyPreviewSeat')].map(s=>{const b=s.getBoundingClientRect();return {seat:Number(s.dataset.seat),x:(b.x-r.x)/r.width*640+48,y:(b.y-r.y)/r.width*640+50,cards:s.querySelectorAll('.historyPreviewHole').length}})}})()");assert.ok(pose.src.endsWith('native-history-preview-aof.png'));assert.deepEqual(pose.size,[640,460]);assert.equal(pose.seats.length,4);
+   const notes=await c.run("fetch('/api/rooms/'+location.hash.slice(1)+'/notes',{headers:{Authorization:'Bearer '+sessionStorage.getItem('river-seat:'+location.hash.slice(1))}}).then(r=>r.json())"),h=notes.self.hands.at(-1);
+   for(const seat of pose.seats){const p=[[320,395],[60,225],[320,63],[580,225]][(seat.seat-chosenSeat+4)%4];assert.ok(Math.abs(seat.x-p[0])<.1&&Math.abs(seat.y-p[1])<.1);assert.equal(seat.cards,h.cards[seat.seat]?.length||0)}assert.deepEqual(h.payouts,expected);assert.equal(await c.run("document.querySelectorAll('.historyActionColumn').length"),5);
+   await c.run("document.querySelector('.historyHide').click()");assert.equal(await c.run("[...document.querySelectorAll('.historyPreviewName')].some(n=>n.textContent==='Player')"),false);await c.run("document.querySelector('.historyHide').click();document.querySelector('.historyUnits').click()");assert.equal(await c.run("document.querySelector('.historyPreviewPot [data-history-chips]').textContent.endsWith(' BB')"),true);await c.run("document.querySelector('.historyUnits').click()");
+   if(!aofPngSaved){
+    const exportGeometry=await c.run("(()=>{const r=document.querySelector('.hudHandDetail').getBoundingClientRect(),p=document.querySelector('.historyPreview').getBoundingClientRect();return {width:Math.ceil(r.width),rootX:r.x,rootY:r.y,x:p.x-r.x,y:p.y-r.y,w:p.width,h:p.height}})()");const downloads=join(directory,'aof-history-download');mkdirSync(downloads);await cmd('Browser.setDownloadBehavior',{behavior:'allow',downloadPath:downloads,browserContextId:c.contextId});await c.run("document.querySelector('.historySave').click()");await until(()=>c.run("document.querySelector('.historySaveStatus').textContent==='PNG download started'"));const filename=await until(()=>readdirSync(downloads).find(f=>f.endsWith('.png'))),png=readFileSync(join(downloads,filename));assert.equal(png.subarray(1,4).toString(),'PNG');assert.equal(png.readUInt32BE(16),exportGeometry.width);assert.ok(png.readUInt32BE(20)>460);
+    const reference=(await c.capture()).toString('base64'),pixels=await c.run("(async()=>{const g="+JSON.stringify(exportGeometry)+",load=async src=>{const i=new Image();i.src=src;await i.decode();return i},reference=await load('data:image/png;base64,"+reference+"'),saved=await load('data:image/png;base64,"+png.toString('base64')+"'),canvas=document.createElement('canvas');canvas.width=reference.width;canvas.height=reference.height;const ctx=canvas.getContext('2d'),x=g.x+150*g.w/640,y=g.y+220*g.h/460;ctx.drawImage(reference,0,0);const expected=[...ctx.getImageData(Math.floor(g.rootX+x),Math.floor(g.rootY+y),1,1).data];ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(saved,0,0);return [expected,[...ctx.getImageData(Math.floor(x),Math.floor(y),1,1).data]]})()");assert.ok(pixels[0].every((v,i)=>Math.abs(v-pixels[1][i])<6),'PNG must retain rendered AoF background pixels: '+JSON.stringify(pixels));aofPngSaved=true;
+   }
+   await c.run("document.querySelector('.historyClose').click()");
+  };
+  await inspectAofHistory();
+
   await c.reload();await until(()=>c.run("document.querySelector('#status')?.textContent.includes('settled')"));
   assert.deepEqual(await c.run("[...document.querySelectorAll('.stack')].map(e=>e.textContent)"),stacks);
   assert.equal(await c.run("document.querySelectorAll('.nativeRaisedCards').length"),foldPlayer?3:4);assert.equal(await c.run("document.querySelectorAll('.nativeFoldCards').length"),foldPlayer?1:0);
@@ -882,6 +898,7 @@ console.log('PASS selected-table comparison: loaded original/local images, equal
   await until(()=>c.run("document.querySelector('#status')?.textContent.includes('settled')"));
   const recovered=await c.run("fetch('/api/rooms/'+location.hash.slice(1)+'/state',{headers:{Authorization:'Bearer '+sessionStorage.getItem('river-seat:'+location.hash.slice(1))}}).then(r=>r.json())");
   assert.equal(recovered.me,chosenSeat);assert.deepEqual(recovered.hand.end.payouts,expected);assert.deepEqual(recovered.hand.stacks,settled.hand.stacks);
+  await inspectAofHistory();
   console.log('PASS AoF independent payouts and server-restart recovery:',expected);
   console.log('PASS AoF browser: four seats, three bots, only Fold/All in, settled payout, 128 chips and refresh recovery');
  }else{

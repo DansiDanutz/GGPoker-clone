@@ -33,7 +33,7 @@ with tempfile.TemporaryDirectory(prefix='playgg-hh-atlas-') as tmp:
    print('PASS native multiplicative tint',name,f'{color:06x}','RGBA checked',flush=True)
 
 backgrounds={}
-for variant,index in [('holdem',0),('shortdeck',44),('plo',1),('plo5',116),('plo6',142),('rush-holdem',33),('rush-plo',54)]:
+for variant,index in [('holdem',0),('shortdeck',44),('plo',1),('plo5',116),('plo6',142),('rush-holdem',33),('rush-plo',54),('aof',2)]:
  background=root/f'hand_history_tables/HHTable_{index}.png';b=background.read_bytes();assert b[:8]==b'\x89PNG\r\n\x1a\n' and struct.unpack('>II',b[16:24])==(640,460)
  dest=out/f'native-history-preview-{variant}.png';dest.write_bytes(b);assert dest.read_bytes()==b
  backgrounds[variant]={'source':str(background),'sha256':hashlib.sha256(b).hexdigest(),'size':[640,460]}
