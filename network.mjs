@@ -224,19 +224,19 @@ function drawTable(g){
  }
  for(const pile of oldPots.values())pile.remove();
  for(let i=0;i<count;i++){
-  const pos=(i-(state?.me??(variant==='aof'?2:0))+count)%count,n=state?.names[i],seat=element('div','seat s'+pos+(g?.turn===i?' acting':'')+(g?.folded[i]?' folded':'')+(g?.end&&g.end.payouts[i]>g.end.returns[i]?' winner':''));
+  const pos=(i-(state?.me??(variant==='aof'?2:0))+count)%count,n=state?.names[i],seat=element('div','seat s'+pos+(g?.turn===i?' acting':'')+(g?.folded[i]&&(!g.dealtSeats||g.dealtSeats.includes(i))?' folded':'')+(g?.end&&g.end.payouts[i]>g.end.returns[i]?' winner':''));
   if(positions){const {x,y,scale:k}=positions[pos];seat.style.setProperty('--seat-x',String(x));seat.style.setProperty('--seat-y',String(y));seat.style.setProperty('--seat-scale',String(k))}
   seat.dataset.seat=i;const existing=felt.querySelector('.seat[data-seat="'+i+'"]');
   seat.dataset.own=String(state?.me===i);
   const plate=element('div','plate'),label=n||'Open seat';
   const name=element('span','seatName',n&&n.length>15?n.slice(0,14)+'..':label);name.title=label;name.setAttribute('aria-label',label+(n&&state.me===i?' (you)':''));plate.append(name);
   const stack=element('span','stack');plate.append(stack);
-  const value=element('button','stackSwitch');if(g){value.type='button';value.dataset.stackSwitch='';if(n)value.dataset.stackSeat=String(i);value.disabled=!chipSwitch.checked;value.title='Switch chip display';value.onclick=()=>{showBB=!showBB;repaintUnits()};stack.append(amount(value,g.stacks[i],' chips'))}else if(n&&Number.isSafeInteger(state.waitingStacks?.[i]??state.buyIns?.[i]))amount(stack,state.waitingStacks?.[i]??state.buyIns?.[i],' chips');else stack.textContent=n?'Seated':'Available';
+  const value=element('button','stackSwitch');if(g){value.type='button';value.dataset.stackSwitch='';if(n)value.dataset.stackSeat=String(i);value.disabled=!chipSwitch.checked;value.title='Switch chip display';value.onclick=()=>{showBB=!showBB;repaintUnits()};stack.append(amount(value,g.dealtSeats&&!g.dealtSeats.includes(i)&&n?(state.buyIns?.[i]??state.settings.stack):g.stacks[i],' chips'))}else if(n&&Number.isSafeInteger(state.waitingStacks?.[i]??state.buyIns?.[i]))amount(stack,state.waitingStacks?.[i]??state.buyIns?.[i],' chips');else stack.textContent=n?'Seated':'Available';
   if(g?.turn===i&&g.deadline){
    const bar=element('span','turnClock'),remaining=Math.max(0,g.deadline-Date.now());bar.setAttribute('aria-hidden','true');bar.dataset.renderKey=String(g.deadline);plate.append(bar);
    bar.animate([{transform:'scaleX('+Math.min(1,remaining/((state.settings?.actionSeconds??90)*1000))+')'},{transform:'scaleX(0)'}],{duration:remaining,fill:'forwards'});
   }
-  const chooseSeat=!n&&!g&&state?.me==null;
+  const chooseSeat=!n&&state?.me==null;
   const portrait=element(chooseSeat?'button':'div','portrait',n&&count===6?'':n?n.slice(0,1).toUpperCase():'＋');
   if(chooseSeat){portrait.disabled=!!(state?.reservedSeats?.includes(i)||waitingState?.offer?.seat===i);portrait.type='button';portrait.setAttribute('aria-label',(portrait.disabled?'Reserved seat ':'Take seat ')+(i+1));portrait.onclick=()=>{$('seatChoice').value=String(i);$('join').requestSubmit()};if(positions){portrait.classList.add('nativeTakeSeat');portrait.dataset.status=portrait.disabled?'RESERVE_SEAT':'TAKE_SEAT';portrait.replaceChildren(element('span','takeSeatLabel',portrait.disabled?'R':'Take Seat'));plate.hidden=true}}
   if(n&&count===6){portrait.classList.add('nativeAvatar');portrait.style.backgroundPosition=(i*20)+'% center';portrait.setAttribute('aria-label','Avatar for '+n)}renderPortrait(portrait,i);seat.append(portrait,plate);
