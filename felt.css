@@ -366,3 +366,6 @@ body #actions button:is(.nativeMainAction,.nativeQuickFold)[data-key],body #acti
 .seatBuyInResult{margin:0;padding:12px 0;min-height:68px;display:flex;justify-content:center;align-items:flex-start;font-family:NativeHudRoboto,Arial,sans-serif;font-weight:700}
 .seatBuyInResultTitle{position:relative;top:2px;font-size:18px;line-height:22px;color:#ccc}
 .seatBuyInTotal{margin-left:6px;font-size:22px;line-height:26px;color:#999}
+
+/* BuyInCurrencySelector: one play-money row, no radio, title14 and right amount14. */
+.seatBuyInBalance{position:absolute;left:40px;width:332px;height:27px;margin:0;display:flex;justify-content:space-between;align-items:flex-start;font:400 14px NativeHistoryRoboto,Arial,sans-serif;color:#ccc}.seatBuyInBalanceValue{color:#999}

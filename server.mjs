@@ -12,9 +12,10 @@ import {homedir} from 'node:os';
 import {fileURLToPath} from 'node:url';
 const port=Number(process.env.PORT||18765),host=process.env.POKER_BIND_HOST||'127.0.0.1', origin=process.env.POKER_PUBLIC_ORIGIN||('http://'+host+':'+port);
 const directory=process.env.POKER_DATA_DIR||join(homedir(),'.local/share/river-room');mkdirSync(directory,{recursive:true,mode:0o700});
+const cashWalletsEnabled=process.env.POKER_REFERENCE_HOME==='1'&&host==='127.0.0.1'&&origin==='http://127.0.0.1:'+port;
 let restoring=false,restoreBlocked=false,activeRequests=0;recoverOwnerRestore(directory);
 let playerProfile=profiles(join(directory,'local-players.json'));
-let roomRequest=openRooms(join(directory,'rooms.json'),playerProfile.avatar);
+let roomRequest=openRooms(join(directory,'rooms.json'),playerProfile.avatar,cashWalletsEnabled);
 let rushRequests={holdem:openRush(join(directory,'rush.json'),'holdem',playerProfile.avatar,roomRequest.notes),plo:openRush(join(directory,'rush-plo.json'),'plo',playerProfile.avatar,roomRequest.notes)};
 setInterval(()=>{if(restoring||restoreBlocked)return;try{for(const request of Object.values(rushRequests))request.tick()}catch{console.error('Rush timer could not save state; prior checkpoint retained')}},500).unref();
 const keyPath=join(directory,'owner.key'),db=join(directory,'tables.json');
@@ -24,7 +25,7 @@ let tables=[{id:'practice',name:'Green Felt',stack:200,blind:4,open:true}];
 try{tables=JSON.parse(readFileSync(db,'utf8'))}catch(e){if(e.code!=='ENOENT')throw e}
 function loadRestoredModels(){
  const nextTables=JSON.parse(readFileSync(db,'utf8'));if(!Array.isArray(nextTables)||new Set(nextTables.map(t=>t?.id)).size!==nextTables.length||nextTables.some(t=>!t||typeof t.id!=='string'||!/^[a-z0-9-]{1,40}$/.test(t.id)||typeof t.name!=='string'||!t.name.trim()||t.name.length>60||!Number.isInteger(t.stack)||!Number.isInteger(t.blind)||t.blind<2||t.blind%2||t.stack<t.blind*4||t.stack>1000000||typeof t.open!=='boolean'||t.mode!==undefined&&!['cash','plo','plo5','plo6','shortdeck','aof','tournament'].includes(t.mode)))throw Error('Invalid restored table definitions');
- const nextProfile=profiles(join(directory,'local-players.json')),nextRooms=openRooms(join(directory,'rooms.json'),nextProfile.avatar),nextRush={holdem:openRush(join(directory,'rush.json'),'holdem',nextProfile.avatar,nextRooms.notes),plo:openRush(join(directory,'rush-plo.json'),'plo',nextProfile.avatar,nextRooms.notes)};
+ const nextProfile=profiles(join(directory,'local-players.json')),nextRooms=openRooms(join(directory,'rooms.json'),nextProfile.avatar,cashWalletsEnabled),nextRush={holdem:openRush(join(directory,'rush.json'),'holdem',nextProfile.avatar,nextRooms.notes),plo:openRush(join(directory,'rush-plo.json'),'plo',nextProfile.avatar,nextRooms.notes)};
  return {playerProfile:nextProfile,roomRequest:nextRooms,rushRequests:nextRush,tables:nextTables};
 }
 const hostedId=id=>createHash('sha256').update('river-hosted:'+id).digest('hex').slice(0,48);
@@ -45,6 +46,7 @@ http.createServer(async(req,res)=>{
  }
  const avatarImage=/^\/local\/avatar-images\/([a-f0-9]{64})\.png$/.exec(path);
  if(localHome&&avatarImage&&req.method==='GET'){const data=playerProfile.image(avatarImage[1]);if(!data)return json(404,{error:'Avatar unavailable'});res.writeHead(200,{'Content-Type':'image/png','Cache-Control':'private, max-age=31536000, immutable','X-Content-Type-Options':'nosniff'});res.end(data);return}
+ if(localHome&&path==='/local/wallet'&&req.method==='GET'){const account=playerProfile.identity(req);return account?json(200,roomRequest.wallet(account)):json(401,{error:'Sign in locally'})}
  if(localHome&&['/local/me','/local/login','/local/create','/local/logout','/local/avatar'].includes(path))return await playerProfile.handle(req,res,path,json);
  if(localHome&&req.method==='GET'&&(path==='/'||['/launch.html','/seat.html','/seat.mjs','/playgg.html','/playgg.mjs','/playgg-carousel.mjs','/home-review.html'].includes(path)||['/home-art/native-history-roboto.ttf','/home-art/native-history-roboto-italic.ttf','/home-art/native-hud-roboto-bold.ttf','/home-art/native-show-roboto-condensed-bold.ttf','/home-art/native-action-roboto-condensed.ttf'].includes(path)||/^\/home-art\/[a-zA-Z0-9_-]+\.(png|json)$/.test(path))){
   const file=path==='/'?'launch.html':path.slice(1);
@@ -77,10 +79,10 @@ http.createServer(async(req,res)=>{
    let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>(op==='notes'?8192:2048))return json(413,{error:'Request too large'});chunks.push(chunk)}
    try{body=JSON.parse(Buffer.concat(chunks));if(!body||typeof body!=='object'||Array.isArray(body))throw Error()}catch{return json(400,{error:'Invalid JSON'})}
   }
-  const account=(['notes','show-cards','waiting'].includes(op)||op==='join'&&body.useProfile===true)&&localHome?playerProfile.identity(req):null;
+  const account=localHome?playerProfile.identity(req):null;
   if((op==='waiting'||op==='join'&&body.useProfile===true)&&!account)return json(401,{error:'Sign in locally'});
-  if(op==='join'&&account)body.name=account;
-  try{return json(200,roomRequest(id,op,(req.headers.authorization||'').replace(/^Bearer /,''),body,tables.find(t=>hostedId(t.id)===id),account))}
+  if(op==='join'&&body.useProfile===true&&account)body.name=account;
+  try{return json(200,roomRequest(id,op,(req.headers.authorization||'').replace(/^Bearer /,''),body,tables.find(t=>hostedId(t.id)===id),op==='join'&&body.useProfile!==true?null:account))}
   catch(e){if(e.status)return json(e.status,{error:e.message});throw e}
  }
  if(path==='/api/hosted'&&req.method==='GET')return json(200,tables.map(t=>({...t,room:hostedId(t.id),...roomRequest(hostedId(t.id),'summary',undefined,{},t)})));
