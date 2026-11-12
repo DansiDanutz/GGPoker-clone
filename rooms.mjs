@@ -209,7 +209,7 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
     else if(!r.players.includes(null)&&!r.hand)cashHand(r,now,avatarFor);
   }
   if(me<0)fail(401,'Join this room first');
-  if(wallet&&r.settings&&r.players[me].account&&!r.tournament&&['join','ready','leave','end-practice','add-chips'].includes(op)&&!r.players[me].walletFunded){const p=r.players[me],stake=r.hand?.hands[me].length?r.hand.stacks[me]:r.waitingStacks?.[me]??p.buyIn??r.settings?.stack??0;const pending=p.topUpTo?Math.max(0,p.topUpTo-stake):0;wallet.adopt(p.account,stake+pending+(p.addChips?.amount||0)+(!r.hand?.end?(r.hand?.committed[me]||0):0),id);p.walletFunded=true;if(pending)p.walletTopUp=pending}
+  if(wallet&&r.settings&&r.players[me].account&&!r.tournament&&['join','ready','leave','end-practice','add-chips'].includes(op)&&!r.players[me].walletFunded){const p=r.players[me],stake=r.hand?.hands[me].length?r.hand.stacks[me]:r.waitingStacks?.[me]??p.buyIn??r.settings?.stack??0;const pending=p.topUpTo?Math.max(0,p.topUpTo-stake-(p.addChips?.amount||0)):0;wallet.adopt(p.account,stake+pending+(p.addChips?.amount||0)+(!r.hand?.end?(r.hand?.committed[me]||0):0),id);p.walletFunded=true;if(pending)p.walletTopUp=pending}
   r.touched=now;
   if(op==='add-chips'){
     const p=r.players[me];if(!table||r.tournament||p.bot)fail(400,'Add chips requires a seated hosted cash player');if(p.account&&account!==p.account)fail(401,'Sign in locally to add chips');
