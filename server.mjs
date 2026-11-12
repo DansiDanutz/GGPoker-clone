@@ -46,7 +46,7 @@ http.createServer(async(req,res)=>{
  }
  const avatarImage=/^\/local\/avatar-images\/([a-f0-9]{64})\.png$/.exec(path);
  if(localHome&&avatarImage&&req.method==='GET'){const data=playerProfile.image(avatarImage[1]);if(!data)return json(404,{error:'Avatar unavailable'});res.writeHead(200,{'Content-Type':'image/png','Cache-Control':'private, max-age=31536000, immutable','X-Content-Type-Options':'nosniff'});res.end(data);return}
- if(localHome&&path==='/local/wallet'&&req.method==='GET'){const account=playerProfile.identity(req);return account?json(200,roomRequest.wallet(account)):json(401,{error:'Sign in locally'})}
+ if(localHome&&path==='/local/wallet'&&req.method==='GET'){const account=playerProfile.identity(req);return account?json(200,{account,...roomRequest.wallet(account)}):json(401,{error:'Sign in locally'})}
  if(localHome&&['/local/me','/local/login','/local/create','/local/logout','/local/avatar'].includes(path))return await playerProfile.handle(req,res,path,json);
  if(localHome&&req.method==='GET'&&(path==='/'||['/launch.html','/seat.html','/seat.mjs','/playgg.html','/playgg.mjs','/playgg-carousel.mjs','/home-review.html'].includes(path)||['/home-art/native-history-roboto.ttf','/home-art/native-history-roboto-italic.ttf','/home-art/native-hud-roboto-bold.ttf','/home-art/native-show-roboto-condensed-bold.ttf','/home-art/native-action-roboto-condensed.ttf'].includes(path)||/^\/home-art\/[a-zA-Z0-9_-]+\.(png|json)$/.test(path))){
   const file=path==='/'?'launch.html':path.slice(1);
