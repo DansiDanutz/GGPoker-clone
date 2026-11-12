@@ -63,5 +63,5 @@ export function profiles(file){
   const issued=randomBytes(24).toString('hex'),nextSessions=new Map(sessions);nextSessions.set(sessionKey(issued),{name:nextAccounts[key].name,until:Date.now()+43200000});save(nextAccounts,nextSessions);
   res.setHeader('Set-Cookie','localplayer='+issued+'; HttpOnly; SameSite=Strict; Path=/; Max-Age=43200');return json(200,{name:accounts[key].name})
  }
- return {identity,handle,avatar,image};
+ return {identity,handle,avatar,image,names:()=>Object.values(accounts).map(a=>a.name)};
 }
