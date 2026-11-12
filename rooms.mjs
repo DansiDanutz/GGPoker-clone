@@ -87,6 +87,19 @@ function hudHands(room,subject,viewer){
 }
 function chatMuted(r,p){return !!(p?.chatMuted||p?.account&&r.mutedAccounts?.includes(p.account))}
 function chatRoster(r){return r?r.players.flatMap((p,seat)=>p&&!p.bot?[{seat,name:p.name,muted:chatMuted(r,p),accountBound:!!p.account,subject:digest(p.account?'account:'+p.account:'seat:'+p.digest).slice(0,24)}]:[]):[]}
+// shortcut: local FIFO offers last30s; replace only with observed operator arbitration rules.
+function advanceWaiting(r,table,now){
+ if(!r?.waiting?.length)return;
+ const before=JSON.stringify(r.waiting);
+ if(!table?.open||r.tournament)r.waiting=[];
+ else{
+  r.waiting=r.waiting.filter(p=>!r.players.some(seat=>seat?.account===p.account));
+  if(r.waiting[0]?.offer?.expiresAt<=now)r.waiting.shift();
+  const first=r.waiting[0],seat=r.players.indexOf(null);
+  if(first){if(first.offer&&r.players[first.offer.seat])delete first.offer;if(seat>=0&&!first.offer)first.offer={seat,expiresAt:now+30000}}
+ }
+ if(JSON.stringify(r.waiting)!==before)r.version++;
+}
 function handle(rooms,id,op,token,body,table,account,avatarFor,notes){
   if(!/^[a-f0-9]{48}$/.test(id))fail(404,'Unknown room');
   const now=Date.now();
@@ -123,6 +136,7 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes){
     }
     return view(r,null,avatarFor);
   }
+  advanceWaiting(r,table,now);
   if(op==='watch'){
     if(!table)fail(404,'Unknown hosted table');
     if(!r)return {me:null,version:0,names:Array(capacity).fill(null),settings:table,hand:null,results:[]};
@@ -134,7 +148,17 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes){
     const trackedAllIns=results.filter(h=>Number.isInteger(h.allIn)&&h.dealt>0),trackedSeats=trackedAllIns.reduce((n,h)=>n+h.dealt,0);
     const vpip=dealt?Math.round(100*results.reduce((n,h)=>n+(h.voluntary||0),0)/dealt):null;
     const g=r?.hand,dealtSeats=g?.hands.flatMap((cards,i)=>cards.length?[i]:[]),smallBlind=g&&(dealtSeats.length===2?g.button:Array.from({length:capacity},(_,i)=>(g.button+i+1)%capacity).find(i=>dealtSeats.includes(i)));
-    return {avgPot,vpip,capacity,...(g&&g.variant!=='shortdeck'?{positions:{dealer:g.button,smallBlind,bigBlind:g.bigBlindSeat}}:{}),...(table?.mode==='aof'?{allInPercent:trackedSeats?Math.round(100*trackedAllIns.reduce((n,h)=>n+h.allIn,0)/trackedSeats):null}:{}),...(r?.tournament?{currentBlind:r.hand?.blind||table?.blind||4,...(r.settings?.ante?{currentAnte:r.hand?.ante||r.settings.ante}:{}),level:r.tournament.level,...(r.tournament.cancelledAt?{cancelled:true}:{})}:{}),occupied:r?.players.filter(Boolean).length||0,hand:r?.number||0,seats:Array.from({length:capacity},(_,i)=>r?.players[i]?{name:r.players[i].name,stack:r.hand?.stacks[i]??r.waitingStacks?.[i]??r.players[i].buyIn??table?.stack??null,...(r.players[i].account?{avatar:avatarFor(r.players[i].account)}:{})}:null)};
+    return {avgPot,vpip,capacity,waitingCount:r?.waiting?.length||0,...(g&&g.variant!=='shortdeck'?{positions:{dealer:g.button,smallBlind,bigBlind:g.bigBlindSeat}}:{}),...(table?.mode==='aof'?{allInPercent:trackedSeats?Math.round(100*trackedAllIns.reduce((n,h)=>n+h.allIn,0)/trackedSeats):null}:{}),...(r?.tournament?{currentBlind:r.hand?.blind||table?.blind||4,...(r.settings?.ante?{currentAnte:r.hand?.ante||r.settings.ante}:{}),level:r.tournament.level,...(r.tournament.cancelledAt?{cancelled:true}:{})}:{}),occupied:r?.players.filter(Boolean).length||0,hand:r?.number||0,seats:Array.from({length:capacity},(_,i)=>r?.players[i]?{name:r.players[i].name,stack:r.hand?.stacks[i]??r.waitingStacks?.[i]??r.players[i].buyIn??table?.stack??null,...(r.players[i].account?{avatar:avatarFor(r.players[i].account)}:{})}:null)};
+  }
+  if(op==='waiting'){
+   if(!account)fail(401,'Sign in locally');if(!table||table.mode==='tournament')fail(409,'Waiting list requires a hosted cash table');
+   if(Object.keys(body).some(k=>k!=='action')||body.action!==undefined&&!['join','cancel'].includes(body.action))fail(400,'Choose join or cancel waiting');
+   if(body.action==='join'){
+    if(!table.open)fail(409,'Owner closed registration');if(r?.players.some(p=>p?.account===account))fail(409,'Already seated at this table');
+    if(!r||r.players.includes(null)&&!r.waiting?.some(p=>p.account===account))fail(409,'Take an available seat');
+    if(!r.waiting?.some(p=>p.account===account)){if((r.waiting?.length||0)>=100)fail(409,'Waiting list is full');(r.waiting??=[]).push({account});r.version++}
+   }else if(body.action==='cancel'&&r?.waiting?.some(p=>p.account===account)){r.waiting=r.waiting.filter(p=>p.account!==account);r.version++;advanceWaiting(r,table,now)}
+   const index=r?.waiting?.findIndex(p=>p.account===account)??-1;return {open:!!table.open,count:r?.waiting?.length||0,position:index+1,offer:index===0?r.waiting[0].offer||null:null};
   }
   if(op==='join'&&body.seat!==undefined&&(!Number.isInteger(body.seat)||body.seat<0||body.seat>=capacity))fail(400,'Invalid seat');
   if(op==='join'&&(typeof body.name!=='string'||!body.name.trim()||body.name.trim().length>24))fail(400,'Enter a name (1–24 characters)');
@@ -153,12 +177,14 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes){
   if(op==='join'&&me<0&&r.tournament&&(r.tournament.startedAt!==null||r.tournament.cancelledAt))fail(409,'Tournament registration is closed'+(r.players.includes(null)?'':' (room full)'));
   if(op==='join'&&me<0&&table&&!table.open)fail(409,'Owner closed registration');
   if(op==='join'&&me<0){
+    if(r.waiting?.length&&r.players.includes(null)){const first=r.waiting[0];if(first.account!==account||!first.offer)fail(409,'Seat reserved for waiting player');if(body.seat!==undefined&&body.seat!==first.offer.seat)fail(409,'Take your offered seat');body.seat=first.offer.seat}
     const selectedBuyIn=body.buyIn===undefined?table?.stack:body.buyIn;
     if(body.buyIn!==undefined&&(!table||r.tournament))fail(400,'Custom buy-in requires a hosted cash table');
     if(table&&!r.tournament&&(!Number.isSafeInteger(selectedBuyIn)||selectedBuyIn<(table.minBuyIn??table.stack)||selectedBuyIn>(table.maxBuyIn??table.stack)))fail(400,'Buy-in is outside table limits');
     const name=body.name?.trim?.();if(!name||name.length>24)fail(400,'Enter a name (1–24 characters)');
     me=body.seat??r.players.indexOf(null);if(me<0)fail(409,'Room is full');
     if(r.players[me])fail(409,'Seat is occupied');
+    if(r.waiting?.some(p=>p.account===account))r.waiting=r.waiting.filter(p=>p.account!==account);
     issued=randomBytes(32).toString('hex');if(r.host==null||r.host<0){const existing=r.players.findIndex(p=>p&&!p.bot);r.host=existing>=0?existing:me}r.players[me]={name,account:account||null,digest:digest(issued),...(table?.minBuyIn!==undefined?{buyIn:selectedBuyIn}:{})};if(r.tournament)r.tournament.pool+=entry;r.version++;
     if(!r.players.includes(null)&&r.tournament){if(!r.tournament.startsAt){r.tournament.startedAt=now;tournamentHand(r,now,avatarFor)}else scheduledStart(r,now,avatarFor)}
     else if(!r.players.includes(null)&&!r.hand)cashHand(r,now,avatarFor);
@@ -204,6 +230,7 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes){
   const canStart=!!(canFill&&!r.tournament&&r.players.filter(Boolean).length>=2);
   if(op==='start'){if(!canStart||body.version!==r.version)fail(409,'Only the host can start with at least two seated players');cashHand(r,now,avatarFor);r.version++}
   if(op==='fill-bots'){
+    if(r.waiting?.length)fail(409,'Waiting players have priority over computers');
     if(!canFill||body.version!==r.version)fail(409,'Only the first seated player can fill empty seats before a hand');
     r.players=r.players.map((p,i)=>p||{bot:true,name:'Computer '+(i+1),noteId:randomBytes(16).toString('hex')});
     if(r.tournament){r.tournament.pool=capacity*entry;if(!r.tournament.startsAt){r.tournament.startedAt=now;tournamentHand(r,now,avatarFor)}else{r.version++;scheduledStart(r,now,avatarFor)}}
@@ -283,6 +310,7 @@ export function openRooms(file,avatarFor=()=>0){
   const request=(id,op,token,body,table,account)=>{
     const old=rooms.get(id),version=old?.version;
     try{return handle(rooms,id,op,token,body,table,account,avatarFor,notes)}finally{
+    advanceWaiting(rooms.get(id),table,Date.now());
     if(rooms.get(id)?.version!==version){
       try{
         writeFileSync(file+'.tmp',JSON.stringify([...rooms]),{mode:0o600});
