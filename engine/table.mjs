@@ -126,3 +126,9 @@ export function preflopOpportunities(game,seat){
  }
  return stats;
 }
+
+export function showdownStats(game,seat){
+ if(!['holdem','plo','plo5','plo6','rush','shortdeck'].includes(game?.variant)||preflopRaised(game,seat)===null||!Array.isArray(game.board)||![0,3,4,5].includes(game.board.length)||!Array.isArray(game.folded)||game.folded.length!==game.hands.length||!game.folded.every(v=>typeof v==='boolean')||!game.end||!['payouts','returns'].every(key=>Array.isArray(game.end[key])&&game.end[key].length===game.hands.length&&game.end[key].every(n=>Number.isSafeInteger(n)&&n>=0)))return null;
+ const sawFlop=game.board.length>=3&&!game.historyTrace.actions.some(a=>a.seat===seat&&a.street===0&&a.action==='fold'),showdown=sawFlop&&game.board.length===5&&!game.folded[seat]&&game.folded.filter(v=>!v).length>=2;
+ return {flopsSeen:Number(sawFlop),showdowns:Number(showdown),showdownWins:Number(showdown&&game.end.payouts[seat]>game.end.returns[seat])};
+}
