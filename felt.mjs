@@ -151,4 +151,4 @@ export function hudPercent(count,hands){
  return Number.isSafeInteger(hands)&&hands>0&&Number.isSafeInteger(count)&&count>=0&&count<=hands?Math.round(100*count/hands):null;
 }
 
-export function hudColor(value,metric='VPIP'){return value>=(metric==='PFR'?31:36)?'#12c012':value>=21?'#e7b300':value>=11?'#ea7500':'#de0001'}
+export function hudColor(value,metric='VPIP'){const [orange,yellow,green]=({VPIP:[11,21,36],PFR:[11,21,31],ATS:[11,26,41],'3-bet':[5,10,16]})[metric]||[11,21,36];return value>=green?'#12c012':value>=yellow?'#e7b300':value>=orange?'#ea7500':'#de0001'}
