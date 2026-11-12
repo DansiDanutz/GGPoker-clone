@@ -50,7 +50,8 @@ let gameSettingsWindow;
 $('tableGameSettings').onclick=()=>{if(!gameSettingsWindow||gameSettingsWindow.closed)gameSettingsWindow=window.open('/playgg.html?panel=settings','playgg-game-settings','popup,width=1200,height=957,resizable=yes');const settings=gameSettingsWindow;if(settings){tableSettings.open=false;settings.focus()}else $('error').textContent='Allow the local Game Settings window and try again.'};
 const tableSettings=$('tableSettings');document.addEventListener('click',e=>{if(tableSettings.open&&!tableSettings.contains(e.target))tableSettings.open=false});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&tableSettings.open){tableSettings.open=false;tableSettings.querySelector('summary').focus()}});
 const addChipsButton=element('button','','Add Chips'),pendingAddChips=element('output');addChipsButton.id='addChips';addChipsButton.type='button';pendingAddChips.id='pendingAddChips';pendingAddChips.setAttribute('role','status');addChipsButton.hidden=pendingAddChips.hidden=true;tableSettings.append(addChipsButton,pendingAddChips);addChipsButton.onclick=()=>{tableSettings.open=false;openAddChips()};
-function updateAddChipsControl(){const seated=!chatWindow&&!rushMode&&!!advertised&&advertised.mode!=='tournament'&&!state?.tournament&&state?.me!=null;addChipsButton.hidden=!seated;addChipsButton.disabled=!seated||!!state.pendingAdd||!!state.ready[state.me];pendingAddChips.hidden=!seated||!state.pendingAdd;pendingAddChips.textContent=seated&&state.pendingAdd?state.pendingAdd.amount+' play chips pending for the next hand.':''}
+const nativeAddChipsButton=element('button','','Add Chips');nativeAddChipsButton.id='tableAddChips';nativeAddChipsButton.type='button';nativeAddChipsButton.className='nativeAddChipsButton';nativeAddChipsButton.hidden=true;nativeAddChipsButton.setAttribute('aria-label','Add Chips');nativeAddChipsButton.title='Add Chips';nativeAddChipsButton.onclick=()=>openAddChips();(document.querySelector('.felt')||tableSettings).append(nativeAddChipsButton);
+function updateAddChipsControl(){const seated=!chatWindow&&!rushMode&&!!advertised&&advertised.mode!=='tournament'&&!state?.tournament&&state?.me!=null;addChipsButton.hidden=!seated;addChipsButton.disabled=!seated||!!state.pendingAdd||!!state.ready[state.me];pendingAddChips.hidden=!seated||!state.pendingAdd;pendingAddChips.textContent=seated&&state.pendingAdd?state.pendingAdd.amount+' play chips pending for the next hand.':'';const settings=state?.settings||advertised,shown=!chatWindow&&!rushMode&&!!advertised&&!state?.tournament&&advertised.mode!=='tournament'&&advertised.mode!=='aof'&&settings?.variant!=='aof';nativeAddChipsButton.hidden=!shown;nativeAddChipsButton.disabled=!shown||addChipsButton.disabled;nativeAddChipsButton.dataset.autoTopUp=String(!!(shown&&settings&&savedAddChips(settings)>0))}
 
 $('copy').onclick=async()=>{try{await navigator.clipboard.writeText(location.href);$('copy').textContent='Copied'}catch{$('invite').select()}};
 const key='river-seat:'+room;
@@ -458,6 +459,7 @@ const hotkeys=$('hotkeys');hotkeys.checked=localStorage.getItem('river-hotkeys')
 hotkeys.onchange=()=>{localStorage.setItem('river-hotkeys',hotkeys.checked?'1':'0');displayHotkeys()};
 addEventListener('storage',e=>{
  if(e.storageArea!==localStorage)return;
+ if(e.key===null||e.key.startsWith('river-add-chips:'))updateAddChipsControl();
  if(state?.hand?.end&&(e.key===null||e.key.startsWith('river-add-chips:')||['river-auto-topup','river-topup-threshold','river-topup-target'].includes(e.key)))render();
  if((e.key===null||e.key==='river-bet-presets')&&state?.hand?.options){const g=state.hand,n=$('actions').querySelector('input[type=number]'),slider=$('actions').querySelector('input[type=range]');if(n&&slider)for(const [i,p]of betShortcuts(g,g.options,state.me,readBettingPreferences(localStorage.getItem('river-bet-presets'))).entries()){const b=$('actions').querySelector('[data-preset="'+i+'"]');if(b){if(b.firstElementChild)b.firstElementChild.textContent=p.label;else b.textContent=p.label;b.dataset.target=String(p.target)}}}
  if(e.key===null||['river-hotkeys','river-show-hotkeys','river-hotkey-bindings','river-hotkey-groups'].includes(e.key))displayHotkeys();
@@ -473,6 +475,7 @@ document.addEventListener('keydown',e=>{
  // Bound keys must not activate another focused HTML control.
  e.preventDefault();e.stopImmediatePropagation();if(e.repeat)return;
  const click=button=>{if(button&&!button.disabled){e.preventDefault();button.click();return true}return false};
+ if(action==='addChips'){click(nativeAddChipsButton);return}
  if(action==='lastHands'){click(document.querySelector('#tableHandHistory'));return}
  if(action==='timeBank'){click(document.querySelector('.nativeTimeBank'));return}
  if(action==='toggleUnits'){click(document.querySelector('.stackSwitch:not([disabled])'));return}
