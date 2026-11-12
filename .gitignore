@@ -4,3 +4,6 @@
 .env.*
 node_modules/
 /hand.mjs
+
+/home-art/*
+!/home-art/dangg-logo-512-transparent.png

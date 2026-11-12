@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {prizeAmounts} from './engine/prizes.mjs';
+assert.deepEqual(prizeAmounts(150,[50,30,20]),[75,45,30]);
+assert.deepEqual(prizeAmounts(75,[70,30]),[53,22]);
+assert.deepEqual(prizeAmounts(125,[50,30,20]),[63,37,25]);
+assert.deepEqual(prizeAmounts(1,[33,33,34]),[0,0,1]);
+for(let pool=0;pool<=200;pool++)assert.equal(prizeAmounts(pool,[33,33,34]).reduce((a,b)=>a+b),pool);
+assert.equal(prizeAmounts(Number.MAX_SAFE_INTEGER,[33,33,34]).reduce((a,b)=>a+b),Number.MAX_SAFE_INTEGER);
+for(const shares of [[],[50,40],[0,100],[50.5,49.5],['50',50],null,Array(10).fill(10)])assert.throws(()=>prizeAmounts(100,shares));
+for(const pool of [-1,1.5,NaN,Number.MAX_SAFE_INTEGER+1])assert.throws(()=>prizeAmounts(pool,[100]));
+console.log('PASS practice prizes: exact integer allocation, largest remainders, higher-place ties, safe limits and invalid shares');

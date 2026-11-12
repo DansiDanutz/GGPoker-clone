@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import {startClock,finishClock,reserveClock,clockView} from './game-clock.mjs';
+const room=()=>({settings:{actionSeconds:5,timeBankSeconds:20,hotTimeSeconds:2},players:[{},{}],number:1,hand:{turn:0,history:[],end:null}});
+let r=room();startClock(r,1000);assert.equal(r.deadline,6000);assert.equal(r.players[0].timeBankMs,20000);assert.equal(clockView(r,0,3000).bankRemainingMs,18000);assert.equal(clockView(r,1,3000).canDisableLimit,false);
+assert.throws(()=>reserveClock(r,1,r.actionClock.id,3000),e=>e.status===409);assert.throws(()=>reserveClock(r,0,'old',3000),e=>e.status===409);
+const id=r.actionClock.id;assert.equal(reserveClock(r,0,id,3000),true);assert.equal(r.deadline,21000);assert.equal(reserveClock(r,0,id,4000),false);assert.equal(r.deadline,21000);
+r=JSON.parse(JSON.stringify(r));assert.equal(clockView(r,0,6000).bankRemainingMs,15000);finishClock(r,7000);assert.equal(r.players[0].timeBankMs,14000);assert.equal(r.players[1].timeBankMs,20000);
+r.hand.history.push('Seat1: check');r.hand.turn=1;startClock(r,7000);assert.notEqual(r.actionClock.id,id);assert.throws(()=>reserveClock(r,1,id,7000),e=>e.status===409);finishClock(r,15000);assert.equal(r.players[1].timeBankMs,15000,'Late timeout only spends allowed5 seconds');
+r=room();startClock(r,0);assert.throws(()=>reserveClock(r,0,r.actionClock.id,5000),e=>e.status===409);finishClock(r,5000);assert.equal(r.players[0].timeBankMs,15000);
+r=room();r.players[0].timeBankMs=0;startClock(r,0);assert.equal(r.deadline,2000);assert.equal(clockView(r,0,0).phase,'hot');assert.equal(clockView(r,0,0).canDisableLimit,false);finishClock(r,2000);assert.equal(r.players[0].timeBankMs,0);
+r=room();r.settings={};startClock(r,100);assert.equal(r.deadline,90100);assert.equal(r.actionClock,undefined);assert.equal(clockView(r,0,100),null);
+r=room();r.hand.end={};startClock(r,100);assert.equal(r.actionClock,undefined);
+r=room();r.settings.actionSeconds=30;startClock(r,0);assert.equal(r.deadline,20000);assert.equal(clockView(r,0,10000).canDisableLimit,false,'No extension beyond the finite pool');
+r=room();r.settings.actionSeconds=30;r.settings.timeBankSeconds=60;startClock(r,0);assert.throws(()=>reserveClock(r,0,r.actionClock.id,19999),e=>e.status===409);assert.equal(reserveClock(r,0,r.actionClock.id,20000),true);assert.equal(r.deadline,60000);finishClock(r,65000);assert.equal(r.players[0].timeBankMs,0);r.hand.history.push('call');startClock(r,65000);assert.equal(r.deadline,67000);assert.equal(clockView(r,0,65000).phase,'hot');finishClock(r,66000);finishClock(r,67000);assert.equal(r.players[0].timeBankMs,0);
+console.log('PASS finite GameClock pool, cap disable/idempotence, actor/action binding, elapsed-only spending, restart, hot fallback and legacy90s');

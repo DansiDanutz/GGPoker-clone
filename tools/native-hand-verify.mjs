@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {best,compare} from '../game.mjs';
+const [first,second]=['first','second'].map(stage=>JSON.parse(readFileSync(process.argv[2]+'/'+stage+'-hand.json')));
+const g=first.hand;
+assert.equal(first.me,0);assert.equal(first.names.length,6);assert.equal(g.board.length,5);
+assert.ok(g.committed.every(n=>n===g.committed[0]&&n>0));
+const ranks=g.cards.map(h=>best([...h,...g.board]));
+const winners=[1,2,3,4,5,0].filter(i=>ranks.every(r=>compare(ranks[i],r)>=0));
+const pot=g.committed.reduce((a,b)=>a+b,0),payouts=Array(6).fill(0);
+winners.forEach((w,i)=>payouts[w]=Math.floor(pot/winners.length)+Number(i<pot%winners.length));
+assert.deepEqual(g.end.payouts,payouts);
+assert.deepEqual(g.stacks,payouts.map((p,i)=>120-g.committed[i]+p));
+assert.equal(g.stacks.reduce((a,b)=>a+b,0),720);
+assert.equal(second.me,0);assert.deepEqual(second.hand,g);
+console.log('PASS WebKit full hand: six seats, independent Hold’em ranking/payout, 720 chips, identical hand and seat after cold relaunch');

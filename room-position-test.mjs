@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';import {mkdtempSync,rmSync} from 'node:fs';import {join} from 'node:path';import {tmpdir} from 'node:os';import {openRooms} from './rooms.mjs';
+const dir=mkdtempSync(join(tmpdir(),'positions-')),file=join(dir,'rooms.json'),table={name:'Positions',stack:120,blind:4,open:true};
+try{
+ let room=openRooms(file);const id='a1'.repeat(24);assert.equal(room(id,'summary',null,{},table).positions,undefined);const players=[];for(let i=0;i<6;i++)players.push(room(id,'join',null,{name:'Player '+i},table));
+ assert.deepEqual(room(id,'summary',null,{},table).positions,{dealer:0,smallBlind:1,bigBlind:2});room=openRooms(file);assert.deepEqual(room(id,'summary',null,{},table).positions,{dealer:0,smallBlind:1,bigBlind:2});
+ let s=room(id,'state',players[0].issued,{},table);while(!s.hand.end){const token=players[s.hand.turn].issued;s=room(id,'state',token,{},table);s=room(id,'act',token,{version:s.version,action:'fold'},table)}
+ for(const p of players){s=room(id,'state',p.issued,{},table);room(id,'ready',p.issued,{version:s.version,number:s.number},table)}assert.deepEqual(room(id,'summary',null,{},table).positions,{dealer:1,smallBlind:2,bigBlind:3});
+ const sparse='b1'.repeat(24),a=room(sparse,'join',null,{name:'A',seat:2},table),b=room(sparse,'join',null,{name:'B',seat:5},table);room(sparse,'start',a.issued,{version:b.version},table);assert.deepEqual(room(sparse,'summary',null,{},table).positions,{dealer:2,smallBlind:2,bigBlind:5});room(sparse,'join',null,{name:'Waiting',seat:0},table);assert.deepEqual(room(sparse,'summary',null,{},table).positions,{dealer:2,smallBlind:2,bigBlind:5});
+ const publicSummary=JSON.stringify(room(sparse,'summary',null,{},table));assert.ok(!publicSummary.includes(a.issued));assert.ok(!publicSummary.includes('cards'));console.log('PASS lobby positions: six-seat button/blinds, next-deal rotation, sparse heads-up shared dealer/SB, undealt reservation ignored, restart and public privacy');
+}finally{rmSync(dir,{recursive:true,force:true})}

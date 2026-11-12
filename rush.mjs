@@ -1,0 +1,104 @@
+import {readFileSync,writeFileSync,renameSync} from 'node:fs';
+import {rushPool} from './engine/rush-pool.mjs';
+import {visibleCards,collectedPots} from './room-view.mjs';
+import {options,canQuickFold} from './engine/table.mjs';
+import {computerMove,noteSubject} from './rooms.mjs';
+import {noteColors,saveNoteLabels} from './player-notes.mjs';
+
+const fail=(status,message)=>{throw Object.assign(Error(message),{status})};
+export function openRush(file,variant='holdem',avatarFor=()=>0,notes){
+ if(!['holdem','plo'].includes(variant))throw Error('Invalid Rush format');
+ let entries=[],pool=null,version=0;
+ function restore(saved){entries=saved.entries;version=saved.version;pool=saved.pool?rushPool(entries,4,saved.pool,variant):null}
+ try{restore(JSON.parse(readFileSync(file,'utf8')))}catch(e){if(e.code!=='ENOENT')throw e}
+ const avatars=ids=>ids.map(id=>entries.some(p=>p.id===id&&p.bot)?null:avatarFor(id));
+ const subject=id=>noteSubject(entries.find(p=>p.id===id)?.bot?{bot:true,noteId:'rush:'+variant+':'+id}:{account:id});
+ const snapshot=()=>({entries,version,pool:pool?.snapshot()||null});
+ function register(id,bot=false){
+  if(entries.some(p=>p.id===id))return;
+  if(entries.length>=100)fail(409,'Pool full');
+  if(pool)pool.add(id,200);
+  entries=[...entries,{id,stack:200,...(bot?{bot:true}:{})}];
+  if(!pool&&entries.length===6)pool=rushPool(entries,4,null,variant);
+ }
+ const eligible=()=>entries.filter(p=>!p.paused).map(p=>p.id);
+ function advanceTables(){
+  let changed=false;const now=Date.now();
+  for(const table of pool?.tables.values()||[]){
+   const g=table.game,id=table.ids[g.turn];
+   if(table.settled)continue;
+   const bot=entries.some(p=>p.id===id&&p.bot),key=g.turn+':'+g.history.length;
+   if(table.deadlineKey!==key){table.deadlineKey=key;table.deadline=now+(bot?500:90000);changed=true;continue}
+   if(now<table.deadline)continue;
+   const o=options(g),move=bot?computerMove(g.hands[g.turn],g.board,g.blind,g.price,o,'rush'):[o.due?'fold':'check'];
+   if(!bot){const entry=entries.find(p=>p.id===id);entry.paused=true;entry.queued=false}
+   pool.move(id,...move);changed=true;
+  }
+  for(const entry of entries)if(entry.queued&&pool?.players.get(entry.id)?.table!=null){entry.queued=false;changed=true}
+  for(const entry of entries)if(entry.queued&&pool?.players.get(entry.id)?.table===null&&pool.players.get(entry.id).balance>0){
+   if(pool.deal(entry.id,eligible())!==null){entry.queued=false;changed=true}
+  }
+  return changed;
+ }
+ function save(){version++;writeFileSync(file+'.tmp',JSON.stringify(snapshot()),{mode:0o600});renameSync(file+'.tmp',file)}
+ function view(id){
+  const player=pool?.players.get(id),table=pool?.tables.get(player?.table);
+  const me=table?table.ids.indexOf(id):null;
+  let hand=null;
+  if(table){const g=table.game,{deck,hands,reservedChecks,...publicHand}=g;hand={...publicHand,pots:collectedPots(g),quickFoldAllowed:canQuickFold(g,me),...(!g.end&&!g.folded[me]&&g.stacks[me]>0?{preAction:{rush:true,bigBlindOption:!g.board.length&&me===g.bigBlindSeat&&g.actedAt[me]===null,due:Math.max(0,g.price-g.bets[me]),call:Math.min(g.stacks[me],Math.max(0,g.price-g.bets[me])),acted:g.actedAt[me]!==null,reservedCheck:reservedChecks?.[me]===g.board.length,foldEnabled:g.stacks.some((stack,i)=>i!==me&&!g.folded[i]&&g.bets[i]+stack>g.bets[me])}}:{}),deadline:table.deadline,hands:visibleCards(g,me)}}
+  const previous=pool?[...pool.tables].findLast(([,t])=>t.settled&&t.ids.includes(id)):null;
+  let result=null;
+  if(previous){const [tableId,t]=previous,seat=t.ids.indexOf(id),{deck,hands,reservedChecks,...game}=t.game;result={table:tableId,me:seat,names:t.ids,avatars:avatars(t.ids),hand:{...game,hands:visibleCards(t.game,seat)}}}
+  const noteTable=table||previous?.[1],noteTableID=table?player.table:previous?.[0],noteSeat=noteTable?.ids.indexOf(id);
+  return {variant,version,paused:entries.some(p=>p.id===id&&p.paused===true),noteTable:noteTableID??null,hudVersion:pool?[...pool.tables.values()].filter(t=>t.settled).length:0,...(noteTable?{noteSubjects:noteTable.ids.map((id,i)=>i===noteSeat?null:subject(id))}:{}),avatars:table?avatars(table.ids):[],queued:entries.some(p=>p.id===id&&p.queued),handVersion:table?player.table+':'+table.game.history.length:null,registered:entries.some(p=>p.id===id),population:entries.length,waiting:pool?[...pool.players].filter(([id,p])=>p.table===null&&p.balance>0&&eligible().includes(id)).length:entries.length,table:player?.table||null,balance:player?.balance??(entries.some(p=>p.id===id)?200:0),me,names:table?.ids||[],hand,result,legal:table?.game.turn===me&&!table.game.end?options(table.game):null};
+ }
+ function hud(id,viewer){
+  const records=[...(pool?.tables||[])].filter(([,t])=>t.settled&&t.ids.includes(id)),stats={hands:records.length,wins:0,voluntary:records.every(([,t])=>typeof t.game.vpip?.[t.ids.indexOf(id)]==='boolean')?0:null};
+  for(const [,t]of records){const i=t.ids.indexOf(id);if(t.game.end.payouts[i]>t.game.end.returns[i])stats.wins++;if(stats.voluntary!==null&&t.game.vpip[i])stats.voluntary++}
+  const hands=records.filter(([,t])=>t.ids.includes(viewer)).slice(-30).map(([number,t])=>{const g=t.game,seat=t.ids.indexOf(id),own=t.ids.indexOf(viewer);return {number,mode:'rush',...(g.historyTrace?{historyTrace:g.historyTrace}:{}),dealtSeats:g.hands.map(cards=>cards.length>0),variant:g.variant,button:g.button,folded:g.folded,...(g.initialStacks?{initialStacks:g.initialStacks}:{}),blind:g.blind,at:Number.isSafeInteger(t.settledAt)&&t.settledAt>=0&&t.settledAt<=8640000000000000?t.settledAt:null,names:t.ids,cards:visibleCards(g,own),seat,viewerSeat:own,net:g.end.payouts[seat]-g.committed[seat],board:g.board,history:g.history,committed:g.committed,payouts:g.end.payouts,returns:g.end.returns,stacks:g.stacks}});
+  return structuredClone({stats,hands});
+ }
+ function tick(){const before=JSON.stringify(snapshot());try{if(advanceTables())save()}catch(e){restore(JSON.parse(before));throw e}}
+ function request(id,op,body={}){
+  if(typeof id!=='string'||!id)fail(401,'Sign in locally');
+  if(op==='notes'){
+   if(!notes)fail(503,'Private notes unavailable');const player=pool?.players.get(id),tableID=player?.table||[...(pool?.tables||[])].findLast(([,t])=>t.settled&&t.ids.includes(id))?.[0],table=pool?.tables.get(tableID);if(!table)fail(409,'Join a Rush table to use player notes');const me=table.ids.indexOf(id),owner=subject(id);
+   if(Object.keys(body).length&&body.table!==tableID)fail(409,'Table changed; reopen player notes');
+   saveNoteLabels(notes,owner,body);
+   if(body.seat!==undefined){if(!Number.isInteger(body.seat)||body.seat<0||body.seat>=table.ids.length||body.seat===me)fail(400,'Choose another seated player');const target=subject(table.ids[body.seat]);if(body.subject!==target)fail(409,'Seat changed; reopen player notes');notes.set(owner,target,{text:body.text,color:body.color})}
+   return {self:{seat:me,name:id,subject:owner,...hud(id,id)},colors:noteColors,labels:notes.getLabels(owner),statsScope:'rush-pool',players:table.ids.flatMap((name,seat)=>seat===me?[]:[{seat,name,subject:subject(name),...hud(name,id),...notes.get(owner,subject(name))}])};
+  }
+  if(op==='state'){
+   tick();return view(id);
+  }
+  if(!['join','deal','act','quick-fold','fill-bots','cancel-queue','sit-out'].includes(op))fail(404,'Unknown Rush action');
+  const current=view(id);
+  const stale=op==='quick-fold'?typeof body.handVersion!=='string'||!current.table||!body.handVersion.startsWith(current.table+':'):op==='act'?body.handVersion!==current.handVersion||!current.handVersion:body.version!==version;
+  if(stale)fail(409,'Refresh Rush state');
+  const before=JSON.stringify(snapshot());
+  try{
+   if(op==='join'){
+    register(id);
+   }else if(op==='fill-bots'){
+    if(!current.registered||current.table)fail(409,'Join the pool and wait before adding computers');
+    for(let i=1;i<=11;i++)register('Computer '+i,true);
+    const entry=entries.find(p=>p.id===id);entry.paused=false;entry.queued=false;pool.deal(id,eligible());
+   }else{
+    if(!pool?.players.has(id))fail(409,'Join the pool; six players are needed');
+    const entry=entries.find(p=>p.id===id);
+    if(op==='sit-out'){if(typeof body.paused!=='boolean')fail(400,'Choose a sit-out state');entry.paused=body.paused;entry.queued=false}
+    if(op==='cancel-queue'){if(current.table)fail(409,'Finish the current hand first');entry.queued=false;entry.paused=true}
+    if(op==='deal'){entry.paused=false;entry.queued=pool.deal(id,eligible())===null}
+    if(op==='act'){
+     if(body.reserved!==undefined&&typeof body.reserved!=='boolean')fail(400,'Invalid reserved action flag');
+     const table=pool.tables.get(current.table),g=table.game,seat=table.ids.indexOf(id),board=g.board.length;pool.move(id,body.action,body.target);
+     if(body.reserved===true&&body.action==='check'){g.reservedChecks??=Array(6).fill(null);g.reservedChecks[seat]=board}else if(g.reservedChecks)g.reservedChecks[seat]=null;
+    }
+    if(op==='quick-fold'){const next=pool.fold(id,eligible(),!entry.paused);entry.queued=!entry.paused&&next===null}
+   }
+   save();
+   return view(id);
+  }catch(e){restore(JSON.parse(before));if(e.status)throw e;if(e.code)throw e;fail(400,e.message)}
+ }
+ request.hasActivePlay=()=>!!pool&&[...pool.tables.values()].some(t=>!t.settled);request.tick=tick;return request;
+}

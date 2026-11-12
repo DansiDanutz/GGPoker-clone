@@ -10,3 +10,6 @@ assert.throws(()=>rank5(arr('As As Ts Js Qs')));assert.throws(()=>rank5(arr('As 
 assert.equal(compare(best(arr('2h 3c As Ks Qs Js Ts')),rank5(arr('As Ks Qs Js Ts'))),0);
 for(let i=0;i<180;i++){const g=deal(20,4,i%2);assert.equal(new Set([...g.deck,...g.hands.flat()]).size,52);let n=0;while(!g.end){assert.ok(n++<45);const m=moves(g);act(g,m[(i+n*7)%m.length]);assert.equal(g.pot+g.stacks[0]+g.stacks[1],40);assert.ok(g.stacks.every(x=>x>=0))}}
 const g=deal();act(g,'call');assert.deepEqual(g.board,[]);act(g,'check');assert.equal(g.board.length,3);assert.throws(()=>act(g,'call'));console.log('PASS: all hand categories, kicker, wheel, seven-card showdown, deck uniqueness, legal turns, blinds and chip conservation');
+const foldedBlind=deal(200,4,0);act(foldedBlind,'fold');
+assert.deepEqual(foldedBlind.stacks,[198,202]);assert.equal(foldedBlind.end.pot,4);
+assert.ok(foldedBlind.log.includes('Opponent: uncalled 2 returned'));
