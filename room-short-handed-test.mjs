@@ -12,7 +12,7 @@ try{
  s=req(id,'start',ta,{version:s.version},table);assert.equal(s.hand.button,2);assert.equal(s.hand.turn,2);assert.deepEqual(s.hand.committed,[0,0,2,0,0,4]);
  assert.deepEqual(s.hand.cards.map(h=>h?.length||0),[0,0,2,0,0,0]);
  const before=JSON.parse(JSON.stringify(s.hand));let c=req(id,'join',null,{name:'C',seat:0},table),tc=c.issued;
- assert.equal(c.waitingForHand,true);assert.equal(c.number,1);assert.deepEqual(c.hand.stacks,before.stacks);assert.deepEqual(c.hand.history,before.history);assert.deepEqual(c.hand.cards[0],[]);
+ assert.deepEqual(c.hand.dealtSeats,[2,5]);assert.deepEqual(req(id,'watch',null,{},table).hand.dealtSeats,[2,5]);assert.equal(c.waitingForHand,true);assert.equal(c.number,1);assert.deepEqual(c.hand.stacks,before.stacks);assert.deepEqual(c.hand.history,before.history);assert.deepEqual(c.hand.cards[0],[]);
  const stillPlaying=JSON.parse(JSON.stringify(req(id,'state',ta,{},table).hand));
  assert.deepEqual(req(id,'leave',tc,{version:c.version},table),{left:true});
  assert.deepEqual(req(id,'state',ta,{},table).hand,stillPlaying);assert.equal(req(id,'summary',null,{},table).occupied,2);
