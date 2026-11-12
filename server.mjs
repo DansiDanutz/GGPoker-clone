@@ -85,11 +85,16 @@ http.createServer(async(req,res)=>{
  if(path==='/api/hosted'&&req.method==='GET')return json(200,tables.map(t=>({...t,room:hostedId(t.id),...roomRequest(hostedId(t.id),'summary',undefined,{},t)})));
  if(path==='/api/tables'&&req.method==='GET')return json(200,tables);
  const backup=/^\/api\/owner-backups(?:\/([a-f0-9]{24})(\/restore)?)?$/.exec(path);
- if((path==='/api/owner-chat'&&['GET','POST'].includes(req.method))||(path==='/api/tables'&&req.method==='POST')||(path==='/api/owner-audit'&&req.method==='GET')||(backup&&(['GET','POST','DELETE'].includes(req.method)))){
+ if((['/api/owner-chat','/api/owner-reports'].includes(path)&&['GET','POST'].includes(req.method))||(path==='/api/tables'&&req.method==='POST')||(path==='/api/owner-audit'&&req.method==='GET')||(backup&&(['GET','POST','DELETE'].includes(req.method)))){
   if(origin!=='http://127.0.0.1:'+port||host!=='127.0.0.1')return json(403,{error:'Owner changes require local-only mode'});
   const token=Buffer.from((req.headers.authorization||'').replace(/^Bearer /,''));const expected=Buffer.from(key);
   if(req.headers.origin&&req.headers.origin!==origin)return json(403,{error:'Local origin required'});
   if(token.length!==expected.length||!timingSafeEqual(token,expected))return json(401,{error:'Owner key required'});
+  if(path==='/api/owner-reports'){
+   if(req.method==='GET')return json(200,roomRequest.notes.getReports());
+   let text='';for await(const chunk of req){text+=chunk;if(Buffer.byteLength(text)>4096)return json(413,{error:'Request too large'})}
+   try{const command=JSON.parse(text);if(!command||typeof command!=='object'||Array.isArray(command))return json(400,{error:'Invalid review command'});return json(200,roomRequest.notes.reviewReport(command.id,command))}catch(error){return json(error instanceof SyntaxError?400:error.status||500,{error:error.status?error.message:error instanceof SyntaxError?'Invalid JSON':'Could not save report review'})}
+  }
   if(path==='/api/owner-chat'){
    let command={};
    if(req.method==='POST'){let text='';for await(const chunk of req){text+=chunk;if(text.length>4096)return json(413,{error:'Request too large'})}try{command=JSON.parse(text);if(!command||typeof command!=='object'||Array.isArray(command))throw Error()}catch{return json(400,{error:'Invalid JSON'})}}

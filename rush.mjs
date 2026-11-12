@@ -1,15 +1,16 @@
+import {createHash} from 'node:crypto';
 import {readFileSync,writeFileSync,renameSync} from 'node:fs';
 import {rushPool} from './engine/rush-pool.mjs';
 import {visibleCards,collectedPots} from './room-view.mjs';
 import {options,canQuickFold} from './engine/table.mjs';
 import {computerMove,noteSubject} from './rooms.mjs';
-import {noteColors,saveNoteLabels} from './player-notes.mjs';
+import {noteColors,saveNoteLabels,reportTypes,saveHandReport} from './player-notes.mjs';
 
 const fail=(status,message)=>{throw Object.assign(Error(message),{status})};
 export function openRush(file,variant='holdem',avatarFor=()=>0,notes){
  if(!['holdem','plo'].includes(variant))throw Error('Invalid Rush format');
- let entries=[],pool=null,version=0;
- function restore(saved){entries=saved.entries;version=saved.version;pool=saved.pool?rushPool(entries,4,saved.pool,variant):null}
+ let entries=[],pool=null,version=0,knownTables=new Set();
+ function restore(saved){entries=saved.entries;version=saved.version;pool=saved.pool?rushPool(entries,4,saved.pool,variant):null;knownTables=new Set(pool?.tables.keys()||[])}
  try{restore(JSON.parse(readFileSync(file,'utf8')))}catch(e){if(e.code!=='ENOENT')throw e}
  const avatars=ids=>ids.map(id=>entries.some(p=>p.id===id&&p.bot)?null:avatarFor(id));
  const subject=id=>noteSubject(entries.find(p=>p.id===id)?.bot?{bot:true,noteId:'rush:'+variant+':'+id}:{account:id});
@@ -40,7 +41,7 @@ export function openRush(file,variant='holdem',avatarFor=()=>0,notes){
   }
   return changed;
  }
- function save(){version++;writeFileSync(file+'.tmp',JSON.stringify(snapshot()),{mode:0o600});renameSync(file+'.tmp',file)}
+ function save(){for(const [id,table]of pool?.tables||[])if(!knownTables.has(id))table.hudAvatars=avatars(table.ids);version++;writeFileSync(file+'.tmp',JSON.stringify(snapshot()),{mode:0o600});renameSync(file+'.tmp',file);knownTables=new Set(pool?.tables.keys()||[])}
  function view(id){
   const player=pool?.players.get(id),table=pool?.tables.get(player?.table);
   const me=table?table.ids.indexOf(id):null;
@@ -55,7 +56,7 @@ export function openRush(file,variant='holdem',avatarFor=()=>0,notes){
  function hud(id,viewer){
   const records=[...(pool?.tables||[])].filter(([,t])=>t.settled&&t.ids.includes(id)),stats={hands:records.length,wins:0,voluntary:records.every(([,t])=>typeof t.game.vpip?.[t.ids.indexOf(id)]==='boolean')?0:null};
   for(const [,t]of records){const i=t.ids.indexOf(id);if(t.game.end.payouts[i]>t.game.end.returns[i])stats.wins++;if(stats.voluntary!==null&&t.game.vpip[i])stats.voluntary++}
-  const hands=records.filter(([,t])=>t.ids.includes(viewer)).slice(-30).map(([number,t])=>{const g=t.game,seat=t.ids.indexOf(id),own=t.ids.indexOf(viewer);return {number,mode:'rush',...(g.historyTrace?{historyTrace:g.historyTrace}:{}),dealtSeats:g.hands.map(cards=>cards.length>0),variant:g.variant,button:g.button,folded:g.folded,...(g.initialStacks?{initialStacks:g.initialStacks}:{}),blind:g.blind,at:Number.isSafeInteger(t.settledAt)&&t.settledAt>=0&&t.settledAt<=8640000000000000?t.settledAt:null,names:t.ids,cards:visibleCards(g,own),seat,viewerSeat:own,net:g.end.payouts[seat]-g.committed[seat],board:g.board,history:g.history,committed:g.committed,payouts:g.end.payouts,returns:g.end.returns,stacks:g.stacks}});
+  const hands=records.filter(([,t])=>t.ids.includes(viewer)).slice(-30).map(([number,t])=>{const g=t.game,seat=t.ids.indexOf(id),own=t.ids.indexOf(viewer);return {number,mode:'rush',...(Number.isSafeInteger(t.startedAt)&&t.startedAt>=0?{startedAt:t.startedAt}:{}),canReport:own>=0&&Number.isSafeInteger(t.startedAt)&&t.startedAt>=0&&Date.now()>=t.startedAt&&Date.now()-t.startedAt<30*3600000,...(Array.isArray(t.hudAvatars)&&t.hudAvatars.length===6?{avatars:t.hudAvatars}:{}),...(g.historyTrace?{historyTrace:g.historyTrace}:{}),dealtSeats:g.hands.map(cards=>cards.length>0),variant:g.variant,button:g.button,folded:g.folded,...(g.initialStacks?{initialStacks:g.initialStacks}:{}),blind:g.blind,at:Number.isSafeInteger(t.settledAt)&&t.settledAt>=0&&t.settledAt<=8640000000000000?t.settledAt:null,names:t.ids,cards:visibleCards(g,own),seat,viewerSeat:own,net:g.end.payouts[seat]-g.committed[seat],board:g.board,history:g.history,committed:g.committed,payouts:g.end.payouts,returns:g.end.returns,stacks:g.stacks}});
   return structuredClone({stats,hands});
  }
  function tick(){const before=JSON.stringify(snapshot());try{if(advanceTables())save()}catch(e){restore(JSON.parse(before));throw e}}
@@ -64,9 +65,10 @@ export function openRush(file,variant='holdem',avatarFor=()=>0,notes){
   if(op==='notes'){
    if(!notes)fail(503,'Private notes unavailable');const player=pool?.players.get(id),tableID=player?.table||[...(pool?.tables||[])].findLast(([,t])=>t.settled&&t.ids.includes(id))?.[0],table=pool?.tables.get(tableID);if(!table)fail(409,'Join a Rush table to use player notes');const me=table.ids.indexOf(id),owner=subject(id);
    if(Object.keys(body).length&&body.table!==tableID)fail(409,'Table changed; reopen player notes');
+   let reportReceipt;if(body.report!==undefined){if(Object.keys(body).some(k=>!['report','table'].includes(k)))fail(400,'Save reports separately from player notes');const room=createHash('sha256').update('river-rush:'+variant).digest('hex').slice(0,48);reportReceipt=saveHandReport(notes,owner,room,hud(id,id).hands.find(h=>h.number===body.report?.number),body.report,Date.now())}
    saveNoteLabels(notes,owner,body);
    if(body.seat!==undefined){if(!Number.isInteger(body.seat)||body.seat<0||body.seat>=table.ids.length||body.seat===me)fail(400,'Choose another seated player');const target=subject(table.ids[body.seat]);if(body.subject!==target)fail(409,'Seat changed; reopen player notes');notes.set(owner,target,{text:body.text,color:body.color})}
-   return {self:{seat:me,name:id,subject:owner,...hud(id,id)},colors:noteColors,labels:notes.getLabels(owner),statsScope:'rush-pool',players:table.ids.flatMap((name,seat)=>seat===me?[]:[{seat,name,subject:subject(name),...hud(name,id),...notes.get(owner,subject(name))}])};
+   return {...(reportReceipt?{reportReceipt}:{}),reportTypes,self:{seat:me,name:id,subject:owner,...hud(id,id)},colors:noteColors,labels:notes.getLabels(owner),statsScope:'rush-pool',players:table.ids.flatMap((name,seat)=>seat===me?[]:[{seat,name,subject:subject(name),...hud(name,id),...notes.get(owner,subject(name))}])};
   }
   if(op==='state'){
    tick();return view(id);

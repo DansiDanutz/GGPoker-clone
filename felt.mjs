@@ -99,19 +99,30 @@ export function historyActionColumns(hand){
  if(hand.variant!=='shortdeck'&&active.length>2)active.push(active.shift());
  const ante=active.reduce((total,seat)=>total+opening.committed[seat]-opening.bets[seat],0);if(ante)columns[0].rows.push({kind:'post',seat:null,action:'ante',amount:ante,allIn:false});
  for(const seat of active)if(opening.bets[seat])columns[0].rows.push({kind:'post',seat,action:hand.variant==='shortdeck'?'buttonblind':seat===active[0]?'smallblind':'bigblind',amount:opening.bets[seat],allIn:opening.stacks[seat]===0});
- const committed=[...opening.committed],stacks=[...opening.stacks],bets=[...opening.bets],folded=hand.dealtSeats.map(v=>!v),lastPaid=Array(n).fill(0),paidByStreet=Array(4).fill(0);let street=0,pot=sum(committed);
+ const actionRows=[],committed=[...opening.committed],stacks=[...opening.stacks],bets=[...opening.bets],folded=hand.dealtSeats.map(v=>!v),lastPaid=Array(n).fill(0),paidByStreet=Array(4).fill(0);let street=0,pot=sum(committed);
  for(let index=0;index<trace.actions.length;index++){
   const event=trace.actions[index],seat=event?.seat,stage=stages.indexOf(event?.street);
   if(!Number.isInteger(seat)||seat<0||seat>=n||folded[seat]||stacks[seat]<=0||stage<0||event.street<street||event.street>hand.board.length||!['fold','check','call','raise'].includes(event.action)||!['paid','bet','stack','pot'].every(k=>Number.isSafeInteger(event[k])&&event[k]>=0)||typeof event.allIn!=='boolean')return null;
   if(event.street!==street){bets.fill(0);street=event.street}
   if(event.paid>stacks[seat]||event.stack!==stacks[seat]-event.paid||event.bet!==bets[seat]+event.paid||event.pot!==pot+event.paid||event.allIn!==(event.paid>0&&event.stack===0)||(['fold','check'].includes(event.action)?event.paid!==0:event.paid===0))return null;
   const text='Seat '+(seat+1)+': '+event.action+(event.action==='raise'?' to '+event.bet:event.action==='call'?' '+event.paid:'');if(hand.history[index]!==text)return null;
-  const displayAction=event.action==='raise'&&event.street>0&&Math.max(...bets)===0?'bet':event.action;committed[seat]+=event.paid;stacks[seat]=event.stack;bets[seat]=event.bet;pot=event.pot;if(event.action==='fold')folded[seat]=true;if(event.paid)lastPaid[seat]=stage;paidByStreet[stage]+=event.paid;columns[stage+1].rows.push({...event,displayAction,kind:'action',amount:event.action==='raise'?event.bet:event.paid});
+  const displayAction=event.action==='raise'&&event.street>0&&Math.max(...bets)===0?'bet':event.action;committed[seat]+=event.paid;stacks[seat]=event.stack;bets[seat]=event.bet;pot=event.pot;if(event.action==='fold')folded[seat]=true;if(event.paid)lastPaid[seat]=stage;paidByStreet[stage]+=event.paid;const row={...event,displayAction,kind:'action',amount:event.action==='raise'?event.bet:event.paid};columns[stage+1].rows.push(row);actionRows.push(row);
  }
  if(committed.some((v,i)=>v!==hand.committed[i]||stacks[i]+hand.payouts[i]!==hand.stacks[i]||folded[i]!==hand.folded[i]||folded[i]&&hand.payouts[i]>hand.returns[i]))return null;
  const returned=Array(4).fill(0);hand.returns.forEach((amount,seat)=>{if(amount){const stage=lastPaid[seat];returned[stage]+=amount;columns[stage+1].rows.push({kind:'return',seat,amount})}});
  let startingPot=sum(opening.committed);for(let i=0;i<4;i++){columns[i+1].amount=startingPot;startingPot+=paidByStreet[i]-returned[i]}
  if(startingPot!==sum(hand.payouts)-sum(hand.returns))return null;
+ for(const event of Array.isArray(hand.historyEvents)?hand.historyEvents:[]){
+
+  if(event?.type==='reaction'){
+   const seat=event.seat,anchor=event.afterAction,stage=stages.indexOf(event.street);
+   if(!Number.isInteger(seat)||seat<0||seat>=n||!hand.dealtSeats[seat]||!Number.isInteger(anchor)||anchor<0||anchor>trace.actions.length||stage<0||event.street>hand.board.length||event.street<(trace.actions[anchor-1]?.street??0)||event.street>(trace.actions[anchor]?.street??hand.board.length)||!Number.isInteger(event.reaction)||![1,2,3].includes(event.reaction))continue;
+   const rows=columns[stage+1].rows,next=actionRows.find((row,i)=>i>=anchor&&row.street===event.street),at=next?rows.indexOf(next):rows.length;rows.splice(at,0,{kind:'reaction',seat,reaction:event.reaction});continue;
+  }
+  const seat=event?.seat,hole=hand.cards?.[seat],indices=event?.indices;
+  if(event?.type!=='show-cards'||!Number.isInteger(seat)||seat<0||seat>=n||!hand.dealtSeats[seat]||event.street!==hand.board.length||event.afterAction!==hand.history.length||!Array.isArray(hole)||hole.length!==({plo:4,plo5:5,plo6:6}[hand.variant]||2)||!Array.isArray(indices)||!indices.length||new Set(indices).size!==indices.length||!indices.every(i=>Number.isInteger(i)&&i>=0&&i<hole.length&&/^[2-9TJQKA][cdhs]$/.test(hole[i])))continue;
+  columns[stages.indexOf(event.street)+1].rows.push({kind:'show-cards',seat,cards:hole.map((card,i)=>indices.includes(i)?card:null)});
+ }
  hand.payouts.forEach((paid,seat)=>{const amount=paid-hand.returns[seat];if(amount)columns[stages.indexOf(hand.board.length)+1].rows.push({kind:'win',seat,amount})});return columns;
 }
 export function historyHiddenPlayers(hand){
