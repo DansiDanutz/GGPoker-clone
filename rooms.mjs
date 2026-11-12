@@ -158,7 +158,7 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes){
     if(!r||r.players.includes(null)&&!r.waiting?.some(p=>p.account===account))fail(409,'Take an available seat');
     if(!r.waiting?.some(p=>p.account===account)){if((r.waiting?.length||0)>=100)fail(409,'Waiting list is full');(r.waiting??=[]).push({account});r.version++}
    }else if(body.action==='cancel'&&r?.waiting?.some(p=>p.account===account)){r.waiting=r.waiting.filter(p=>p.account!==account);r.version++;advanceWaiting(r,table,now)}
-   const index=r?.waiting?.findIndex(p=>p.account===account)??-1;return {count:r?.waiting?.length||0,position:index+1,offer:index===0?r.waiting[0].offer||null:null};
+   const index=r?.waiting?.findIndex(p=>p.account===account)??-1;return {open:!!table.open,count:r?.waiting?.length||0,position:index+1,offer:index===0?r.waiting[0].offer||null:null};
   }
   if(op==='join'&&body.seat!==undefined&&(!Number.isInteger(body.seat)||body.seat<0||body.seat>=capacity))fail(400,'Invalid seat');
   if(op==='join'&&(typeof body.name!=='string'||!body.name.trim()||body.name.trim().length>24))fail(400,'Enter a name (1–24 characters)');
