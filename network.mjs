@@ -160,7 +160,8 @@ function topUpRequest(g,settings){
  let threshold=Number(localStorage.getItem('river-topup-threshold')??100),target=Number(localStorage.getItem('river-topup-target')??100);
  if(!Number.isInteger(threshold)||!Number.isInteger(target)||threshold<0||threshold>target||target<20||target>100)threshold=target=100;
  const max=settings.maxBuyIn??settings.stack;
- return g.stacks[state.me]*100<max*threshold?{topUpTo:Math.max(settings.minBuyIn??settings.stack,Math.floor(max*target/100))}:{};
+ const stack=g.dealtSeats&&!g.dealtSeats.includes(state.me)?state.buyIns?.[state.me]??settings.stack:g.stacks[state.me];
+ return stack*100<max*threshold?{topUpTo:Math.max(settings.minBuyIn??settings.stack,Math.floor(max*target/100))}:{};
 }
 function hotkeyHint(button){const key=button.dataset.key,role=({F1:'fold',F2:'call',F3:'raise'})[key]||(/^Ctrl\+[1-4]$/.test(key)?'preset'+key.at(-1):null);if(role){const keys=readHotkeys(localStorage.getItem('river-hotkey-bindings'))[role];button.dataset.hotkeyDisplay=readHotkeyGroups(localStorage.getItem('river-hotkey-groups'))[hotkeyGroup(role)]&&keys.length?keyCaption(keys):''}}
 function btn(text,fn,key){const b=document.createElement('button');b.textContent=text;b.onclick=fn;if(key){b.dataset.key=key;hotkeyHint(b)}$('actions').append(b);return b}
@@ -405,7 +406,7 @@ if(!keepActions){refreshBetEditor=null;for(const child of [...$('actions').child
  if(t){$('status').textContent+=' Next hand starts automatically.';return}
  btn('Leave table',()=>operate('leave'));
  if(state.soloBots)btn('End practice and release table',()=>operate('end-practice'));
- if(!state.ready[state.me]){const ready=btn('Ready for next hand',()=>operate('ready',topUpRequest(g,settings)));ready.disabled=!!document.querySelector('.award');if(ready.disabled)ready.title='Waiting for payout to finish'}else $('status').textContent+=' Waiting for other players.';return}
+ if(!state.ready[state.me]){const rebuy=g.dealtSeats?.includes(state.me)&&g.stacks[state.me]===0,rebuyTo=settings?.stack??120;const ready=btn(rebuy?'Rebuy '+rebuyTo+' play chips': 'Ready for next hand',()=>operate('ready',rebuy?{topUpTo:rebuyTo}:topUpRequest(g,settings)));ready.disabled=!!document.querySelector('.award');if(ready.disabled)ready.title='Waiting for payout to finish'}else $('status').textContent+=' Waiting for other players.';return}
  if(state.waitingForHand){$('status').textContent='Seated · waiting for the next hand.';if(!keepActions)btn('Cancel waiting seat',()=>operate('leave'));return}
  $('status').textContent='Hand '+state.number+' · Pot '+g.committed.reduce((a,b)=>a+b,0)+' · '+(state.me===g.turn?'Your turn':state.names[g.turn]+' to act');
  const o=g.options;if(!o||keepActions)return;

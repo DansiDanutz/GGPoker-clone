@@ -59,10 +59,10 @@ function step(room,action,target){
   const now=Date.now();finishClock(room,now);startClock(room,now);room.version++;record(room);
 }
 function cashHand(r,now,avatarFor){
- const base=r.waitingStacks||r.hand?.stacks,stacks=r.players.map((p,i)=>p?(base?.[i]||p.buyIn||r.settings?.stack||buyIns[i]):0),previous=r.hand||r.previousHand;
+ const base=r.waitingStacks||r.hand?.stacks,stacks=r.players.map((p,i)=>p?(r.hand&&!r.hand.hands[i].length||base?.[i]==null?p.buyIn??r.settings?.stack??buyIns[i]:base[i]):0),previous=r.hand||r.previousHand;
  for(let i=0;i<r.players.length;i++){
-  const p=r.players[i];if(!p?.topUpTo)continue;
-  const before=base?.[i]??stacks[i],after=Math.max(before,p.topUpTo);stacks[i]=after;delete p.topUpTo;
+  const p=r.players[i];if(p?.bot&&stacks[i]===0)p.topUpTo=p.buyIn??r.settings?.stack??buyIns[i];if(!p?.topUpTo)continue;
+  const before=stacks[i],after=Math.max(before,p.topUpTo);stacks[i]=after;delete p.topUpTo;
   if(after>before){r.topUps??=[];r.topUps.push({subject:p.account||p.digest,seat:i,name:p.name,hand:r.number+1,before,after,added:after-before,at:now});if(r.topUps.length>100)r.topUps.shift()}
  }
  const button=previous?nextDealer(stacks,previous):stacks.findIndex(Boolean);
@@ -289,7 +289,8 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes){
       if(r.tournament)fail(409,'No rebuys or ready actions in tournaments');
       if(body.number!==undefined&&body.number!==r.number)fail(409,'Hand changed; refresh and try again');
       if(!r.hand?.end)fail(409,'Hand is not finished');
-      if(body.topUpTo!==undefined&&(!table||!Number.isSafeInteger(body.topUpTo)||body.topUpTo<(table.minBuyIn??table.stack)||body.topUpTo>(table.maxBuyIn??table.stack)))fail(400,'Top-up is outside table limits');
+      if(body.topUpTo!==undefined&&(!Number.isSafeInteger(body.topUpTo)||body.topUpTo<(table?.minBuyIn??table?.stack??1)||body.topUpTo>(table?.maxBuyIn??table?.stack??1000000)))fail(400,'Top-up is outside table limits');
+      if(r.hand.hands[me].length&&r.hand.stacks[me]===0&&body.topUpTo===undefined)fail(409,'Choose a buy-in to rebuy before the next hand');
       if(!r.ready[me]){if(body.topUpTo!==undefined)r.players[me].topUpTo=body.topUpTo;r.ready[me]=true;r.version++}
       if(r.players.every((p,i)=>!p||r.ready[i])){
         cashHand(r,now,avatarFor);
