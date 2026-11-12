@@ -353,6 +353,9 @@ export function openRooms(file,avatarFor=()=>0,walletsEnabled=false){
     }
     }
   };
+  request.nextGrantSequence=()=>wallet.nextSequence();
+  request.lastGrant=()=>wallet.lastGrant();
+  request.grant=(name,command)=>{if(!walletsEnabled)fail(503,'Local cash wallets are disabled');const before=JSON.stringify(packed());try{const receipt=wallet.grant(name,command),after=JSON.stringify(packed());if(after!==before){writeFileSync(file+'.tmp',after,{mode:0o600});renameSync(file+'.tmp',file)}return receipt}catch(error){unpack(JSON.parse(before));throw error}};
   request.wallet=name=>wallet.summary(name);
   request.notes=notes;
   request.hasActivePlay=()=>[...rooms.values()].some(r=>r.hand&&!r.hand.end||r.tournament?.startedAt!=null&&r.tournament.winner==null&&!r.tournament.cancelledAt);
