@@ -158,9 +158,10 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
    if(Object.keys(body).some(k=>k!=='action'&&!(body.action==='reserve'&&k==='seat'))||body.action!==undefined&&!['join','cancel','reserve'].includes(body.action))fail(400,'Choose join or cancel waiting');
    if(body.action==='reserve'){
     if(!table.open)fail(409,'Owner closed registration');if(body.seat!==undefined&&(!Number.isInteger(body.seat)||body.seat<0||body.seat>=capacity))fail(400,'Invalid seat');
+    if(r?.players.some(p=>p?.account===account))return {open:true,count:r.waiting?.length||0,position:0,offer:null,seated:true};
+    const existing=r?.reservations?.find(p=>p.account===account)||r?.waiting?.find(p=>p.account===account)?.offer;
+    if(!existing&&wallet){const available=wallet.summary(account).available,minimum=table.minBuyIn??table.stack;if(available<minimum)fail(409,'Not enough local play chips: '+available+' available; '+minimum+' required')}
     if(!r){if(rooms.size>=100)fail(503,'Room limit reached');r=newRoom(table,{},capacity,now);rooms.set(id,r)}
-    if(r.players.some(p=>p?.account===account))return {open:true,count:r.waiting?.length||0,position:0,offer:null,seated:true};
-    const existing=r.reservations?.find(p=>p.account===account)||r.waiting?.find(p=>p.account===account)?.offer;
     if(existing){if(body.seat!==undefined&&body.seat!==existing.seat)fail(409,'Cancel your previous reservation first')}
     else{
      if(r.waiting?.length)fail(409,'Waiting players have priority');const seat=body.seat??r.players.findIndex((p,i)=>!p&&!reservedSeats(r).includes(i));
@@ -173,7 +174,7 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
     if(!r.waiting?.some(p=>p.account===account)){if((r.waiting?.length||0)>=100)fail(409,'Waiting list is full');(r.waiting??=[]).push({account});r.version++}
    }else if(body.action==='cancel'&&r?.waiting?.some(p=>p.account===account)){r.waiting=r.waiting.filter(p=>p.account!==account);r.version++;advanceWaiting(r,table,now)}
    if(body.action==='cancel'&&r?.reservations?.some(p=>p.account===account)){r.reservations=r.reservations.filter(p=>p.account!==account);r.version++;advanceWaiting(r,table,now)}
-   const index=r?.waiting?.findIndex(p=>p.account===account)??-1;return {open:!!table.open,count:r?.waiting?.length||0,position:index+1,offer:(()=>{const own=r?.reservations?.find(p=>p.account===account);return own?{seat:own.seat,expiresAt:own.expiresAt}:index===0?r.waiting[0].offer||null:null})()};
+   const index=r?.waiting?.findIndex(p=>p.account===account)??-1;return {open:!!table.open,count:r?.waiting?.length||0,position:index+1,...(r?.players.some(p=>p?.account===account)?{seated:true}:{}),offer:(()=>{const own=r?.reservations?.find(p=>p.account===account);return own?{seat:own.seat,expiresAt:own.expiresAt}:index===0?r.waiting[0].offer||null:null})()};
   }
   if(op==='join'&&body.seat!==undefined&&(!Number.isInteger(body.seat)||body.seat<0||body.seat>=capacity))fail(400,'Invalid seat');
   if(op==='join'&&(typeof body.name!=='string'||!body.name.trim()||body.name.trim().length>24))fail(400,'Enter a name (1–24 characters)');
