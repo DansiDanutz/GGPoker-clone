@@ -67,7 +67,7 @@ http.createServer(async(req,res)=>{
   }
   try{return json(200,rushRequest(account,op,body))}catch(e){if(e.status)return json(e.status,{error:e.message});throw e}
  }
- const match=/^\/api\/rooms\/([0-9a-f]{48})\/(watch|join|state|act|ready|leave|fill-bots|start|end-practice|chat|shuffle|time-bank|notes|show-cards|waiting)$/.exec(path);
+ const match=/^\/api\/rooms\/([0-9a-f]{48})\/(watch|join|state|act|ready|add-chips|leave|fill-bots|start|end-practice|chat|shuffle|time-bank|notes|show-cards|waiting)$/.exec(path);
  if(match){
   const [,id,op]=match;
   if(['notes','waiting'].includes(op)?!['GET','POST'].includes(req.method):req.method!==(['state','watch'].includes(op)?'GET':'POST'))return json(405,{error:'Method not allowed'});
