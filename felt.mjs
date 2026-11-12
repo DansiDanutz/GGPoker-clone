@@ -146,3 +146,9 @@ export function historyPreviewLayout(hand){
  for(let pos=0;pos<count;pos++){const seat=(hero+pos)%count;if(!hand.names[seat]||!hand.initialStacks[seat])continue;const [x,y]=positions[pos];players.push({seat,x,y,name:hand.names[seat],avatar:hand.avatars?.[seat],folded:hand.folded[seat],hole:hand.cards[seat],holeLayout:holeLayout(hand.folded[seat]),focus:!hand.folded[seat]&&hand.board.length===5&&hand.cards[seat]?.length===holeCount&&hand.cards[seat].every(Boolean)?bestFiveFocus(hand.cards[seat],hand.board,variant==='shortdeck'):null,balance:Math.max(0,hand.initialStacks[seat]-hand.committed[seat]+hand.returns[seat]),winner:hand.payouts[seat]>hand.returns[seat]})}
  return {ownSeat:hero,theme:hand.mode==='tournament'?'tournament':hand.mode==='rush'?'rush-'+variant:variant,gameName:({holdem:'Hold’em',shortdeck:'Short Deck',plo:'Omaha',plo5:'5-card Omaha',plo6:'6-card Omaha',aof:'All-In or Fold'})[variant],players,dealer:buttons[(hand.button-hero+count)%count],board:{x:202,y:222.5,gap:59,width:61,height:81},totalPot:hand.payouts.reduce((sum,n,i)=>sum+n-hand.returns[i],0)};
 }
+
+export function hudPercent(count,hands){
+ return Number.isSafeInteger(hands)&&hands>0&&Number.isSafeInteger(count)&&count>=0&&count<=hands?Math.round(100*count/hands):null;
+}
+
+export function hudColor(value,metric='VPIP'){return value>=(metric==='PFR'?31:36)?'#12c012':value>=21?'#e7b300':value>=11?'#ea7500':'#de0001'}
