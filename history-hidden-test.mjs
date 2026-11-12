@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+globalThis.Image=class{};globalThis.document={querySelector:()=>null};globalThis.localStorage={getItem:()=>null};globalThis.addEventListener=()=>{};const {historyHiddenPlayers}=await import('./felt.mjs');
+const hand={variant:'holdem',names:['A','B','C','D','E','F'],seat:0,button:0,dealtSeats:Array(6).fill(true)};
+assert.deepEqual(historyHiddenPlayers(hand).map(p=>p.label),['Hero','SB','BB','UTG','MP','CO']);
+assert.equal(historyHiddenPlayers(hand)[0].color,'#762020');
+assert.deepEqual(historyHiddenPlayers({...hand,seat:4,button:4,dealtSeats:[true,false,true,false,true,false]}).map(p=>p.label),['SB','Sitting Out','BB','Sitting Out','Hero','Sitting Out']);
+assert.deepEqual(historyHiddenPlayers({...hand,seat:2,button:0,dealtSeats:[true,false,true,false,false,false]}).map(p=>p.label),['SB','Sitting Out','Hero','Sitting Out','Sitting Out','Sitting Out']);
+assert.deepEqual(historyHiddenPlayers({...hand,variant:'shortdeck',seat:3}).map(p=>p.label),['BTN','UTG','UTG1','Hero','MP1','CO']);
+for(const patch of [{dealtSeats:undefined},{dealtSeats:[true]},{dealtSeats:[1,1,1,1,1,1]},{button:7},{variant:'unknown'},{dealtSeats:[false,false,false,false,false,false]}])assert.equal(historyHiddenPlayers({...hand,...patch}),null);
+assert.deepEqual(historyHiddenPlayers({...hand,seat:1,viewerSeat:0}).map(p=>p.label),['Hero','SB','BB','UTG','MP','CO']);assert.equal(historyHiddenPlayers({...hand,seat:1,viewerSeat:-1}).some(p=>p.label==='Hero'),false);
+assert.equal(hand.names[0],'A');assert.equal(hand.dealtSeats[0],true);
+console.log('PASS native anonymous roles:buttonrotation,sparse seats,heads-up,ShortDeck,Hero,source colors andunknown guards');

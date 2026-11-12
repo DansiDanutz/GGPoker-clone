@@ -1,52 +1,154 @@
+import {recoverOwnerRestore,restoreOwnerBackup} from './owner-restore.mjs';
+import {ownerBackup} from './owner-backup.mjs';
+import {prizeAmounts} from './engine/prizes.mjs';
+import {profiles} from './local-profile.mjs';
 import {openRooms} from './rooms.mjs';
+import {openRush} from './rush.mjs';
 import http from 'node:http';
-import {randomBytes,timingSafeEqual} from 'node:crypto';
-import {readFileSync,writeFileSync,renameSync,mkdirSync} from 'node:fs';
+import {createHash,randomBytes,timingSafeEqual} from 'node:crypto';
+import {readFileSync,writeFileSync,renameSync,mkdirSync,appendFileSync,statSync} from 'node:fs';
 import {join} from 'node:path';
 import {homedir} from 'node:os';
 import {fileURLToPath} from 'node:url';
 const port=Number(process.env.PORT||18765),host=process.env.POKER_BIND_HOST||'127.0.0.1', origin=process.env.POKER_PUBLIC_ORIGIN||('http://'+host+':'+port);
 const directory=process.env.POKER_DATA_DIR||join(homedir(),'.local/share/river-room');mkdirSync(directory,{recursive:true,mode:0o700});
-const roomRequest=openRooms(join(directory,'rooms.json'));
+let restoring=false,restoreBlocked=false,activeRequests=0;recoverOwnerRestore(directory);
+let playerProfile=profiles(join(directory,'local-players.json'));
+let roomRequest=openRooms(join(directory,'rooms.json'),playerProfile.avatar);
+let rushRequests={holdem:openRush(join(directory,'rush.json'),'holdem',playerProfile.avatar,roomRequest.notes),plo:openRush(join(directory,'rush-plo.json'),'plo',playerProfile.avatar,roomRequest.notes)};
+setInterval(()=>{if(restoring||restoreBlocked)return;try{for(const request of Object.values(rushRequests))request.tick()}catch{console.error('Rush timer could not save state; prior checkpoint retained')}},500).unref();
 const keyPath=join(directory,'owner.key'),db=join(directory,'tables.json');
 try{writeFileSync(keyPath,randomBytes(32).toString('hex'),{mode:0o600,flag:'wx'})}catch(e){if(e.code!=='EEXIST')throw e}
 const key=readFileSync(keyPath,'utf8').trim();
 let tables=[{id:'practice',name:'Green Felt',stack:200,blind:4,open:true}];
 try{tables=JSON.parse(readFileSync(db,'utf8'))}catch(e){if(e.code!=='ENOENT')throw e}
-const files=new Set(['index.html','ui.mjs','game.mjs','engine/hand.mjs','engine/pots.mjs','engine/deck.mjs','engine/table.mjs','network.html','network.mjs','nolimit.html','nolimit.mjs','lobby.html','lobby.mjs']);
+function loadRestoredModels(){
+ const nextTables=JSON.parse(readFileSync(db,'utf8'));if(!Array.isArray(nextTables)||new Set(nextTables.map(t=>t?.id)).size!==nextTables.length||nextTables.some(t=>!t||typeof t.id!=='string'||!/^[a-z0-9-]{1,40}$/.test(t.id)||typeof t.name!=='string'||!t.name.trim()||t.name.length>60||!Number.isInteger(t.stack)||!Number.isInteger(t.blind)||t.blind<2||t.blind%2||t.stack<t.blind*4||t.stack>1000000||typeof t.open!=='boolean'||t.mode!==undefined&&!['cash','plo','plo5','plo6','shortdeck','aof','tournament'].includes(t.mode)))throw Error('Invalid restored table definitions');
+ const nextProfile=profiles(join(directory,'local-players.json')),nextRooms=openRooms(join(directory,'rooms.json'),nextProfile.avatar),nextRush={holdem:openRush(join(directory,'rush.json'),'holdem',nextProfile.avatar,nextRooms.notes),plo:openRush(join(directory,'rush-plo.json'),'plo',nextProfile.avatar,nextRooms.notes)};
+ return {playerProfile:nextProfile,roomRequest:nextRooms,rushRequests:nextRush,tables:nextTables};
+}
+const hostedId=id=>createHash('sha256').update('river-hosted:'+id).digest('hex').slice(0,48);
+setInterval(()=>{if(restoring||restoreBlocked)return;for(const table of tables){try{roomRequest(hostedId(table.id),'tick',undefined,{},table)}catch{console.error('Hosted table timer could not save state; prior checkpoint retained')}}},500).unref();
+const files=new Set(['hotkey-bindings.mjs','hotkey-settings.mjs','player-note-ui.mjs','card-squeeze.mjs','chip-shuffle.mjs','betting-preferences.mjs','felt.css','felt.mjs','spin-lobby.mjs','engine/spin.mjs','engine/prizes.mjs','index.html','ui.mjs','game.mjs','engine/hand.mjs','engine/pots.mjs','engine/deck.mjs','engine/table.mjs','network.html','network.mjs','table-audio.mjs','nolimit.html','nolimit.mjs','lobby.html','lobby.mjs']);
 http.createServer(async(req,res)=>{
  const json=(code,data)=>{res.writeHead(code,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data))};
+ if(restoring||restoreBlocked)return json(503,{error:restoreBlocked?'Restart recovery is required':'Local recovery in progress; retry shortly'});activeRequests++;
  try{
  if(req.headers.host!==new URL(origin).host)return json(403,{error:'Local host required'});
  const path=new URL(req.url,origin).pathname;
- const match=/^\/api\/rooms\/([0-9a-f]{48})\/(join|state|act|ready|leave)$/.exec(path);
+ // Reference recordings are private to the Mac and never served in shared-room mode.
+ const localHome=process.env.POKER_REFERENCE_HOME==='1'&&host==='127.0.0.1'&&origin==='http://127.0.0.1:'+port;
+ const cue=/^\/table-audio\/(Check|Call|Bet|Raise|AllIn|Fold|DealCard|ShowCard|ShowDownCard|Board|GatherChips|WinPot|ShuffleUp|ShuffleCombine|ShuffleOther|SqueezeOpen|AofButton|ChessClock|TimeBankTick)\.mp3$/.exec(path);
+ if(localHome&&cue&&req.method==='GET'){
+  let data;try{data=readFileSync(join((cue[1].startsWith('Shuffle')||['ChessClock','TimeBankTick','ShowDownCard'].includes(cue[1]))?fileURLToPath(new URL('./home-art/',import.meta.url)):join(homedir(),'Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/sounds'),(['AofButton','ChessClock','TimeBankTick','ShowDownCard'].includes(cue[1])?'':'Sound')+cue[1]+'.mp3'))}catch{return json(404,{error:'Local sound unavailable'})}
+  res.writeHead(200,{'Content-Type':'audio/mpeg','Cache-Control':'private, max-age=3600'});res.end(data);return;
+ }
+ const avatarImage=/^\/local\/avatar-images\/([a-f0-9]{64})\.png$/.exec(path);
+ if(localHome&&avatarImage&&req.method==='GET'){const data=playerProfile.image(avatarImage[1]);if(!data)return json(404,{error:'Avatar unavailable'});res.writeHead(200,{'Content-Type':'image/png','Cache-Control':'private, max-age=31536000, immutable','X-Content-Type-Options':'nosniff'});res.end(data);return}
+ if(localHome&&['/local/me','/local/login','/local/create','/local/logout','/local/avatar'].includes(path))return await playerProfile.handle(req,res,path,json);
+ if(localHome&&req.method==='GET'&&(path==='/'||['/launch.html','/seat.html','/seat.mjs','/playgg.html','/playgg.mjs','/playgg-carousel.mjs','/home-review.html'].includes(path)||['/home-art/native-history-roboto.ttf','/home-art/native-history-roboto-italic.ttf','/home-art/native-hud-roboto-bold.ttf','/home-art/native-show-roboto-condensed-bold.ttf','/home-art/native-action-roboto-condensed.ttf'].includes(path)||/^\/home-art\/[a-zA-Z0-9_-]+\.(png|json)$/.test(path))){
+  const file=path==='/'?'launch.html':path.slice(1);
+  let data;try{data=readFileSync(new URL(file,import.meta.url))}catch{return json(404,{error:'Reference asset unavailable'})}
+  res.writeHead(200,{'Content-Type':file.endsWith('.ttf')?'font/ttf':file.endsWith('.png')?'image/png':file.endsWith('.json')?'application/json':file.endsWith('.mjs')?'text/javascript':'text/html; charset=utf-8','Cache-Control':'private, no-store','Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff'});res.end(data);return;
+ }
+ const rush=/^\/api\/rush\/(?:(holdem|plo)\/)?(state|join|deal|act|quick-fold|fill-bots|cancel-queue|notes|sit-out)$/.exec(path);
+ if(rush&&localHome){
+  const op=rush[2],rushRequest=rushRequests[rush[1]||'holdem'];
+  if(op==='notes'?!['GET','POST'].includes(req.method):req.method!==(op==='state'?'GET':'POST'))return json(405,{error:'Method not allowed'});
+  if((req.method==='POST'||op==='notes'&&req.headers.origin)&&req.headers.origin!==origin)return json(403,{error:'Local origin required'});
+  const account=playerProfile.identity(req);if(!account)return json(401,{error:'Sign in locally'});
+  let body={};
+  if(req.method==='POST'){
+   if(!req.headers['content-type']?.startsWith('application/json'))return json(415,{error:'Expected JSON'});
+   let raw='';for await(const chunk of req){raw+=chunk;if(Buffer.byteLength(raw)>(op==='notes'?8192:2048))return json(413,{error:'Request too large'})}
+   try{body=JSON.parse(raw);if(!body||typeof body!=='object'||Array.isArray(body))throw Error()}catch{return json(400,{error:'Invalid JSON'})}
+  }
+  try{return json(200,rushRequest(account,op,body))}catch(e){if(e.status)return json(e.status,{error:e.message});throw e}
+ }
+ const match=/^\/api\/rooms\/([0-9a-f]{48})\/(watch|join|state|act|ready|leave|fill-bots|start|end-practice|chat|shuffle|time-bank|notes|show-cards)$/.exec(path);
  if(match){
   const [,id,op]=match;
-  if(req.method!==(op==='state'?'GET':'POST'))return json(405,{error:'Method not allowed'});
+  if(op==='notes'?!['GET','POST'].includes(req.method):req.method!==(['state','watch'].includes(op)?'GET':'POST'))return json(405,{error:'Method not allowed'});
   if(req.headers.origin&&req.headers.origin!==origin)return json(403,{error:'Origin not allowed'});
   let body={};
   if(req.method==='POST'){
    if(!req.headers['content-type']?.startsWith('application/json'))return json(415,{error:'Expected JSON'});
-   let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>2048)return json(413,{error:'Request too large'});chunks.push(chunk)}
+   let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>(op==='notes'?8192:2048))return json(413,{error:'Request too large'});chunks.push(chunk)}
    try{body=JSON.parse(Buffer.concat(chunks));if(!body||typeof body!=='object'||Array.isArray(body))throw Error()}catch{return json(400,{error:'Invalid JSON'})}
   }
-  try{return json(200,roomRequest(id,op,(req.headers.authorization||'').replace(/^Bearer /,''),body))}
+  const account=(['notes','show-cards'].includes(op)||op==='join'&&body.useProfile===true)&&localHome?playerProfile.identity(req):null;
+  if(op==='join'&&body.useProfile===true&&!account)return json(401,{error:'Sign in locally'});
+  if(op==='join'&&account)body.name=account;
+  try{return json(200,roomRequest(id,op,(req.headers.authorization||'').replace(/^Bearer /,''),body,tables.find(t=>hostedId(t.id)===id),account))}
   catch(e){if(e.status)return json(e.status,{error:e.message});throw e}
  }
+ if(path==='/api/hosted'&&req.method==='GET')return json(200,tables.map(t=>({...t,room:hostedId(t.id),...roomRequest(hostedId(t.id),'summary',undefined,{},t)})));
  if(path==='/api/tables'&&req.method==='GET')return json(200,tables);
- if(path==='/api/tables'&&req.method==='POST'){
+ const backup=/^\/api\/owner-backups(?:\/([a-f0-9]{24})(\/restore)?)?$/.exec(path);
+ if((path==='/api/owner-chat'&&['GET','POST'].includes(req.method))||(path==='/api/tables'&&req.method==='POST')||(path==='/api/owner-audit'&&req.method==='GET')||(backup&&(['GET','POST','DELETE'].includes(req.method)))){
   if(origin!=='http://127.0.0.1:'+port||host!=='127.0.0.1')return json(403,{error:'Owner changes require local-only mode'});
   const token=Buffer.from((req.headers.authorization||'').replace(/^Bearer /,''));const expected=Buffer.from(key);
   if(req.headers.origin&&req.headers.origin!==origin)return json(403,{error:'Local origin required'});
   if(token.length!==expected.length||!timingSafeEqual(token,expected))return json(401,{error:'Owner key required'});
+  if(path==='/api/owner-chat'){
+   let command={};
+   if(req.method==='POST'){let text='';for await(const chunk of req){text+=chunk;if(text.length>4096)return json(413,{error:'Request too large'})}try{command=JSON.parse(text);if(!command||typeof command!=='object'||Array.isArray(command))throw Error()}catch{return json(400,{error:'Invalid JSON'})}}
+   const table=tables.find(t=>t.id===(req.method==='GET'?new URL(req.url,origin).searchParams.get('table'):command.tableId));if(!table)return json(404,{error:'Unknown hosted table'});
+   try{
+    const result=roomRequest(hostedId(table.id),req.method==='GET'?'moderation':'moderate-chat',null,command,table);
+    if(req.method==='GET')return json(200,result);
+    let auditSaved=true;if(result.changed)try{appendFileSync(join(directory,'owner-audit.jsonl'),JSON.stringify({at:new Date().toISOString(),action:command.muted?'mute-chat':'unmute-chat',before:null,after:{...table,moderation:{seat:command.seat,name:result.players.find(p=>p.seat===command.seat).name,muted:command.muted}}})+'\n',{mode:0o600})}catch{auditSaved=false}
+    return json(200,{...result,auditSaved});
+   }catch(error){return json(error.status||500,{error:error.status?error.message:'Could not save chat moderation'})}
+  }
+  if(backup?.[2]){
+   if(req.method!=='POST')return json(405,{error:'Use POST to restore'});if(!req.headers['content-type']?.startsWith('application/json'))return json(415,{error:'Expected JSON'});
+   let text='';for await(const chunk of req){text+=chunk;if(Buffer.byteLength(text)>4096)return json(413,{error:'Request too large'})}let command;try{command=JSON.parse(text)}catch{return json(400,{error:'Invalid JSON'})}
+   if(!command||command.confirm!==backup[1])return json(400,{error:'Confirm the exact backup ID before replacing local state'});
+   if(restoring||restoreBlocked)return json(503,{error:'Another recovery is in progress; retry shortly'});restoring=true;try{
+    const until=Date.now()+5000;while(activeRequests>1){if(Date.now()>=until)return json(409,{error:'Other requests are still finishing; retry restoration'});await new Promise(resolve=>setTimeout(resolve,25))}
+    if(roomRequest.hasActivePlay()||Object.values(rushRequests).some(r=>r.hasActivePlay()))return json(409,{error:'Finish active hands and tournaments before restoring'});
+    const result=restoreOwnerBackup(directory,backup[1],tables,operation=>{const models=loadRestoredModels();appendFileSync(join(directory,'owner-audit.jsonl'),JSON.stringify({at:new Date().toISOString(),action:'restore',before:null,after:{name:'Local backup '+operation.id,backupId:operation.id,rescueId:operation.rescueId}})+'\n',{mode:0o600});return models});({playerProfile,roomRequest,rushRequests,tables}=result.loaded);return json(200,{restored:true,id:result.id,rescueId:result.rescueId});
+   }catch(error){if(error.recoveryRequired)restoreBlocked=true;return json(error.status||500,{error:error.status?error.message:'Local restore failed',...(error.rescueId?{rescueId:error.rescueId}:{})})}finally{restoring=false}
+  }
+  if(backup&&req.method==='DELETE'){
+   if(!backup[1])return json(405,{error:'Select a backup to delete'});if(!req.headers['content-type']?.startsWith('application/json'))return json(415,{error:'Expected JSON'});
+   let text='';for await(const chunk of req){text+=chunk;if(Buffer.byteLength(text)>4096)return json(413,{error:'Request too large'})}let command;try{command=JSON.parse(text)}catch{return json(400,{error:'Invalid JSON'})}
+   if(!command||command.confirm!==backup[1])return json(400,{error:'Confirm the exact backup ID before deleting it'});
+   if(restoring||restoreBlocked)return json(503,{error:'Recovery in progress; deletion is blocked'});
+  }
+  if(backup){try{const result=ownerBackup(directory,req.method,backup[1],tables);if(backup[1]&&req.method==='GET')res.setHeader('Content-Disposition','attachment; filename="playgg-backup-'+backup[1]+'.json"');return json(200,result)}catch(error){return json(error.status||500,{error:error.status?error.message:'Could not complete backup operation'})}}
+  if(path==='/api/owner-audit'){
+   try{const file=join(directory,'owner-audit.jsonl');if(statSync(file).size>1048576)return json(413,{error:'Audit exceeds viewer limit; inspect the local audit file'});
+    return json(200,readFileSync(file,'utf8').trim().split('\n').filter(Boolean).slice(-100).map(line=>JSON.parse(line)))}
+   catch(error){if(error.code==='ENOENT')return json(200,[]);throw error}
+  }
   let body='';for await(const c of req){body+=c;if(body.length>4096)return json(413,{error:'Request too large'})}
   let t;try{t=JSON.parse(body)}catch{return json(400,{error:'Invalid JSON'})}
   if(!t||typeof t.id!=='string'||!/^[a-z0-9-]{1,40}$/.test(t.id)||typeof t.name!=='string'||!t.name.trim()||t.name.length>60||!Number.isInteger(t.stack)||!Number.isInteger(t.blind)||t.blind<2||t.blind%2||t.stack<t.blind*4||t.stack>1000000||typeof t.open!=='boolean')return json(400,{error:'Invalid table settings'});
-  const next=tables.filter(x=>x.id!==t.id).concat({id:t.id,name:t.name.trim(),stack:t.stack,blind:t.blind,open:t.open});
-  writeFileSync(db+'.tmp',JSON.stringify(next),{mode:0o600});renameSync(db+'.tmp',db);tables=next;return json(200,{saved:true})
+  if(t.mode!==undefined&&!['cash','plo','plo5','plo6','shortdeck','aof','tournament'].includes(t.mode))return json(400,{error:'Unknown format'});
+  if(t.cardSqueeze!==undefined&&(typeof t.cardSqueeze!=='boolean'||t.cardSqueeze&&!['cash','plo','plo5','plo6','tournament'].includes(t.mode||'cash')))return json(400,{error:'Card Squeeze is available on Hold’em and Omaha tables only'});
+  if(t.variant!==undefined&&(t.mode!=='tournament'||t.variant!=='plo'))return json(400,{error:'Unknown tournament game'});
+  if(t.tournamentSeats!==undefined&&(t.mode!=='tournament'||![3,4,6].includes(t.tournamentSeats)))return json(400,{error:'Tournament seats must be 3, 4 or 6'});
+  if(t.prizeShares!==undefined){try{prizeAmounts(0,t.prizeShares);if(t.mode!=='tournament'||t.prizeShares.length>(t.tournamentSeats||4))throw Error()}catch{return json(400,{error:'Prize shares must be positive whole percentages totalling 100, with no more places than seats'})}}
+  if(t.minBuyIn!==undefined||t.maxBuyIn!==undefined){if(!['cash','plo','plo5','plo6'].includes(t.mode||'cash')||!Number.isSafeInteger(t.minBuyIn)||!Number.isSafeInteger(t.maxBuyIn)||t.minBuyIn<t.blind*4||t.minBuyIn>t.stack||t.maxBuyIn<t.stack||t.maxBuyIn>1000000)return json(400,{error:'Cash buy-in limits must contain the starting stack, from 4 big blinds to 1000000 chips'})}
+  if(t.timeBankSeconds!==undefined&&(!Number.isSafeInteger(t.timeBankSeconds)||t.timeBankSeconds<0||t.timeBankSeconds>3600))return json(400,{error:'Local time bank must be 0–3600 whole seconds'});
+  if(t.hotTimeSeconds!==undefined&&(!t.timeBankSeconds||!Number.isSafeInteger(t.hotTimeSeconds)||t.hotTimeSeconds<1||t.hotTimeSeconds>(t.actionSeconds??90)))return json(400,{error:'Hot time must be 1 through the action time, with a time bank enabled'});
+  if(t.actionSeconds!==undefined&&(!Number.isSafeInteger(t.actionSeconds)||t.actionSeconds<5||t.actionSeconds>300))return json(400,{error:'Action time must be 5–300 whole seconds'});
+  if(t.levelSeconds!==undefined&&(t.mode!=='tournament'||!Number.isSafeInteger(t.levelSeconds)||t.levelSeconds<1||t.levelSeconds>3600))return json(400,{error:'Tournament blind levels must last 1–3600 whole seconds'});
+  if(t.ante!==undefined&&(t.mode!=='tournament'||!Number.isSafeInteger(t.ante)||t.ante<0||t.ante>=t.stack))return json(400,{error:'Starting ante must be a whole per-player amount below the tournament stack'});
+  const previous=tables.find(x=>x.id===t.id);
+  if(t.startsAt!==undefined&&(t.mode!=='tournament'||!Number.isSafeInteger(t.startsAt)||t.startsAt<=0||t.startsAt>8640000000000000||(!previous&&t.startsAt<=Date.now())))return json(400,{error:'Choose a future tournament start time'});
+  if(previous&&((previous.cardSqueeze===true)!==(t.cardSqueeze===true)||(previous.actionSeconds??90)!==(t.actionSeconds??90)||(previous.timeBankSeconds||0)!==(t.timeBankSeconds||0)||(previous.timeBankSeconds?(previous.hotTimeSeconds??5):0)!==(t.timeBankSeconds?(t.hotTimeSeconds??5):0)||previous.stack!==t.stack||previous.blind!==t.blind||previous.name!==t.name||(previous.ante||0)!==(t.ante||0)||(previous.minBuyIn??previous.stack)!==(t.minBuyIn??t.stack)||(previous.maxBuyIn??previous.stack)!==(t.maxBuyIn??t.stack)||(previous.mode||'cash')!==(t.mode||'cash')||(previous.tournamentSeats||4)!==(t.tournamentSeats||4)||(previous.startsAt||null)!==(t.startsAt||null)||(previous.levelSeconds??null)!==(t.levelSeconds??null)||(previous.variant||'holdem')!==(t.variant||'holdem')||JSON.stringify(previous.prizeShares||[100])!==JSON.stringify(t.prizeShares||[100]))&&roomRequest(hostedId(t.id),'summary').occupied)return json(409,{error:'Occupied table: keep its settings or create another table ID'});
+  const next=tables.filter(x=>x.id!==t.id).concat({id:t.id,name:t.name.trim(),stack:t.stack,blind:t.blind,open:t.open,...(t.actionSeconds!==undefined?{actionSeconds:t.actionSeconds}:{}),...(t.timeBankSeconds?{timeBankSeconds:t.timeBankSeconds,hotTimeSeconds:t.hotTimeSeconds??5}:{}),...(t.cardSqueeze?{cardSqueeze:true}:{}),...(t.ante!==undefined?{ante:t.ante}:{}),...(t.levelSeconds!==undefined?{levelSeconds:t.levelSeconds}:{}),...(t.minBuyIn!==undefined?{minBuyIn:t.minBuyIn,maxBuyIn:t.maxBuyIn}:{}),...(t.prizeShares!==undefined?{prizeShares:t.prizeShares}:{}),...(t.variant?{variant:t.variant}:{}),...(t.startsAt!==undefined?{startsAt:t.startsAt}:{}),...(t.tournamentSeats!==undefined?{tournamentSeats:t.tournamentSeats}:{}),...(t.mode&&t.mode!=='cash'?{mode:t.mode}:{})});
+  writeFileSync(db+'.tmp',JSON.stringify(next),{mode:0o600});renameSync(db+'.tmp',db);tables=next;
+  let auditSaved=true;
+  try{appendFileSync(join(directory,'owner-audit.jsonl'),JSON.stringify({at:new Date().toISOString(),action:previous?'update':'create',before:previous||null,after:next.find(x=>x.id===t.id)})+'\n',{mode:0o600})}
+  catch{auditSaved=false;console.error('Table saved but owner audit could not be written')}
+  return json(200,{saved:true,auditSaved})
  }
  const file=path==='/'?'lobby.html':path.slice(1);
  if(req.method!=='GET'||!files.has(file))return json(404,{error:'Not found'});
- res.writeHead(200,{'Content-Type':file.endsWith('.html')?'text/html; charset=utf-8':'text/javascript','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer'});res.end(readFileSync(fileURLToPath(new URL(file,import.meta.url))))
- }catch{if(!res.headersSent)json(500,{error:'Local operation failed'});else res.end()}
+ res.writeHead(200,{'Content-Type':file.endsWith('.css')?'text/css':file.endsWith('.html')?'text/html; charset=utf-8':'text/javascript','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer'});res.end(readFileSync(fileURLToPath(new URL(file,import.meta.url))))
+ }catch{if(!res.headersSent)json(500,{error:'Local operation failed'});else res.end()}finally{activeRequests--}
 }).listen(port,host,()=>console.log('River Room: '+origin+' · owner key file: '+keyPath));

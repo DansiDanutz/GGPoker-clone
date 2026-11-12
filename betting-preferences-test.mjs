@@ -1,0 +1,23 @@
+import assert from 'node:assert/strict';
+import {readBettingPreferences,betShortcuts} from './betting-preferences.mjs';
+const defaults=readBettingPreferences(null);assert.deepEqual(defaults,{opening:[2,3,4,'pot'],normal:[33,50,75,100],unit:'bb',dontRoundBlind:true});
+const custom={opening:[2.5,3.5,5,'pot'],normal:[66,80,90,'max'],unit:'sb',dontRoundBlind:true};
+assert.deepEqual(readBettingPreferences(JSON.stringify(custom)),custom);
+for(const raw of ['bad','null','[]',JSON.stringify({...custom,opening:[2,3,4,6]}),JSON.stringify({...custom,normal:[33,50,75,101]}),JSON.stringify({...custom,unit:'x'})])assert.deepEqual(readBettingPreferences(raw),defaults);
+const g={blind:4,board:[],bets:[0,2,4],committed:[0,2,4]},o={due:4,min:8,max:120};assert.deepEqual(betShortcuts(g,o,0,custom).map(p=>p.target),[10,14,20,14]);assert.deepEqual(betShortcuts(g,o,0,custom).map(p=>p.label),['2.5BB','3.5BB','5BB','Pot']);
+const flop={...g,board:['As','Kh','2d'],bets:[0,0,0],committed:[10,10,10]};assert.deepEqual(betShortcuts(flop,{due:0,min:4,max:120},0,custom).map(p=>p.target),[20,24,27,120]);
+assert.deepEqual(betShortcuts(flop,{due:0,min:4,max:16},0,custom).map(p=>p.target),[16,16,16,16]);assert.equal(betShortcuts(g,{...o,pot:10},0,custom).at(-1).target,18);
+
+const uneven={...flop,committed:[11,10,10]};
+assert.equal(betShortcuts(uneven,{due:0,min:4,max:120},0,defaults)[0].target,11,'Native unrounded percentage ceilings to one practice chip');
+assert.equal(betShortcuts(uneven,{due:0,min:4,max:120},0,{...defaults,dontRoundBlind:false})[0].target,12,'Native rounded percentage ceilings to small blind');
+assert.equal(betShortcuts(g,o,0,{...custom,dontRoundBlind:false})[0].target,10,'Native opening shortcut bypasses blind rounding');
+assert.equal(betShortcuts(uneven,{due:0,min:4,max:11},0,{...defaults,dontRoundBlind:false})[0].target,11,'Clamp after native rounding');
+assert.equal(readBettingPreferences(JSON.stringify({...custom,dontRoundBlind:'false'})).dontRoundBlind,true,'Invalid rounding storage recovers defaults');
+const legacy={...custom};delete legacy.dontRoundBlind;assert.deepEqual(readBettingPreferences(JSON.stringify(legacy)),custom,'Existing preferences retain choices with default rounding');
+const facing={...uneven,bets:[2,5,0]},facingOptions={due:3,min:8,max:120};
+assert.equal(betShortcuts(facing,facingOptions,0,defaults)[0].target,17,'Round total raise-to after call and effective pot');
+assert.equal(betShortcuts(facing,facingOptions,0,{...defaults,dontRoundBlind:false})[0].target,18);
+assert.equal(betShortcuts({...uneven,variant:'shortdeck'},{due:0,min:4,max:120},0,{...defaults,dontRoundBlind:false})[0].target,20,'Button blind uses native ten-chip ceiling unit');
+assert.equal(betShortcuts(g,o,0,{...defaults,dontRoundBlind:false}).at(-1).target,14,'Pot shortcut bypasses rounding');
+console.log('PASS betting preferences: native ceiling and opening bypass, legacy/default recovery, presets, effective pot and legal clamps');

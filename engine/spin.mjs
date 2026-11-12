@@ -1,0 +1,28 @@
+import {prizeAmounts} from './prizes.mjs';
+// Native PLAYGG.RO 3-Max play-money dialogs, captured in observed-spin-playmoney-*.png.
+const outcomes=[
+ [20000,5,[50,30,20],'hands',20],
+ [100,4000,[60,30,10],'hands',15],
+ [50,8000,[60,30,10],'hands',15],
+ [10,2450000,[80,20],'hands',10],
+ [5,2800000,[100],'minutes',3],
+ [4,3000000,[100],'minutes',2],
+ [3,44124010,[100],'minutes',2],
+ [2,47613985,[100],'minutes',1]
+];
+export const spinSmallBlinds=Object.freeze([10,15,20,30,40,50,60,75,90,100,125,150,175,200,225,250,300,350,400,500,600,750,900,1000,1250,1500]);
+export function spinPayouts(buyIn){
+ if(![5000,10000].includes(buyIn))throw new RangeError('Only observed 5000/10000 play-money stakes are configured');
+ return outcomes.map(([multiplier,frequency,shares,unit,interval])=>{const amounts=prizeAmounts(buyIn*multiplier,shares);return {multiplier,frequency,prizePool:buyIn*multiplier,prizes:Array.from({length:3},(_,i)=>amounts[i]||0),unit,interval}});
+}
+export function spinOutcome(buyIn,ticket){
+ if(!Number.isSafeInteger(ticket)||ticket<0||ticket>=100000000)throw new RangeError('Spin ticket must be an integer from 0 to 99999999');
+ for(const row of spinPayouts(buyIn)){if(ticket<row.frequency)return {...row,buyIn,seats:3,startingChips:null,timeBankCards:null};ticket-=row.frequency}
+ throw Error('Invalid probability total');
+}
+export function spinBlindLevel(multiplier,{startedAt,now,completedHands}){
+ const row=outcomes.find(row=>row[0]===multiplier);if(!row)throw new RangeError('Unobserved spin multiplier');
+ if(![startedAt,now,completedHands].every(n=>Number.isSafeInteger(n)&&n>=0))throw new RangeError('Spin clock and hand count must be nonnegative safe integers');
+ const index=Math.min(spinSmallBlinds.length-1,row[3]==='hands'?Math.floor(completedHands/row[4]):Math.floor(Math.max(0,now-startedAt)/(row[4]*60000)));
+ return {level:index+1,smallBlind:spinSmallBlinds[index],bigBlind:spinSmallBlinds[index]*2,unit:row[3],interval:row[4]};
+}

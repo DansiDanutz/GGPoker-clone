@@ -1,50 +1,490 @@
+import {hotkeyActions,readHotkeys,keyCodes,keyCaption,readHotkeyGroups,hotkeyGroup} from './hotkey-bindings.mjs';
+import {installPlayerNotes} from './player-note-ui.mjs';
+import {bestFiveFocus} from './engine/hand.mjs';
+import {playChipLayout,aofBetParts,readChipShuffle,createChipShuffle,paintShuffle,remoteShuffleFrame} from './chip-shuffle.mjs';
+import {createSqueezePanel} from './card-squeeze.mjs';
+import {bbValue,chipsFromBetInput,betIncrement,snapBetAmount,wheelBetAmount,readBettingPreferences,betShortcuts,reservedChoices,resolveReservedAction} from './betting-preferences.mjs';
+import {createClockAudio,tableCues,installAudio,showdownPlan,streetPlan,voluntaryReveals} from './table-audio.mjs';
+import {gameClockText,holeCardLayout,voluntaryCardPose,voluntaryCardFrames,remoteVoluntaryFrames,element,cards,updateElement,avatarSource,tableThemes,tableTheme,feltColours,feltColour,tablePreference,applyTableTheme,cardBacks,cardBack,applyCardBack,cardFronts,cardFront,applyCardFront} from './felt.mjs';
 const $=id=>document.getElementById(id);
+const chatWindow=document.documentElement.dataset.panel==='chat';
+const playCues=chatWindow?()=>{}:installAudio(document.querySelector('#sound'));
+const clockAudio=createClockAudio(playCues);
+const rushPoolKind=new URLSearchParams(location.search).get('pool')==='plo'?'plo':'holdem';
+const rushMode=new URLSearchParams(location.search).get('view')==='rush';
+const aofPositions=[{x:850,y:952,scale:1.1,bet:[856,768],dealer:[742,838]},{x:135,y:502,scale:1,bet:[316,568],dealer:[282,664]},{x:850,y:154,scale:1,bet:[856,350],dealer:[776,338]},{x:1565,y:502,scale:1,bet:[1384,568],dealer:[1418,664]}];
+const sixPositions=[{x:850,y:952,scale:1.1,bet:[856,768],dealer:[742,838]},{x:186,y:768,scale:1,bet:[392,708],dealer:[380,804]},{x:239,y:274,scale:1,bet:[448,408],dealer:[382,406]},{x:850,y:154,scale:1,bet:[856,350],dealer:[776,338]},{x:1461,y:274,scale:1,bet:[1252,408],dealer:[1318,406],right:true},{x:1514,y:768,scale:1,bet:[1308,708],dealer:[1320,804],right:true}];
+const nativePotPositions=[[850,663],[692,706],[1008,706],[850,760],[544,776],[1156,776],[700,825],[1000,825],[544,872],[1156,872]];
+function nativeChipPosition(node,p,origin=nativePotPositions[0]){const [x,y]=origin,distance=Math.hypot(p.x-x,p.y-y),ratio=1-140*p.scale/distance;for(const [key,value]of Object.entries({'pot-x':x,'pot-y':y,'bet-x':p.bet[0],'bet-y':p.bet[1],'winner-x':p.x,'winner-y':p.y,'stop-x':x+(p.x-x)*ratio,'stop-y':y+(p.y-y)*ratio}))node.style.setProperty('--'+key,value/17+'cqw')}
+
+
+function chipPile(parts,pot,align){
+ const pile=element('div','nativeChipPile');pile.setAttribute('aria-hidden','true');pile.dataset.amount=String(parts.reduce((n,v)=>n+BigInt(v),0n));
+ for(const chip of playChipLayout(parts,pot,align)){const img=new Image();img.src='/home-art/native-reserved-play-chip-'+chip.raw+'.png';img.alt='';img.dataset.raw=chip.raw;img.style.left=chip.x/17+'cqw';img.style.top=chip.y/17+'cqw';pile.append(img)}return pile;
+}
+$('openChat').hidden=rushMode;
 const tournamentLink=new URLSearchParams(location.search).get('mode')==='tournament';
+if(new URLSearchParams(location.search).get('from')==='home'){
+ const query=new URLSearchParams(location.search),back=document.createElement('a');
+ const aof=query.get('view')==='aof',short=query.get('view')==='shortdeck',omaha=query.get('view')==='plo',player=query.has('player');
+ back.href='/playgg.html'+(omaha?(player?'?player&view=plo':'?view=plo'):player?'?player&view=holdem':'');
+ if(aof)back.href='/playgg.html?'+(player?'player&':'')+'view=aof';
+ if(short)back.href='/playgg.html?'+(player?'player&':'')+'view=shortdeck';
+ if(tournamentLink)back.href='/playgg.html?'+(player?'player&':'')+'view=tournaments';
+ if(rushMode)back.href='/playgg.html?player&view=rush';
+ back.textContent=rushMode?'Back to Rush & Cash lobby':aof?'Back to All-In or Fold lobby':short?'Back to Short Deck lobby':tournamentLink?'Back to tournaments':omaha?'Back to PLO lobby':'Back to Home';document.querySelector('header a').replaceWith(back)
+}
+if((new URLSearchParams(location.search).has('player')||rushMode)){
+ const r=await fetch('/local/me');if(!r.ok){location.replace('/launch.html');throw Error('Local sign-in required')}
+ $('name').value=(await r.json()).name;$('name').readOnly=true;
+}
 let room=location.hash.slice(1);
 if(!/^[a-f0-9]{48}$/.test(room)){
  room=Array.from(crypto.getRandomValues(new Uint8Array(24)),b=>b.toString(16).padStart(2,'0')).join('');
  history.replaceState(null,'','#'+room);
 }
 $('invite').value=location.href;
+if(chatWindow)$('chatPanel').prepend($('error'));
+$('openChat').onclick=()=>{if(rushMode)return;const url=new URL(location.href);url.searchParams.delete('autojoin');url.searchParams.set('panel','chat');const chat=window.open(url,'playgg-chat-'+room,'popup,width=300,height=736,resizable=yes');if(chat)chat.focus();else $('error').textContent='Allow the local chat window and try again.'};
+let gameSettingsWindow;
+$('tableGameSettings').onclick=()=>{if(!gameSettingsWindow||gameSettingsWindow.closed)gameSettingsWindow=window.open('/playgg.html?panel=settings','playgg-game-settings','popup,width=1200,height=957,resizable=yes');const settings=gameSettingsWindow;if(settings){tableSettings.open=false;settings.focus()}else $('error').textContent='Allow the local Game Settings window and try again.'};
+const tableSettings=$('tableSettings');document.addEventListener('click',e=>{if(tableSettings.open&&!tableSettings.contains(e.target))tableSettings.open=false});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&tableSettings.open){tableSettings.open=false;tableSettings.querySelector('summary').focus()}});
+
 $('copy').onclick=async()=>{try{await navigator.clipboard.writeText(location.href);$('copy').textContent='Copied'}catch{$('invite').select()}};
 const key='river-seat:'+room;
-let token=sessionStorage.getItem(key),state,busy=false;
+let token=sessionStorage.getItem(key),state,busy=false,lastCashOut=null;
+let reservedAction;
+const playerNotes=installPlayerNotes($('tableSettings'),()=>({state,room:rushMode?'rush:'+rushPoolKind+':'+state?.noteTable:room,token,enabled:!chatWindow&&(!rushMode||!!state?.noteTable),...(rushMode?{notesPath:'/api/rush/'+rushPoolKind+'/notes',notesTable:state?.noteTable}:{} )}));
+const rushSitOut=document.createElement('input'),rushSitOutLabel=element('label');rushSitOut.type='checkbox';rushSitOut.id='rushSitOut';rushSitOutLabel.append(rushSitOut,' Sit out next hand');rushSitOutLabel.hidden=!rushMode;tableSettings.append(rushSitOutLabel);rushSitOut.onchange=async()=>{rushSitOut.disabled=true;await operate('sit-out',{paused:rushSitOut.checked});rushSitOut.checked=!!state?.paused;rushSitOut.disabled=!state?.registered};
+const reservedPanel=element('div');reservedPanel.id='reservedActions';reservedPanel.setAttribute('role','group');reservedPanel.setAttribute('aria-label','Actions on your next turn');$('actions').before(reservedPanel);
+function fitSeatNames(){for(const label of document.querySelectorAll('.seatName')){label.style.removeProperty('font-size');const size=parseFloat(getComputedStyle(label).fontSize);if(label.clientWidth&&label.scrollWidth>label.clientWidth)label.style.fontSize=size*label.clientWidth/label.scrollWidth+'px'}}
+addEventListener('resize',fitSeatNames);
+function positionReserved(){if(reservedPanel.hidden)return;for(const button of reservedPanel.children){const label=button.firstElementChild;label.style.removeProperty('font-size');if(!button.hidden&&reservedPanel.dataset.variant!=='aof'){label.style.fontSize='28px';if(label.scrollWidth>156)label.style.fontSize=28*156/label.scrollWidth+'px'}}const r=document.querySelector('.felt').getBoundingClientRect(),scale=r.width/1700;reservedPanel.style.left=r.left+(state?.hand?.preAction?.aof?1084:state?.hand?.preAction?.rush&&state.hand.preAction.due>0?1256:1035)*scale+'px';reservedPanel.style.top=r.top+(state?.hand?.preAction?.aof?1032:1058)*scale+'px';reservedPanel.style.setProperty('--reserve-scale',String(scale))}
+function positionQuickFold(){
+ const b=$('actions').querySelector('.nativeQuickFold'),main=$('actions').querySelectorAll('.nativeMainAction'),aof=$('actions').querySelectorAll('.nativeAofAction'),sizes=$('actions').querySelector('.nativeRushBetStrip');if(!b&&!sizes&&!main.length&&!aof.length)return;const r=document.querySelector('.felt').getBoundingClientRect(),scale=r.width/1700;
+ if(b){b.style.left=r.left+1022*scale+'px';b.style.top=r.top+1050*scale+'px';b.style.setProperty('--quick-fold-scale',String(scale))}
+ for(const button of main){for(const label of button.querySelectorAll('span')){label.style.fontSize='34px';if(label.scrollWidth>162)label.style.fontSize=34*162/label.scrollWidth+'px'}button.style.left=r.left+(1022+217*Number(button.dataset.slot))*scale+'px';button.style.top=r.top+1050*scale+'px';button.style.setProperty('--quick-fold-scale',String(scale))}
+ for(const button of aof){button.style.left=r.left+(1084+304*Number(button.dataset.slot))*scale+'px';button.style.top=r.top+1032*scale+'px';button.style.setProperty('--aof-scale',String(scale))}
+ if(sizes){sizes.style.left=r.left+1022*scale+'px';sizes.style.top=r.top+976*scale+'px';sizes.style.setProperty('--bet-scale',String(scale))}
+}
+// Refit after the embedded native font replaces the first-paint fallback.
+document.fonts.load('700 34px NativeShowRoboto').then(positionQuickFold).catch(()=>{});
+document.fonts.load('400 28px NativeActionRoboto').then(()=>{positionReserved();fitSeatNames()}).catch(()=>{});
+addEventListener('resize',positionQuickFold);addEventListener('scroll',positionQuickFold,{passive:true});
+addEventListener('resize',positionReserved);addEventListener('scroll',positionReserved,{passive:true});
+for(const [kind,label]of [['fold','Fold'],['check-fold','Check/Fold'],['check','Check'],['call','Call'],['allin','All-In']]){const b=element('button');b.append(element('span','reserveText',label));b.type='button';b.dataset.reserve=kind;b.onclick=()=>{if(!state?.hand?.preAction||state.hand.turn===state.me)return;reservedAction=reservedAction?.kind===kind?null:{kind,call:state.hand.preAction.call,number:state.number,seat:state.me};if(state.hand.preAction.aof)playCues(['AofButton']);renderReserved()};reservedPanel.append(b)}
+function renderReserved(){
+ if(closeSqueeze){reservedPanel.hidden=true;return}
+ const result=resolveReservedAction(reservedAction,state);reservedAction=result.selection;
+ const g=state?.hand,choices=reservedChoices(g?.preAction);reservedPanel.dataset.variant=g?.preAction?.aof?'aof':g?.preAction?.rush?'rush':'normal';reservedPanel.hidden=chatWindow||!g||!!g.end||state.me==null||g.turn===state.me||!choices.length;
+ for(const b of reservedPanel.children){b.hidden=!choices.includes(b.dataset.reserve);b.setAttribute('aria-pressed',String(reservedAction?.kind===b.dataset.reserve));const label=b.dataset.reserve==='call'?'Call '+g?.preAction?.call:({fold:'Fold','check-fold':rushMode?'Fold':'Check/Fold',check:'Check',allin:'All-In'})[b.dataset.reserve];if(b.textContent!==label)b.firstElementChild.textContent=label}
+ positionReserved();
+ if(result.action){const expected=state;queueMicrotask(()=>{if(state===expected)result.action==='quick-fold'?operate('quick-fold'):operate('act',{action:result.action,reserved:true})})}
+}
+let closeSqueeze,squeezeHand;
+const squeezeLabel=element('label'),squeezeEnabled=document.createElement('input');squeezeEnabled.type='checkbox';squeezeEnabled.id='cardSqueezeEnabled';squeezeEnabled.checked=localStorage.getItem('river-card-squeeze')!=='0';squeezeLabel.append(squeezeEnabled,' Card Squeeze');tableSettings.append(squeezeLabel);
+function stopSqueeze(){closeSqueeze?.();closeSqueeze=null;document.body.classList.remove('squeeze-active');renderReserved()}
+function reconcileSqueeze(previous){
+ const g=state?.hand,me=state?.me;
+ if(!g||g.end||me==null||g.folded[me]||!squeezeEnabled.checked){stopSqueeze();return}
+ const fresh=previous&&(!previous.hand||previous.number!==state.number);
+ if(!fresh||squeezeHand===state.number||!g.squeezeActivated||![2,4,5,6].includes(g.cards[me]?.length)||chatWindow||rushMode)return;
+ stopSqueeze();squeezeHand=state.number;selfShuffle.stop();document.body.classList.add('squeeze-active');
+ closeSqueeze=createSqueezePanel(document.querySelector('.felt'),g.cards[me],error=>{closeSqueeze=null;document.body.classList.remove('squeeze-active');renderReserved();if(error)$('error').textContent='Card Squeeze could not load. Your cards and actions remain available.'},playCues);
+}
+squeezeEnabled.onchange=()=>{localStorage.setItem('river-card-squeeze',squeezeEnabled.checked?'1':'0');if(!squeezeEnabled.checked)stopSqueeze()};
+addEventListener('storage',e=>{if(e.storageArea===localStorage&&(e.key===null||e.key==='river-card-squeeze')){squeezeEnabled.checked=localStorage.getItem('river-card-squeeze')!=='0';if(!squeezeEnabled.checked)stopSqueeze()}});
+const selfShuffleArt=element('div','chipShuffleArt');selfShuffleArt.setAttribute('role','img');selfShuffleArt.setAttribute('aria-label','Your chip shuffle');document.querySelector('.felt').append(selfShuffleArt);
+const shufflePreferences=()=>readChipShuffle(localStorage.getItem('river-chip-shuffle'));
+let shuffleReady=false;const shuffleAtlas=new Image();shuffleAtlas.src='/home-art/native-chip-shuffle.png';shuffleAtlas.decode().then(()=>{shuffleReady=true;renderShuffles()}).catch(()=>{});
+const selfShuffle=createChipShuffle(selfShuffleArt,shufflePreferences,active=>{$('shuffleChips').disabled=!shuffleReady||!shufflePreferences().enabled||state?.me==null;$('shuffleChips').setAttribute('aria-pressed',String(active));$('shuffleChips').textContent=active?'Stop shuffling':'Shuffle chips'},playCues);
+const shuffleSeen=new Map(),remoteShuffles=new Map();let shuffleInitialized=false;
+function positionShuffle(art,seat,other=false){const portrait=document.querySelector('.seat[data-seat="'+seat+'"] .portrait');if(!portrait)return;const p=portrait.getBoundingClientRect(),f=document.querySelector('.felt').getBoundingClientRect(),scale=p.width/192*(other ? 0.6 : 1);Object.assign(art.style,{left:(p.left-f.left+p.width/2-69*scale)+'px',top:(p.top-f.top+p.height/2+15*p.width/192-(other?50:95)*scale)+'px',width:145*scale+'px',height:165*scale+'px'})}
+function stopRemote(seat){const entry=remoteShuffles.get(seat);if(entry){entry.stopSound?.();cancelAnimationFrame(entry.raf);entry.art.remove();remoteShuffles.delete(seat)}}
+function renderShuffles(){
+ const allowed=!chatWindow&&!rushMode&&capacity()===6,p=shufflePreferences();$('chipShuffleEnabled').checked=p.enabled;$('shuffleChips').hidden=!allowed||state?.me==null;$('shuffleChips').disabled=!shuffleReady||!p.enabled||state?.me==null;
+ if(!allowed||!p.enabled||state?.me==null)selfShuffle.stop();else positionShuffle(selfShuffleArt,state.me);
+ if(!allowed)for(const seat of remoteShuffles.keys())stopRemote(seat);
+ if(!state){for(const seat of remoteShuffles.keys())stopRemote(seat);shuffleSeen.clear();shuffleInitialized=false;return}
+ for(const [seat,e]of remoteShuffles)if(!state.names[seat]||state.names[seat]!==e.name)stopRemote(seat);
+ for(const event of state.shuffles||[]){const fresh=shuffleInitialized&&shuffleSeen.get(event.seat)!==event.at;shuffleSeen.set(event.seat,event.at);if(!fresh||!allowed||event.seat===state.me||!state.names[event.seat])continue;
+  stopRemote(event.seat);const art=element('div','chipShuffleArt remoteShuffle');art.dataset.seat=event.seat;art.setAttribute('role','img');art.setAttribute('aria-label','Chip shuffle by '+state.names[event.seat]);art.style.backgroundImage='url(/home-art/native-chip-shuffle.png)';document.querySelector('.felt').append(art);positionShuffle(art,event.seat,true);
+  const entry={art,raf:0,name:state.names[event.seat]},start=performance.now();remoteShuffles.set(event.seat,entry);playCues(['ShuffleOther']).then(stop=>{if(remoteShuffles.get(event.seat)===entry)entry.stopSound=stop;else stop?.()});const tick=()=>{const frame=remoteShuffleFrame(performance.now()-start);if(frame===null){stopRemote(event.seat);return}paintShuffle(art,frame);entry.raf=requestAnimationFrame(tick)};tick();
+ }
+ shuffleInitialized=true;
+}
+$('chipShuffleEnabled').onchange=()=>{localStorage.setItem('river-chip-shuffle',JSON.stringify({...shufflePreferences(),enabled:$('chipShuffleEnabled').checked}));renderShuffles()};
+$('shuffleChips').onclick=async()=>{if(closeSqueeze)return;if(selfShuffleArt.dataset.active==='true'){selfShuffle.stop();return}if(selfShuffle.start()){positionShuffle(selfShuffleArt,state.me);if(!await operate('shuffle'))selfShuffle.stop()}};
+addEventListener('resize',()=>{if(state?.me!=null)positionShuffle(selfShuffleArt,state.me);for(const [seat,e]of remoteShuffles)positionShuffle(e.art,seat,true)});
+addEventListener('storage',e=>{if(e.storageArea===localStorage&&(e.key===null||e.key==='river-chip-shuffle'))renderShuffles()});
+function frame(value){if(!value)return null;const {version,chat,issued,avatars,shuffles,...rest}=value;return JSON.stringify(rest)}
+let payoutSoundHand=null,runoutPlan=null;const soundedPots=new Set(),boardSounds=new Set();
+document.querySelector('.felt').addEventListener('animationstart',e=>{if(e.animationName==='showRunoutCard'&&e.target.dataset.boardSound==='1'&&runoutPlan&&runoutPlan.number===state?.number&&e.target.isConnected&&!boardSounds.has(e.target.dataset.boardIndex)){boardSounds.add(e.target.dataset.boardIndex);playCues(['Board'])}});
+document.querySelector('.felt').addEventListener('animationend',e=>{
+ if(runoutPlan?.street&&(e.animationName==='spreadFlop'&&e.target.dataset.boardIndex==='2'||e.animationName==='showRunoutCard'&&Number(e.target.dataset.boardIndex)>=3)){runoutPlan=null;lastFeltFrame=null;render()}
+});
+matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',event=>{
+ if(!state)return;
+ if(!event.matches){lastFeltFrame=null;render();return}
+ const pending=payoutSoundHand===state.number&&state.hand?.end?(state.hand.end.pots||[{}]).flatMap((_,i)=>soundedPots.has(i)?[]:['WinPot']):[];
+ runoutPlan=null;boardSounds.clear();payoutSoundHand=null;soundedPots.clear();lastFeltFrame=null;
+ for(const award of [...document.querySelectorAll('.award')]){for(const animation of award.getAnimations())animation.cancel();award.onanimationcancel?.();award.remove()}
+ document.querySelectorAll('.nativeTurnGlow').forEach(node=>node.getAnimations().forEach(animation=>animation.cancel()));
+ document.querySelectorAll('.sweep,.boardThrow').forEach(node=>node.remove());render();playCues(pending)
+});
+function applyState(data){
+ pendingVoluntary=voluntaryReveals(state,data);
+ const previous=state,chatOnly=state&&frame(state)===frame(data),cues=tableCues(state,data);
+ const deferWin=previous&&previous.number===data.number&&previous.hand&&!previous.hand.end&&data.hand?.end&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&data.hand.end.payouts.some((n,i)=>n>data.hand.end.returns[i]);
+ const street=matchMedia('(prefers-reduced-motion: reduce)').matches?null:streetPlan(previous,data);
+ if(deferWin){payoutSoundHand=data.number;soundedPots.clear();runoutPlan=showdownPlan(previous,data);boardSounds.clear()}else if(street){runoutPlan=street;boardSounds.clear()}else if(previous?.number!==data.number||!data.hand||!data.hand.end&&!runoutPlan?.street){payoutSoundHand=null;soundedPots.clear();runoutPlan=null;boardSounds.clear()}
+ state=data;if(chatOnly){renderChat();renderSeatReactions();renderSeatAvatars();renderShuffles();playerNotes.refresh()}else render();reconcileSqueeze(previous);renderReserved();playCues(cues.filter(name=>!(deferWin&&name==='WinPot')&&!((deferWin||street)&&runoutPlan&&name==='Board')))
+}
+
 async function request(op,body={}){
  const headers={'Content-Type':'application/json'};if(token)headers.Authorization='Bearer '+token;
- const res=await fetch('/api/rooms/'+room+'/'+op,{method:op==='state'?'GET':'POST',headers,body:op==='state'?undefined:JSON.stringify(body),cache:'no-store'});
- const data=await res.json();
- if(!res.ok){if(res.status===401||res.status===404){sessionStorage.removeItem(key);token=null;state=null;render()}throw Error(data.error)}
- if(data.left){sessionStorage.removeItem(key);token=null;state=null;render();return}
- if(data.issued){token=data.issued;sessionStorage.setItem(key,token)}
- if(state?.version!==data.version){state=data;render()}
+ const res=await fetch(rushMode?'/api/rush/'+rushPoolKind+'/'+op:'/api/rooms/'+room+'/'+op,{method:op==='state'?'GET':'POST',headers,body:op==='state'?undefined:JSON.stringify(body),cache:'no-store'});
+ let data=await res.json();
+ if(!res.ok){if(rushMode&&res.status===409&&op!=='state')await request('state');if(res.status===401||res.status===404){sessionStorage.removeItem(key);token=null;state=null;render()}throw Error(data.error)}
+ if(rushMode){
+  const table=data.table?data:null,result=data.result,g=table?.hand||result?.hand;
+  data={...data,result:undefined,avatars:table?data.avatars:result?.avatars||[],me:table?data.me:result?.me??null,number:data.table||result?.table||0,names:table?data.names:result?.names||Array(6).fill(null),hand:g?{...g,cards:g.hands,options:table?data.legal:null}:null,settings:{name:'Rush & Cash · local '+(data.variant==='plo'?'PLO':'Hold’em')+' pool',variant:data.variant==='plo'?'plo':'rush',stack:200,blind:4},chat:[],results:[]};
+ }
+ if(data.left){lastCashOut=data.cashOut??null;sessionStorage.removeItem(key);token=null;state=null;render();return}
+ if(data.issued){lastCashOut=null;token=data.issued;sessionStorage.setItem(key,token)}
+ if(state?.me!==data.me||state?.version!==data.version||state?.hand?.clock?.canDisableLimit!==data.hand?.clock?.canDisableLimit||JSON.stringify(state?.avatars)!==JSON.stringify(data.avatars)){applyState(data)}
 }
-async function operate(op,body){if(op==='state'&&busy)return;const version=state?.version;while(busy)await new Promise(resolve=>setTimeout(resolve,25));busy=true;try{await request(op,{...body,version});$('error').textContent=''}catch(e){$('error').textContent=e.message}finally{busy=false}}
-function btn(text,fn){const b=document.createElement('button');b.textContent=text;b.onclick=fn;$('actions').append(b)}
-function list(id,items){$(id).replaceChildren(...items.map(v=>{const li=document.createElement('li');li.textContent=v;return li}))}
+async function operate(op,body){if(op==='ready'&&document.querySelector('.award'))return false;if(chatWindow&&!['state','chat'].includes(op))return;if(rushMode&&['join','deal','fill-bots','cancel-queue','sit-out'].includes(op)&&!busy){try{await request('state')}catch(error){$('error').textContent=error.message;return false}}if(op==='state'&&busy)return;const version=state?.version,number=state?.number,boundHandVersion=state?.handVersion,actionFrame=op==='act'?JSON.stringify(state?.hand):null;while(busy)await new Promise(resolve=>setTimeout(resolve,25));busy=true;try{await request(op,{...body,version:op==='act'&&number===state?.number&&actionFrame===JSON.stringify(state?.hand)?state.version:version,...(['ready','show-cards'].includes(op)?{number}:{}),...(rushMode?{handVersion:op==='quick-fold'||op==='act'&&!(number===state?.number&&actionFrame===JSON.stringify(state?.hand))?boundHandVersion:state?.handVersion}:{})});$('error').textContent='';return true}catch(e){$('error').textContent=e.message;return false}finally{busy=false}}
+function topUpRequest(g,settings){
+ if(localStorage.getItem('river-auto-topup')!=='1'||!settings)return {};
+ let threshold=Number(localStorage.getItem('river-topup-threshold')??100),target=Number(localStorage.getItem('river-topup-target')??100);
+ if(!Number.isInteger(threshold)||!Number.isInteger(target)||threshold<0||threshold>target||target<20||target>100)threshold=target=100;
+ const max=settings.maxBuyIn??settings.stack;
+ return g.stacks[state.me]*100<max*threshold?{topUpTo:Math.max(settings.minBuyIn??settings.stack,Math.floor(max*target/100))}:{};
+}
+function hotkeyHint(button){const key=button.dataset.key,role=({F1:'fold',F2:'call',F3:'raise'})[key]||(/^Ctrl\+[1-4]$/.test(key)?'preset'+key.at(-1):null);if(role){const keys=readHotkeys(localStorage.getItem('river-hotkey-bindings'))[role];button.dataset.hotkeyDisplay=readHotkeyGroups(localStorage.getItem('river-hotkey-groups'))[hotkeyGroup(role)]&&keys.length?keyCaption(keys):''}}
+function btn(text,fn,key){const b=document.createElement('button');b.textContent=text;b.onclick=fn;if(key){b.dataset.key=key;hotkeyHint(b)}$('actions').append(b);return b}
+function list(id,items){const fresh=$(id).cloneNode(false);fresh.append(...items.map(v=>{const li=document.createElement('li');li.textContent=v;return li}));updateElement($(id),fresh)}
+let advertised,lastDraw,lastFeltFrame,pendingVoluntary=[];const remoteVoluntary=new Map();
+const entryQuery=new URLSearchParams(location.search);let autoJoinRequested=entryQuery.get('autojoin')==='1'&&entryQuery.has('player')&&localStorage.getItem('river-auto-buyin')==='1';if(entryQuery.has('autojoin')){entryQuery.delete('autojoin');history.replaceState(null,'',location.pathname+(entryQuery.size?'?'+entryQuery:'')+location.hash);$('invite').value=location.href}
+if(!rushMode)fetch('/api/hosted').then(r=>r.json()).then(rows=>{advertised=rows.find(t=>t.room===room);if(!state)render();if(autoJoinRequested){autoJoinRequested=false;if(advertised?.open&&!token&&!tournamentLink&&!rushMode&&$('name').value)$('join').requestSubmit()}}).catch(()=>{});
+function capacity(){if(rushMode)return 6;return state?.names.length??advertised?.capacity??4}
+const themeLabel=element('label','','Table background '),themeSelect=document.createElement('select');themeSelect.id='tableTheme';themeSelect.add(new Option('Use Game Settings','global'));themeSelect.setAttribute('aria-label','Table background');for(const theme of tableThemes)themeSelect.add(new Option(theme.label,theme.id));themeSelect.value=tableTheme(tablePreference('river-table-theme')).id;themeSelect.onchange=()=>{if(themeSelect.value==='global')localStorage.removeItem('river-table-theme:'+room);else localStorage.setItem('river-table-theme:'+room,themeSelect.value);themeSelect.value=tableTheme(tablePreference('river-table-theme')).id;applyTableTheme()};themeLabel.append(themeSelect);$('chipSwitch').closest('details').append(themeLabel);addEventListener('storage',e=>{if(e.storageArea===localStorage&&(e.key===null||e.key==='river-table-theme'||e.key==='river-table-theme:'+room))themeSelect.value=tableTheme(tablePreference('river-table-theme')).id});
+const feltLabel=element('label','','Felt colour '),feltSelect=document.createElement('select');feltSelect.id='feltColour';feltSelect.add(new Option('Use Game Settings','global'));feltSelect.setAttribute('aria-label','Felt colour');for(const colour of feltColours)feltSelect.add(new Option(colour.label,colour.id));feltSelect.value=feltColour(tablePreference('river-felt-colour')).id;feltSelect.onchange=()=>{if(feltSelect.value==='global')localStorage.removeItem('river-felt-colour:'+room);else localStorage.setItem('river-felt-colour:'+room,feltSelect.value);feltSelect.value=feltColour(tablePreference('river-felt-colour')).id;applyTableTheme()};feltLabel.append(feltSelect);$('chipSwitch').closest('details').append(feltLabel);addEventListener('storage',e=>{if(e.storageArea===localStorage&&(e.key===null||e.key==='river-felt-colour'||e.key==='river-felt-colour:'+room))feltSelect.value=feltColour(tablePreference('river-felt-colour')).id});
+const backLabel=element('label','','Card back '),backSelect=document.createElement('select');backSelect.id='cardBack';backSelect.setAttribute('aria-label','Card back');for(const back of cardBacks)backSelect.add(new Option(back.label,back.id));backSelect.value=cardBack(localStorage.getItem('river-card-back')).id;backSelect.onchange=()=>{localStorage.setItem('river-card-back',backSelect.value);applyCardBack()};backLabel.append(backSelect);$('chipSwitch').closest('details').append(backLabel);addEventListener('storage',e=>{if(e.storageArea===localStorage&&(e.key===null||e.key==='river-card-back'))backSelect.value=cardBack(localStorage.getItem('river-card-back')).id});
+const frontLabel=element('label','','Card front '),frontSelect=document.createElement('select');frontSelect.id='cardFront';frontSelect.setAttribute('aria-label','Card front');for(const front of cardFronts)frontSelect.add(new Option(front.label,front.id));frontSelect.value=cardFront(localStorage.getItem('river-card-front')).id;frontSelect.onchange=()=>{localStorage.setItem('river-card-front',frontSelect.value);applyCardFront()};frontLabel.append(frontSelect);$('chipSwitch').closest('details').append(frontLabel);addEventListener('storage',e=>{if(e.storageArea===localStorage&&(e.key===null||e.key==='river-card-front'))frontSelect.value=cardFront(localStorage.getItem('river-card-front')).id});
+const chipSwitch=$('chipSwitch'),openBB=$('openBB');
+chipSwitch.checked=localStorage.getItem('river-chip-switch')==='1';openBB.checked=localStorage.getItem('river-open-bb')!=='0';openBB.disabled=!chipSwitch.checked;
+let showBB=chipSwitch.checked&&openBB.checked,refreshBetEditor=null;
+function amount(node,n,unit=''){
+ if(node.dataset.chips!==String(n))node.dataset.chips=n;if(node.dataset.unit!==unit)node.dataset.unit=unit;
+ let status=null;
+ if(node.dataset.stackSeat!==undefined){const finished=state?.tournament?.finishes?.[Number(node.dataset.stackSeat)]!=null;status=finished?'Finished':n===0?'All-In':null}
+ node.classList.toggle('nativeAllIn',status==='All-In');node.classList.toggle('nativeFinished',status==='Finished');
+ const text=status||(showBB&&state?.hand?.blind?bbValue(n,state.hand.blind).toLocaleString('en-US')+' BB':n+unit);if(node.textContent!==text)node.textContent=text;
+ return node;
+}
+function repaintUnits(){document.querySelectorAll('[data-chips]').forEach(e=>amount(e,Number(e.dataset.chips),e.dataset.unit));document.querySelectorAll('button[data-stack-switch]').forEach(b=>b.disabled=!chipSwitch.checked);refreshBetEditor?.();for(const b of document.querySelectorAll('.nativeMainAction.hasAmount'))b.setAttribute('aria-label',b.querySelector('.actionLabel').textContent+' '+b.querySelector('.actionAmount').textContent);positionQuickFold()}
+chipSwitch.onchange=()=>{localStorage.setItem('river-chip-switch',Number(chipSwitch.checked));openBB.disabled=!chipSwitch.checked;showBB=chipSwitch.checked&&openBB.checked;repaintUnits()};
+openBB.onchange=()=>{localStorage.setItem('river-open-bb',Number(openBB.checked));showBB=openBB.checked;repaintUnits()};
+function drawTable(g){
+ const nextFrame=JSON.stringify([capacity(),state?.number,state?.me,state?.names,state?.settings||advertised,state?.waitingStacks,state?.buyIns,g]);
+ if(nextFrame===lastFeltFrame){renderSeatReactions();renderSeatAvatars();return}lastFeltFrame=nextFrame;
+ const count=capacity();let gathered=false;
+ const prev=lastDraw,changed=!!(g&&prev?.hand===state.number&&g!==prev.g),collected=changed&&!prev.g.end&&(g.board.length>prev.g.board.length||!!g.end);
+ lastDraw=g?{hand:state.number,g}:null;
+ const settling=!!(changed&&!prev.g.end&&g.end&&!matchMedia('(prefers-reduced-motion: reduce)').matches);
+ const focusBySeat=new Map(),boardFocus=new Set(),primaryPayouts=g?.end?.pots?.[0]?.payouts;
+ if(primaryPayouts&&g.board.length===5)for(const [i,payout]of primaryPayouts.entries())if(payout&&g.cards[i]?.every(Boolean)&&!g.folded[i]){
+  const focus=bestFiveFocus(g.cards[i],g.board,state.settings?.variant==='shortdeck');focusBySeat.set(i,focus);for(const index of focus.board)boardFocus.add(index);
+ }
+ const feltFrame=document.querySelector('.felt');
+ feltFrame.classList.toggle('nativeFocusPending',settling&&focusBySeat.size>0);
+ if(!runoutPlan)feltFrame.querySelectorAll('.boardThrow').forEach(node=>node.remove());
+ if(runoutPlan&&collected&&g.board.length>prev.g.board.length)for(const step of runoutPlan.board.filter(step=>step.cue)){
+  const card=cards([g.board[step.index===0?2:step.index]])[0];card.classList.add('boardThrow');card.setAttribute('aria-hidden','true');card.dataset.boardIndex=step.index;
+  card.style.setProperty('--throw-x',(492+144*step.index)/17+'cqw');card.style.setProperty('--throw-delay',(step.at-200)/1000+'s');
+  card.onanimationend=card.onanimationcancel=()=>card.remove();feltFrame.append(card);
+ }
+ feltFrame.style.setProperty('--showdown-offset',runoutPlan?runoutPlan.complete/1000+'s':'0s');
+ const faces=cards(g?.board||[]);if(focusBySeat.size)for(const [i,card]of faces.entries()){card.dataset.bestFive=boardFocus.has(i)?'1':'0';card.classList.toggle('nativeFocusDim',!boardFocus.has(i))}if((runoutPlan?.board[0]?.index===0||changed&&!prev.g.board.length)&&faces.length>=3&&!matchMedia('(prefers-reduced-motion: reduce)').matches)faces.slice(0,3).forEach((c,i)=>{c.classList.add('nativeFlop');c.style.setProperty('--flop-index',i)});if(runoutPlan)for(const step of runoutPlan.board){const card=faces[step.index];card.classList.add('runoutCard');card.style.setProperty('--board-delay',step.at/1000+'s');card.dataset.boardSound=step.cue?'1':'0';card.dataset.boardIndex=step.index}const board=$('board'),nextBoard=board.cloneNode(false);nextBoard.append(...faces);updateElement(board,nextBoard);const pot=$('pot').cloneNode(false);
+ if(g)pot.replaceChildren('Total pot · ',amount(element('span',''),g.committed.reduce((sum,n,i)=>sum+n-(g.end?.returns[i]||0),0)));else pot.textContent=count+' seats · play money';updateElement($('pot'),pot);
+ const bank=settling?g.committed.reduce((sum,n,i)=>sum+n-g.end.returns[i],0):g&&!g.end?g.committed.reduce((sum,n,i)=>sum+n-g.bets[i],0):0;
+ $('collected').classList.toggle('settlingPot',settling);$('collected').hidden=!bank;amount($('collected').lastElementChild,bank);$('collected').setAttribute('aria-label','Collected pot: '+bank);
+ const felt=document.querySelector('.felt');const variant=state?.settings?.variant||'holdem';if(felt.dataset.variant!==variant){felt.dataset.variant=variant;applyTableTheme()}felt.dataset.seats=count;const positions=variant==='aof'?aofPositions:count===6?sixPositions:null;if(variant==='aof')updateElement($('collected').firstElementChild,chipPile([bank],true,'center'));else if($('collected').firstElementChild.classList.contains('nativeChipPile')){const image=new Image();image.src='/home-art/bet-stack.png';image.alt='';$('collected').firstElementChild.replaceWith(image)}const wagers=new Map([...felt.querySelectorAll('.wager')].map(e=>[Number(e.dataset.seat),e]));
+ const oldPots=new Map([...felt.querySelectorAll(':scope>.nativePot')].map(p=>[Number(p.dataset.pot),p]));
+ const shownPots=settling?g.end.pots:g&&!g.end?g.pots:null;
+ if(shownPots?.length>1){
+  $('collected').hidden=true;
+  for(const [index,pot]of shownPots.entries()){
+   const pile=element('div','nativePot'+(settling?' settlingPot':'')),[x,y]=nativePotPositions[index];pile.dataset.pot=index;pile.setAttribute('aria-label',(index?'Side pot '+index:'Main pot')+': '+pot.amount);pile.style.left=x/17+'cqw';pile.style.top=y/17+'cqw';pile.append(chipPile([pot.amount],true,'center'),amount(element('span',''),pot.amount));
+   pile.onanimationend=e=>{if(e.animationName==='releasePot')pile.remove()};
+   if(oldPots.has(index)){updateElement(oldPots.get(index),pile);oldPots.delete(index)}else felt.append(pile)
+  }
+ }
+ for(const pile of oldPots.values())pile.remove();
+ for(let i=0;i<count;i++){
+  const pos=(i-(state?.me??(variant==='aof'?2:0))+count)%count,n=state?.names[i],seat=element('div','seat s'+pos+(g?.turn===i?' acting':'')+(g?.folded[i]?' folded':'')+(g?.end&&g.end.payouts[i]>g.end.returns[i]?' winner':''));
+  if(positions){const {x,y,scale:k}=positions[pos];seat.style.setProperty('--seat-x',String(x));seat.style.setProperty('--seat-y',String(y));seat.style.setProperty('--seat-scale',String(k))}
+  seat.dataset.seat=i;const existing=felt.querySelector('.seat[data-seat="'+i+'"]');
+  seat.dataset.own=String(state?.me===i);
+  const plate=element('div','plate'),label=n||'Open seat';
+  const name=element('span','seatName',n&&n.length>15?n.slice(0,14)+'..':label);name.title=label;name.setAttribute('aria-label',label+(n&&state.me===i?' (you)':''));plate.append(name);
+  const stack=element('span','stack');plate.append(stack);
+  const value=element('button','stackSwitch');if(g){value.type='button';value.dataset.stackSwitch='';if(n)value.dataset.stackSeat=String(i);value.disabled=!chipSwitch.checked;value.title='Switch chip display';value.onclick=()=>{showBB=!showBB;repaintUnits()};stack.append(amount(value,g.stacks[i],' chips'))}else if(n&&Number.isSafeInteger(state.waitingStacks?.[i]??state.buyIns?.[i]))amount(stack,state.waitingStacks?.[i]??state.buyIns?.[i],' chips');else stack.textContent=n?'Seated':'Available';
+  if(g?.turn===i&&g.deadline){
+   const bar=element('span','turnClock'),remaining=Math.max(0,g.deadline-Date.now());bar.setAttribute('aria-hidden','true');bar.dataset.renderKey=String(g.deadline);plate.append(bar);
+   bar.animate([{transform:'scaleX('+Math.min(1,remaining/((state.settings?.actionSeconds??90)*1000))+')'},{transform:'scaleX(0)'}],{duration:remaining,fill:'forwards'});
+  }
+  const chooseSeat=!n&&!g&&state?.me==null;
+  const portrait=element(chooseSeat?'button':'div','portrait',n&&count===6?'':n?n.slice(0,1).toUpperCase():'＋');
+  if(chooseSeat){portrait.type='button';portrait.setAttribute('aria-label','Take seat '+(i+1));portrait.onclick=()=>{$('seatChoice').value=String(i);$('join').requestSubmit()}}
+  if(n&&count===6){portrait.classList.add('nativeAvatar');portrait.style.backgroundPosition=(i*20)+'% center';portrait.setAttribute('aria-label','Avatar for '+n)}renderPortrait(portrait,i);seat.append(portrait,plate);
+  if(g){const c=element('div','cards');if(g.cards[i]){c.append(...cards(g.cards[i]));if(runoutPlan){const step=runoutPlan.reveals.find(r=>r.seat===i);if(step){c.classList.add('showdownTurn');if(prev?.g.cards[i])c.classList.add('ownReveal');c.style.setProperty('--showdown-delay',step.at/1000+'s')}}else if(settling&&!prev.g.cards[i])c.classList.add('showdownTurn')}else if(!g.folded[i])c.append(...Array.from({length:({plo:4,plo5:5,plo6:6})[state.settings?.variant]||2},()=>element('span','back')));if(positions){
+    const layout=holeCardLayout(({plo:4,plo5:5,plo6:6})[state.settings?.variant]||2);c.classList.add('nativeHoleCards');
+    if(g.cards[i])c.classList.add(g.folded[i]&&!(g.shownIndices?.[i]&&i!==state.me)?'nativeFoldCards':'nativeRaisedCards');
+    c.style.setProperty('--hole-lift',String(layout.lift));c.style.setProperty('--hole-fold-lift',String(layout.foldLift));
+    for(const [index,card]of [...c.children].entries())for(const [key,value]of Object.entries(layout.cards[index]))card.style.setProperty('--hole-'+key,String(value));
+   }
+   if(focusBySeat.size&&g.cards[i]&&!g.folded[i])for(const [index,card]of [...c.children].entries()){const selected=!!focusBySeat.get(i)?.hole.includes(index);card.dataset.bestFive=selected?'1':'0';card.classList.toggle('nativeFocusDim',!selected)}
+   seat.append(c);
+   if(i===g.button&&!positions){const dealer=element('span','dealer');dealer.setAttribute('aria-label','Dealer');seat.append(dealer)}
+   if(!g.end&&g.bets?.[i]){
+    const w=element('div','wager w'+pos);w.dataset.seat=i;let art;
+    if(positions){nativeChipPosition(w,positions[pos]);art=chipPile(aofBetParts(g,i,g.bets[i]),false,(variant==='aof'?pos===3:positions[pos].right)?'right':'left')}else{art=new Image();art.src='/home-art/bet-stack.png';art.alt=''}
+    w.append(art,amount(element('span',''),g.bets[i]));if(wagers.has(i)){updateElement(wagers.get(i),w);wagers.delete(i)}else felt.append(w);
+   }
+    if(g.end&&g.end.payouts[i]>g.end.returns[i]){const win=element('b','winMark'+(settling?' showdownWin':''),'WIN');if(count===6||variant==='aof'){const image=new Image(),handNumber=state.number;image.className='nativeWin';image.alt='';image.src='/home-art/native-win-final.png';win.append(image);if(settling)win.onanimationstart=e=>{if(e.animationName==='markWinner'&&state?.number===handNumber&&!matchMedia('(prefers-reduced-motion: reduce)').matches)image.src='/home-art/native-win-effect.png?hand='+handNumber+'&seat='+i};portrait.append(win)}else plate.querySelector('.stack').prepend(win)}
+   const sweepAmount=collected?(prev.g.bets?.[i]||0)+g.committed[i]-prev.g.committed[i]-(g.end?.returns[i]||0):0;
+   if(sweepAmount>0){gathered=true;if(!matchMedia('(prefers-reduced-motion: reduce)').matches){const sweep=element('span','sweep w'+pos);sweep.dataset.seat=i;sweep.dataset.amount=sweepAmount;sweep.setAttribute('aria-hidden','true');if(positions){nativeChipPosition(sweep,positions[pos]);sweep.classList.add('nativeChipMotion');sweep.append(chipPile(aofBetParts(g,i,sweepAmount),false,(variant==='aof'?pos===3:positions[pos].right)?'right':'left'),amount(element('span',''),sweepAmount))}sweep.onanimationend=()=>sweep.remove();felt.append(sweep)}}
+   if(settling&&g.end.payouts[i]>g.end.returns[i]){
+    let credited=g.stacks[i]-g.end.payouts[i]+g.end.returns[i];amount(plate.querySelector('.stack').lastChild,credited,' chips');
+    const handNumber=state.number,parts=g.end.pots?g.end.pots.map((p,pot)=>({pot,amount:p.payouts[i]})).filter(p=>p.amount):[{pot:0,amount:g.end.payouts[i]-g.end.returns[i]}];
+    for(const part of parts){
+     const award=element('span','award seatpos'+pos),origin=nativePotPositions[part.pot];award.dataset.pot=part.pot;award.dataset.seat=i;award.dataset.amount=part.amount;award.setAttribute('aria-label',(part.pot?'Side pot '+part.pot:'Main pot')+' payout: '+part.amount);
+     award.style.setProperty('--pot-x',origin[0]/17+'cqw');award.style.setProperty('--pot-y',origin[1]/17+'cqw');
+     if(positions){nativeChipPosition(award,positions[pos],origin);award.classList.add('nativeChipMotion');award.append(chipPile([part.amount],true,'center'),amount(element('span',''),part.amount))}
+     let finished=false;const finish=()=>{if(finished)return;finished=true;credited+=part.amount;if(state?.number===handNumber&&state.hand?.end){const live=felt.querySelector('.seat[data-seat="'+i+'"] .stackSwitch');if(live)amount(live,credited,' chips')}award.remove();if(state?.number===handNumber&&state.hand?.end&&!felt.querySelector('.award'))render()};
+     award.onanimationstart=e=>{if(e.target===award&&['payout','aofPayout'].includes(e.animationName)&&state?.number===handNumber&&state.hand?.end&&payoutSoundHand===handNumber&&!soundedPots.has(part.pot)){soundedPots.add(part.pot);playCues(['WinPot'])}};
+     award.onanimationend=award.onanimationcancel=finish;felt.append(award)
+    }
+   }
+  }
+  if(positions){
+   const glow=element('span','nativeTurnGlow');glow.setAttribute('aria-hidden','true');glow.hidden=!g||!!g.end||g.turn!==i;glow.dataset.renderKey=glow.hidden?'idle':state.number+':'+g.deadline+':'+(i===state.me);
+   const previous=existing?.querySelector('.nativeTurnGlow');if(previous&&previous.dataset.renderKey!==glow.dataset.renderKey)for(const animation of previous.getAnimations())animation.cancel();
+   seat.append(glow)
+  }
+  if(n&&state.settings?.timeBankSeconds){const clock=element('span','nativeGameClock');clock.dataset.clockSeat=String(i);clock.setAttribute('role','img');for(let d=0;d<5;d++){const glyph=element('span','nativeClockDigit');glyph.style.left=([0,21,42,53,74][d]*.88)/17+'cqw';clock.append(glyph)}seat.append(clock)}
+  if(g?.clock?.canDisableLimit&&i===state.me&&g.turn===i){const bank=element('button','nativeTimeBank');bank.type='button';bank.setAttribute('aria-label','Use remaining time bank');bank.title='Use the remaining local time bank for this turn';bank.dataset.renderKey=g.clock.actionId;bank.onclick=()=>operate('time-bank',{actionId:g.clock.actionId});seat.append(bank);const progress=element('span','nativeLimitProgress');progress.setAttribute('aria-hidden','true');progress.append(element('span','nativeLimitFill'),element('span','nativeLimitPointer'));seat.append(progress)}
+  playerNotes.decorateSeat(seat,i);
+  const reaction=existing?.querySelector('.seatReaction');if(reaction)seat.append(reaction.cloneNode(true));
+  const mounted=existing?updateElement(existing,seat):felt.appendChild(seat),glow=mounted.querySelector('.nativeTurnGlow');
+  if(glow&&!glow.hidden&&i===state.me&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&!glow.getAnimations().some(a=>a.effect.getTiming().duration===400)){
+   const art='url("/home-art/native-reserved-turn-glow-urgent.png")';glow.animate([{opacity:0,borderImageSource:art,offset:0,easing:'steps(1,end)'},{opacity:1,borderImageSource:art,offset:.5},{opacity:1,borderImageSource:art,offset:1}],{duration:400,delay:Math.max(0,g.deadline-Date.now()-5000),iterations:Infinity});
+  }
+ }
+ fitSeatNames();
+ if(gathered)playCues(['GatherChips']);
+ const previousDealer=felt.querySelector(':scope>.aofDealer');
+ if(g&&positions){
+  const pos=(g.button-(state.me??(variant==='aof'?2:0))+count)%count,[x,y]=positions[pos].dealer,dealer=element('span','dealer aofDealer');dealer.setAttribute('aria-label','Dealer');dealer.style.left=x/17+'%';dealer.style.top=y/17+'cqw';
+  if(previousDealer)updateElement(previousDealer,dealer);else felt.append(dealer);
+ }else previousDealer?.remove();
+ for(const wager of wagers.values())wager.remove();
+ for(const seat of felt.querySelectorAll('.seat'))if(Number(seat.dataset.seat)>=count)seat.remove();
+ renderVoluntaryCards(g);renderSeatReactions();renderSeatAvatars();
+}
+function renderVoluntaryCards(g){
+ const felt=document.querySelector('.felt'),existing=new Map([...felt.querySelectorAll(':scope>.voluntaryShown')].map(e=>[e.dataset.shownCard,e])),me=state?.me,reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ if(g?.end&&me!=null&&!reduced&&felt.querySelector('.seat[data-seat="'+me+'"] .nativeHoleCards'))for(const index of g.shownIndices?.[me]||[]){
+  const source=felt.querySelector('.seat[data-seat="'+me+'"] .cards').children[index],tag=state.number+':'+me+':'+index,pose=voluntaryCardPose(g.cards[me].length,index);let card=existing.get(tag);existing.delete(tag);
+  if(!card){card=cards([g.cards[me][index]])[0];card.classList.add('voluntaryShown');card.dataset.shownCard=tag;card.dataset.cardIndex=String(index);Object.assign(card.style,{left:pose.x/17+'cqw',top:pose.y/17+'cqw',width:pose.width/17+'cqw',height:pose.height/17+'cqw',transform:'translate(-50%,-50%) rotate('+pose.angle+'deg)'});felt.append(card);
+   if(pendingVoluntary.some(e=>e.own&&e.index===index)){
+    const r=source.getBoundingClientRect(),f=felt.getBoundingClientRect(),k=f.width/1700,from={x:(r.x+r.width/2-f.x)/k,y:(r.y+r.height/2-f.y)/k,angle:parseFloat(getComputedStyle(source).rotate)||0},number=state.number;
+    const animation=card.animate(voluntaryCardFrames(from,pose),{duration:300,delay:index*100,fill:'backwards'});card.dataset.motion='running';animation.finished.then(()=>{if(card.isConnected&&state?.number===number){card.dataset.motion='complete';playCues(['ShowCard'],()=>card.isConnected&&state?.number===number&&!matchMedia('(prefers-reduced-motion: reduce)').matches)}}).catch(()=>{});
+   }
+  }
+  source.style.visibility='hidden';
+ }
+ for(const card of existing.values()){for(const animation of card.getAnimations())animation.cancel();card.remove()}
+ renderRemoteVoluntary(g,reduced);pendingVoluntary=[];
+}
+function renderRemoteVoluntary(g,reduced){
+ for(const [key,e]of remoteVoluntary){
+  if(reduced||!g?.end||e.number!==state.number||!e.source.isConnected){e.animation.cancel();e.coverAnimation.cancel();e.lift.cancel();e.cover.remove();remoteVoluntary.delete(key)}
+  else if(!e.coverFinished&&!e.cover.isConnected)e.source.append(e.cover);
+ }
+ if(reduced)return;const lifts=new Map();
+ for(const event of pendingVoluntary.filter(e=>!e.own)){
+  const source=document.querySelector('.seat[data-seat="'+event.seat+'"] .cards')?.children[event.index],key=state.number+':'+event.seat+':'+event.index,number=state.number;if(!source||remoteVoluntary.has(key))continue;
+  const cover=element('span','voluntaryCover');cover.setAttribute('aria-hidden','true');source.append(cover);source.dataset.remoteReveal='running';
+  const animation=source.animate(remoteVoluntaryFrames(),{duration:200}),cross=Math.cbrt(.5),coverAnimation=cover.animate([{opacity:1,offset:0},{opacity:1,offset:cross,easing:'steps(1,start)'},{opacity:0,offset:1}],{duration:200});
+  const row=source.parentElement;let lift=lifts.get(row);if(!lift){lift=row.animate([{transform:'translateY(0px)'},{transform:getComputedStyle(row).transform}],{duration:400,easing:'cubic-bezier(.3333333333,1,.6666666667,1)'});lifts.set(row,lift)}
+  const entry={source,cover,animation,coverAnimation,lift,number,coverFinished:false};remoteVoluntary.set(key,entry);
+  playCues(['ShowDownCard'],()=>source.isConnected&&state?.number===number&&!matchMedia('(prefers-reduced-motion: reduce)').matches);
+  animation.finished.then(()=>{cover.remove();entry.coverFinished=true;source.dataset.remoteReveal='complete'}).catch(()=>{});Promise.all([animation.finished,lift.finished]).then(()=>{if(remoteVoluntary.get(key)===entry)remoteVoluntary.delete(key)}).catch(()=>{});
+ }
+}
+function renderPortrait(portrait,i){
+ const avatar=state?.avatars?.[i]??(state?.settings?.variant==='aof'?i%7:undefined);if(!state?.names?.[i])return;
+ const custom=Number.isInteger(avatar)&&avatar>=0&&avatar<=6||typeof avatar==='string'&&avatarSource(avatar)===avatar;
+ portrait.classList.toggle('nativeAvatar',!custom&&capacity()===6);portrait.classList.toggle('profileAvatar',custom);
+ portrait.style.backgroundImage=custom?'url('+avatarSource(avatar)+')':'';
+ portrait.style.backgroundSize=custom?'cover':'';portrait.style.backgroundPosition=custom?'center':(i*20)+'% center';
+ if(custom)for(const node of [...portrait.childNodes])if(node.nodeType===Node.TEXT_NODE)node.remove();portrait.setAttribute('aria-label','Avatar for '+state.names[i]);
+}
+function renderSeatAvatars(){for(const seat of document.querySelectorAll('.felt .seat'))renderPortrait(seat.querySelector('.portrait'),Number(seat.dataset.seat))}
+function renderSeatReactions(){
+ for(const seat of document.querySelectorAll('.felt .seat')){
+  const current=seat.querySelector('.seatReaction'),i=Number(seat.dataset.seat);
+  const reaction=(state?.chat||[]).findLast(m=>m.seat===i&&m.name===state.names[i]&&[1,2,3].includes(m.reaction)&&Date.now()-m.at<4000);
+  const key=reaction?reaction.at+':'+reaction.reaction:'';if(current?.dataset.reaction===key)continue;current?.remove();
+  if(reaction){const image=new Image();image.dataset.reaction=key;image.src='/home-art/reaction-'+reaction.reaction+'.png';image.alt=reaction.name+': '+reaction.text;image.className='seatReaction';seat.append(image);setTimeout(()=>image.remove(),Math.max(0,4000-(Date.now()-reaction.at)))}
+ }
+}
+function renderChat(){
+ const messages=$('chatMessages'),fresh=messages.cloneNode(false);
+ for(const m of state?.chat||[]){const li=element('li','',m.name+': '+m.text);if([1,2,3].includes(m.reaction)){const img=new Image();img.src='/home-art/reaction-'+m.reaction+'.png';img.alt=m.text;img.width=50;img.height=50;li.append(img)}fresh.append(li)}
+ updateElement(messages,fresh);
+$('chatForm').hidden=!chatWindow&&state?.me==null;
+ $('chatStatus').textContent=rushMode?'Chat is unavailable in the local Rush pool.':state?.chatMuted?'Chat muted by table owner':'';for(const control of $('chatForm').querySelectorAll('input,button'))control.disabled=rushMode||state?.me==null||!!state?.chatMuted;
+}
+function renderShowCards(g){
+ const own=g.cards[state.me],choices=own.length===2?[[0],[1],[0,1]]:[own.map((_,i)=>i)],felt=document.querySelector('.felt').getBoundingClientRect(),k=felt.width/1700;
+ for(const [i,indices]of choices.entries()){
+  const b=btn('',()=>operate('show-cards',{indices}));b.className='nativeShowCards';b.dataset.indices=indices.join(',');b.setAttribute('aria-label','Show '+(indices.length===own.length?'all cards':own[indices[0]]));b.disabled=!!document.querySelector('.award');
+  const x=own.length===2?1087+i*199:1286-54*(own.length-4)+95;b.style.left=felt.left+x*k+'px';b.style.top=felt.top+1121*k+'px';b.style.setProperty('--show-card-scale',k);b.style.width=Math.max(192,indices.length*54+80)+'px';b.append(element('span','showLabel','Show'));
+  const row=element('span','showCardFaces');row.style.left=(indices.length===1?112:71)+'px';for(const index of indices){const card=own[index],face=element('span','showCardFace'),rank=element('img','showRank'),suit=element('img','showSuit');rank.src='/home-art/native-show-rank-'+card[0]+'.png';suit.src='/home-art/native-show-suit-'+card[1]+'.png';rank.alt=suit.alt='';face.append(rank,suit);row.append(face)}b.append(row);
+ }
+}
 function render(){
- $('join').hidden=!!state;$('actions').replaceChildren();const g=state?.hand,t=state?.tournament;
- const tournament=state?!!t:tournamentLink;
- document.querySelector('h1').textContent=tournament?'Four-player freezeout':'Private no-limit table';
- $('format').textContent=tournament?'Four registrations start the event. Each seat gets 100 tournament chips. Four 25-credit entries fund a 100-credit winner-take-all practice prize. No rebuys.':'Four human seats · practice chips · blinds 2 / 4.';
+ if(!state){reservedAction=null;reservedPanel.hidden=true;runoutPlan=null;boardSounds.clear();payoutSoundHand=null;soundedPots.clear()}
+ if(!state?.hand?.quickFoldAllowed)$('actions').querySelector('.nativeQuickFold')?.remove();
+ const oldBet=$('actions').querySelector('input[type=number]'),draft=oldBet?{key:oldBet.dataset.handKey,value:oldBet.dataset.betChips??oldBet.value,focused:document.activeElement===oldBet}:null;
+ $('join').hidden=rushMode||state?.me!=null;
+ let seatChoice=$('seatChoice');
+ if(!seatChoice){const label=element('label','','Seat ');seatChoice=document.createElement('select');seatChoice.id='seatChoice';label.append(seatChoice);$('join').insertBefore(label,$('join').querySelector('button'))}
+ const chosen=seatChoice.value;seatChoice.replaceChildren(new Option('Any open seat',''));
+ for(let i=0;i<capacity();i++){const option=new Option('Seat '+(i+1)+(state?.names[i]?' · occupied':''),String(i));option.disabled=!!state?.names[i];seatChoice.append(option)}seatChoice.value=chosen||'';
+const g=state?.hand,t=state?.tournament,actionKey=g&&!g.end?(state.waitingForHand?'waiting:'+state.me+':'+state.number:state.me+':'+state.number+':'+g.history.length+':'+g.turn):'',keepActions=!!(g&&!g.end&&(g.turn===state.me||state.waitingForHand)&&$('actions').dataset.handKey===actionKey);
+if(!keepActions){refreshBetEditor=null;for(const child of [...$('actions').children])if(!child.classList.contains('nativeQuickFold'))child.remove();$('actions').dataset.handKey=actionKey}
+ const funding=state?.topUps?.at(-1);$('funding').hidden=!funding;$('funding').textContent=funding?'Added '+funding.added+' practice chips for hand '+funding.hand+' · stack '+funding.before+' → '+funding.after:'';
+ const tournament=state?!!t:tournamentLink;const settings=state?.settings||advertised;
+ if(chatWindow)document.title='Chat '+(settings?.name||'Local table');
+ document.querySelector('h1').textContent=tournament?capacity()+'-player '+(settings?.variant==='plo'?'PLO ':'')+'freezeout':state?.settings?.name||advertised?.name||'Private no-limit table';
+ $('format').textContent=tournament?(t?.startsAt?'Scheduled start '+new Date(t.startsAt).toLocaleString()+' · minimum '+Math.max(2,(t.prizeShares||[100]).length)+' players.':capacity()+' registrations start the event.')+' Each seat gets '+(settings?.stack||100)+' tournament chips. Each entry adds 25 play credits to a '+capacity()*25+'-credit practice prize pool. Payout: '+(t?.prizeShares||[100]).map((n,i)=>(i+1)+': '+n+'%').join(' · ')+'. No rebuys.':settings?capacity()+' seats · '+settings.stack+' starting chips · blinds '+(settings.variant==='shortdeck'?settings.blind+' ante + '+settings.blind+' button blind (local rules)':settings.blind/2+' / '+settings.blind):'Four human seats · practice chips · blinds 2 / 4.';
+ const ranged=!tournament&&Number.isSafeInteger(settings?.minBuyIn)&&settings.minBuyIn<settings.maxBuyIn,buyIn=$('buyIn');$('buyInLabel').hidden=!ranged;buyIn.disabled=!ranged;
+ if(ranged){const limits=settings.minBuyIn+':'+settings.maxBuyIn;if(buyIn.dataset.limits!==limits){buyIn.min=settings.minBuyIn;buyIn.max=settings.maxBuyIn;const raw=localStorage.getItem('river-default-buy-in'),percent=Number(raw);buyIn.value=raw!==null&&Number.isInteger(percent)&&percent>=0&&percent<=100?Math.max(settings.minBuyIn,Math.min(settings.maxBuyIn,Math.floor(settings.maxBuyIn*percent/100))):settings.stack;buyIn.dataset.limits=limits}}
  $('join').querySelector('button').textContent=tournament?'Register':'Take a seat';
- $('level').textContent=t&&g?'Level '+t.level+' · Blinds '+g.blind/2+' / '+g.blind+(t.winner==null&&t.level<7?' · Next level scheduled '+new Date(t.startedAt+t.level*t.intervalMs).toLocaleTimeString()+' (new hands only)':''):'';
+ $('level').textContent=t&&g?'Level '+t.level+' · Blinds '+g.blind/2+' / '+g.blind+(g.ante?' · Ante '+g.ante+' per player':'')+(t.winner==null&&t.level<7?' · Next level scheduled '+new Date(t.startedAt+t.level*t.intervalMs).toLocaleTimeString()+' (new hands only)':''):'';
 
- $('board').textContent=g?'Board: '+(g.board.join(' ')||'Preflop'):'';
- list('seats',(state?.names||[]).map((p,i)=>(p||'Open seat')+(i===state.me?' (you)':'')+(g?' · '+g.stacks[i]+' chips · in pot '+g.committed[i]+(t?.out[i]?' · eliminated in hand '+t.out[i]:g.folded[i]?' · folded':'')+(g.cards[i]?' · '+g.cards[i].join(' '):''):'')));
- list('history',g?.history||[]);list('results',(state?.results||[]).map(r=>'Hand '+r.number+' · Board: '+(r.board?.join(' ')||'no board')+' · Final stacks: '+r.stacks.join(', ')+' · '+(r.history||[]).join('; ')));
- const net=[0,0,0,0];for(const r of state?.results||[])r.payouts.forEach((v,i)=>net[i]+=v-r.committed[i]);
- list('standings',(state?.names||[]).map((name,i)=>({name,score:net[i]})).filter(x=>x.name).sort((a,b)=>b.score-a.score).map(x=>x.name+': '+(x.score>0?'+':'')+x.score));
- if(!state){$('status').textContent='Take a seat to join the room.';return}
- if(!g){$('status').textContent=(t?'Prize pool '+t.pool+' credits · Registration open (':'Waiting for four players (')+state.names.filter(Boolean).length+'/4).';btn(t?'Withdraw registration':'Leave seat',()=>operate('leave'));return}
- if(t?.winner!=null){$('status').textContent='Tournament winner: '+state.names[t.winner]+' · Prize: '+t.prizes[t.winner]+' practice credits.';return}
+ drawTable(g);renderShuffles();playerNotes.refresh();
+ renderChat();
+ list('history',g?.history||[]);list('results',(state?.results||[]).map(r=>'Hand '+r.number+' · Board: '+(r.board?.join(' ')||'no board')+' · Final stacks: '+r.stacks.join(', ')+(r.pots||[]).map((p,i)=>' · '+(i?'Side pot '+i:'Main pot')+': '+p.amount+' → '+p.payouts.flatMap((n,seat)=>n?['Seat '+(seat+1)+' '+n]:[]).join(', ')).join('')+' · '+(r.history||[]).join('; ')));
+ const net=Array(capacity()).fill(0);for(const r of state?.results||[])r.payouts.forEach((v,i)=>net[i]+=v-r.committed[i]);
+ list('standings',(state?.names||[]).map((name,i)=>({name,score:net[i],place:t?.finishes?.[i],prize:t?.prizes?.[i]||0})).filter(x=>x.name).sort((a,b)=>b.score-a.score).map(x=>x.name+': '+(x.score>0?'+':'')+x.score+(x.place?' · place '+x.place:'')+(x.prize?' · prize '+x.prize+' credits':'')));
+ if(rushMode){
+  rushSitOut.checked=!!state?.paused;rushSitOut.disabled=!state?.registered;
+  document.querySelectorAll('details').forEach(d=>{if(d.querySelector('#chatForm,#invite,#standings,#results'))d.hidden=true});
+  if(!state){$('status').textContent='Connecting to the local Rush pool…';return}
+  if(!state.table){
+   $('status').textContent=(state.paused?'Sitting out · ':'')+(state.registered?'Waiting pool · '+state.waiting+' available of '+state.population+' players · Balance '+state.balance+' chips.':'Join the local play-money Rush pool. Six available players start a hand.')+(g?.end?' Last hand settled. '+g.end.payouts.flatMap((n,i)=>n?[state.names[i]+': '+n]:[]).join('; '):'');
+   if(state.queued){$('status').textContent+=' Searching automatically…';btn('Cancel waiting queue',()=>operate('cancel-queue'))}else btn(state.registered?(state.paused?"I'm back":'Find next table'):'Join Rush pool',()=>operate(state.registered?'deal':'join'));if(state.registered)btn('Play Rush with computers',()=>operate('fill-bots'));return;
+  }
+  if(g.quickFoldAllowed){let b=$('actions').querySelector('.nativeQuickFold');if(!b){b=btn('',()=>operate('quick-fold'),'F1');b.className='nativeQuickFold';b.setAttribute('aria-label','Quick fold → next table');b.title='Quick fold → next table';b.append(element('span','','Fold'))}b.title=state.paused?'Quick fold → sit out':'Quick fold → next table';b.setAttribute('aria-label',b.title);positionQuickFold()}else $('actions').querySelector('.nativeQuickFold')?.remove();
+ }
+ if(state&&state.me==null){$('status').textContent=g?'Watching hand '+state.number+(g.end?' · settled':' · '+state.names[g.turn]+' to act'):'Watching · waiting for players';if(lastCashOut!==null)$('status').textContent+=' · Practice cash-out: '+lastCashOut+' chips';return}
+ if(!state){$('status').textContent=lastCashOut===null?'Take a seat to join the room.':'Practice cash-out: '+lastCashOut+' chips. Take a seat to join again.';return}
+ if(t?.cancelledAt){$('status').textContent='Event cancelled: insufficient registrations for the payout structure. Entry returned: '+(t.refunds?.[state.me]||0)+' play credits.';return}
+ if(!g){$('status').textContent=(t?.startsAt?'Scheduled '+new Date(t.startsAt).toLocaleString()+' · minimum '+Math.max(2,(t.prizeShares||[100]).length)+' players · ':'')+(t?'Prize pool '+t.pool+' credits · Registration open (':'Waiting for '+capacity()+' players (')+state.names.filter(Boolean).length+'/'+capacity()+').';if(state.canStart)btn('Start hand with '+state.names.filter(Boolean).length+' players',()=>operate('start'));if(state.canFill)btn('Fill empty seats with computers',()=>operate('fill-bots'));btn(t?'Withdraw registration':'Leave seat',()=>operate('leave'));return}
+ if(g.end&&g.canShowCards)renderShowCards(g);
+ if(t?.winner!=null){$('status').textContent='Tournament winner: '+state.names[t.winner]+' · Prize: '+t.prizes[t.winner]+' practice credits.';if((t.prizeShares||[100]).length>1)$('status').textContent+=' Paid: '+t.prizes.flatMap((n,i)=>n?[state.names[i]+' '+n]:[]).join('; ');return}
  if(g.end){$('status').textContent='Hand '+state.number+' settled. '+g.end.payouts.flatMap((p,i)=>p?[state.names[i]+': won '+(p-g.end.returns[i])+(g.end.returns[i]?', returned '+g.end.returns[i]:'')]:[]).join('; ');
  if(t){$('status').textContent+=' Next hand starts automatically.';return}
- if(!state.ready[state.me])btn('Ready for next hand',()=>operate('ready'));else $('status').textContent+=' Waiting for other players.';return}
+ btn('Leave table',()=>operate('leave'));
+ if(state.soloBots)btn('End practice and release table',()=>operate('end-practice'));
+ if(!state.ready[state.me]){const ready=btn('Ready for next hand',()=>operate('ready',topUpRequest(g,settings)));ready.disabled=!!document.querySelector('.award');if(ready.disabled)ready.title='Waiting for payout to finish'}else $('status').textContent+=' Waiting for other players.';return}
+ if(state.waitingForHand){$('status').textContent='Seated · waiting for the next hand.';if(!keepActions)btn('Cancel waiting seat',()=>operate('leave'));return}
  $('status').textContent='Hand '+state.number+' · Pot '+g.committed.reduce((a,b)=>a+b,0)+' · '+(state.me===g.turn?'Your turn':state.names[g.turn]+' to act');
- const o=g.options;if(!o)return;
+ const o=g.options;if(!o||keepActions)return;
  const act=(action,target)=>operate('act',{action,target});
- btn(o.due?'Call '+o.call:'Check',()=>act(o.due?'call':'check'));if(o.due)btn('Fold',()=>act('fold'));
- if(o.raise){const label=document.createElement('label'),n=document.createElement('input');label.textContent='Bet total ';Object.assign(n,{type:'number',min:o.min,max:o.max,step:1,value:o.min,required:true});label.append(n);$('actions').append(label);btn('Bet / raise',()=>{if(n.reportValidity())act('raise',n.valueAsNumber)});btn('All in',()=>act('raise',o.max))}
+ if(settings?.variant==='aof'){for(const [slot,label,action,key]of [[0,'Fold','fold','F1'],[1,'All in','allin','F3']]){const b=btn('',()=>{playCues(['AofButton']);act(action)},key);b.className='nativeAofAction';b.dataset.slot=String(slot);b.append(element('span','',label))}positionQuickFold();return}
+ const mainButton=(label,chips,fn,key,slot)=>{const b=btn('',fn,key);b.className='nativeMainAction';b.dataset.slot=String(slot);b.replaceChildren(element('span','actionLabel',label));if(chips!=null){b.classList.add('hasAmount');b.append(document.createTextNode(' '),amount(element('span','actionAmount'),chips))}b.setAttribute('aria-label',b.textContent);positionQuickFold();return b};
+ mainButton(o.due?'Call':'Check',o.due?o.call:null,()=>act(o.due?'call':'check'),'F2',1);if(!rushMode)mainButton(o.due?'Fold':'Check/Fold',null,()=>{if(o.due){reservedAction=null;act('fold')}else {reservedAction={kind:'check-fold',retain:true,number:state.number,seat:state.me};renderReserved()}},'F1',0);
+ if(o.raise){
+  const n=document.createElement('input'),slider=document.createElement('input'),sizes=element('div','betStrip');
+  Object.assign(n,{type:'number',min:o.min,max:o.max,step:1,value:o.min,required:true});
+  Object.assign(slider,{type:'range',step:'any',min:o.min,max:o.max,value:o.min});
+  n.dataset.handKey=state.number+':'+g.history.length+':'+g.turn;
+  if(draft?.key===n.dataset.handKey&&Number.isSafeInteger(Number(draft.value))&&Number(draft.value)>=o.min&&Number(draft.value)<=o.max)n.value=slider.value=draft.value;
+slider.setAttribute('aria-label','Adjust bet total');
+  sizes.setAttribute('role','group');sizes.setAttribute('aria-label','Bet amount shortcuts');
+  const price=g.bets[state.me]+o.due;
+  const presets=betShortcuts(g,o,state.me,readBettingPreferences(localStorage.getItem('river-bet-presets'))).map(p=>[p.label,p.target]);
+  const writeEditor=()=>{const factor=showBB?g.blind:1;n.dataset.factor=String(factor);n.min=String(showBB?bbValue(o.min,g.blind):o.min);n.max=String(showBB?bbValue(o.max,g.blind):o.max);n.step='any';n.value=String(showBB?bbValue(Number(slider.value),g.blind):slider.value);n.dataset.editorValue=n.value;n.dataset.betChips=slider.value;n.setAttribute('aria-label','Bet total ('+(showBB?'BB':'chips')+')');n.setCustomValidity('')};
+  const readTotal=(edited=false)=>{const total=!edited&&!n.validity.customError&&n.value===n.dataset.editorValue?Number(n.dataset.betChips):chipsFromBetInput(n.value,Number(n.dataset.factor));const valid=total!==null&&Number.isSafeInteger(total)&&total>=o.min&&total<=o.max;n.setCustomValidity(valid?'':'Enter a legal total in whole play-money chips');if(valid){slider.value=String(total);n.dataset.betChips=String(total);n.dataset.editorValue=n.value}return valid?total:null};
+  const paintProgress=()=>{const total=Number(slider.value);sizes.style.setProperty('--bet-progress',String(Math.max(0,Math.min(1,(total-o.min)/(o.max-o.min||1)))));const b=$('actions').querySelector('.nativeMainAction[data-key=F3]');if(b){const label=amount(b.querySelector('.actionAmount'),total);b.setAttribute('aria-label',(price?'Raise to ':'Bet ')+label.textContent);positionQuickFold()}};
+  const set=v=>{slider.value=String(Math.min(o.max,Math.max(o.min,v)));writeEditor();paintProgress()};
+  for(const [index,[text,v]] of presets.entries()){const b=element('button','',text);b.replaceChildren(element('span','',text));b.dataset.key='Ctrl+'+(index+1);hotkeyHint(b);b.dataset.preset=String(index);b.dataset.target=String(v);b.onclick=()=>set(Number(b.dataset.target));sizes.append(b)}
+  const increment=()=>betIncrement(g.blind,readBettingPreferences(localStorage.getItem('river-bet-presets')).unit,settings?.variant);
+  n.onfocus=()=>n.select();
+  n.setAttribute('aria-label','Bet total');slider.oninput=()=>set(snapBetAmount(slider.valueAsNumber,o.min,o.max,increment()));
+  slider.onkeydown=e=>{const direction=({ArrowRight:1,ArrowUp:1,ArrowLeft:-1,ArrowDown:-1})[e.key];if(direction||['Home','End'].includes(e.key)){e.preventDefault();set(e.key==='Home'?o.min:e.key==='End'?o.max:wheelBetAmount(Number(slider.value),direction,o.min,o.max,increment()))}};n.oninput=()=>{readTotal(true);paintProgress()};n.onblur=()=>{if(readTotal()!==null){writeEditor();paintProgress()}};refreshBetEditor=()=>{if(document.activeElement!==n&&readTotal()!==null)writeEditor();paintProgress()};
+  sizes.onwheel=e=>{if(!e.deltaY)return;e.preventDefault();set(wheelBetAmount(readTotal()??o.min,-Math.sign(e.deltaY)*(localStorage.getItem('river-wheel-increase')==='0'?-1:1),o.min,o.max,increment()))};
+  n.onkeydown=e=>{
+   if(e.key!=='Enter'||e.isComposing)return;
+   e.preventDefault();const amount=readTotal();if(e.repeat||!n.reportValidity()||amount===null)return;
+   if(localStorage.getItem('river-confirm-bet')==='0'){act('raise',amount);return}
+   const dialog=document.createElement('dialog'),prompt=element('p','',(price?'Raise to ':'Bet ')+amount+' chips?');
+   dialog.setAttribute('aria-label',prompt.textContent);
+   const cancel=element('button','','Cancel'),confirm=element('button','','Confirm');
+   cancel.onclick=()=>dialog.close();confirm.onclick=()=>{dialog.close();act('raise',amount)};
+   dialog.onclose=()=>dialog.remove();dialog.append(prompt,cancel,confirm);sizes.append(dialog);dialog.showModal();cancel.focus();
+  };
+  sizes.classList.add('nativeRushBetStrip');const amountBox=element('div','nativeRushAmount');amountBox.append(n);sizes.append(amountBox,slider);writeEditor();paintProgress();$('actions').prepend(sizes);positionQuickFold();if(draft?.focused&&draft.key===n.dataset.handKey)n.focus();mainButton(price?'Raise to':'Bet',Number(slider.value),()=>{const total=readTotal();if(n.reportValidity()&&total!==null)act('raise',total)},'F3',2);
+ }
 }
-$('join').onsubmit=e=>{e.preventDefault();operate('join',{name:$('name').value,mode:tournamentLink?'tournament':'cash'})};
-render();async function poll(){if(token&&!busy)await operate('state');setTimeout(poll,400)}poll();
+function displayHotkeys(){for(const b of document.querySelectorAll('#actions button[data-key]'))hotkeyHint(b);document.documentElement.dataset.showHotkeys=localStorage.getItem('river-hotkeys')==='1'&&localStorage.getItem('river-show-hotkeys')==='1'?'1':'0'}
+displayHotkeys();
+const hotkeys=$('hotkeys');hotkeys.checked=localStorage.getItem('river-hotkeys')==='1';
+hotkeys.onchange=()=>{localStorage.setItem('river-hotkeys',hotkeys.checked?'1':'0');displayHotkeys()};
+addEventListener('storage',e=>{
+ if(e.storageArea!==localStorage)return;
+ if((e.key===null||e.key==='river-bet-presets')&&state?.hand?.options){const g=state.hand,n=$('actions').querySelector('input[type=number]'),slider=$('actions').querySelector('input[type=range]');if(n&&slider)for(const [i,p]of betShortcuts(g,g.options,state.me,readBettingPreferences(localStorage.getItem('river-bet-presets'))).entries()){const b=$('actions').querySelector('[data-preset="'+i+'"]');if(b){if(b.firstElementChild)b.firstElementChild.textContent=p.label;else b.textContent=p.label;b.dataset.target=String(p.target)}}}
+ if(e.key===null||['river-hotkeys','river-show-hotkeys','river-hotkey-bindings','river-hotkey-groups'].includes(e.key))displayHotkeys();
+ if(e.key===null||e.key==='river-hotkeys')hotkeys.checked=localStorage.getItem('river-hotkeys')==='1';
+ if(e.key===null||['river-chip-switch','river-open-bb'].includes(e.key)){
+  chipSwitch.checked=localStorage.getItem('river-chip-switch')==='1';openBB.checked=localStorage.getItem('river-open-bb')!=='0';openBB.disabled=!chipSwitch.checked;
+  showBB=chipSwitch.checked&&openBB.checked;repaintUnits();
+ }
+});
+document.addEventListener('keydown',e=>{
+ if(chatWindow||closeSqueeze||!hotkeys.checked||!state||e.isComposing||document.querySelector('dialog:modal')||e.target.closest?.('.nativeHud,.tableHandHistory')||e.target.isContentEditable||e.target.closest?.('input,textarea,select'))return;
+ const codes=keyCodes(e);if(!codes)return;const bindings=readHotkeys(localStorage.getItem('river-hotkey-bindings')),action=hotkeyActions.find(a=>bindings[a.id].length&&bindings[a.id].join(',')===codes.join(','))?.id;if(!action||!readHotkeyGroups(localStorage.getItem('river-hotkey-groups'))[hotkeyGroup(action)])return;
+ // Bound keys must not activate another focused HTML control.
+ e.preventDefault();e.stopImmediatePropagation();if(e.repeat)return;
+ const click=button=>{if(button&&!button.disabled){e.preventDefault();button.click();return true}return false};
+ if(action==='lastHands'){click(document.querySelector('#tableHandHistory'));return}
+ if(action==='timeBank'){click(document.querySelector('.nativeTimeBank'));return}
+ if(action==='toggleUnits'){click(document.querySelector('.stackSwitch:not([disabled])'));return}
+ if(action==='sitOut'){if(rushMode)click(rushSitOut);return}
+ if(action==='newHand'){click([...$('actions').querySelectorAll('button')].find(b=>b.textContent==='Ready for next hand'||state.registered&&!state.table&&['Find next table',"I'm back"].includes(b.textContent)));return}
+ if(!state.hand)return;
+ if(action.startsWith('show')){const own=state.hand.cards[state.me],indices=action==='showLeft'?'0':action==='showRight'?'1':own?.map((_,i)=>i).join(',');click([...$('actions').querySelectorAll('.nativeShowCards')].find(b=>b.dataset.indices===indices));return}
+ if(action==='fold'&&rushMode&&state.hand.quickFoldAllowed){click($('actions').querySelector('[data-key=F1]'));return}
+ if(!state.hand.options){const kinds=({fold:['fold','check-fold'],call:['check','call'],raise:['allin']})[action],button=kinds&&[...reservedPanel.children].find(b=>!b.hidden&&kinds.includes(b.dataset.reserve));if(button&&!reservedPanel.hidden)click(button);return}
+ if(action==='allIn'){const slider=$('actions').querySelector('input[type=range]');if(slider){slider.value=slider.max;slider.dispatchEvent(new Event('input'));click($('actions').querySelector('[data-key=F3]'))}else if($('actions').querySelector('.nativeAofAction[data-key=F3]'))click($('actions').querySelector('.nativeAofAction[data-key=F3]'));else if(state.hand.options.due>0)click($('actions').querySelector('[data-key=F2]'));return}
+ if(/^(preset|bet)[1-4]$/.test(action)){if(click(document.querySelector('.betStrip > button[data-preset="'+(Number(action.at(-1))-1)+'"]'))&&action.startsWith('bet'))click($('actions').querySelector('[data-key=F3]'));return}
+ click($('actions').querySelector('[data-key="'+({fold:'F1',call:'F2',raise:'F3'})[action]+'"]'));
+},{capture:true});
+
+for(const [id,label] of [[1,'Angry'],[2,'Listening'],[3,'Laughing']]){const button=document.createElement('button');button.type='button';const icon=new Image();icon.src='/home-art/reaction-'+id+'.png';icon.alt='';icon.width=38;icon.height=38;const text=element('span','reactionLabel',label);button.setAttribute('aria-label',label);button.append(icon,text);button.className='reactionButton';button.onclick=()=>operate('chat',{reaction:id});$('chatForm').append(button)}
+$('chatForm').onsubmit=async e=>{e.preventDefault();await operate('chat',{text:$('chatText').value});if(!$('error').textContent)$('chatText').value=''};
+$('join').onsubmit=e=>{e.preventDefault();operate('join',{useProfile:new URLSearchParams(location.search).has('player'),name:$('name').value,...(!$('buyIn').disabled?{buyIn:Number($('buyIn').value)}:{}),...($('seatChoice').value!==''?{seat:Number($('seatChoice').value)}:{}),mode:tournamentLink?'tournament':'cash'})};
+render();async function poll(){if((token||rushMode)&&!busy)await operate('state');else if(advertised&&!busy){try{const r=await fetch('/api/rooms/'+room+'/watch',{cache:'no-store'});if(r.ok){const data=await r.json();if(!token&&!busy&&(state?.version!==data.version||!state||JSON.stringify(state?.avatars)!==JSON.stringify(data.avatars))){applyState(data)}}}catch{}}setTimeout(poll,token?400:1000)}poll();
+
+function paintGameClocks(){if(chatWindow)return;const g=state?.hand,clock=g?.clock;clockAudio.update(g,state?.me,Date.now(),localStorage.getItem('river-muted')!=='1');for(const progress of document.querySelectorAll('.nativeLimitProgress')){const ratio=Math.min(1,Math.max(0,((g?.deadline??0)-Date.now())/10000));progress.style.setProperty('--limit-ratio',ratio);progress.lastElementChild.hidden=ratio>=1}for(const node of document.querySelectorAll('.nativeGameClock')){const seat=Number(node.dataset.clockSeat),active=clock?.seat===seat&&!g.end,left=active?clock.bankEndsAt-Math.min(Date.now(),g.deadline):g?.timeBanks?.[seat]??state.settings.timeBankSeconds*1000,text=gameClockText(left);node.dataset.phase=active?clock.phase:'idle';if(node.dataset.time===text)continue;node.dataset.time=text;node.setAttribute('aria-label','Time bank '+text);for(const [i,char] of [...text].entries()){const glyph=node.children[i];glyph.style.setProperty('--clock-glyph','url("/home-art/native-reserved-clock-digit-'+(char===':'?10:char)+'.png")');glyph.style.setProperty('--clock-hot-glyph','url("/home-art/native-reserved-clock-digit-'+(char===':'?10:char)+'-hot.png")');glyph.style.width=(char===':'?4.4:13.2)/17+'cqw'}}}
+setInterval(paintGameClocks,100);
+
+window.addEventListener('resize',()=>{if(state?.hand?.end&&state.hand.canShowCards)render()});

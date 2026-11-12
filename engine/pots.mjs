@@ -18,7 +18,10 @@ export function splitPots(chips, folded) {
     if (payers.length === 1) { returns[payers[0]] = amount; continue; }
     const eligible = payers.filter(i => !folded[i]);
     if (!eligible.length) throw new RangeError('No eligible seat for a contested pot');
-    pots.push({amount, eligible});
+    // Folded contribution boundaries do not create another pot or another odd-chip award.
+    const last = pots.at(-1);
+    if (last && last.eligible.length === eligible.length && eligible.every((seat,i)=>last.eligible[i]===seat)) last.amount += amount;
+    else pots.push({amount, eligible});
   }
   return {pots, returns};
 }
@@ -28,7 +31,8 @@ export function settlePots(chips, folded, button, compareSeats) {
   const {pots, returns} = splitPots(chips, folded);
   if (!Number.isInteger(button) || button < 0 || button >= chips.length) throw new RangeError('Invalid button');
   const payouts = [...returns];
-  for (const {amount,eligible} of pots) {
+  for (const pot of pots) {
+    const {amount,eligible} = pot;
     let winners = [eligible[0]];
     for (const seat of eligible.slice(1)) {
       const order = compareSeats(seat,winners[0]);
@@ -38,7 +42,8 @@ export function settlePots(chips, folded, button, compareSeats) {
     // Give odd chips clockwise starting at the first winning seat after the button.
     const distance = seat => (seat-button-1+chips.length)%chips.length;
     winners.sort((a,b)=>distance(a)-distance(b));
-    winners.forEach((seat,i)=>{payouts[seat] += Math.floor(amount/winners.length) + Number(i < amount%winners.length)});
+    pot.payouts = chips.map(()=>0);
+    winners.forEach((seat,i)=>{const share=Math.floor(amount/winners.length)+Number(i<amount%winners.length);pot.payouts[seat]=share;payouts[seat]+=share});
   }
-  return {payouts, returns};
+  return {payouts, returns, pots};
 }

@@ -2,7 +2,7 @@ import {shuffleDeck} from "./engine/deck.mjs";
 import {settlePots} from './engine/pots.mjs';
 import {rank5} from './engine/hand.mjs';
 export function compare(a,b){for(let i=0;i<Math.max(a.length,b.length);i++){const d=(a[i]??0)-(b[i]??0);if(d)return Math.sign(d)}return 0}
-export function best(cards){let high=null;for(let i=0;i<7;i++)for(let j=i+1;j<7;j++){const rank=rank5(cards.filter((_,k)=>k!==i&&k!==j));if(!high||compare(rank,high)>0)high=rank}return high}
+export function best(cards){if(cards.length===5)return rank5(cards);if(cards.length===6)return cards.map((_,i)=>rank5(cards.filter((_,j)=>j!==i))).reduce((a,b)=>compare(a,b)>0?a:b);let high=null;for(let i=0;i<7;i++)for(let j=i+1;j<7;j++){const rank=rank5(cards.filter((_,k)=>k!==i&&k!==j));if(!high||compare(rank,high)>0)high=rank}return high}
 export function deal(stack=200,blind=4,button=0){
  if(!Number.isSafeInteger(stack)||!Number.isSafeInteger(blind)||blind<2||blind%2||stack<blind*4||stack>1000000||![0,1].includes(button))throw Error('Invalid table limits');
  const deck=shuffleDeck();
