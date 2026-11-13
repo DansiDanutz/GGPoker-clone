@@ -77,7 +77,7 @@ http.createServer(async(req,res)=>{
   }
   try{return json(200,rushRequest(account,op,body))}catch(e){if(e.status)return json(e.status,{error:e.message});throw e}
  }
- const match=/^\/api\/rooms\/([0-9a-f]{48})\/(watch|join|state|act|ready|add-chips|leave|fill-bots|start|end-practice|chat|helmet|sit-out|sit-out-state|shuffle|time-bank|notes|show-cards|waiting)$/.exec(path);
+ const match=/^\/api\/rooms\/([0-9a-f]{48})\/(watch|join|state|act|ready|add-chips|leave|fill-bots|start|end-practice|chat|helmet|sit-out|sit-out-state|shuffle|time-bank|time-card-option|notes|show-cards|waiting)$/.exec(path);
  if(match){
   const [,id,op]=match;
   if(['notes','waiting'].includes(op)?!['GET','POST'].includes(req.method):req.method!==(['state','watch'].includes(op)?'GET':'POST'))return json(405,{error:'Method not allowed'});
@@ -96,7 +96,7 @@ http.createServer(async(req,res)=>{
   try{return json(200,roomRequest(id,op,(req.headers.authorization||'').replace(/^Bearer /,''),body,tables.find(t=>hostedId(t.id)===id),op==='join'&&body.useProfile!==true?null:account))}
   catch(e){if(e.status)return json(e.status,{error:e.message});throw e}
  }
- if(path==='/api/hosted'&&req.method==='GET'){res.setHeader('X-Playgg-Time-Cards','1');return json(200,tables.map(t=>({...t,room:hostedId(t.id),...roomRequest(hostedId(t.id),'summary',undefined,{},t)})))}
+ if(path==='/api/hosted'&&req.method==='GET'){res.setHeader('X-Playgg-Time-Cards','1');res.setHeader('X-Playgg-Time-Card-Options','1');return json(200,tables.map(t=>({...t,room:hostedId(t.id),...roomRequest(hostedId(t.id),'summary',undefined,{},t)})))}
  if(path==='/api/tables'&&req.method==='GET')return json(200,tables);
  const backup=/^\/api\/owner-backups(?:\/([a-f0-9]{24})(\/restore)?)?$/.exec(path);
  if((['/api/owner-chat','/api/owner-reports','/api/owner-wallets','/api/owner-seats'].includes(path)&&['GET','POST'].includes(req.method))||(path==='/api/tables'&&req.method==='POST')||(path==='/api/owner-audit'&&req.method==='GET')||(backup&&(['GET','POST','DELETE'].includes(req.method)))){

@@ -1,10 +1,15 @@
 const conflict=()=>{throw Object.assign(Error('Time bank is unavailable for this action'),{status:409})};
 const remaining=(clock,now)=>Math.max(0,clock.bankEnd-Math.max(clock.startedAt,now));
+const hasTimeCard=room=>room.players[room.actionClock.seat].freeTimeChipCount>0&&room.actionClock.cardsUsed<room.settings.maxTimeChipsPerAction;
+// shortcut: unknown legacy postflop contributions stay conservative until a new paid action; use full action data when importing legacy hands.
+function automaticCardPolicy(room){const seat=room.actionClock.seat,option=room.players[seat].timeCardOption??3;return option===0||option===1&&room.hand.committed?.[seat]>0||option===2&&(room.hand.timeCardVoluntary?.[seat]===true||room.hand.vpip?.[seat]===true)}
+function useTimeCard(room){const clock=room.actionClock;room.players[clock.seat].freeTimeChipCount--;clock.cardsUsed++;room.deadline+=room.settings.freeTimeChipSecondsPerUnit*1000;clock.bankEnd=room.deadline}
+export function autoTimeCard(room,now){const clock=room.actionClock;if(!clock||clock.phase!=='cards'||!room.hand||room.hand.end||clock.seat!==room.hand.turn||now<room.deadline||!hasTimeCard(room)||!automaticCardPolicy(room))return false;useTimeCard(room);return true}
 export function startClock(room,now){
  const seconds=room.settings?.actionSeconds??90;
  room.deadline=now+seconds*1000;
  delete room.actionClock;
- if(room.settings?.timeChipCount&&room.hand&&!room.hand.end){for(const player of room.players)if(player&&player.freeTimeChipCount===undefined)player.freeTimeChipCount=room.settings.timeChipCount;const seat=room.hand.turn;room.actionClock={id:`${room.number}:${room.hand.history.length}:${seat}`,seat,startedAt:now,bankEnd:room.deadline,phase:'cards',cardsUsed:0};return}
+ if(room.settings?.timeChipCount&&room.hand&&!room.hand.end){room.hand.timeCardVoluntary??=Array(room.players.length).fill(false);for(const player of room.players)if(player&&player.freeTimeChipCount===undefined)player.freeTimeChipCount=room.settings.timeChipCount;const seat=room.hand.turn;room.actionClock={id:`${room.number}:${room.hand.history.length}:${seat}`,seat,startedAt:now,bankEnd:room.deadline,phase:'cards',cardsUsed:0};return}
  if(!room.settings?.timeBankSeconds||!room.hand||room.hand.end)return;
  for(const player of room.players)if(player&&player.timeBankMs===undefined)player.timeBankMs=room.settings.timeBankSeconds*1000;
  const seat=room.hand.turn,bank=room.players[seat].timeBankMs;
@@ -24,14 +29,14 @@ export function finishClock(room,now){
 export function clockView(room,viewer,now){
  const clock=room.actionClock;
  if(!clock||!room.hand||room.hand.end)return null;
- if(clock.phase==='cards')return {actionId:clock.id,seat:clock.seat,phase:'cards',cardsUsed:clock.cardsUsed,canUseTimeCard:viewer===clock.seat&&now<room.deadline&&(clock.cardsUsed>0||room.deadline-now<=5000)&&room.players[clock.seat].freeTimeChipCount>0&&clock.cardsUsed<room.settings.maxTimeChipsPerAction};
+ if(clock.phase==='cards')return {actionId:clock.id,seat:clock.seat,phase:'cards',cardsUsed:clock.cardsUsed,timeCardAutomatic:viewer===clock.seat&&hasTimeCard(room)&&automaticCardPolicy(room),canUseTimeCard:viewer===clock.seat&&now<room.deadline&&(clock.cardsUsed>0||room.deadline-now<=5000)&&room.players[clock.seat].freeTimeChipCount>0&&clock.cardsUsed<room.settings.maxTimeChipsPerAction};
  const left=remaining(clock,now),limit=Math.max(0,room.deadline-now);
  return {actionId:clock.id,seat:clock.seat,phase:clock.phase,bankRemainingMs:left,limitDisabled:clock.limitDisabled,canDisableLimit:viewer===clock.seat&&clock.phase==='bank'&&!clock.limitDisabled&&limit>0&&limit<=10000&&clock.bankEnd>room.deadline};
 }
 export function reserveClock(room,seat,actionId,now,sequence){
  const clock=room.actionClock;
  if(!clock||!room.hand||room.hand.end||room.hand.turn!==seat||clock.seat!==seat||clock.id!==actionId||now>=room.deadline)conflict();
- if(clock.phase==='cards'){if(!Number.isSafeInteger(sequence)||sequence<0)conflict();if(sequence<clock.cardsUsed)return false;if(sequence!==clock.cardsUsed||!clockView(room,seat,now).canUseTimeCard)conflict();room.players[seat].freeTimeChipCount--;clock.cardsUsed++;room.deadline+=room.settings.freeTimeChipSecondsPerUnit*1000;clock.bankEnd=room.deadline;return true}
+ if(clock.phase==='cards'){if(!Number.isSafeInteger(sequence)||sequence<0)conflict();if(sequence<clock.cardsUsed)return false;if(sequence!==clock.cardsUsed||!clockView(room,seat,now).canUseTimeCard)conflict();useTimeCard(room);return true}
  if(clock.limitDisabled)return false;
  if(!clockView(room,seat,now).canDisableLimit)conflict();
  clock.limitDisabled=true;room.deadline=clock.bankEnd;return true;
