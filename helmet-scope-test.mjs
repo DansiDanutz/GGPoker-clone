@@ -7,6 +7,11 @@ const make=(c,label)=>installHelmetScope(()=>c,async muted=>{calls.push([label,m
 const x=make(a,'a'),y=make(b,'b'),z=make(other,'c');x.refresh();y.refresh();z.refresh();
 await x.apply(true,false);assert.deepEqual(calls,[['a',true]]);calls.length=0;
 await x.apply(false,true);assert.deepEqual(calls.sort(),[['a',false],['b',false]]);assert.ok(!JSON.stringify([[...items],sent]).includes('secret-seat'));assert.ok(!JSON.stringify([...items]).includes('token'));
+const aChat={...a,primary:false},bChat={...b,primary:false},ac=make(aChat,'a-chat'),bc=make(bChat,'b-chat');ac.refresh();bc.refresh();calls.length=0;
+await x.apply(true,true);assert.deepEqual(calls.sort(),[['a',true],['b',true]],'Table and detached chat must receive one command per room');calls.length=0;
+await ac.apply(false,true);assert.deepEqual(calls.sort(),[['a-chat',false],['b',false]],'Originating chat already applies its own room');
+b.enabled=false;y.refresh();calls.length=0;await x.apply(true,true);assert.deepEqual(calls.sort(),[['a',true],['b-chat',true]],'Chat-only room remains reachable');b.enabled=true;y.refresh();
+items.set('playgg-helmet-peer:old-b',JSON.stringify({account:'alice',room:'b',primary:true,openedAt:0}));calls.length=0;await x.apply(false,true);assert.deepEqual(calls.sort(),[['a',false],['b',false]],'Latest primary window wins over an obsolete duplicate');items.delete('playgg-helmet-peer:old-b');ac.close();bc.close();
 items.set('playgg-helmet-peer:missing',JSON.stringify({account:'alice',room:'missing'}));await assert.rejects(x.apply(true,true),/did not confirm/);items.delete('playgg-helmet-peer:missing');
 b.fail=true;await assert.rejects(x.apply(true,true),/Rejected b/);b.fail=false;
 b.enabled=false;y.refresh();calls.length=0;await x.apply(false,true);assert.deepEqual(calls,[['a',false]]);
