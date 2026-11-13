@@ -1,6 +1,6 @@
 # Documentația funcțională REA / DanGG
 
-Aceasta este versiunea publică a celor opt fișe detaliate. Explică aspectul,controalele,condițiile,fluxurile frontend/backend,validarea,erorile și limitele cunoscute. Nu este o declarație de paritate1:1 completă. [FEATURES](../../FEATURES.md) păstrează inventarul de implementare,iar [STATUS](../../STATUS.md) rezumă starea aplicației.
+Aceasta este versiunea publică a fișelor detaliate. Explică aspectul,controalele,condițiile,fluxurile frontend/backend,validarea,erorile și limitele cunoscute. Nu este o declarație de paritate1:1 completă. [FEATURES](../../FEATURES.md) păstrează inventarul de implementare,iar [STATUS](../../STATUS.md) rezumă starea aplicației.
 
 ## Cuprins
 
@@ -15,9 +15,11 @@ Aceasta este versiunea publică a celor opt fișe detaliate. Explică aspectul,c
 | [HUD nativ](hud-sesiune-all-time.md) | Sesiune/all-time,protocoale,rutare,Stats și geometrie |
 | [HandRank](handrank-nativ.md) | Cărți,animații,două boarduri,sesiune persistentă,draw-uri și butoane |
 
+| [Helmet](helmet-local.md) | Contract nativ și server local per loc;interfață încă neconectată |
+
 ## Starea curentă și proveniența
 
-PR #1–29 sunt merged. Ultimul cod funcțional verificat este `5b7f3abee9c3f0c468e2e7f75d558386431b9026`  din PR #29:14 verificări pe commitul exact,inclusiv o mână controlată cu draw-uri și parcursul gazdei cu cinci computere,plată și restart. Un timeout inițial la login este păstrat în evidența privată;parcursul complet a trecut la reluare pe același commit.
+Până la PR #35,codul publicat include animațiile și descrierile complete EN ale HandRank,butoanele native,corecția WIN la dezvăluirea voluntară și recuperarea loginului local. PR #35 a fost verificat pe `07b0ee55f64296e49435e61715b517a183e59c6f` cu10verificări;rapoartele separate păstrează limitele de fidelitate. Fundamentul Helmet descris aici este o etapă de server;interfața nu este încă conectată.
 
 Panoul local HandRank/HUD/Stats folosește propriile cărți cunoscute,geometrie urmărită din sursă,statistici private de sesiune și cele9 etichete de draw pe flop/turn. Sloturile native complete de animație,bitmapurile butoanelor,două boarduri în joc,TimeBankCard,sit-out și statisticile globale rămân incomplete ori neverificate. Nu echivalăm fiecare resursă identificată cu o funcție implementată.
 
