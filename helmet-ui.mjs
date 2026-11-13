@@ -5,7 +5,7 @@ export function installHelmet(context,setHelmet){
  const current=()=>({...context(),enabled:!suspended&&context().enabled});
  const scope=installHelmetScope(current,setHelmet),setting=element('button','','Put on Helmet'),chat=element('button','','Helmet');setting.id='helmetSetting';chat.id='chatHelmet';setting.type=chat.type='button';setting.hidden=chat.hidden=true;document.querySelector('#tableSettings').append(setting);document.querySelector('#chatPanel').prepend(chat);
  function dismiss(){const d=dialog;if(!d)return;dialog=null;d.close();d.remove()}
- const muted=()=>{const c=current();return c.enabled&&!!c.state?.helmets?.[c.state.me]};
+ const muted=()=>{const c=current();return c.enabled&&(typeof c.state?.helmet==='boolean'?c.state.helmet:!!c.state?.helmets?.[c.state.me])};
  function reactionAllowed(message){const key=message.at+':'+message.seat+':'+message.reaction;if(muted()){ignored.add(key);if(ignored.size>200)ignored.delete(ignored.values().next().value);return false}return !ignored.has(key)}
  function paintBadges(c,animate){
   for(const seat of document.querySelectorAll('.felt .seat')){const index=Number(seat.dataset.seat),active=!!c.state?.helmets?.[index];let node=seat.querySelector(':scope>.seatHelmet');

@@ -53,7 +53,7 @@ http.createServer(async(req,res)=>{
   let data;try{data=readFileSync(new URL(file,import.meta.url))}catch{return json(404,{error:'Reference asset unavailable'})}
   res.writeHead(200,{'Content-Type':file.endsWith('.ttf')?'font/ttf':file.endsWith('.png')?'image/png':file.endsWith('.json')?'application/json':file.endsWith('.mjs')?'text/javascript':'text/html; charset=utf-8','Cache-Control':'private, no-store','Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff'});res.end(data);return;
  }
- const rush=/^\/api\/rush\/(?:(holdem|plo)\/)?(state|join|deal|act|quick-fold|fill-bots|cancel-queue|notes|sit-out)$/.exec(path);
+ const rush=/^\/api\/rush\/(?:(holdem|plo)\/)?(state|join|deal|act|quick-fold|fill-bots|cancel-queue|notes|sit-out|helmet)$/.exec(path);
  if(rush&&localHome){
   const op=rush[2],rushRequest=rushRequests[rush[1]||'holdem'];
   if(op==='notes'?!['GET','POST'].includes(req.method):req.method!==(op==='state'?'GET':'POST'))return json(405,{error:'Method not allowed'});
