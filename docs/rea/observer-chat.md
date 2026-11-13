@@ -47,4 +47,10 @@ observer-chat-test.mjs verifică identitatea, payloadurile, concurența dintre c
 
 network-browser-test.mjs --helmet --observer-chat folosește doi spectatori autentificați în sesiuni separate, compozitorul real, pointer pe switchul original, excepția propriului mesaj, mesaje de participant, izolarea destinatarilor, închidere/redeschidere a popupului, moderare din consola reală, blocare la logout și o mână completă cu payout independent240jetoane. Emoticonul observatorului în timpul mâinii nu produce cărți private, overlay pe loc sau eveniment de joc. După restart, se așteaptă un document nou și formularul inițializat înainte de trimitere; același cont poate continua chatul.
 
-Rămân: traducerea automată reală, rolurile privilegiate ale operatorului, blocarea privată între utilizatori, sincronizarea completă a schimbării locului într-un popup deja deschis, paritatea fizică AIR/WKWebView și toate celelalte lacune din FEATURES.md. Nu declarăm întregul chat sau întreaga aplicație1-la-1.
+Rămân: traducerea automată reală, rolurile privilegiate ale operatorului, blocarea privată între utilizatori, paritatea fizică AIR/WKWebView și toate celelalte lacune din FEATURES.md. Nu declarăm întregul chat sau întreaga aplicație1-la-1.
+
+## Tranziția într-un popup deja deschis
+
+Popupul verifică, între cereri, sesiunea ferestrei părinte numai dacă aceasta rămâne accesibilă, de aceeași origine și pe aceeași masă. Reutilizează tokenul emis în fluxul normal de buy-in; nu execută join/reautentificare și nu rotește tokenuri. La plecarea din loc șterge copia și starea privată înainte de revenirea la watch. Un părinte închis, străin sau trecut pe altă masă nu înlocuiește sesiunea popupului. Serverul validează în continuare cookieul și tokenul; nu există tokenuri în BroadcastChannel/localStorage. Acesta este transportul local dintre ferestre, nu un protocol recuperat al operatorului.
+
+Testul de browser ia loc prin formularul real și confirmarea Buy-in, trimite în același popup ca participant și pleacă prin Leave table. Mesajele anterioare rămân de observator, cele noi au locul serverului; popupul revine la spectator fără reîncărcare. Părintele pe altă masă nu poate șterge copia locului curent. Testul RED a rămas blocat la Helmet ascuns după buy-in înaintea corecției.
