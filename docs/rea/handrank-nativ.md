@@ -215,3 +215,15 @@ Fixture-ul headless verifică reordonarea efectivă a două cărți, poziția la
 ## Showdown la actualizarea unei cărți arătate voluntar
 
 Testul controlat include acum un jucător foldat care arată o singură carte în timpul WIN și deplasării jetoanelor. Înaintea corecției, redraw-ul elimina clasa animației WIN. Pentru aceeași mână, masa păstrează WIN-ul montat și soldul intermediar până la callbackul animației de plată deja existent. Nu recalculează plata, nu creează o a doua deplasare de jetoane și nu modifică ledgerul serverului. Testul suspendă temporar animațiile pentru a verifica ordinea determinist, apoi le reia și verifică soldurile finale, conservarea720jetoanelor și restartul. Măsurarea timingului fizic în aplicația originală rămâne separată și neefectuată.
+
+
+## Închiderea panoului: tranziție și revocare
+
+BestFiveCardView.hideCards folosește Tween.to(alpha0,durată0.2,Ease.easeOut); close și ascunderea containerului sunt executate la finalul tweenului. Clona aplică această ordine pentru Close,Escape,click exterior și toggle pe suprafața proprie. În timpul ieșirii, panoul nu mai acceptă input și callbackurile de intrare a cărților sunt invalidate. Repetarea toggle-ului nu redeschide panoul înainte de terminarea ieșirii.
+
+Pierderea autorizării, identității sau schimbarea mâinii anulează tranziția și elimină imediat cărțile private. Reduced-motion închide imediat. Testul verifică200ms,opacitate0.125la100ms,curba cubică,ștergerea conținutului la final,revocarea401în timpul unei tranziții suspendate și închiderea fără animație. Nu constituie măsurarea pe Mac a timingului fizic.
+
+
+## Butoane native extrase și integrate
+
+Blocajul anterior de spațiu a fost reevaluat prin preflight și extragerea a fost permisă. Cele patru stări40×44(profile up/down,close up/down) însumează3248bytes PNG; comparația RGBA decodată cu regiunile atlasului este exactă. Regiunile și hashurile sunt păstrate în receiptul local best-five-buttons.json. Frame-urile over nu sunt folosite. CSS folosește22/19/21/20fill,cu margini de aceeași dimensiune în unitățile mesei,pentru grila20/22/1/1. Fundalul procedural și bordura gri sunt eliminate. Grafica originală rămâne în pachetul local de referință; publicarea codului nu publică atlasul sau capturile private. Testul verifică imaginile,nine-slice și starea down prin pointer real. Nu dovedește alinierea fizică exactă a textului sau antialiasingul nativ.

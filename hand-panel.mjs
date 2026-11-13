@@ -25,7 +25,7 @@ export function bestFiveMotion(previous,next){
 export function installHandPanel(context,getHud,onProfile){
  const felt=document.querySelector('.felt'),panel=element('section','nativeBestFive');if(!felt)return {refresh(){},setAuthorized(){}};
  panel.hidden=true;panel.setAttribute('role','dialog');panel.setAttribute('aria-label','Current hand, HUD and session statistics');felt.append(panel);
- let opened=false,tab='Hand Rank',scope='',paintKey='',timer=null,cardTimer=null,cardLayer=null,cardKey='',cardHand='',shown=[],cardEpoch=0,revokedScope='';
+ let opened=false,tab='Hand Rank',scope='',paintKey='',timer=null,cardTimer=null,cardLayer=null,cardKey='',cardHand='',shown=[],cardEpoch=0,revokedScope='',closing=null;
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
  const identity=()=>{const c=context();return c.enabled&&c.state?.me!=null?JSON.stringify([c.room,c.token,c.state.me]):''};
  function resetCards(){clearTimeout(cardTimer);cardTimer=null;cardEpoch++;if(cardLayer){for(const node of cardLayer.children)for(const a of node.getAnimations())a.cancel();cardLayer.replaceChildren()}cardLayer=null;cardKey='';shown=[];}
@@ -37,10 +37,17 @@ export function installHandPanel(context,getHud,onProfile){
   const enter=()=>{if(epoch!==cardEpoch||!opened||scope!==identity()||cardLayer!==layer)return;const nodes=plan.cards.map(item=>{const node=cards([item.card])[0];node.dataset.card=item.card;node.dataset.hole=String(item.hole);node.style.left=item.to/17+'cqw';node.style.top=item.y/17+'cqw';node.style.opacity='1';return node});for(const old of layer.children)for(const a of old.getAnimations())a.cancel();layer.replaceChildren(...nodes);shown=items.map(c=>({...c}));if(!reduced.matches)for(const [i,item]of plan.cards.entries()){const node=nodes[i];if(item.fresh)node.animate([{opacity:0},{opacity:1}],{delay:item.delay,duration:item.duration,easing,fill:'backwards'});else node.animate([{left:item.from/17+'cqw'},{left:item.to/17+'cqw'}],{duration:item.duration,easing})}};
   if(!reduced.matches&&plan.out){for(const i of plan.fadeOut){const node=layer.children[i];if(node){const style=getComputedStyle(node),opacity=node.isConnected?style.opacity:node.style.opacity,left=node.isConnected?parseFloat(style.left)/felt.getBoundingClientRect().width*100+'cqw':node.style.left;for(const a of node.getAnimations())a.cancel();node.style.left=left;node.style.opacity='0';node.animate([{opacity},{opacity:0}],{duration:200,easing,fill:'forwards'})}}cardTimer=setTimeout(enter,plan.out)}else enter();
  }
- function close(){resetCards();cardHand='';clearInterval(timer);timer=null;opened=false;panel.hidden=true;panel.replaceChildren();paintKey='';scope='';}
+ function close(){const animation=closing;closing=null;animation?.cancel();panel.inert=false;resetCards();cardHand='';clearInterval(timer);timer=null;opened=false;panel.hidden=true;panel.replaceChildren();paintKey='';scope='';}
+ function hide(){
+  if(!opened)return;if(reduced.matches){close();return}
+  opened=false;clearInterval(timer);timer=null;clearTimeout(cardTimer);cardTimer=null;cardEpoch++;panel.inert=true;
+  const opacity=getComputedStyle(panel).opacity;for(const animation of panel.getAnimations())animation.cancel();
+  const animation=panel.animate([{opacity},{opacity:0}],{duration:200,easing:'cubic-bezier(0.3333333333,1,0.6666666667,1)',fill:'forwards'});closing=animation;
+  animation.finished.then(()=>{if(closing===animation)close()},()=>{});
+ }
  function own(){const c=context(),s=c.state,g=s?.hand,hole=g?.cards?.[s.me];return identity()&&identity()!==revokedScope&&g&&hole?.every(Boolean)&&!document.body.classList.contains('squeeze-active')?currentHandRank(hole,g.board,s.settings?.variant==='shortdeck'):null;}
  function paint(){
-  const c=context(),s=c.state,g=s?.hand,hand=own();if(!hand||scope!==identity()){close();return}if(!opened)return;
+  const c=context(),s=c.state,g=s?.hand,hand=own();if(!hand||scope!==identity()||closing&&cardHand&&cardHand!==JSON.stringify([scope,s.number])){close();return}if(!opened)return;
   const hud=getHud(),stats=hud?.stats,key=JSON.stringify([tab,s.number,hand,hud,s.sessionStats,tab==='Stats'?sessionDuration(s.sessionStartedAt):null,g.timeBanks?.[s.me],g.clock]);if(key===paintKey)return;paintKey=key;
   const handKey=JSON.stringify([scope,s.number]);if(cardHand&&cardHand!==handKey)resetCards();
   const next=panel.cloneNode(false);next.hidden=false;const tabs=element('div','bestFiveTabs');tabs.setAttribute('role','tablist');
@@ -56,13 +63,13 @@ export function installHandPanel(context,getHud,onProfile){
    for(const [name,value]of [['Session time',sessionDuration(s.sessionStartedAt)],['Hands',session?.hands??'-'],['Pots won at showdown',known?session.showdownWins+' of '+session.showdowns+' ('+rate+'%)':'-'],['Pots won without showdown',session?.nonShowdownWins??'-'],['Time bank',time===null?'-':Math.floor(time/60)+':'+String(time%60).padStart(2,'0')],['Sit-out time','-']]){if(s.settings?.variant==='aof'&&['Pots won without showdown','Time bank'].includes(name))continue;list.append(element('dt','',name),element('dd','',String(value)))}body.append(list);
   }
   body.title=tab==='Stats'?'Current local seat session; unknown legacy/Rush session counters stay unavailable':'Recorded local table or Rush pool sample; native all-time statistics are not imported';next.append(body);
-  const profile=element('button','bestFiveProfile','My Profile'),dismiss=element('button','bestFiveClose','Close');profile.type=dismiss.type='button';profile.onclick=()=>{close();onProfile()};dismiss.onclick=()=>{close();felt.querySelector('[data-best-five-open]')?.focus()};next.append(profile,dismiss);updateElement(panel,next);if(tab==='Hand Rank'||cardLayer)paintCards(tab==='Hand Rank'?panel.querySelector('.bestFiveCards'):cardLayer,hand.cards,handKey);
+  const profile=element('button','bestFiveProfile','My Profile'),dismiss=element('button','bestFiveClose','Close');profile.type=dismiss.type='button';profile.onclick=()=>{close();onProfile()};dismiss.onclick=()=>{hide();felt.querySelector('[data-best-five-open]')?.focus()};next.append(profile,dismiss);updateElement(panel,next);if(tab==='Hand Rank'||cardLayer)paintCards(tab==='Hand Rank'?panel.querySelector('.bestFiveCards'):cardLayer,hand.cards,handKey);
  }
- function open(){if(!own())return;opened=true;scope=identity();tab='Hand Rank';paintKey='';paint();clearInterval(timer);timer=setInterval(paint,1000);panel.querySelector('[role=tab][aria-selected=true]')?.focus();}
- reduced.addEventListener('change',()=>{if(opened){resetCards();paintKey='';paint()}});
+ function open(){if(!own()||closing)return;opened=true;scope=identity();tab='Hand Rank';paintKey='';paint();clearInterval(timer);timer=setInterval(paint,1000);panel.querySelector('[role=tab][aria-selected=true]')?.focus();}
+ reduced.addEventListener('change',()=>{if(closing){close();return}if(opened){resetCards();paintKey='';paint()}});
  document.addEventListener('click',e=>{e.bestFiveBlocked=e.target.closest?.('.chipShuffleArt')?.dataset.active==='true'},true);
- document.addEventListener('click',e=>{if(!e.bestFiveBlocked&&e.target.closest?.('[data-best-five-open]')){opened?close():open()}});
- document.addEventListener('pointerdown',e=>{if(opened&&!panel.contains(e.target)&&!e.target.closest?.('[data-best-five-open]'))close()});
- document.addEventListener('keydown',e=>{if(opened&&e.key==='Escape'){e.preventDefault();close();felt.querySelector('[data-best-five-open]')?.focus()}else if(e.target.closest?.('[data-best-five-open]')&&e.target.dataset.active!=='true'&&['Enter',' '].includes(e.key)){e.preventDefault();opened?close():open()}});
+ document.addEventListener('click',e=>{if(!e.bestFiveBlocked&&e.target.closest?.('[data-best-five-open]')){opened?hide():open()}});
+ document.addEventListener('pointerdown',e=>{if(opened&&!panel.contains(e.target)&&!e.target.closest?.('[data-best-five-open]'))hide()});
+ document.addEventListener('keydown',e=>{if(opened&&e.key==='Escape'){e.preventDefault();hide();felt.querySelector('[data-best-five-open]')?.focus()}else if(e.target.closest?.('[data-best-five-open]')&&e.target.dataset.active!=='true'&&['Enter',' '].includes(e.key)){e.preventDefault();opened?hide():open()}});
  return {setAuthorized(allowed){revokedScope=allowed?'':identity();if(!allowed)close()},refresh(){if(!own()||scope&&scope!==identity())close();for(const portrait of felt.querySelectorAll('.seat[data-own=true] .portrait,.chipShuffleArt:not(.remoteShuffle)')){const enabled=!!own()&&portrait.dataset.active!=='true';if(enabled){portrait.dataset.bestFiveOpen='';portrait.setAttribute('role','button');portrait.tabIndex=0;portrait.setAttribute('aria-label','Open current hand rank')}else{delete portrait.dataset.bestFiveOpen;portrait.removeAttribute('tabindex');if(portrait.classList.contains('chipShuffleArt')){portrait.setAttribute('role','img');portrait.setAttribute('aria-label','Your chip shuffle')}else{portrait.removeAttribute('role');portrait.setAttribute('aria-label','Avatar for '+context().state?.names?.[context().state.me])}}}paint()}};
 }
