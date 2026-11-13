@@ -46,15 +46,15 @@ http.createServer(async(req,res)=>{
  }
  const avatarImage=/^\/local\/avatar-images\/([a-f0-9]{64})\.png$/.exec(path);
  if(localHome&&avatarImage&&req.method==='GET'){const data=playerProfile.image(avatarImage[1]);if(!data)return json(404,{error:'Avatar unavailable'});res.writeHead(200,{'Content-Type':'image/png','Cache-Control':'private, max-age=31536000, immutable','X-Content-Type-Options':'nosniff'});res.end(data);return}
- if(localHome&&['/local/cash-sit-in','/local/cash-sit-out'].includes(path)){
+ if(localHome&&['/local/cash-sit-in','/local/cash-sit-out','/local/cash-leave'].includes(path)){
   if(req.method!=='POST')return json(405,{error:'Method not allowed'});
   if(req.headers.origin!==origin)return json(403,{error:'Local origin required'});
   const account=playerProfile.identity(req);if(!account)return json(401,{error:'Sign in locally'});
   if(!req.headers['content-type']?.startsWith('application/json'))return json(415,{error:'Expected JSON'});
   let raw='';for await(const chunk of req){raw+=chunk;if(Buffer.byteLength(raw)>512)return json(413,{error:'Request too large'})}
-  let body;try{body=JSON.parse(raw);if(!body||Array.isArray(body)||typeof body!=='object'||Object.keys(body).length!==1||typeof body.account!=='string')throw Error()}catch{return json(400,{error:'Expected the current account'})}
+  let body;try{body=JSON.parse(raw);if(!body||Array.isArray(body)||typeof body!=='object'||Object.keys(body).some(k=>!['account',...(path==='/local/cash-leave'?['leaving']:[])].includes(k))||Object.keys(body).length!==(path==='/local/cash-leave'?2:1)||typeof body.account!=='string'||path==='/local/cash-leave'&&typeof body.leaving!=='boolean')throw Error()}catch{return json(400,{error:'Expected the current account'})}
   if(body.account!==account)return json(401,{error:'Signed-in account changed'});
-  return json(200,path.endsWith('sit-out')?roomRequest.pauseCash(account):roomRequest.resumeCash(account));
+  return json(200,path==='/local/cash-leave'?roomRequest.leaveCash(account,body.leaving):path.endsWith('sit-out')?roomRequest.pauseCash(account):roomRequest.resumeCash(account));
  }
  if(localHome&&path==='/local/wallet'&&req.method==='GET'){const account=playerProfile.identity(req);return account?json(200,{account,...roomRequest.wallet(account)}):json(401,{error:'Sign in locally'})}
  if(localHome&&['/local/me','/local/login','/local/create','/local/logout','/local/avatar'].includes(path))return await playerProfile.handle(req,res,path,json);

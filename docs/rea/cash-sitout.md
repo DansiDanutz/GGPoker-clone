@@ -80,3 +80,7 @@ Native `ChangeSitOutState` can receive added-time information from its private s
 ## Failure recovery verification
 
 The headless browser injects a rejected status request and verifies the error message, release of the buttons, unchanged server state/default glyph and no unhandled rejection. Subsequent trusted status clicks succeed. Model tests also corrupt a persisted status to the unsupported value3 and confirm cold-start rejection, then restore the fixture. These checks validate recovery without adding a new production behavior.
+
+## Local account-wide cash departure
+
+The independent next-hand departure/cash-out workflow is documented and tested in [cash-leave.md](cash-leave.md). It does not establish native next-blind or full leave-all menu/penalty policy.
