@@ -47,3 +47,11 @@ Retained `TableInfo.dealMeInMin` defaults to2×bigBlind for ordinary two-blind g
 The local room store publishes the ordinary default minimum and a private funding-required flag. A seated paused player below it cannot clear pause through the direct API; global return skips that seat and returns only that account’s required-funding room/minimum/balance. Other eligible cash seats can still return. No wallet is debited by this operation. Confirmed pending chips count toward the next-hand minimum.
 
 The settings toggle or Deal Me In opens the existing Add Chips dialog for the affected current seat. Cancel/Escape preserves pause and spends nothing; confirmation uses the existing single-debit pending-increment flow. The user requests return again after funding. Browser test starts a legal16-chip stake, plays raise12/raise20/fold/fold to leave4, schedules pause, verifies Escape, confirms12 once and returns next deal with16; total268 and the current hand remain correct. No private operator override or automatic purchase is guessed.
+
+## Account-wide cash pause
+
+Static `SitOutMenuView` registers SIT_OUT_ALL_TABLES with SitOutNextHand; `GlobalSitoutCommand` dispatches the pause command to eligible table controllers. Installed localization includes “Sit out all cash game tables on next hand”. The local settings action uses that cash-specific label, with no claim that the complete native menu placement/hotkey catalog is reproduced.
+
+`POST /local/cash-sit-out` shares the origin/cookie/expected-account/body/size boundary of global return. Both use the same atomic account-scoped store loop and shared seat pause transition. Pause never applies the return funding requirement, never folds a running hand and never debits a wallet. Guests cannot target another account’s tables. The button is capability-gated and a repeated click is idempotent.
+
+Tests cover two rooms, other-account isolation, no hand/wallet changes, failed-write rollback/retry and cold restart for both pause and return. Authenticated headless trusted settings click verifies the actual action and current-hand preservation; the guest control remains hidden. Next-blind, leave-all, global Rush/tournament eligibility and native whole-menu geometry/hotkeys remain incomplete.
