@@ -3,9 +3,9 @@ import {startHand} from './engine/table.mjs';
 // Four separate Chrome storage contexts, real UI actions, ephemeral server and data.
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
-import {mkdtempSync,writeFileSync,readFileSync,readdirSync,rmSync,mkdirSync,rmdirSync} from 'node:fs';
+import {mkdtempSync,realpathSync,writeFileSync,readFileSync,readdirSync,rmSync,mkdirSync,rmdirSync} from 'node:fs';
 import {tmpdir,homedir} from 'node:os';
-import {join} from 'node:path';
+import {join,resolve} from 'node:path';
 import {once} from 'node:events';
 import {bestShortDeck} from './engine/hand.mjs';
 import {best,compare} from './game.mjs';
@@ -32,7 +32,7 @@ if(process.argv.includes('--payout-oracle-only')){
  check([['2c','3d'],['4h','5s']],['Tc','Jd','Qh','Ks','Ac'],[1,1],'holdem');
  console.log('PASS payout oracle:Short Deck ace-low straight,flush overfullhouse andHoldemboard tie');process.exit(0);
 }
-const directory=mkdtempSync(join(tmpdir(),'network-poker-')), profile=join(directory,'chrome');
+const directory=realpathSync(mkdtempSync(join(tmpdir(),'network-poker-'))), profile=join(directory,'chrome');
 const {createServer}=await import('node:net');const probe=createServer();await new Promise(r=>probe.listen(0,'127.0.0.1',r));const port=probe.address().port;await new Promise(r=>probe.close(r));
 const origin='http://127.0.0.1:'+port;
 const delay=ms=>new Promise(r=>setTimeout(r,ms));
@@ -45,7 +45,10 @@ function saveRushFixture(variant,saved){
  const file=join(directory,'rooms.json'),entries=JSON.parse(readFileSync(file)),embedded=entries.find(([key])=>key==='local-rush-pools');if(embedded?.[1]?.[variant]){embedded[1][variant]=saved;writeFileSync(file,JSON.stringify(entries))}else writeFileSync(join(directory,variant==='plo'?'rush-plo.json':'rush.json'),JSON.stringify(saved));
 }
 let server,chrome,ws;
-async function boot(reference='1'){server=spawn(process.execPath,['server.mjs'],{cwd:new URL('.',import.meta.url),env:{...process.env,POKER_REFERENCE_HOME:reference,PORT:String(port),POKER_LEVEL_MS:'10000',POKER_PUBLIC_ORIGIN:origin,POKER_BIND_HOST:'127.0.0.1',POKER_DATA_DIR:directory},stdio:['ignore','pipe','inherit']});await until(async()=>{if(server.exitCode!==null)throw Error('Server failed');return fetch(origin+'/api/tables').then(r=>r.ok,()=>false)})}
+async function boot(reference='1'){
+ const runtime=process.env.POKER_RUNTIME_DIR?resolve(process.env.POKER_RUNTIME_DIR):null,args=[];
+ if(runtime){assert.ok(process.env.POKER_REFERENCE_ART_DIR,'Installed runtime tests require installed artwork');assert.notEqual(runtime,resolve('.'));args.push('--permission','--allow-fs-read='+runtime,'--allow-fs-read='+directory,'--allow-fs-write='+directory,'--allow-fs-read='+resolve(process.env.POKER_REFERENCE_ART_DIR),'--allow-fs-read='+join(homedir(),'Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/sounds'))}
+ server=spawn(process.execPath,[...args,runtime?join(runtime,'server.mjs'):'server.mjs'],{cwd:runtime||new URL('.',import.meta.url),env:{...process.env,POKER_REFERENCE_HOME:reference,PORT:String(port),POKER_LEVEL_MS:'10000',POKER_PUBLIC_ORIGIN:origin,POKER_BIND_HOST:'127.0.0.1',POKER_DATA_DIR:directory},stdio:['ignore','pipe','inherit']});await until(async()=>{if(server.exitCode!==null)throw Error('Server failed');return fetch(origin+'/api/tables').then(r=>r.ok,()=>false)})}
 async function stop(p){if(!p||p.exitCode!==null||p.signalCode)return;const done=once(p,'exit');p.kill();await done}
 try{
  await boot();

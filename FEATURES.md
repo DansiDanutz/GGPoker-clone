@@ -21,7 +21,7 @@ Target: reproduce player-visible workflows using independent code and an owner-c
 | Player notes | Private1000-char notes, native opponent HUD editor/frames, ten private20-char label titles, account persistence, auth/backup/restart, shared Hold’em/PLO Rush notes and isolated-browser tests | Advanced own HUD metrics/full native window/skin/global statistics, offline list, advanced/global Rush metrics and native Rush HUD comparison |
 | Owner console | Local owner key, table management, private audit, bounded local snapshots, verified private downloads, confirmed transactional restore with rescue/recovery, exact-ID archive deletion, integrity checks and per-table chat moderation; confirmed between-hand cash-seat removal with atomic cash-out/refund and stale-seat protection; running tournament pause/resume | Tournament disqualification, mid-hand policy, multi-user permissions and complete recovery/import workflows |
 | Cashier | Account-bound local cash wallet; atomic buy-in/top-up/cash-out and pending increments; private balance/receipt | Native Cashier UI; no real funds |
-| Visual and platform fidelity | Native artwork layers, local browser implementation and same-size captures | Screen-by-screen comparison, accessibility and native packaging |
+| Visual and platform fidelity | Native artwork layers, local browser implementation, verified nonsynced code/art installations and same-size captures | Screen-by-screen comparison, accessibility and native packaging |
 
 The operator’s private admin system was not observed. Admin workflows here must be specified and tested independently.
 
