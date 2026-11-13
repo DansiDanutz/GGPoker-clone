@@ -1,3 +1,4 @@
+import {emoticonById} from './emoticons.mjs';
 import {cashWallet} from './cash-wallet.mjs';
 import {prizeAmounts} from './engine/prizes.mjs';
 import {readFileSync,writeFileSync,renameSync} from 'node:fs';
@@ -253,13 +254,14 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
     if(chatMuted(r,r.players[me]))fail(403,'Chat muted by table owner');
     if(r.players[me].helmet)fail(403,'Take off your helmet to chat');
     const reactions={1:'Angry',2:'Listening',3:'Laughing'};
+    const native=body.emoticon!==undefined,item=native?emoticonById(body.emoticon):null;if(native&&(!item||Object.keys(body).some(k=>!['emoticon','version'].includes(k))||body.version!==undefined&&(!Number.isSafeInteger(body.version)||body.version<0)))fail(400,'Unknown native emoticon');
     if(body.reaction!==undefined&&(!Number.isInteger(body.reaction)||!Object.hasOwn(reactions,body.reaction)))fail(400,'Unknown reaction');
-    const text=body.reaction!==undefined?reactions[body.reaction]:typeof body.text==='string'?body.text.trim():'';
-    if(!text||text.length>280)fail(400,'Message must contain 1–280 characters');
+    const text=native?item.label:body.reaction!==undefined?reactions[body.reaction]:typeof body.text==='string'?body.text.trim():'';
+    if(!native&&!text||text.length>280)fail(400,'Message must contain 1–280 characters');
     r.chat??=[];const lastMessage=r.chat.findLast(message=>message.seat===me);if(lastMessage&&now-lastMessage.at<1000)fail(429,'Wait before sending another message');
-    r.chat.push({seat:me,name:r.players[me].name,text,at:now,...(body.reaction!==undefined?{reaction:Number(body.reaction)}:{})});if(r.chat.length>50)r.chat.shift();r.version++;
-    const g=r.hand;if(body.reaction!==undefined&&g?.hands[me]?.length&&g.hudSubjects?.[me]===noteSubject(r.players[me])){
-      const event={type:'reaction',seat:me,street:g.board.length,afterAction:g.history.length,reaction:body.reaction};g.historyEvents??=[];g.historyEvents.push(event);
+    r.chat.push({seat:me,name:r.players[me].name,text,at:now,...(native?{emoticon:item.id}:body.reaction!==undefined?{reaction:Number(body.reaction)}:{})});if(r.chat.length>50)r.chat.shift();r.version++;
+    const g=r.hand;if((native||body.reaction!==undefined)&&g?.hands[me]?.length&&g.hudSubjects?.[me]===noteSubject(r.players[me])){
+      const event={type:'reaction',seat:me,street:g.board.length,afterAction:g.history.length,...(native?{emoticon:item.id}:{reaction:body.reaction})};g.historyEvents??=[];g.historyEvents.push(event);
       const history=g.end&&r.hudHistory?.find(h=>h.number===r.number);if(history){history.historyEvents??=[];history.historyEvents.push({...event})}
     }
   }
