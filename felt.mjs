@@ -158,4 +158,4 @@ export function hudPercent(count,hands){
  return Number.isSafeInteger(hands)&&hands>0&&Number.isSafeInteger(count)&&count>=0&&count<=hands?Math.round(100*count/hands):null;
 }
 
-export function hudColor(value,metric='VPIP'){const [orange,yellow,green]=({VPIP:[11,21,36],PFR:[11,21,31],ATS:[11,26,41],'3-bet':[5,10,16],WT:[21,26,31],WSD:[26,51,76]})[metric]||[11,21,36];return value>=green?'#12c012':value>=yellow?'#e7b300':value>=orange?'#ea7500':'#de0001'}
+export function hudColor(value,metric='VPIP'){const [orange,yellow,green]=({VPIP:[11,21,36],PFR:[11,21,31],ATS:[11,26,41],'3-bet':[5,10,16],WT:[21,26,31],WSD:[26,51,76],'flop CB':[31,51,71],'flop FCB':[46,56,66],'flop CCB':[11,21,31],'flop RCB':[6,11,16],'turn CB':[36,46,56],'turn FCB':[26,36,51],'turn CCB':[16,26,36],'turn RCB':[6,11,16]})[metric]||[11,21,36];return value>=green?'#12c012':value>=yellow?'#e7b300':value>=orange?'#ea7500':'#de0001'}

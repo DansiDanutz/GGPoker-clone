@@ -1041,3 +1041,9 @@ Native note-hover investigation: eight FFDec classes and full SWF class index di
 Native private note hover implemented from PlayerNoteView/NoteToolTip/PlayerCell3D:300ms cached/private refresh,source transparent hit area,636-unit inward geometry,original nine-patch/tinted labels,four recorded metrics,measured2–6line binary-prefix.. text,identity/late-response/401/blur cleanup,stable DOM and no focus theft. Physical AIR font bounds/raster/scaling and unsupported native mode restrictions remain unverified; see docs/rea/player-note-hover.md.
 
 Cash sit-out dropdown: source560×288/four508×56rows,common0301check,real current/all-existing-cash pause/cancel,storedscope/restart/rollback and keyboard/503 handling. Next-blind/leave-next-blind rows remain disabled because the operator trigger is unverified; native header icon/full global modes remain open. See docs/rea/cash-sitout-menu.md.
+
+### Continuation-bet HUD — recorded local samples
+
+- Flop/Turn CB, FCB, CCB, RCB now derive from completed recorded action traces in ordinary rooms and Rush; table/pool scope is explicit, missing history stays unknown.
+- Native per-street color thresholds retained from `HudAverageView.as`; no panel geometry changes. See `docs/rea/continuation-bet-hud.md`.
+- Engine and six-player persisted-ledger tests plus muted headless browser assertions at850/1196px cover actual hand/payout, own CB/response percentages, native color thresholds and cold restart. Release requires exact-head installed QA.
