@@ -21,3 +21,11 @@ GET/POST /api/owner-tournaments requires the existing local owner key; mutations
 - network-browser-test --tournament-pause: real owner dialog, three isolated player contexts, queued/paused statuses, cold restart/reload, owner resume and next-hand chip conservation; muted headless Chromium only.
 
 Native physical rendering, notice artwork, sound/timing, remote admin policy, scheduled breaks, hand-for-hand and multi-table synchronization remain unverified or unimplemented. No live owner game is played by these tests.
+
+## Native table notice
+
+Additional source exports establish NoticeType.TOURNEY_PAUSED as an infinite notice and TOURNEY_RESUMED as SHORTLY. OnTablePaused's Admin refresh builds two translated lines when there is no custom message or resume time: MoblieTournamentHansBeenPaused and MobilePleaseWaitTournamentResume. DesktopNotice uses desktop player_cell0100, background alpha0.8, 28px white nonbold text, label width viewport−240 and x120, minimum height100 or label height+30. DesktopNoticeView centers the one-notice layer using `(viewport.height−(height+5))>>1` minus18. Local CSS follows that relationship in the existing1700-coordinate table; Flash integer rounding and actual native font raster remain unverified.
+
+NoticeDuration.INFINITY has1second fade/no expiry. DesktopNotice uses cubic easeOut on appearance and easeIn on dismissal; no new sound is established by these sources. The local notice appears only on actual persisted pause, remains stable through polling and language changes, and fades on resume. Reduced-motion immediately applies the final visibility. The notice is noninteractive and uses text-only translated labels. The separate queued TABLE_PAUSE announcement and transient resumed notice are still not reproduced: their full presentation/queue lifecycle is separate evidence.
+
+The extractor independently verifies exact decoded RGBA of the699×10 desktop background frame and records source hashes privately. Browser checks measure width1700,label1460,font28,minimum100,center relationship,pointer pass-through,FR catalog changes,stable DOM/no repeat animation,three isolated players and cold restart/resume. These measurements demonstrate source geometry,not fresh native same-size pixels.
