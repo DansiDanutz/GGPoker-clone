@@ -1,3 +1,4 @@
+import {rushPool} from './engine/rush-pool.mjs';
 import {emoticonById} from './emoticons.mjs';
 import {cashWallet} from './cash-wallet.mjs';
 import {prizeAmounts} from './engine/prizes.mjs';
@@ -449,9 +450,19 @@ function view(r,me,avatarFor,account){
 const digest=token=>createHash('sha256').update(token).digest('hex');
 export const noteSubject=p=>digest(p.account?'account:'+p.account.toLowerCase():p.bot?'bot:'+p.noteId:'seat:'+p.digest);
 export function openRooms(file,avatarFor=()=>0,walletsEnabled=false){
-  let rooms=new Map(),wallet=cashWallet();
-  function unpack(data){if(!Array.isArray(data)||data.filter(entry=>entry?.[0]==='local-cash-wallets').length>1)throw Error('Invalid cash wallet checkpoint');rooms=new Map(data);wallet=cashWallet(rooms.get('local-cash-wallets'));rooms.delete('local-cash-wallets')}
-  const packed=()=>[...rooms,...(Object.keys(wallet.state.accounts).length?[['local-cash-wallets',wallet.state]]:[])];
+  let rooms=new Map(),wallet=cashWallet(),rushStates={};
+  function validateRush(variant,saved){
+    if(!['holdem','plo'].includes(variant)||!saved||!Array.isArray(saved.entries)||saved.entries.length>100||new Set(saved.entries.map(p=>p?.id)).size!==saved.entries.length||saved.entries.some(p=>!p||typeof p.id!=='string'||!p.id||!Number.isSafeInteger(p.stack)||p.stack<16||p.walletFunded!==undefined&&(p.walletFunded!==true||p.bot||p.left||!Object.hasOwn(wallet.state.accounts,p.id.toLowerCase())))||!Number.isSafeInteger(saved.version)||saved.version<0||saved.pool!==null&&typeof saved.pool!=='string')throw Error('Invalid Rush wallet checkpoint');
+    if(saved.pool!==null){const pool=rushPool(saved.entries,4,saved.pool,variant);if(saved.entries.some(p=>p.left&&(pool.players.get(p.id).balance!==0||pool.players.get(p.id).table!==null||[...pool.tables.values()].some(t=>!t.settled&&t.ids.includes(p.id)))))throw Error('Invalid departed Rush balance');}
+  }
+  function unpack(data){
+    if(!Array.isArray(data)||['local-cash-wallets','local-rush-pools'].some(key=>data.filter(entry=>entry?.[0]===key).length>1))throw Error('Invalid cash wallet checkpoint');
+    rooms=new Map(data);wallet=cashWallet(rooms.get('local-cash-wallets'));rooms.delete('local-cash-wallets');rushStates=rooms.get('local-rush-pools')??{};rooms.delete('local-rush-pools');
+    if(!rushStates||typeof rushStates!=='object'||Array.isArray(rushStates))throw Error('Invalid Rush wallet checkpoint');
+    if(Object.keys(rushStates).length&&!walletsEnabled)throw Error('Rush wallet mode is required for funded pools');
+    for(const [variant,saved]of Object.entries(rushStates))validateRush(variant,saved);
+  }
+  const packed=()=>[...rooms,...(Object.keys(wallet.state.accounts).length?[['local-cash-wallets',wallet.state]]:[]),...(Object.keys(rushStates).length?[['local-rush-pools',rushStates]]:[])];
   try{unpack(JSON.parse(readFileSync(file,'utf8')))}catch(e){if(e.code!=='ENOENT')throw e}
   for(const r of rooms.values())if(r.reservations!==undefined&&(!Array.isArray(r.reservations)||r.reservations.length>r.players.length||new Set(r.reservations.map(p=>p?.seat)).size!==r.reservations.length||new Set(r.reservations.map(p=>p?.account)).size!==r.reservations.length||r.reservations.some(p=>!p||!Number.isInteger(p.seat)||p.seat<0||p.seat>=r.players.length||r.players[p.seat]||typeof p.account!=='string'||!p.account.trim()||p.account.length>24||!Number.isSafeInteger(p.expiresAt)||p.expiresAt<0||p.expiresAt>8640000000000000)))throw Error('Invalid cash reservations');
   for(const r of rooms.values())for(const [i,p]of r.players.entries())if(p&&(p.walletFunded!==undefined&&(p.walletFunded!==true||!r.settings||r.tournament||p.bot||typeof p.account!=='string'||!Object.hasOwn(wallet.state.accounts,p.account.toLowerCase()))||p.walletTopUp!==undefined&&(!p.walletFunded||!Number.isSafeInteger(p.walletTopUp)||p.walletTopUp<=0||!Number.isSafeInteger(p.topUpTo)||p.walletTopUp>p.topUpTo||!r.ready[i])))throw Error('Invalid funded cash seat');
@@ -497,7 +508,7 @@ export function openRooms(file,avatarFor=()=>0,walletsEnabled=false){
         renameSync(file+'.tmp',file);
       }catch(e){
         // Discard the unacknowledged update; reload the last committed snapshot.
-        try{unpack(JSON.parse(readFileSync(file,'utf8')))}catch(err){if(err.code!=='ENOENT')throw err;rooms=new Map();wallet=cashWallet()}
+        try{unpack(JSON.parse(readFileSync(file,'utf8')))}catch(err){if(err.code!=='ENOENT')throw err;rooms=new Map();wallet=cashWallet();rushStates={}}
         throw e;
       }
     }
@@ -529,8 +540,20 @@ export function openRooms(file,avatarFor=()=>0,walletsEnabled=false){
   };
   request.resumeCash=account=>accountCashPause(account,false);
   request.pauseCash=account=>accountCashPause(account,true);
+  request.rushStore=walletsEnabled?{
+    summary(name){return wallet.summary(name)},
+    read(variant){if(!['holdem','plo'].includes(variant))fail(400,'Invalid Rush format');return rushStates[variant]?structuredClone(rushStates[variant]):null},
+    write(variant,saved,transfers=[]){
+      if(!['holdem','plo'].includes(variant)||!saved||!Number.isSafeInteger(saved.version)||saved.version<1||rushStates[variant]&&saved.version!==rushStates[variant].version+1||!Array.isArray(transfers)||transfers.length>1)fail(409,'Refresh Rush wallet state');
+      const before=JSON.stringify(packed());
+      try{
+        for(const move of transfers){if(!move||Object.keys(move).some(k=>!['account','delta'].includes(k))||!Number.isSafeInteger(move.delta))fail(400,'Invalid Rush chip transfer');wallet.move(move.account,move.delta,move.delta<0?'rush-buy-in':'rush-cash-out',createHash('sha256').update('river-rush:'+variant).digest('hex').slice(0,48))}
+        validateRush(variant,saved);rushStates[variant]=structuredClone(saved);writeFileSync(file+'.tmp',JSON.stringify(packed()),{mode:0o600});renameSync(file+'.tmp',file);
+      }catch(error){unpack(JSON.parse(before));throw error}
+    }
+  }:null;
   request.wallet=name=>wallet.summary(name);
   request.notes=notes;
-  request.hasActivePlay=()=>[...rooms.values()].some(r=>r.hand&&!r.hand.end||r.tournament?.startedAt!=null&&r.tournament.winner==null&&!r.tournament.cancelledAt);
+  request.hasActivePlay=()=>[...rooms.values()].some(r=>r.hand&&!r.hand.end||r.tournament?.startedAt!=null&&r.tournament.winner==null&&!r.tournament.cancelledAt)||Object.values(rushStates).some(saved=>saved.pool&&JSON.parse(saved.pool).tables.some(([,t])=>!t.settled));
   return request;
 }

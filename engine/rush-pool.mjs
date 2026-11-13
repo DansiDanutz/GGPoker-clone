@@ -4,7 +4,7 @@ export function rushPool(entries,blind=4,checkpoint=null,variant='holdem'){
  if(!['holdem','plo'].includes(variant))throw Error('Invalid Rush format');
  if(!Array.isArray(entries)||entries.length<6||entries.length>100||new Set(entries.map(p=>p.id)).size!==entries.length||!entries.every(p=>typeof p.id==='string'&&p.id.length>0&&Number.isSafeInteger(p.stack)&&p.stack>=blind*4)||!Number.isSafeInteger(entries.reduce((n,p)=>n+p.stack,0)))throw Error('Invalid Rush players');
  if(!Number.isSafeInteger(blind)||blind<2||blind%2)throw Error('Invalid blind');
- const players=new Map(entries.map(p=>[p.id,{balance:p.stack,table:null}])),tables=new Map();let serial=0;
+ const players=new Map(entries.map(p=>[p.id,{balance:p.stack,table:null}])),tables=new Map();let serial=0,funding=0;
  const available=id=>players.get(id)?.table===null&&players.get(id).balance>0;
  function deal(id,waitingIds=null){
   if(!available(id))throw Error('Player is not waiting');
@@ -40,9 +40,16 @@ export function rushPool(entries,blind=4,checkpoint=null,variant='holdem'){
   if(players.size>=100||players.has(id)||typeof id!=='string'||!id||!Number.isSafeInteger(stack)||stack<blind*4||!Number.isSafeInteger(total()+stack))throw Error('Invalid Rush player');
   players.set(id,{balance:stack,table:null});
  }
- function snapshot(){return JSON.stringify({blind,variant,serial,players:[...players],tables:[...tables]})}
+ function adjustBalance(id,delta){
+  const player=players.get(id);if(!player||!Number.isSafeInteger(delta))throw Error('Invalid Rush funding');
+  if(player.table!==null||[...tables.values()].some(t=>!t.settled&&t.ids.includes(id)))throw Error('Finish all Rush hands before transferring chips');
+  const next=player.balance+delta,capital=funding+delta;
+  if(!Number.isSafeInteger(next)||next<0||!Number.isSafeInteger(capital)||!Number.isSafeInteger(total()+delta)||total()+delta<0)throw Error('Invalid Rush funding amount');
+  player.balance=next;funding=capital;return next;
+ }
+ function snapshot(){return JSON.stringify({blind,variant,serial,...(funding?{funding}:{}),players:[...players],tables:[...tables]})}
  if(checkpoint!==null){
-  const saved=JSON.parse(checkpoint),known=new Set(entries.map(p=>p.id));
+  const saved=JSON.parse(checkpoint);funding=saved.funding===undefined?0:saved.funding;if(!Number.isSafeInteger(funding))throw Error('Invalid Rush funding checkpoint');const known=new Set(entries.map(p=>p.id));
   if((saved.variant||'holdem')!==variant||saved.blind!==blind||!Number.isSafeInteger(saved.serial)||saved.serial<0||!Array.isArray(saved.players)||saved.players.length!==players.size||!Array.isArray(saved.tables))throw Error('Invalid Rush checkpoint');
   const restoredPlayers=new Map(saved.players),restoredTables=new Map(saved.tables);
   if(restoredPlayers.size!==players.size||restoredTables.size!==saved.tables.length)throw Error('Invalid Rush checkpoint');
@@ -55,7 +62,7 @@ export function rushPool(entries,blind=4,checkpoint=null,variant='holdem'){
   players.clear();for(const [id,player] of restoredPlayers)players.set(id,player);
   for(const [id,table] of restoredTables)tables.set(id,table);serial=saved.serial;
   for(const [id,player] of players)if(player.table!==null){const table=tables.get(player.table),seat=table.ids.indexOf(id);if(seat<0||table.settled||table.detached.includes(seat))throw Error('Invalid Rush assignment')}
-  if(total()!==entries.reduce((n,p)=>n+p.stack,0))throw Error('Rush checkpoint chip total mismatch');
+  if(!Number.isSafeInteger(entries.reduce((n,p)=>n+p.stack,0)+funding)||total()!==entries.reduce((n,p)=>n+p.stack,0)+funding)throw Error('Rush checkpoint chip total mismatch');
  }
- return {players,tables,deal,move,fold,total,snapshot,add};
+ return {players,tables,deal,move,fold,total,snapshot,add,adjustBalance};
 }
