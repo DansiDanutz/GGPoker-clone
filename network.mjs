@@ -349,6 +349,8 @@ function renderPortrait(portrait,i){
 function renderSeatAvatars(){for(const seat of document.querySelectorAll('.felt .seat'))renderPortrait(seat.querySelector('.portrait'),Number(seat.dataset.seat))}
 const reactionDisplays=new Map(),reactionReduced=matchMedia('(prefers-reduced-motion: reduce)');
 reactionReduced.addEventListener('change',()=>{if(reactionReduced.matches)for(const node of document.querySelectorAll('.seatReaction'))for(const animation of node.getAnimations())animation.cancel()});
+// Seat reconciliation clones nodes; keep dismissal on the stable felt parent.
+for(const type of ['mousedown','click','keydown'])document.querySelector('.felt').addEventListener(type,event=>{const node=event.target.closest('.seatReaction');if(!node)return;if(type==='mousedown')event.stopImmediatePropagation();else if(type==='click'){event.stopPropagation();const display=reactionDisplays.get(node.dataset.reaction);if(display)display.dismissed=true;node.remove()}else if(event.key==='Enter'||event.key===' '){event.preventDefault();node.click()}});
 function renderSeatReactions(){
  for(const seat of document.querySelectorAll('.felt .seat')){
   const current=seat.querySelector('.seatReaction'),i=Number(seat.dataset.seat);
@@ -358,7 +360,7 @@ function renderSeatReactions(){
   if(reaction){
    let display=reactionDisplays.get(key);if(!display){display={started:Date.now(),dismissed:false};reactionDisplays.set(key,display);if(reactionDisplays.size>200)reactionDisplays.delete(reactionDisplays.keys().next().value)}
    const elapsed=Date.now()-display.started;if(display.dismissed||elapsed>=4000)continue;
-   const image=new Image();image.dataset.reaction=key;image.src='/home-art/reaction-'+reaction.reaction+'.png';image.alt=reaction.name+': '+reaction.text;image.className='seatReaction';image.tabIndex=0;image.setAttribute('role','button');image.setAttribute('aria-label','Hide '+reaction.text+' reaction');image.onmousedown=e=>e.stopImmediatePropagation();image.onclick=e=>{e.stopPropagation();display.dismissed=true;image.remove()};image.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();image.click()}};seat.append(image);
+   const image=new Image();image.dataset.reaction=key;image.src='/home-art/reaction-'+reaction.reaction+'.png';image.alt=reaction.name+': '+reaction.text;image.className='seatReaction';image.tabIndex=0;image.setAttribute('role','button');image.setAttribute('aria-label','Hide '+reaction.text+' reaction');seat.append(image);
    if(!reactionReduced.matches&&elapsed<200){const frames=Array.from({length:61},(_,i)=>{const t=i/60-1;return {transform:'scale('+(i===0?.5:i===60?1:.5+.5*(t*t*(2.70158*t+1.70158)+1))+')'}});image.animate(frames,{duration:200,easing:'linear'}).currentTime=elapsed}
    setTimeout(()=>image.remove(),4000-elapsed);
   }
