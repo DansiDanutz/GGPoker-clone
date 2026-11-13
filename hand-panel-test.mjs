@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-globalThis.Image=class{};globalThis.document={querySelector:()=>null};globalThis.localStorage={getItem:()=>null};globalThis.addEventListener=()=>{};const {currentHandRank}=await import('./hand-panel.mjs');
+globalThis.Image=class{};globalThis.document={querySelector:()=>null};globalThis.localStorage={getItem:()=>null};globalThis.addEventListener=()=>{};const {currentHandRank,sessionDuration}=await import('./hand-panel.mjs');
 assert.deepEqual(currentHandRank(['As','Kd'],[]).cards,[{card:'As',hole:true},{card:'Kd',hole:true}]);
 assert.match(currentHandRank(['As','Ad'],[]).label,/pair of As/);
 assert.deepEqual(currentHandRank(['As','Kd','Kh','2d'],[]).cards.map(c=>c.card),['Kd','Kh'],'Native preflop any pair outranks high cards');
@@ -9,3 +9,5 @@ for(const n of [4,5,6]){const h=['9h','8h','2c','3c','3d','7d'].slice(0,n);for(c
 assert.match(currentHandRank(['Ah','Kh'],['6c','7d','8s','9h'],true).label,/straight/);assert.match(currentHandRank(['Ah','Kh'],['Qh','Jh','9h','As','Ad'],true).label,/flush/);
 assert.ok(currentHandRank(['2s','Kd'],[],true)===null);assert.equal(currentHandRank(['As','Kd'],['As','2h','3h']),null);
 console.log('PASS current own HandRank:preflop pair choice,known flop/turn/river,exact-two Omaha,ShortDeck,privacy/malformed guards and immutable input');
+
+const now=1700000000000;for(const [elapsed,text]of [[0,'00m 00s'],[61000,'01m 01s'],[3599000,'59m 59s'],[3600000,'01h 00m'],[3661000,'01h 01m']])assert.equal(sessionDuration(now-elapsed,now),text);for(const start of [undefined,null,-1,1.5,NaN,Infinity])assert.equal(sessionDuration(start,now),'-');assert.equal(sessionDuration(now+1000,now),'00m 00s');console.log('PASS native session duration:seconds/minutes,hour boundary,unknown inputs andclock-skew clamp');
