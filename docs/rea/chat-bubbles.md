@@ -25,6 +25,14 @@ Loaderul instalat folosește cadrul efectiv al atlasului. Metadatele trim/source
 
 Browserul execută aceleași formule și algoritmul de scurtare, măsurând Arial cu motorul său de text. Nu echivalăm măsurarea DOM/antialiasingul Chromium cu motorul Flash; împărțirea exactă pe rânduri și font-AA în fereastra fizică rămân de comparat.
 
+## Culoarea din traseul real de afișare
+
+PlayerView3D.showChatMessage cere0xFFC64D pentru jucătorul propriu și0xFFFFFF pentru ceilalți. ChatBox.setColor transmite culoarea către Button;Button.setColor setează ColorTransform.color pe corpul bitmapului. Această proprietate pune multiplicatorii RGB la0 și folosește culoarea ca offset, păstrând alpha;nu este un simplu multiply sau un filtru sepia. Semantica este confirmată și de [referința AIR SDK](https://airsdk.dev/reference/actionscript/3.0/flash/geom/ColorTransform.html#color).
+
+Extractorul păstrează cele două cadre originale și produce două variante suplimentare cu RGB constant și alpha identic bit cu bit:alb și auriu. Totalul celor patru PNG este4136octeți. Fundalul propriu este ales de identitatea locului în frontend;umbra rămâne originală și separată. Ruta showChatMessage nu schimbă dimensiunea24 a constructorului. Metoda resetLabelFormat20 există,dar nu este presupusă activă fără un apel urmărit în acest traseu.
+
+Aceeași metodă nativă refuză bule text pentru șiruri care conțin MODE_EMOJI,MODE_SNAPCAM sauMODE_VOICE. Local,lista de chat păstrează textul literal,dar aceste markere nu produc o bulă text. Nu declarăm implementate mesajele SnapCam sau voice din această filtrare.
+
 ## Poziționare
 
 ChatBox primește poziția `PlayerPosition.chat`, a cărei scală este explicit1, chiar când avatarul propriu are scala1,1. Această regulă diferă de emoji-ul200×scale. Ownerul furnizează originea locului. Preseturile folosite sunt:

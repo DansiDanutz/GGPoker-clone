@@ -357,7 +357,7 @@ function renderSeatChat(){
  if(!chatBubblesInitialized){for(const m of state?.chat||[])if(!m.reaction)chatDisplays.set(keyFor(m),{started:performance.now(),dismissed:true});chatBubblesInitialized=true}
  const offsets=aof?[[46,-204],[78,-159],[90,-98],[-78,-159]]:[[46,-204],[78,-159],[84,-112],[90,-98],[-84,-112],[-78,-159]];
  for(const seat of document.querySelectorAll('.felt .seat')){
-  const index=Number(seat.dataset.seat),current=seat.querySelector(':scope>.seatChatBubble'),message=state?.chat?.findLast(m=>m.seat===index&&m.name===state.names[index]&&!m.reaction&&typeof m.text==='string');
+  const index=Number(seat.dataset.seat),current=seat.querySelector(':scope>.seatChatBubble'),message=state?.chat?.findLast(m=>m.seat===index&&m.name===state.names[index]&&!m.reaction&&typeof m.text==='string'&&!['MODE_EMOJI','MODE_SNAPCAM','MODE_VOICE'].some(marker=>m.text.includes(marker)));
   if(!message){current?.remove();continue}const key=keyFor(message);let display=chatDisplays.get(key);
   if(!display){display={started:performance.now(),dismissed:helmet.muted()};chatDisplays.set(key,display);if(chatDisplays.size>200)chatDisplays.delete(chatDisplays.keys().next().value)}
   if(display.dismissed)continue;const elapsed=performance.now()-display.started;if(elapsed>=5000){current?.remove();continue}
