@@ -23,3 +23,11 @@ Static `PlayerCell3D.activateDim(.3)` specifies avatar alpha .5 with dim1 and la
 Native status artwork is extracted by `tools/extract-sitout.py` from Starling frame player_cell0192 (72×72), with decoded RGBA equality checked. The label is the installed English `TablePlayerInfoSittingOut`: Sitting Out. For this unlimited-duration local cash policy, source timer offset -85 plus icon30/label90 yields -55/+5, scaled by the existing seat scale. Configured GameClock uses the source no-timer icon5/label60 branch (-80/-25). The status layer remains full opacity above the dimmed avatar. Source runtime font rasterization and physical comparison remain unverified.
 
 Browser geometry check passes at850 and1196px: relative icon(-36,-55),72×72,labelY5,font28 after seat-scale normalization. Reload preserves the actual-pause marker. Requesting return during that hand retains it; next deal clears marker/dimming and restores avatar opacity1. Native runtime raster comparison remains separate.
+
+## Deal Me In
+
+FFDec bounded export of installed `NewDealMeInButton` confirms desktop `table_menu`127..133, button270×90, full gauge mask(5,1,260,80), label key ButtonReJoin (installed English: Deal Me In), font30,x5,y13/down17. `SitOutView` anchors at viewport.width-298,y1090. Local unlimited-duration policy uses progress1; no expiry is fabricated. The extractor composes up/over/down states with the source masks.
+
+The button appears only for the current player actually sitting out; it requests the existing current-table resume operation. The native command sets GlobalSitInData.isAll, so global multi-table behavior remains incomplete and is explicitly scoped in the local tooltip/code. Pending return disables duplicate clicks while the actual-pause marker remains until the next deal.
+
+Trusted headless mouse testing exposed the local diagnostic footer intercepting clicks at the correct button geometry. While the native return control is shown, the footer now follows the table instead of overlapping it. Tests assert hit-testability,270×90 geometry at850/1196, real click, persisted request and removal/restored avatar at the next deal.
