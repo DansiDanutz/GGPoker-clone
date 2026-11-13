@@ -134,13 +134,14 @@ matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',event=>
  if(!state)return;
  if(!event.matches){lastFeltFrame=null;render();return}
  const pending=payoutSoundHand===state.number&&state.hand?.end?(state.hand.end.pots||[{}]).flatMap((_,i)=>soundedPots.has(i)?[]:['WinPot']):[];
- runoutPlan=null;boardSounds.clear();payoutSoundHand=null;soundedPots.clear();lastFeltFrame=null;
+ hideWin();runoutPlan=null;boardSounds.clear();payoutSoundHand=null;soundedPots.clear();lastFeltFrame=null;
  for(const award of [...document.querySelectorAll('.award')]){for(const animation of award.getAnimations())animation.cancel();award.onanimationcancel?.();award.remove()}
  document.querySelectorAll('.nativeTurnGlow').forEach(node=>node.getAnimations().forEach(animation=>animation.cancel()));
  document.querySelectorAll('.sweep,.boardThrow').forEach(node=>node.remove());render();playCues(pending)
 });
-let pendingHand=null;
-function clearPayout(){for(const award of document.querySelectorAll('.award')){award.onanimationend=award.onanimationcancel=null;award.remove()}}
+let pendingHand=null,winHand=null;
+function hideWin(){winHand=null;document.querySelectorAll('.winMark').forEach(node=>node.remove())}
+function clearPayout(){hideWin();for(const award of document.querySelectorAll('.award')){award.onanimationend=award.onanimationcancel=null;award.remove()}}
 function applyState(data){
  const sameSeats=state&&state.me===data.me&&JSON.stringify(state.names)===JSON.stringify(data.names);
  // Native OnWinners resumes the event processor only after all payout callbacks.
@@ -151,7 +152,7 @@ function applyState(data){
  const previous=state,chatOnly=state&&frame(state)===frame(data),cues=tableCues(state,data);
  const deferWin=previous&&previous.number===data.number&&previous.hand&&!previous.hand.end&&data.hand?.end&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&data.hand.end.payouts.some((n,i)=>n>data.hand.end.returns[i]);
  const street=matchMedia('(prefers-reduced-motion: reduce)').matches?null:streetPlan(previous,data);
- if(deferWin){payoutSoundHand=data.number;soundedPots.clear();runoutPlan=showdownPlan(previous,data);boardSounds.clear()}else if(street){runoutPlan=street;boardSounds.clear()}else if(previous?.number!==data.number||!data.hand||!data.hand.end&&!runoutPlan?.street){payoutSoundHand=null;soundedPots.clear();runoutPlan=null;boardSounds.clear()}
+ if(deferWin){winHand=data.number;payoutSoundHand=data.number;soundedPots.clear();runoutPlan=showdownPlan(previous,data);boardSounds.clear()}else if(street){runoutPlan=street;boardSounds.clear()}else if(previous?.number!==data.number||!data.hand||!data.hand.end&&!runoutPlan?.street){winHand=null;payoutSoundHand=null;soundedPots.clear();runoutPlan=null;boardSounds.clear()}
  state=data;if(chatOnly){renderChat();renderSeatReactions();renderSeatAvatars();renderShuffles();playerNotes.refresh()}else render();reconcileSqueeze(previous);renderReserved();playCues(cues.filter(name=>!(deferWin&&name==='WinPot')&&!((deferWin||street)&&runoutPlan&&name==='Board')))
 }
 
@@ -276,7 +277,7 @@ function drawTable(g){
     if(positions){nativeChipPosition(w,positions[pos]);art=chipPile(aofBetParts(g,i,g.bets[i]),false,positions[pos].right?'right':'left')}else{art=new Image();art.src='/home-art/bet-stack.png';art.alt=''}
     w.append(art,amount(element('span',''),g.bets[i]));if(wagers.has(i)){updateElement(wagers.get(i),w);wagers.delete(i)}else felt.append(w);
    }
-    if(g.end&&g.end.payouts[i]>g.end.returns[i]){const continuingWin=!settling&&prev?.hand===state.number&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&existing?.querySelector('.showdownWin');if(continuingWin)portrait.append(continuingWin.cloneNode(true));else{const win=element('b','winMark'+(settling?' showdownWin':''),'WIN');if(positions){const image=new Image(),handNumber=state.number;image.className='nativeWin';image.alt='';image.src='/home-art/native-win-final.png';win.append(image);if(settling)win.onanimationstart=e=>{if(e.animationName==='markWinner'&&state?.number===handNumber&&!matchMedia('(prefers-reduced-motion: reduce)').matches)image.src='/home-art/native-win-effect.png?hand='+handNumber+'&seat='+i};portrait.append(win)}else plate.querySelector('.stack').prepend(win)}}
+    if(g.end&&winHand===state.number&&g.end.payouts[i]>g.end.returns[i]){const continuingWin=!settling&&prev?.hand===state.number&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&existing?.querySelector('.showdownWin');if(continuingWin)portrait.append(continuingWin.cloneNode(true));else{const win=element('b','winMark'+(settling?' showdownWin':''),'WIN');if(positions){const image=new Image(),handNumber=state.number;image.className='nativeWin';image.alt='';image.src='/home-art/native-win-final.png';win.append(image);if(settling)win.onanimationstart=e=>{if(e.animationName==='markWinner'&&state?.number===handNumber&&!matchMedia('(prefers-reduced-motion: reduce)').matches)image.src='/home-art/native-win-effect.png?hand='+handNumber+'&seat='+i};portrait.append(win)}else plate.querySelector('.stack').prepend(win)}}
    const sweepAmount=collected?(prev.g.bets?.[i]||0)+g.committed[i]-prev.g.committed[i]-(g.end?.returns[i]||0):0;
    if(sweepAmount>0){gathered=true;if(!matchMedia('(prefers-reduced-motion: reduce)').matches){const sweep=element('span','sweep w'+pos);sweep.dataset.seat=i;if(count===3)sweep.style.scale='1.1';sweep.dataset.amount=sweepAmount;sweep.setAttribute('aria-hidden','true');if(positions){nativeChipPosition(sweep,positions[pos]);sweep.classList.add('nativeChipMotion');sweep.append(chipPile(aofBetParts(g,i,sweepAmount),false,positions[pos].right?'right':'left'),amount(element('span',''),sweepAmount))}sweep.onanimationend=()=>sweep.remove();felt.append(sweep)}}
    if(settling&&g.end.payouts[i]>g.end.returns[i]){
@@ -287,7 +288,7 @@ function drawTable(g){
      if(multiPot){award.classList.add('multiPot');award.style.setProperty('--payout-duration',potDuration+'s');if(part.pot){award.classList.add('payoutWaiting');award.style.setProperty('--payout-delay','0s')}}
      award.style.setProperty('--pot-x',origin[0]/17+'cqw');award.style.setProperty('--pot-y',origin[1]/17+'cqw');
      if(positions){nativeChipPosition(award,positions[pos],origin);award.classList.add('nativeChipMotion');award.append(chipPile([part.amount],true,'center'),amount(element('span',''),part.amount))}
-     let finished=false;const finish=e=>{if(finished||e?.type==='animationend'&&multiPot&&e.animationName!=='aofPotFinish')return;finished=true;credited+=part.amount;if(state?.number===handNumber&&state.hand?.end){const live=felt.querySelector('.seat[data-seat="'+i+'"] .stackSwitch');if(live)amount(live,credited,' chips')}award.remove();if(state?.number===handNumber&&state.hand?.end){if(!felt.querySelector('.award[data-pot="'+part.pot+'"]'))for(const waiting of felt.querySelectorAll('.award[data-pot="'+(part.pot+1)+'"]'))waiting.classList.remove('payoutWaiting');if(!felt.querySelector('.award')){const next=pendingHand;pendingHand=null;if(next)applyState(next);else render()}}};
+     let finished=false;const finish=e=>{if(finished||e?.type==='animationend'&&multiPot&&e.animationName!=='aofPotFinish')return;finished=true;credited+=part.amount;if(state?.number===handNumber&&state.hand?.end){const live=felt.querySelector('.seat[data-seat="'+i+'"] .stackSwitch');if(live)amount(live,credited,' chips')}award.remove();if(state?.number===handNumber&&state.hand?.end){if(!felt.querySelector('.award[data-pot="'+part.pot+'"]')){hideWin();for(const waiting of felt.querySelectorAll('.award[data-pot="'+(part.pot+1)+'"]'))waiting.classList.remove('payoutWaiting')}if(!felt.querySelector('.award')){const next=pendingHand;pendingHand=null;if(next)applyState(next);else render()}}};
      award.onanimationstart=e=>{if(e.target!==award||!['payout','aofPayout','aofPotMove'].includes(e.animationName))return;award.dataset.started='true';felt.querySelector('.nativePot[data-pot="'+part.pot+'"]')?.remove();if(state?.number===handNumber&&state.hand?.end&&payoutSoundHand===handNumber&&!soundedPots.has(part.pot)){soundedPots.add(part.pot);playCues(['WinPot'])}};
      award.onanimationend=award.onanimationcancel=finish;felt.append(award)
     }
