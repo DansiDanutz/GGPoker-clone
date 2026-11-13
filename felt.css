@@ -473,7 +473,7 @@ body:has(#dealMeIn:not([hidden])) footer:has(#join[hidden]){margin-top:0}
 
 /* DesktopNotice: full viewport background alpha.8, label width viewport-240, min100px. */
 .nativeTournamentNotice{position:absolute;left:0;top:calc(50% - 1.2058823529cqw);transform:translateY(-50%);width:100%;min-height:5.8823529412cqw;padding:.8823529412cqw 7.0588235294cqw;display:flex;align-items:center;justify-content:center;z-index:8;pointer-events:none;color:#fff;font:normal 1.6470588235cqw Arial,sans-serif;text-align:center}
-.nativeTournamentNotice[hidden]{display:none}.nativeTournamentNotice::before{content:'';position:absolute;inset:0;background:url('/home-art/native-tournament-notice.png') center/100% 100%;opacity:.8;z-index:-1}.nativeTournamentNoticeText{width:100%;overflow-wrap:anywhere}.nativeTournamentNoticeText span{display:block}
+.nativeTournamentNotice[hidden]{display:none}.nativeTournamentNotice::before{content:'';position:absolute;inset:0;background:url('/home-art/native-tournament-notice.png') center/100% 100%;opacity:.8;z-index:-1}.nativeTournamentNoticeText{width:100%;overflow-wrap:anywhere;white-space:pre-line}.nativeTournamentNoticeText span{display:block}
 
 /* TourneyAnnounceView origin1676/50; AnnounceComponent text+155, close40x40. */
 .nativeTournamentAnnounce{position:absolute;right:.8235294118cqw;top:2.9411764706cqw;height:2.3529411765cqw;width:max-content;padding:0 3.2352941176cqw 0 5.8823529412cqw;z-index:9;color:#999;font:normal 1.4117647059cqw Arial,sans-serif;isolation:isolate}
