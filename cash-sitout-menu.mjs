@@ -1,0 +1,21 @@
+export function cashSitOutMenuRows(view){
+ const pending=!!view.paused,selected=pending?(view.allCash?'all':'current'):null;
+ return [
+  {id:'current',key:'MobileSitOut',label:'Sit out next hand'},
+  {id:'all',key:'GlobalCashGameSitOutNextHand',label:'Sit out all cash tables on next hand'},
+  {id:'next-blind',key:'GlobalCashGameSitOutNextBlind',label:'Sit out all cash tables on next blind'},
+  {id:'leave-blind',key:'LeaveAllNB',label:'Leave all tables next blind'}
+ ].map(row=>({...row,checked:row.id===selected,disabled:!view.enabled||!!view.busy||!['current','all'].includes(row.id)||pending&&row.id!==selected||row.id==='all'&&(!view.account||!view.canAll)}));
+}
+export function installCashSitOutMenu(read,actions){
+ const trigger=document.createElement('button'),menu=document.createElement('section');trigger.id='cashSitOutMenuButton';trigger.type='button';trigger.textContent='Sit out';trigger.dataset.nativeLabel='MobileSitOut';trigger.setAttribute('aria-haspopup','menu');trigger.setAttribute('aria-expanded','false');trigger.setAttribute('aria-controls','cashSitOutMenu');trigger.hidden=true;document.querySelector('header').append(trigger);
+ menu.id='cashSitOutMenu';menu.className='nativeCashSitOutMenu';menu.setAttribute('role','menu');menu.setAttribute('aria-label','Cash table sit-out');menu.hidden=true;document.body.append(menu);let busy=false;
+ const buttons=new Map();for(const row of cashSitOutMenuRows({})){const b=document.createElement('button'),check=document.createElement('span'),text=document.createElement('span');b.type='button';b.dataset.sitOutChoice=row.id;b.setAttribute('role','menuitemcheckbox');b.tabIndex=-1;check.className='sitOutMenuCheck';check.setAttribute('aria-hidden','true');text.className='sitOutMenuText';text.dataset.nativeLabel=row.key;text.textContent=row.label;b.append(check,text);menu.append(b);buttons.set(row.id,b);if(!actions[row.id])b.title='Next-blind scheduling is unavailable in this local mode.';b.onclick=async()=>{if(b.disabled||busy)return;close(true);busy=true;refresh();try{await actions[row.id]()}finally{busy=false;refresh()}}}
+ function close(restore=false){menu.hidden=true;trigger.setAttribute('aria-expanded','false');if(restore&&!trigger.hidden)trigger.focus()}
+ function position(){const felt=document.querySelector('.felt');if(!felt)return;const scale=felt.getBoundingClientRect().width/1700,r=trigger.getBoundingClientRect();menu.style.transform='scale('+scale+')';menu.style.left=(r.right-560*scale)+'px';menu.style.top=r.bottom+'px';for(const text of menu.querySelectorAll('.sitOutMenuText')){text.style.fontSize='28px';if(text.scrollWidth>428)text.style.fontSize=(28*428/text.scrollWidth)+'px'}}
+ function refresh(){const view=read();trigger.hidden=!view.enabled;trigger.disabled=busy||!!view.busy;if(!view.enabled)close();for(const row of cashSitOutMenuRows({...view,busy:busy||view.busy})){const b=buttons.get(row.id);b.disabled=row.disabled;b.setAttribute('aria-checked',String(row.checked))}if(!menu.hidden)position()}
+ trigger.onclick=()=>{if(!menu.hidden){close(true);return}refresh();menu.hidden=false;trigger.setAttribute('aria-expanded','true');position();[...buttons.values()].find(b=>!b.disabled)?.focus()};
+ menu.onkeydown=e=>{const enabled=[...buttons.values()].filter(b=>!b.disabled),i=enabled.indexOf(document.activeElement);if(['ArrowDown','ArrowUp','Home','End'].includes(e.key)){e.preventDefault();enabled[e.key==='Home'?0:e.key==='End'?enabled.length-1:(i+(e.key==='ArrowDown'?1:enabled.length-1))%enabled.length]?.focus()}else if(e.key==='Escape'){e.preventDefault();close(true)}else if(e.key==='Tab')close()};
+ menu.addEventListener('pointerdown',e=>e.stopPropagation());menu.addEventListener('pointermove',e=>{if(!e.buttons)e.stopPropagation()});
+ document.addEventListener('pointerdown',e=>{if(!menu.hidden&&!menu.contains(e.target)&&!trigger.contains(e.target))close()});window.addEventListener('blur',()=>close());document.addEventListener('visibilitychange',()=>{if(document.hidden)close()});window.addEventListener('resize',()=>{if(!menu.hidden)position()});window.addEventListener('scroll',()=>{if(!menu.hidden)position()},true);document.fonts?.addEventListener('loadingdone',()=>{if(!menu.hidden)position()});refresh();return {refresh,close};
+}
