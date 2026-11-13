@@ -34,4 +34,4 @@ Modul fără --payout-audio măsoară separat originile, oprirea și finalul tra
 
 ## Limite
 
-Nu declarăm duratele native absolute sau latența difuzoarelor identice. Bugetul ordinary Delay, overrideurile speedRatio, toate formatele și cazurile cu mai mult de trei poturi necesită în continuare dovezi. Lifecycle-ul WIN și fixture-ul cu trei poturi sunt documentate separat în win-lifetime.md. Sursa confirmă ordinea și formula, iar fixture-urile confirmă fluxurile locale cu două și trei poturi.
+Nu declarăm duratele native absolute sau latența difuzoarelor identice. Bugetul ordinary Delay, overrideurile speedRatio, combinațiile complete de formate și stake-uri necesită în continuare dovezi. Cazul Hold’em cu cinci poturi este documentat în max-pot-boundary.md. Lifecycle-ul WIN și fixture-ul cu trei poturi sunt documentate separat în win-lifetime.md. Sursa confirmă ordinea și formula, iar fixture-urile confirmă fluxurile locale cu două și trei poturi.

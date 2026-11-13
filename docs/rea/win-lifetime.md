@@ -26,7 +26,7 @@ Modurile reduced-motion și reconectarea verifică absența unei prezentări vec
 
 network-browser-test.mjs --aof-sidepots --payout-audio --three-pots reutilizează patru sesiuni separate și controalele reale de All-In. Stacks48/32/20/12, board egal, poturi48/24/24 și returnare16 produc nouă cote. Stackurile vizuale trec prin16/0/0/0 →28/12/12/12 →36/20/20/12 →48/32/20/12. Sunt112fise, exact trei porniri WinPot și nicio pornire de pot înaintea finalizării tuturor cotelor precedente. Aceasta exercită și holdul minim0,1s: fiecare pot are două segmente0,4s și hold0,1s, deci0,9s în politica locală documentată.
 
-Fixture-ul separat cu două poturi păstrează Fold și returnarea nechemată. Nu pretindem că un singur fixture acoperă simultan orice număr de locuri, poturi și formate.
+Fixture-ul separat cu două poturi păstrează Fold și returnarea nechemată. Nu pretindem că un singur fixture acoperă simultan orice număr de locuri, poturi și formate. Limita Hold’em cu șase locuri și cinci poturi este documentată separat în max-pot-boundary.md.
 
 ## Limite
 
