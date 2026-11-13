@@ -174,6 +174,7 @@ function flushCashLeaves(r,wallet,id,now,onlyAccount){
  }
  if(!r.players.some(p=>p?.leaveNextHand))delete r.cashLeaveAt;return left;
 }
+function canRemoveSeat(table,r,now){return !!(table&&r&&(r.tournament?r.tournament.startedAt===null&&!r.tournament.cancelledAt&&!r.hand&&(!r.tournament.startsAt||now<r.tournament.startsAt):!r.hand||r.hand.end))}
 function seatRoster(r){return r?r.players.flatMap((p,seat)=>p?[{seat,name:p.name,bot:!!p.bot,accountBound:!!p.account,subject:digest('owner:'+noteSubject(p)).slice(0,24)}]:[]):[]}
 function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
   if(!/^[a-f0-9]{48}$/.test(id))fail(404,'Unknown room');
@@ -210,11 +211,12 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
     }
     r.version++;return {...status(),changed:true};
   }
-  if(op==='owner-seats')return {version:r?.version??0,canRemove:!!(table&&r&&!r.tournament&&(!r.hand||r.hand.end)),players:seatRoster(r)};
+  if(op==='owner-seats')return {version:r?.version??0,canRemove:canRemoveSeat(table,r,now),...(table?.mode==='tournament'?{tournament:true}:{}),players:seatRoster(r)};
   if(op==='remove-seat'){
-    if(!table||!r||r.tournament||r.hand&&!r.hand.end)fail(409,'Remove a cash seat between hands');
-    if(Object.keys(body).some(k=>!['tableId','seat','subject','version'].includes(k))||!Number.isInteger(body.seat)||body.seat<0||body.seat>=r.players.length||typeof body.subject!=='string'||!Number.isSafeInteger(body.version))fail(400,'Choose a current cash seat');
+    if(!canRemoveSeat(table,r,now))fail(409,'Remove a cash seat between hands or a tournament registration before start');
+    if(Object.keys(body).some(k=>!['tableId','seat','subject','version'].includes(k))||!Number.isInteger(body.seat)||body.seat<0||body.seat>=r.players.length||typeof body.subject!=='string'||!Number.isSafeInteger(body.version))fail(400,'Choose a current seat');
     const player=seatRoster(r).find(p=>p.seat===body.seat&&p.subject===body.subject);if(!player||body.version!==r.version)fail(409,'Seat changed; reload players');
+    if(r.tournament){const entryRefund=r.players[body.seat].entryFunded?r.tournament.entry:0;leaveSeat(r,body.seat,wallet,id,now,r.host??r.players.findIndex(p=>p&&!p.bot));return {removed:{seat:player.seat,name:player.name,entryRefund},version:r.version,players:seatRoster(r)}}
     adoptCashSeat(r,body.seat,wallet,id);const p=r.players[body.seat],cashReturned=cashBalance(r,body.seat),pendingRefund=p.walletFunded?(p.addChips?.amount||0)+(p.walletTopUp||0):0;const receipt=leaveSeat(r,body.seat,wallet,id,now,r.host??r.players.findIndex(p=>p&&!p.bot));
     return {removed:{seat:player.seat,name:player.name,...(pendingRefund?{pendingRefund}:{}),cashOut:receipt.cashOut??cashReturned},version:r.version,players:seatRoster(r)};
   }
