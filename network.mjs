@@ -352,7 +352,7 @@ reactionReduced.addEventListener('change',()=>{if(reactionReduced.matches)for(co
 // Seat contents are reconciled; keep dismissal on the stable felt parent.
 for(const type of ['mousedown','click','keydown'])document.querySelector('.felt').addEventListener(type,event=>{const node=event.target.closest('.seatReaction,.seatChatBubble');if(!node)return;if(type==='mousedown')event.stopImmediatePropagation();else if(type==='click'){event.stopPropagation();const display=node.classList.contains('seatReaction')?reactionDisplays.get(node.dataset.reaction):chatDisplays.get(node.dataset.bubble);if(display)display.dismissed=true;node.remove()}else if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();node.click()}});
 function renderSeatChat(){
- const aof=state?.settings?.variant==='aof',count=capacity();if(!state||chatWindow||count!==6&&!aof)return;
+ const aof=state?.settings?.variant==='aof',count=capacity();if(!state||chatWindow||count!==6&&!aof){document.querySelectorAll('.seatChatBubble').forEach(node=>node.remove());if(!state){chatDisplays.clear();chatBubblesInitialized=false}return}
  const keyFor=m=>JSON.stringify([m.at,m.seat,m.name,m.text]);
  if(!chatBubblesInitialized){for(const m of state?.chat||[])if(!m.reaction)chatDisplays.set(keyFor(m),{started:performance.now(),dismissed:true});chatBubblesInitialized=true}
  const offsets=aof?[[46,-204],[78,-159],[90,-98],[-78,-159]]:[[46,-204],[78,-159],[84,-112],[90,-98],[-84,-112],[-78,-159]];

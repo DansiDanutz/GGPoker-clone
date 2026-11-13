@@ -52,6 +52,6 @@ ChatBubbleView nativ refuză adăugarea unui ChatBox nou când mute este activ. 
 
 ## Verificare
 
-Testul `--helmet --chat-bubble` folosește două conturi în sesiuni separate și verifică text literal,imaginile originale,Arial24,#333,box minim100,ancore proprii/oponent/dreapta la850și1196,același nod după resize,200ms,reduced-motion,click/tastatură,minimum4,5secunde de citire,expirare,scurtare cu`..`,Helmet fără replay și reconectare fără replay de istoric. Mâna rămâne identică. Traseul continuă cu o mână reală,payout independent240jetoane și restart.
+Testul `--helmet --chat-bubble` folosește două conturi în sesiuni separate și verifică text literal,imaginile originale,Arial24,#333,box minim100,ancore proprii/oponent/dreapta la850și1196,același nod după resize,200ms,reduced-motion,click/tastatură,minimum4,5secunde de citire,expirare,scurtare cu`..`,Helmet fără replay și reconectare fără replay de istoric. Un răspuns401 care invalidează sesiunea mesei elimină imediat bulele montate și resetează istoricul efectelor; testul restabilește apoi sesiunea validă fără a modifica backendul. Mâna rămâne identică. Traseul continuă cu o mână reală,payout independent240jetoane și restart.
 
 Testul AoF cu4sesiuni verifică și ancora oglindită(1309,343),178×100,fără modificarea mâinii,apoi rezervări,fold,all-in,payout independent128și restart. Aceste verificări dovedesc comportamentul local și implementarea geometriei din sursă; nu dovedesc întreaga paritate vizuală a aplicației native.
