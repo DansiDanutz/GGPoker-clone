@@ -33,3 +33,11 @@ Retained native constructors establish Fold→MyTurnBetFoldText, Call→MyTurnBe
 The French catalog intentionally uses Parole for Check and Checker / Passer for CheckFold; those source values are preserved. The canonical English CheckFold text is Check / Fold, including spaces, so the six-session reserved-action regression expects that native label.
 
 `node network-browser-test.mjs --bet-language` plays an actual three-player hand through French Call and Bet clicks. It verifies all six captions, fit of CheckFold, original player named Call/chat text, typed12 and input focus across EN→FR, localized amount aria, no game-version change from language updates, payout24/uncalled return12 and final128/116/116 (360 total). `--preactions --hosted` verifies the complete six-human reserved-action/reload/restart flow and720-chip conservation with canonical English labels. Other betting formats, remaining labels and font/runtime parity are not claimed complete.
+
+## Reserved-action bindings
+
+`ReserveAction.as` maps FOLD/QUICK_FOLD_TO_ANY_BET to LabelFold, FOLD_TO_ANY_BET to CheckFold, CHECK to HandSummaryCheck, CALL to HandSummaryCall and ALL_IN to MyTurnBetAllInOrFoldAllInText. `ReserveActionUI.updateCallAmount` explicitly combines the translated HandSummaryCall prefix with the displayed amount. The French reserved prefix is Paye, distinct from the main-action Suivre; that native context distinction is preserved.
+
+The local reserveText wrapper now contains a marked caption and separate numeric reserveAmount. The selected action retains its original kind and captured numeric call; translation never parses a localized label into a game action. Existing checkbox geometry/selection is preserved, and native auto-fit runs after translated captions change. Rush’s check-fold representation still maps to LabelFold.
+
+`node network-browser-test.mjs --reserve-language` verifies all five French captions and visible free CheckFold fit in a second player session. A trusted fixed Call2 selection survives FR→EN→FR and executes once; a subsequent Call4 reservation cancels when the due amount becomes12. The player name Call remains unchanged. The controlled hand pays28 including8 uncalled chips, finishing132/116/112 and conserving360. Broader format regressions and native runtime/font verification remain separate gates.
