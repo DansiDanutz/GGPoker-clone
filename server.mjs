@@ -11,6 +11,7 @@ import {readFileSync,writeFileSync,renameSync,mkdirSync,appendFileSync,statSync}
 import {join} from 'node:path';
 import {homedir} from 'node:os';
 import {fileURLToPath} from 'node:url';
+const referenceArt=process.env.POKER_REFERENCE_ART_DIR||fileURLToPath(new URL('./home-art/',import.meta.url));
 const port=Number(process.env.PORT||18765),host=process.env.POKER_BIND_HOST||'127.0.0.1', origin=process.env.POKER_PUBLIC_ORIGIN||('http://'+host+':'+port);
 const directory=process.env.POKER_DATA_DIR||join(homedir(),'.local/share/river-room');mkdirSync(directory,{recursive:true,mode:0o700});
 const cashWalletsEnabled=process.env.POKER_REFERENCE_HOME==='1'&&host==='127.0.0.1'&&origin==='http://127.0.0.1:'+port;
@@ -42,7 +43,7 @@ http.createServer(async(req,res)=>{
  const localHome=process.env.POKER_REFERENCE_HOME==='1'&&host==='127.0.0.1'&&origin==='http://127.0.0.1:'+port;
  const cue=/^\/table-audio\/(Check|Call|Bet|Raise|AllIn|Fold|DealCard|ShowCard|RabbitCard|RabbitCardDouble|ShowDownCard|Board|GatherChips|WinPot|ShuffleUp|ShuffleCombine|ShuffleOther|SqueezeOpen|AofButton|ChessClock|TimeBankTick)\.mp3$/.exec(path);
  if(localHome&&cue&&req.method==='GET'){
-  let data;try{data=await readFile(join((cue[1].startsWith('Shuffle')||['RabbitCard','RabbitCardDouble','ChessClock','TimeBankTick','ShowDownCard'].includes(cue[1]))?fileURLToPath(new URL('./home-art/',import.meta.url)):join(homedir(),'Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/sounds'),(['RabbitCard','RabbitCardDouble','AofButton','ChessClock','TimeBankTick','ShowDownCard'].includes(cue[1])?'':'Sound')+cue[1]+'.mp3'))}catch{return json(404,{error:'Local sound unavailable'})}
+  let data;try{data=await readFile(join((cue[1].startsWith('Shuffle')||['RabbitCard','RabbitCardDouble','ChessClock','TimeBankTick','ShowDownCard'].includes(cue[1]))?referenceArt:join(homedir(),'Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/sounds'),(['RabbitCard','RabbitCardDouble','AofButton','ChessClock','TimeBankTick','ShowDownCard'].includes(cue[1])?'':'Sound')+cue[1]+'.mp3'))}catch{return json(404,{error:'Local sound unavailable'})}
   res.writeHead(200,{'Content-Type':'audio/mpeg','Cache-Control':'private, max-age=3600'});res.end(data);return;
  }
  const avatarImage=/^\/local\/avatar-images\/([a-f0-9]{64})\.png$/.exec(path);
@@ -61,7 +62,7 @@ http.createServer(async(req,res)=>{
  if(localHome&&['/local/me','/local/login','/local/create','/local/logout','/local/avatar'].includes(path))return await playerProfile.handle(req,res,path,json);
  if(localHome&&req.method==='GET'&&(path==='/'||['/launch.html','/seat.html','/seat.mjs','/playgg.html','/playgg.mjs','/playgg-carousel.mjs','/home-review.html'].includes(path)||['/home-art/native-history-roboto.ttf','/home-art/native-history-roboto-italic.ttf','/home-art/native-hud-roboto-bold.ttf','/home-art/native-show-roboto-condensed-bold.ttf','/home-art/native-action-roboto-condensed.ttf'].includes(path)||/^\/home-art\/[a-zA-Z0-9_-]+\.(png|webp|json)$/.test(path))){
   const file=path==='/'?'launch.html':path.slice(1);
-  let data;try{data=await readFile(new URL(file,import.meta.url))}catch{return json(404,{error:'Reference asset unavailable'})}
+  let data;try{data=await readFile(file.startsWith('home-art/')?join(referenceArt,file.slice(9)):new URL(file,import.meta.url))}catch{return json(404,{error:'Reference asset unavailable'})}
   res.writeHead(200,{'Content-Type':file.endsWith('.ttf')?'font/ttf':file.endsWith('.webp')?'image/webp':file.endsWith('.png')?'image/png':file.endsWith('.json')?'application/json':file.endsWith('.mjs')?'text/javascript':'text/html; charset=utf-8','Cache-Control':'private, no-store','Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff'});res.end(data);return;
  }
  const rush=/^\/api\/rush\/(?:(holdem|plo)\/)?(state|join|deal|act|quick-fold|fill-bots|cancel-queue|notes|sit-out|helmet)$/.exec(path);
