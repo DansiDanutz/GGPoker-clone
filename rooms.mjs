@@ -159,7 +159,7 @@ function leaveSeat(r,me,wallet,id,now,host){
 function seatRoster(r){return r?r.players.flatMap((p,seat)=>p?[{seat,name:p.name,bot:!!p.bot,accountBound:!!p.account,subject:digest('owner:'+noteSubject(p)).slice(0,24)}]:[]):[]}
 function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
   if(!/^[a-f0-9]{48}$/.test(id))fail(404,'Unknown room');
-  const now=Date.now(),enteredVersion=rooms.get(id)?.version;
+  const now=Date.now(),enteredVersion=rooms.get(id)?.version,enteredClockId=rooms.get(id)?.actionClock?.id;
   for(const [k,r] of rooms)if(!r.settings&&now-r.touched>4*hour)rooms.delete(k);
   let r=rooms.get(id);
   if(r&&table&&!r.hand&&!r.players.some(Boolean)){
@@ -368,8 +368,8 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
     if(reserveClock(r,me,body.actionId,now,body.cardSequence)){r.hand.historyEvents??=[];r.hand.historyEvents.push(r.actionClock.phase==='cards'?timeCardEvent(r):{type:'clock-limit-disabled',seat:me,street:r.hand.board.length,afterAction:r.hand.history.length});r.version++}
   }
   if(['act','ready','leave'].includes(op)){
-    const chatOnlyStale=op==='act'&&r.version===enteredVersion&&Number.isSafeInteger(body.version)&&body.version>=(r.actionVersion??r.version)&&body.version<=r.version;
-    if(body.version!==r.version&&!chatOnlyStale&&!(op==='ready'&&body.number===r.number&&r.hand?.end))fail(409,'Table changed; refresh and try again');
+    const metadataStale=op==='act'&&(r.version===enteredVersion||typeof enteredClockId==='string'&&r.actionClock?.phase==='cards'&&r.actionClock.id===enteredClockId)&&Number.isSafeInteger(body.version)&&body.version>=(r.actionVersion??r.version)&&body.version<=r.version;
+    if(body.version!==r.version&&!metadataStale&&!(op==='ready'&&body.number===r.number&&r.hand?.end))fail(409,'Table changed; refresh and try again');
     if(op==='act'){
       if(!r.hand||r.hand.end||r.hand.turn!==me)fail(409,'Not your turn');
       if(body.reserved!==undefined&&typeof body.reserved!=='boolean')fail(400,'Invalid reserved action flag');
@@ -432,14 +432,15 @@ export function openRooms(file,avatarFor=()=>0,walletsEnabled=false){
   let migrated=false;for(const r of rooms.values())for(const p of r.players)if(p?.bot&&!p.noteId){p.noteId=randomBytes(16).toString('hex');migrated=true}
   if(migrated){writeFileSync(file+'.tmp',JSON.stringify(packed()),{mode:0o600});renameSync(file+'.tmp',file)}
   const request=(id,op,token,body,table,account)=>{
-    const old=rooms.get(id),version=old?.version,walletBefore=JSON.stringify(wallet.state),snapshot=walletsEnabled&&(['join','ready','leave','end-practice','add-chips','sit-out','remove-seat'].includes(op)||old?.tournament&&!old.tournament.walletSettled&&old.players.some(p=>p?.entryFunded))?JSON.stringify(packed()):null;let failed=false;
+    const old=rooms.get(id),version=old?.version,oldClock=old?.actionClock,clockId=oldClock?.id,cardUses=oldClock?.cardsUsed,walletBefore=JSON.stringify(wallet.state),snapshot=walletsEnabled&&(['join','ready','leave','end-practice','add-chips','sit-out','remove-seat'].includes(op)||old?.tournament&&!old.tournament.walletSettled&&old.players.some(p=>p?.entryFunded))?JSON.stringify(packed()):null;let failed=false;
     if(!walletsEnabled&&Object.keys(wallet.state.accounts).length&&['join','ready','leave','end-practice','add-chips','sit-out','remove-seat'].includes(op))fail(503,'Cash wallet mode is required for funded rooms');
     if(!walletsEnabled&&old?.tournament&&!old.tournament.walletSettled&&old.players.some(p=>p?.entryFunded))fail(503,'Wallet mode is required for funded tournaments');
     try{const result=handle(rooms,id,op,token,body,table,account,avatarFor,notes,walletsEnabled?wallet:null);if(settleTournamentWallet(rooms.get(id),walletsEnabled?wallet:null,id)&&result?.version!==undefined)result.version=rooms.get(id).version;return result}catch(error){if(snapshot){unpack(JSON.parse(snapshot));failed=true}throw error}finally{
     if(!failed){
     advanceWaiting(rooms.get(id),table,Date.now());
     if(rooms.get(id)?.version!==version||JSON.stringify(wallet.state)!==walletBefore){
-      const changed=rooms.get(id);if(changed&&changed.version!==version){if(op==='chat'&&changed.version===(version??0)+1)changed.actionVersion??=version??0;else changed.actionVersion=changed.version}
+      // Clock-only card updates preserve queued bets while the same action remains active.
+      const changed=rooms.get(id),cardMetadata=typeof clockId==='string'&&oldClock?.phase==='cards'&&changed?.actionClock?.id===clockId&&(op==='time-card-option'||changed.actionClock.cardsUsed>cardUses);if(changed&&changed.version!==version){if(op==='chat'&&changed.version===(version??0)+1||cardMetadata)changed.actionVersion??=version??0;else changed.actionVersion=changed.version}
       try{
         writeFileSync(file+'.tmp',JSON.stringify(packed()),{mode:0o600});
         renameSync(file+'.tmp',file);
