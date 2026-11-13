@@ -430,3 +430,16 @@ html[data-panel=chat] #chatForm.nativeChatComposer{display:block;height:72px;min
 .nativeChatObserver{position:absolute;left:0;width:100%;height:24px;padding:0!important;border:0!important;background:none!important;text-align:left}.nativeChatObserverLabel{position:absolute;left:40px;top:0;width:180px;height:24px;font:14px/24px NativeActionRoboto,Arial,sans-serif}.nativeChatObserverTrack{position:absolute;right:16px;top:2px;width:44px;height:20px}.nativeChatObserverDot{position:absolute;top:3px;width:18px;height:18px}.nativeChatObserverState{position:absolute;top:0;width:20px;height:24px;font:13px/24px NativeActionRoboto,Arial,sans-serif;text-align:center}
 
 .nativeEmoticonViewport{scrollbar-width:none}.nativeEmoticonViewport::-webkit-scrollbar{display:none}.nativeEmoticonScrollbar{position:absolute;right:0;top:1px;width:8px;background:#000;touch-action:none;cursor:default}.nativeEmoticonScrollbar[hidden]{display:none!important}.nativeEmoticonThumb{position:absolute;left:0;width:8px;box-sizing:border-box;border-style:solid;border-width:6px 2.4px 8px;border-image:url('/home-art/native-chat-option-scrollbar.png') 6 3 8 3 fill stretch}.nativeEmoticonScrollbar:focus-visible{outline:1px solid #ccc;outline-offset:1px}
+
+/* PlayerCell3D.activateDim(.3): alpha .5 with untinted avatar; text .6. */
+.seat.sittingOut>.portrait{opacity:.5;filter:none}
+.seat.sittingOut>.plate>.seatName,.seat.sittingOut>.plate>.stack{opacity:.6}
+.seat.sittingOut .nativeHudBadge img{filter:none;opacity:.5}
+
+/* PlayerSitOutUI3D: timer -85, unlimited-time icon +30 and label +90. */
+.nativeSitOut{position:absolute;left:0;top:0;z-index:5;pointer-events:none;color:#fafafa;font:calc(28*var(--seat-scale)/17*1cqw) NativeActionRoboto,Arial;white-space:nowrap}
+.nativeSitOut img{position:absolute;left:calc(-36*var(--seat-scale)/17*1cqw);top:calc(-55*var(--seat-scale)/17*1cqw);width:calc(72*var(--seat-scale)/17*1cqw);height:calc(72*var(--seat-scale)/17*1cqw);filter:brightness(.9803921568627451)}
+.nativeSitOut span{position:absolute;left:0;top:calc(5*var(--seat-scale)/17*1cqw);transform:translateX(-50%)}
+
+.nativeSitOut.gameClock img{top:calc(-80*var(--seat-scale)/17*1cqw)}
+.nativeSitOut.gameClock span{top:calc(-25*var(--seat-scale)/17*1cqw)}
