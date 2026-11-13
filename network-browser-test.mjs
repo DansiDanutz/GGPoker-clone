@@ -1692,8 +1692,8 @@ assert.equal(await c.run("document.querySelectorAll('.winner .portrait .winMark 
    const replacement=await browser();await replacement.go(url);await until(()=>replacement.run("!!document.querySelector('#join')?.onsubmit"));
    await replacement.run("document.querySelector('#name').value='Replacement';document.querySelector('#seatChoice').value='3';document.querySelector('#join').requestSubmit()");
    const joined=await until(async()=>{try{const s=(await api(replacement))[1];return s.me===3&&s.hand&&s}catch{return false}});
-   assert.equal(joined.number,3);assert.equal(joined.hand.button,2);assert.equal(joined.names[3],'Replacement');assert.equal(joined.results.length,2);
-   const expectedStacks=next.hand.stacks.map((v,i)=>i===3?120:v);assert.deepEqual(joined.hand.stacks.map((v,i)=>v+joined.hand.committed[i]),expectedStacks);
+   const expectedStacks=next.hand.stacks.map((v,i)=>i===3?120:v),expectedButton=Array.from({length:6},(_,i)=>(next.hand.button+i+1)%6).find(i=>expectedStacks[i]>0);assert.equal(joined.number,3);assert.equal(joined.hand.button,expectedButton,'Dealer advances clockwise to a funded seat, skipping busted players');assert.equal(joined.names[3],'Replacement');assert.equal(joined.results.length,2);
+   assert.deepEqual(joined.hand.stacks.map((v,i)=>v+joined.hand.committed[i]),expectedStacks);
    assert.deepEqual(joined.hand.cards.map(Boolean),[false,false,false,true,false,false]);
    console.log('PASS browser cash leave/replacement: receipt',cashOut,'five retained seats, exact carried stacks, third hand/dealer progression and private replacement cards');
 
