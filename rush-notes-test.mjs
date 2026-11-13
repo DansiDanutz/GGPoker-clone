@@ -9,7 +9,7 @@ try{
  for(let i=0;i<12;i++)rush('Player'+i,'join',{version:rush('Player'+i,'state').version});
  for(let i=0;i<12;i++){const s=rush('Player'+i,'state');if(!s.table)rush('Player'+i,'deal',{version:s.version})}
  const state=rush('Player0','state'),before=readFileSync(file),view=rush('Player0','notes'),target=view.players[0];
- assert.equal(target.subject,noteSubject({account:target.name}));assert.equal(state.noteSubjects[target.seat],target.subject);assert.equal(view.self.name,'Player0');assert.equal(view.statsScope,'rush-pool');assert.deepEqual(target.stats,{hands:0,wins:0,voluntary:0});
+ assert.equal(target.subject,noteSubject({account:target.name}));assert.equal(state.noteSubjects[target.seat],target.subject);assert.equal(view.self.name,'Player0');assert.equal(view.statsScope,'rush-pool');assert.deepEqual(target.stats,{hands:0,wins:0,pfrHands:0,preflopRaises:0,stealOpportunities:0,stealRaises:0,threeBetOpportunities:0,threeBets:0,flopsSeen:0,showdowns:0,showdownWins:0,voluntary:0});
  const body={table:state.table,seat:target.seat,subject:target.subject,text:'Private Rush note\n♠',color:2};
  assert.equal(rush('Player0','notes',body).players.find(p=>p.subject===target.subject).text,body.text);assert.deepEqual(readFileSync(file),before,'Notes do not mutate game snapshot/version');
  assert.deepEqual(store.get(noteSubject({account:'player0'}),target.subject),{text:body.text,color:2});assert.equal(rush(target.name,'notes').players.find(p=>p.name==='Player0').text,'','Other account cannot read my notes');

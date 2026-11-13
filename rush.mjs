@@ -10,7 +10,7 @@ const fail=(status,message)=>{throw Object.assign(Error(message),{status})};
 export function openRush(file,variant='holdem',avatarFor=()=>0,notes){
  if(!['holdem','plo'].includes(variant))throw Error('Invalid Rush format');
  let entries=[],pool=null,version=0,knownTables=new Set();
- function restore(saved){entries=saved.entries;version=saved.version;pool=saved.pool?rushPool(entries,4,saved.pool,variant):null;knownTables=new Set(pool?.tables.keys()||[])}
+ function restore(saved){entries=saved.entries;if(!Array.isArray(entries)||entries.some(p=>p?.helmet!==undefined&&typeof p.helmet!=='boolean'))throw Error('Invalid Rush helmet state');version=saved.version;pool=saved.pool?rushPool(entries,4,saved.pool,variant):null;knownTables=new Set(pool?.tables.keys()||[])}
  try{restore(JSON.parse(readFileSync(file,'utf8')))}catch(e){if(e.code!=='ENOENT')throw e}
  const avatars=ids=>ids.map(id=>entries.some(p=>p.id===id&&p.bot)?null:avatarFor(id));
  const subject=id=>noteSubject(entries.find(p=>p.id===id)?.bot?{bot:true,noteId:'rush:'+variant+':'+id}:{account:id});
@@ -51,7 +51,7 @@ export function openRush(file,variant='holdem',avatarFor=()=>0,notes){
   let result=null;
   if(previous){const [tableId,t]=previous,seat=t.ids.indexOf(id),{deck,hands,reservedChecks,...game}=t.game;result={table:tableId,me:seat,names:t.ids,avatars:avatars(t.ids),hand:{...game,hands:visibleCards(t.game,seat)}}}
   const noteTable=table||previous?.[1],noteTableID=table?player.table:previous?.[0],noteSeat=noteTable?.ids.indexOf(id);
-  return {variant,version,paused:entries.some(p=>p.id===id&&p.paused===true),noteTable:noteTableID??null,hudVersion:pool?[...pool.tables.values()].filter(t=>t.settled).length:0,...(noteTable?{noteSubjects:noteTable.ids.map((id,i)=>i===noteSeat?null:subject(id))}:{}),avatars:table?avatars(table.ids):[],queued:entries.some(p=>p.id===id&&p.queued),handVersion:table?player.table+':'+table.game.history.length:null,registered:entries.some(p=>p.id===id),population:entries.length,waiting:pool?[...pool.players].filter(([id,p])=>p.table===null&&p.balance>0&&eligible().includes(id)).length:entries.length,table:player?.table||null,balance:player?.balance??(entries.some(p=>p.id===id)?200:0),me,names:table?.ids||[],hand,result,legal:table?.game.turn===me&&!table.game.end?options(table.game):null};
+  return {variant,version,helmet:entries.some(p=>p.id===id&&p.helmet===true),helmets:(table?.ids||previous?.[1].ids||[]).map(name=>entries.some(p=>p.id===name&&p.helmet===true)),paused:entries.some(p=>p.id===id&&p.paused===true),noteTable:noteTableID??null,hudVersion:pool?[...pool.tables.values()].filter(t=>t.settled).length:0,...(noteTable?{noteSubjects:noteTable.ids.map((id,i)=>i===noteSeat?null:subject(id))}:{}),avatars:table?avatars(table.ids):[],queued:entries.some(p=>p.id===id&&p.queued),handVersion:table?player.table+':'+table.game.history.length:null,registered:entries.some(p=>p.id===id),population:entries.length,waiting:pool?[...pool.players].filter(([id,p])=>p.table===null&&p.balance>0&&eligible().includes(id)).length:entries.length,table:player?.table||null,balance:player?.balance??(entries.some(p=>p.id===id)?200:0),me,names:table?.ids||[],hand,result,legal:table?.game.turn===me&&!table.game.end?options(table.game):null};
  }
  function hud(id,viewer){
   const records=[...(pool?.tables||[])].filter(([,t])=>t.settled&&t.ids.includes(id)),stats={hands:records.length,wins:0,pfrHands:0,preflopRaises:0,stealOpportunities:0,stealRaises:0,threeBetOpportunities:0,threeBets:0,flopsSeen:0,showdowns:0,showdownWins:0,voluntary:records.every(([,t])=>typeof t.game.vpip?.[t.ids.indexOf(id)]==='boolean')?0:null};
@@ -69,6 +69,12 @@ export function openRush(file,variant='holdem',avatarFor=()=>0,notes){
    saveNoteLabels(notes,owner,body);
    if(body.seat!==undefined){if(!Number.isInteger(body.seat)||body.seat<0||body.seat>=table.ids.length||body.seat===me)fail(400,'Choose another seated player');const target=subject(table.ids[body.seat]);if(body.subject!==target)fail(409,'Seat changed; reopen player notes');notes.set(owner,target,{text:body.text,color:body.color})}
    return {...(reportReceipt?{reportReceipt}:{}),reportTypes,self:{seat:me,name:id,subject:owner,...hud(id,id)},colors:noteColors,labels:notes.getLabels(owner),statsScope:'rush-pool',players:table.ids.flatMap((name,seat)=>seat===me?[]:[{seat,name,subject:subject(name),...hud(name,id),...notes.get(owner,subject(name))}])};
+  }
+  if(op==='helmet'){
+   const entry=entries.find(p=>p.id===id);if(!entry||entry.bot)fail(409,'Join the Rush pool first');
+   if(Object.keys(body).some(k=>!['muted','version','handVersion'].includes(k))||typeof body.muted!=='boolean'||body.version!==undefined&&(!Number.isSafeInteger(body.version)||body.version<0)||body.handVersion!=null&&(typeof body.handVersion!=='string'||body.handVersion.length>128))fail(400,'Choose a helmet state');
+   if(!!entry.helmet===body.muted)return view(id);const before=JSON.stringify(snapshot());
+   try{entry.helmet=body.muted;save();return view(id)}catch(error){restore(JSON.parse(before));throw error}
   }
   if(op==='state'){
    tick();return view(id);
