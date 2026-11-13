@@ -288,10 +288,9 @@ function drawTable(g){
   if(n&&state.settings?.timeBankSeconds){const clock=element('span','nativeGameClock');clock.dataset.clockSeat=String(i);clock.setAttribute('role','img');for(let d=0;d<5;d++){const glyph=element('span','nativeClockDigit');glyph.style.left=([0,21,42,53,74][d]*.88)/17+'cqw';clock.append(glyph)}seat.append(clock)}
   if(g?.clock?.canDisableLimit&&i===state.me&&g.turn===i){const bank=element('button','nativeTimeBank');bank.type='button';bank.setAttribute('aria-label','Use remaining time bank');bank.title='Use the remaining local time bank for this turn';bank.dataset.renderKey=g.clock.actionId;bank.onclick=()=>operate('time-bank',{actionId:g.clock.actionId});seat.append(bank);const progress=element('span','nativeLimitProgress');progress.setAttribute('aria-hidden','true');progress.append(element('span','nativeLimitFill'),element('span','nativeLimitPointer'));seat.append(progress)}
   playerNotes.decorateSeat(seat,i);
-  const reaction=existing?.querySelector('.seatReaction');if(reaction)seat.append(reaction.cloneNode(true));
-  const priorHelmet=existing?.querySelector('.seatHelmet');priorHelmet?.remove();
+  const extensions=[...existing?.querySelectorAll(':scope>.seatReaction,:scope>.seatChatBubble,:scope>.seatHelmet')||[]];for(const node of extensions)node.remove();
   const mounted=existing?updateElement(existing,seat):felt.appendChild(seat),glow=mounted.querySelector('.nativeTurnGlow');
-  if(priorHelmet)mounted.append(priorHelmet);
+  mounted.append(...extensions);
   if(glow&&!glow.hidden&&i===state.me&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&!glow.getAnimations().some(a=>a.effect.getTiming().duration===400)){
    const art='url("/home-art/native-reserved-turn-glow-urgent.png")';glow.animate([{opacity:0,borderImageSource:art,offset:0,easing:'steps(1,end)'},{opacity:1,borderImageSource:art,offset:.5},{opacity:1,borderImageSource:art,offset:1}],{duration:400,delay:Math.max(0,g.deadline-Date.now()-5000),iterations:Infinity});
   }
@@ -347,11 +346,31 @@ function renderPortrait(portrait,i){
  if(custom)for(const node of [...portrait.childNodes])if(node.nodeType===Node.TEXT_NODE)node.remove();portrait.setAttribute('aria-label','Avatar for '+state.names[i]);
 }
 function renderSeatAvatars(){for(const seat of document.querySelectorAll('.felt .seat'))renderPortrait(seat.querySelector('.portrait'),Number(seat.dataset.seat))}
+const chatDisplays=new Map();let chatBubblesInitialized=false;
 const reactionDisplays=new Map(),reactionReduced=matchMedia('(prefers-reduced-motion: reduce)');
-reactionReduced.addEventListener('change',()=>{if(reactionReduced.matches)for(const node of document.querySelectorAll('.seatReaction'))for(const animation of node.getAnimations())animation.cancel()});
-// Seat reconciliation clones nodes; keep dismissal on the stable felt parent.
-for(const type of ['mousedown','click','keydown'])document.querySelector('.felt').addEventListener(type,event=>{const node=event.target.closest('.seatReaction');if(!node)return;if(type==='mousedown')event.stopImmediatePropagation();else if(type==='click'){event.stopPropagation();const display=reactionDisplays.get(node.dataset.reaction);if(display)display.dismissed=true;node.remove()}else if(event.key==='Enter'||event.key===' '){event.preventDefault();node.click()}});
+reactionReduced.addEventListener('change',()=>{if(reactionReduced.matches)for(const node of document.querySelectorAll('.seatReaction,.seatChatBubble'))for(const animation of node.getAnimations())animation.cancel()});
+// Seat contents are reconciled; keep dismissal on the stable felt parent.
+for(const type of ['mousedown','click','keydown'])document.querySelector('.felt').addEventListener(type,event=>{const node=event.target.closest('.seatReaction,.seatChatBubble');if(!node)return;if(type==='mousedown')event.stopImmediatePropagation();else if(type==='click'){event.stopPropagation();const display=node.classList.contains('seatReaction')?reactionDisplays.get(node.dataset.reaction):chatDisplays.get(node.dataset.bubble);if(display)display.dismissed=true;node.remove()}else if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();node.click()}});
+function renderSeatChat(){
+ const aof=state?.settings?.variant==='aof',count=capacity();if(!state||chatWindow||count!==6&&!aof)return;
+ const keyFor=m=>JSON.stringify([m.at,m.seat,m.name,m.text]);
+ if(!chatBubblesInitialized){for(const m of state?.chat||[])if(!m.reaction)chatDisplays.set(keyFor(m),{started:performance.now(),dismissed:true});chatBubblesInitialized=true}
+ const offsets=aof?[[46,-204],[78,-159],[90,-98],[-78,-159]]:[[46,-204],[78,-159],[84,-112],[90,-98],[-84,-112],[-78,-159]];
+ for(const seat of document.querySelectorAll('.felt .seat')){
+  const index=Number(seat.dataset.seat),current=seat.querySelector(':scope>.seatChatBubble'),message=state?.chat?.findLast(m=>m.seat===index&&m.name===state.names[index]&&!m.reaction&&typeof m.text==='string');
+  if(!message){current?.remove();continue}const key=keyFor(message);let display=chatDisplays.get(key);
+  if(!display){display={started:performance.now(),dismissed:helmet.muted()||Date.now()-message.at>=5000};chatDisplays.set(key,display);if(chatDisplays.size>200)chatDisplays.delete(chatDisplays.keys().next().value)}
+  if(display.dismissed)continue;const elapsed=performance.now()-display.started;if(elapsed>=5000){current?.remove();continue}
+  const position=(index-(state.me??(aof?2:0))+count)%count,right=aof?position===3:position>=4,[x,y]=offsets[position];
+  if(current?.dataset.bubble===key){current.classList.toggle('right',right);current.style.left=(x-(right?178:0))/17+'cqw';current.style.top=(y+100-display.height)/17+'cqw';continue}current?.remove();
+  const node=element('span','seatChatBubble'+(right?' right':'')),label=element('span','seatChatText',message.text);node.dataset.bubble=key;node.tabIndex=0;node.setAttribute('role','button');node.setAttribute('aria-label','Hide message from '+message.name);for(const name of ['seatChatBox','seatChatShadow']){const art=element('span',name);art.setAttribute('aria-hidden','true');node.append(art)}node.append(label);seat.append(node);
+  const scale=document.querySelector('.felt').getBoundingClientRect().width/1700;let length=message.text.length-1;while(length>=0&&label.getBoundingClientRect().height/scale>100){label.textContent=message.text.slice(0,length)+'..';length--}const textHeight=label.getBoundingClientRect().height/scale,height=Math.max(100,textHeight+34);display.height=height;node.style.left=(x-(right?178:0))/17+'cqw';node.style.top=(y+100-height)/17+'cqw';node.style.height=height/17+'cqw';label.style.top=Math.floor((height-15-textHeight)/2)/17+'cqw';
+  if(!reactionReduced.matches&&elapsed<200){const frames=Array.from({length:61},(_,i)=>({transform:'translateY('+(15*Math.pow(1-i/60,3)/17)+'cqw)'}));node.animate(frames,{duration:200,easing:'linear'}).currentTime=elapsed}
+  setTimeout(()=>node.remove(),5000-elapsed);
+ }
+}
 function renderSeatReactions(){
+ renderSeatChat();
  for(const seat of document.querySelectorAll('.felt .seat')){
   const current=seat.querySelector('.seatReaction'),i=Number(seat.dataset.seat);
   const reaction=(state?.chat||[]).findLast(m=>m.seat===i&&m.name===state.names[i]&&[1,2,3].includes(m.reaction)&&Date.now()-m.at<4000);
