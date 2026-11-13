@@ -53,3 +53,9 @@ The legacy auto-scale probe now changes only reserveAmount during its long-numbe
 ## Toggle asset verification
 
 `tools/extract-language-toggle.py` extracts345/346/347/350 from the installed desktop atlas. Each PNG is decoded again and compared byte-for-byte with its source pixel crop; assertions enforce12×12 mark and20×20 backgrounds. No native assets are committed. The headless Language journey additionally asserts241×24 logical control dimensions, the off-background nine-slice URL and hidden browser-radio paint, while preserving semantic radio controls. These tests establish resource/geometry bindings, not a same-size native runtime screenshot comparison.
+
+## Settings-window synchronization
+
+The saved language also refreshes the selector title and choice captions in other settings windows. A clean dialog reloads its selected radio; a dirty dialog retains its pending choice while captions follow the saved language, matching the source separation between current-language labels and selection draft. Refreshes validate catalogs, discard obsolete generations and retain prior labels with an error on failure. Reopening retries. Local OK invalidates pending caption refreshes before applying its validated dictionary.
+
+The browser journey observes English→Romanian clean synchronization, a French draft preserved across another window’s Romanian save, delayed English unable to replace French captions, failed Romanian refresh retaining French labels, and successful retry on reopen. It never mutates the active hand or owner data. Native multi-window runtime behavior remains unobserved; synchronization is the local implementation of shared preference consistency.
