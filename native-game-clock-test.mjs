@@ -1,5 +1,8 @@
 import assert from 'node:assert/strict';
 globalThis.Image=class{};globalThis.addEventListener=()=>{};globalThis.document={querySelector:()=>null};globalThis.localStorage={getItem:()=>null};
-const {gameClockText}=await import('./felt.mjs');
+const {gameClockText,gameClockRemaining}=await import('./felt.mjs');
 for(const [ms,text] of [[0,'00:00'],[-1,'00:00'],[1,'00:01'],[1000,'00:01'],[1001,'00:02'],[59001,'01:00'],[60000,'01:00'],[60001,'01:01'],[3600000,'60:00']])assert.equal(gameClockText(ms),text);
 console.log('PASS native ceil-to-second GameClock digits, minute boundaries, zero/exhaustion and60-minute local pool');
+
+const hand={timeBanks:[90000,45000],deadline:11000,clock:{seat:0,bankEndsAt:91000,phase:'bank'}};assert.equal(gameClockRemaining(hand,0,2000),89000);assert.equal(gameClockRemaining(hand,1,2000),45000);assert.equal(gameClockRemaining(hand,0,12000),80000,'Cap freezes displayed budget until server resolves the action');assert.equal(gameClockRemaining({...hand,end:{}},0,2000),90000);assert.equal(gameClockRemaining({...hand,timeBanks:[0],deadline:4000,clock:{seat:0,bankEndsAt:4000,phase:'hot'}},0,2000),2000);assert.equal(gameClockRemaining({},0,2000),null);assert.equal(gameClockRemaining({timeBanks:[-1]},0,2000),0);assert.equal(gameClockRemaining({timeBanks:[NaN]},0,2000),null);assert.equal(JSON.stringify(hand),JSON.stringify({timeBanks:[90000,45000],deadline:11000,clock:{seat:0,bankEndsAt:91000,phase:'bank'}}));console.log('PASS shared client bank/HotTime countdown,inactive/end snapshots,deadline clamp,unknown values and immutable input');
+assert.equal(gameClockRemaining(hand,0,-5000),90000,'Clock skew must not display more than saved bank');assert.equal(gameClockRemaining(hand,null,2000),null);
