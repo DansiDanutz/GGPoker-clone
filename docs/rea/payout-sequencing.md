@@ -22,4 +22,4 @@ Fixture-ul de turneu urmărește la20ms orice combinație dintre o nouă cheie d
 
 ## Limite
 
-Această corecție stabilește ordinea vizuală a mâinilor; nu dovedește identitatea tuturor duratelor cu aplicația originală. Ceasul serverului continuă în timpul prezentării: un client întârziat face catch-up pe ultimul snapshot, fără să suspende ceilalți jucători. Native speedRatio, Delay obișnuit, poturi multiple secvențiale și comparația fizică cu AIR rămân de verificat. Nu declarăm întregul showdown1:1.
+Această corecție stabilește ordinea vizuală a mâinilor; nu dovedește identitatea tuturor duratelor cu aplicația originală. Ceasul serverului continuă în timpul prezentării: un client întârziat face catch-up pe ultimul snapshot, fără să suspende ceilalți jucători. Native speedRatio, Delay obișnuit și comparația fizică cu AIR rămân de verificat. Distribuirea locală secvențială a două poturi este documentată separat în multipot-payout.md; nu stabilește duratele absolute native. Nu declarăm întregul showdown1:1.

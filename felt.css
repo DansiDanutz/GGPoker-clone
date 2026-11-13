@@ -139,6 +139,10 @@ footer:has(.nativeAofAction) #status{width:50%;text-align:left;white-space:nowra
 /* MotionView3D default clock; actual native runtime speed and caller delay remain unverified. */
 .felt:is([data-seats="3"],[data-seats="4"],[data-seats="6"],[data-variant=aof]) .award{opacity:0;animation-fill-mode:forwards;transform:translate(-50%,-50%);animation-name:aofPayout;animation-duration:2s;animation-timing-function:cubic-bezier(.3333333333,1,.6666666667,1)}
 @keyframes aofPayout{0%{left:var(--pot-x);top:var(--pot-y);opacity:1}20%,80%{left:var(--stop-x);top:var(--stop-y);opacity:1}100%{left:var(--winner-x);top:var(--winner-y);opacity:0}}
+.felt .award.multiPot{animation-name:aofPotMove,aofPotFinish;animation-duration:.4s,.4s;animation-delay:var(--payout-delay,calc(2s + var(--showdown-offset,0s))),calc(var(--payout-delay,calc(2s + var(--showdown-offset,0s))) + var(--payout-duration) - .4s)}
+.felt .award.payoutWaiting{animation:none;visibility:hidden}
+@keyframes aofPotMove{from{left:var(--pot-x);top:var(--pot-y);opacity:1}to{left:var(--stop-x);top:var(--stop-y);opacity:1}}
+@keyframes aofPotFinish{from{left:var(--stop-x);top:var(--stop-y);opacity:1}to{left:var(--winner-x);top:var(--winner-y);opacity:0}}
 
 .felt:is([data-seats="3"],[data-seats="4"],[data-seats="6"],[data-variant=aof]) .nativeChipPile{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none}
 body .felt:is([data-seats="3"],[data-seats="4"],[data-seats="6"]) .nativeChipMotion .nativeChipPile>img,body .felt:is([data-seats="3"],[data-seats="4"],[data-seats="6"]) .wager .nativeChipPile>img,body .felt:is([data-seats="3"],[data-seats="4"],[data-variant=aof]) .nativeChipPile>img,body .felt:is([data-seats="3"],[data-seats="4"],[data-variant=aof]) #collected .nativeChipPile>img{position:absolute;bottom:auto;width:2.117647059cqw;height:2.058823529cqw;margin:0;padding:0;max-width:none}
