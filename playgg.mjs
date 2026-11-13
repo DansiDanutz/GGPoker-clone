@@ -246,6 +246,7 @@ function catalog(mode){
  $('eventSearchLabel').hidden=!tournament;
  if(mode==='rush'){rushCatalog(request);return}
  if(!tournament){cashCatalog(request,mode);return}
+ const eventEntry=t=>t.accountEntryCost??t.entryCost??25,eventPool=t=>t.prizePool??(t.occupied??0)*eventEntry(t);
  const eventLink=room=>'network.html?mode=tournament&from=home'+(journey?'&player':'')+'#'+room;
  const cell=text=>{const el=document.createElement('span');el.textContent=text;return el};
  let category='all';
@@ -272,9 +273,9 @@ function catalog(mode){
   const custom=!$('buyinRange').hidden,min=$('minBuyin').value===''?0:Number($('minBuyin').value),max=$('maxBuyin').value===''?Infinity:Number($('maxBuyin').value);
   const invalid=custom&&(!$('minBuyin').validity.valid||!$('maxBuyin').validity.valid||min>max);
   $('buyinError').textContent=invalid?'Enter a valid buy-in range. Minimum cannot exceed maximum.':'';
-  events=events.filter(t=>!invalid&&(category==='all'||t.variant==='plo')&&(!custom||(25>=min&&25<=max)));
+  events=events.filter(t=>!invalid&&(category==='all'||t.variant==='plo')&&(!custom||(eventEntry(t)>=min&&eventEntry(t)<=max)));
   events=events.filter(t=>[t.name,...(t.seats||[]).map(p=>p?.name||'')].some(text=>text.toLocaleLowerCase().includes(query)));
-  const value=t=>sort===0?(t.startsAt||0):sort===1?t.name:sort===2?25:sort===3?t.occupied??-1:(t.occupied??-1)*25;
+  const value=t=>sort===0?(t.startsAt||0):sort===1?t.name:sort===2?eventEntry(t):sort===3?t.occupied??-1:t.occupied==null?-1:eventPool(t);
   events.sort((a,b)=>direction*(typeof value(a)==='string'?value(a).localeCompare(value(b)):value(a)-value(b)));
   [...$('columns').children].forEach((b,i)=>{b.textContent=headings[i]+(sort===i?(direction===1?' ▲':' ▼'):'');b.setAttribute('aria-label','Sort by '+headings[i])});
   if(!events.length){nextList.replaceChildren(cell('No matching tournaments'));details.textContent='';$('takeSeat').removeAttribute('href');$('takeSeat').textContent='Select a tournament';$('eventLobby').removeAttribute('href');updateElement(list,nextList);updateElement(detailsRoot,details);return}
@@ -282,11 +283,11 @@ function catalog(mode){
   nextList.replaceChildren(...events.map(t=>{
    const row=document.createElement('button'),started=t.hand>0,closed=!t.open||t.cancelled,available=!closed&&!started;
    row.dataset.room=t.room;row.setAttribute('aria-label',t.name);row.setAttribute('aria-pressed',String(t.room===selected));
-   row.append(...[t.cancelled?'Cancelled':started?'Started':closed?'Closed':t.startsAt?new Date(t.startsAt).toLocaleString(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'On registration',t.name,'25',t.occupied==null?'—':t.occupied+'/'+(t.capacity||4),t.occupied==null?'—':String(t.occupied*25)].map(cell));
+   row.append(...[t.cancelled?'Cancelled':started?'Started':closed?'Closed':t.startsAt?new Date(t.startsAt).toLocaleString(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'On registration',t.name,String(eventEntry(t)),t.occupied==null?'—':t.occupied+'/'+(t.capacity||4),t.occupied==null?'—':String(eventPool(t))].map(cell));
    row.onclick=()=>{selected=t.room;show(current)};
    if(selected===t.room){details.replaceChildren();
     const title=document.createElement('strong');title.textContent=t.name;details.append(title);
-    const fields=[['Start',t.startsAt?new Date(t.startsAt).toLocaleString()+' · minimum '+Math.max(2,(t.prizeShares||[100]).length)+' players':'At '+(t.capacity||4)+' registrations'],['Buy-in','25 play credits'],['Players',t.occupied==null?'—':t.occupied+' / '+(t.capacity||4)],['Prize',t.occupied==null?'—':t.occupied*25+' play credits'],['Starting chips',String(t.stack||100)],['Blinds',(t.currentBlind||t.blind||4)/2+' / '+(t.currentBlind||t.blind||4)+(t.currentAnte||t.ante?' · Ante '+(t.currentAnte||t.ante):'')],['Format',(t.variant==='plo'?'Pot-limit Omaha':'No-limit Hold’em')+' · freezeout · no rebuys'],['Payout',(t.prizeShares||[100]).length===1?'Winner takes the pool':t.prizeShares.map((n,i)=>(i+1)+': '+n+'%').join(' · ')]];
+    const fields=[['Start',t.startsAt?new Date(t.startsAt).toLocaleString()+' · minimum '+Math.max(2,(t.prizeShares||[100]).length)+' players':'At '+(t.capacity||4)+' registrations'],['Buy-in',eventEntry(t)+' play credits'],['Players',t.occupied==null?'—':t.occupied+' / '+(t.capacity||4)],['Prize',t.occupied==null?'—':eventPool(t)+' play credits'],['Starting chips',String(t.stack||100)],['Blinds',(t.currentBlind||t.blind||4)/2+' / '+(t.currentBlind||t.blind||4)+(t.currentAnte||t.ante?' · Ante '+(t.currentAnte||t.ante):'')],['Format',(t.variant==='plo'?'Pot-limit Omaha':'No-limit Hold’em')+' · freezeout · no rebuys'],['Payout',(t.prizeShares||[100]).length===1?'Winner takes the pool':t.prizeShares.map((n,i)=>(i+1)+': '+n+'%').join(' · ')]];
     fields.push(['Blind levels',t.levelSeconds?t.levelSeconds+' seconds · new hands only':'Server default · new hands only']);
     const dl=document.createElement('dl');for(const [label,value] of fields){const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=label;dd.textContent=value;dl.append(dt,dd)}details.append(dl);
     $('eventLobby').href=eventLink(t.room);
