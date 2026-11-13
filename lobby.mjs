@@ -88,14 +88,60 @@ $('walletGrantForm').onsubmit=async e=>{e.preventDefault();if(grantBusy||walletS
  }catch(error){$('walletStatus').textContent=(saved?'Grant saved; balances could not refresh. ':'')+error.message+(saved?'':' Retry keeps the same operation number; reload balances to inspect recent activity.')}finally{grantBusy=false;grantControls(false)}};
 
 // Owner-only local seat administration; the private native operator console was not observed.
-const cashSeats=document.createElement('section'),seatHeading=document.createElement('h2'),seatStatus=document.createElement('p'),seatList=document.createElement('ul');cashSeats.id='cashSeats';cashSeats.hidden=true;seatStatus.id='cashSeatStatus';seatStatus.setAttribute('role','status');seatList.id='cashSeatPlayers';cashSeats.append(seatHeading,seatStatus,seatList);document.body.append(cashSeats);let seatsBusy=false;
+const cashSeats=document.createElement('section'),seatHeading=document.createElement('h2'),seatStatus=document.createElement('p'),seatList=document.createElement('ul');cashSeats.id='cashSeats';cashSeats.hidden=true;seatStatus.id='cashSeatStatus';seatStatus.setAttribute('role','status');seatList.id='cashSeatPlayers';cashSeats.append(seatHeading,seatStatus,seatList);document.body.append(cashSeats);let seatsBusy=false,seatTable=null,seatPoll,seatEpoch=0;
+const seatMonitor=document.createElement('p'),refreshSeats=document.createElement('button'),closeSeats=document.createElement('button');seatMonitor.id='cashSeatMonitor';seatMonitor.setAttribute('role','status');refreshSeats.type=closeSeats.type='button';refreshSeats.textContent='Refresh seats';closeSeats.textContent='Close monitor';closeSeats.id='closeSeatMonitor';cashSeats.insertBefore(seatMonitor,seatList);cashSeats.append(refreshSeats,closeSeats);
+function stopSeatMonitor(){clearTimeout(seatPoll);seatEpoch++;seatTable=null;cashSeats.hidden=true;seatList.replaceChildren();seatMonitor.textContent=seatStatus.textContent='';delete seatMonitor.dataset.phase;delete seatMonitor.dataset.hand}
+closeSeats.onclick=stopSeatMonitor;$('key').addEventListener('input',stopSeatMonitor);addEventListener('pagehide',stopSeatMonitor);
+refreshSeats.onclick=()=>{if(seatTable)void manageSeats(seatTable)};
+function paintSeatRoster(data,table){
+ const m=data.monitor;
+ if(m){
+  const summary='Hand '+m.hand+' · '+m.phase+(m.pauseRequested?' · pause requested':'')+' · Pot '+m.pot+' · Chips '+m.chipTotal+' · BB '+m.blind+(m.prizePool!==undefined?' · Level '+m.level+' · Prize pool '+m.prizePool:'');
+  if(seatMonitor.textContent!==summary)seatMonitor.textContent=summary;
+  seatMonitor.dataset.phase=m.phase;seatMonitor.dataset.hand=String(m.hand);
+ }
+ for(const old of [...seatList.children])if(!data.players.some(p=>p.subject===old.dataset.subject))old.remove();
+ for(const [index,player]of data.players.entries()){
+  let li=[...seatList.children].find(e=>e.dataset.subject===player.subject);
+  if(!li){li=document.createElement('li');li.dataset.subject=player.subject;li.append(document.createElement('span'),document.createElement('button'))}
+  li.dataset.seat=String(player.seat);
+  const text=li.firstElementChild,button=li.lastElementChild;
+  const description='Seat '+(player.seat+1)+' · '+player.name+(player.bot?' · computer':'')+(player.stack!==undefined?' · '+player.stack+' chips · '+player.status+(player.acting?' · TO ACT':'')+(player.committed?' · in pot '+player.committed:'')+(player.place!==null?' · Place '+player.place:'')+(player.prize!==null?' · Prize '+player.prize:''):'')+' ';
+  if(text.textContent!==description)text.textContent=description;
+  li.dataset.status=player.status||'';button.type='button';
+  button.textContent=data.tournament?'Withdraw registration':'Remove player';
+  button.dataset.canRemove=String(data.canRemove);button.disabled=seatsBusy||!data.canRemove;
+  button.setAttribute('aria-label',data.tournament?'Withdraw '+player.name+' registration':'Remove '+player.name+' from cash table');
+  button.onclick=async()=>{if(await confirmSeatRemoval(player,!!data.tournament))await manageSeats(table,{seat:player.seat,subject:player.subject,version:data.version})};
+  if(seatList.children[index]!==li)seatList.insertBefore(li,seatList.children[index]||null);
+ }
+}
+function pollSeatMonitor(){
+ clearTimeout(seatPoll);
+ if(!seatTable||cashSeats.hidden||document.hidden)return;
+ const table=seatTable,epoch=seatEpoch,key=$('key').value;
+ seatPoll=setTimeout(async()=>{
+  if(seatsBusy||document.querySelector('#confirmSeatRemoval[open]')){pollSeatMonitor();return}
+  try{
+   const response=await fetch('/api/owner-seats?table='+encodeURIComponent(table.id),{headers:{Authorization:'Bearer '+key},cache:'no-store',signal:AbortSignal.timeout(5000)}),data=await response.json();
+   if(epoch!==seatEpoch||key!==$('key').value||cashSeats.hidden)return;
+   if(!response.ok){if(response.status===401){stopSeatMonitor();return}throw Error(data.error||'Monitor unavailable')}
+   paintSeatRoster(data,table);
+  }catch(error){
+   if(epoch!==seatEpoch)return;
+   seatMonitor.textContent='Monitor disconnected: '+error.message;
+   for(const b of seatList.querySelectorAll('button'))b.disabled=true;
+  }finally{if(epoch===seatEpoch)pollSeatMonitor()}
+ },1500);
+}
+document.addEventListener('visibilitychange',()=>{clearTimeout(seatPoll);if(!document.hidden)pollSeatMonitor()});
 function confirmSeatRemoval(player,tournament=false){return new Promise(resolve=>{const dialog=document.createElement('dialog'),title=document.createElement('h2'),text=document.createElement('p'),cancel=document.createElement('button'),remove=document.createElement('button');dialog.id='confirmSeatRemoval';dialog.setAttribute('aria-label',tournament?'Withdraw tournament registration':'Remove cash player');title.textContent=(tournament?'Withdraw registration for ':'Remove ')+player.name+'?';text.textContent='Seat '+(player.seat+1)+(tournament?'. Refund any paid local entry and revoke this registration. Withdrawal is unavailable after the event starts.':'. Return their local play chips and revoke this seated session. A running hand cannot be interrupted.');cancel.type=remove.type='button';cancel.textContent='Cancel';remove.textContent=tournament?'Withdraw registration':'Remove player';remove.id='confirmRemoveSeat';cancel.onclick=()=>dialog.close();remove.onclick=()=>dialog.close('remove');dialog.onclose=()=>{const approved=dialog.returnValue==='remove';dialog.remove();resolve(approved)};dialog.append(title,text,cancel,remove);document.body.append(dialog);dialog.showModal();cancel.focus()})}
 async function manageSeats(table,command){
- if(seatsBusy)return;seatsBusy=true;cashSeats.hidden=false;seatHeading.textContent=(table.mode==='tournament'?'Tournament registrations · ':'Cash seats · ')+table.name;seatStatus.textContent='Loading…';for(const b of document.querySelectorAll('#cashSeatPlayers button,button[aria-label^="Manage seats for "]'))b.disabled=true;
- const request=async body=>{const response=await fetch('/api/owner-seats'+(body?'':'?table='+encodeURIComponent(table.id)),{method:body?'POST':'GET',headers:{Authorization:'Bearer '+$('key').value,'Content-Type':'application/json'},cache:'no-store',...(body?{body:JSON.stringify({tableId:table.id,...body})}:{})}),data=await response.json();if(!response.ok)throw Error(data.error);return data};
- try{const result=command?await request(command):null,data=await request();seatList.replaceChildren(...data.players.map(player=>{const li=document.createElement('li'),button=document.createElement('button');li.append('Seat '+(player.seat+1)+' · '+player.name+(player.bot?' · computer':'')+' ');button.type='button';button.textContent=data.tournament?'Withdraw registration':'Remove player';button.dataset.canRemove=String(data.canRemove);button.setAttribute('aria-label',data.tournament?'Withdraw '+player.name+' registration':'Remove '+player.name+' from cash table');button.onclick=async()=>{if(await confirmSeatRemoval(player,!!data.tournament))await manageSeats(table,{seat:player.seat,subject:player.subject,version:data.version})};li.append(button);return li}));seatStatus.textContent=result?(result.removed.entryRefund!==undefined?'Withdrew '+result.removed.name+' · entry refund '+result.removed.entryRefund:'Removed '+result.removed.name+' · cash-out '+(result.removed.cashOut||0)+(result.removed.pendingRefund?' · pending chips refunded '+result.removed.pendingRefund:''))+(result.auditSaved===false?' · audit could not be written':''):data.tournament?(data.canRemove?'Withdraw before start; paid local entries are refunded.':'Registration withdrawal is closed after the event starts or is cancelled.'):data.canRemove?'Remove players between hands; their remaining play chips are returned.':'Running hand: removal is unavailable.';await refresh();
- }catch(error){seatList.replaceChildren();seatStatus.textContent=error.message}
- finally{seatsBusy=false;for(const b of document.querySelectorAll('button[aria-label^="Manage seats for "]'))b.disabled=false;for(const b of seatList.querySelectorAll('button'))b.disabled=b.dataset.canRemove!=='true'}
+ if(seatsBusy)return;seatsBusy=true;clearTimeout(seatPoll);const epoch=++seatEpoch,key=$('key').value;if(seatTable?.id!==table.id){seatList.replaceChildren();seatMonitor.textContent='';delete seatMonitor.dataset.phase;delete seatMonitor.dataset.hand}seatTable=table;cashSeats.hidden=false;seatHeading.textContent=(table.mode==='tournament'?'Tournament seats · ':'Cash seats · ')+table.name;seatStatus.textContent='Loading…';for(const b of document.querySelectorAll('#cashSeatPlayers button,button[aria-label^="Manage seats for "]'))b.disabled=true;
+ const request=async body=>{const response=await fetch('/api/owner-seats'+(body?'':'?table='+encodeURIComponent(table.id)),{method:body?'POST':'GET',headers:{Authorization:'Bearer '+key,'Content-Type':'application/json'},cache:'no-store',signal:AbortSignal.timeout(5000),...(body?{body:JSON.stringify({tableId:table.id,...body})}:{})}),data=await response.json();if(!response.ok)throw Error(data.error);return data};
+ try{const result=command?await request(command):null,data=await request();if(epoch!==seatEpoch||key!==$('key').value||cashSeats.hidden)return;paintSeatRoster(data,table);seatStatus.textContent=result?(result.removed.entryRefund!==undefined?'Withdrew '+result.removed.name+' · entry refund '+result.removed.entryRefund:'Removed '+result.removed.name+' · cash-out '+(result.removed.cashOut||0)+(result.removed.pendingRefund?' · pending chips refunded '+result.removed.pendingRefund:''))+(result.auditSaved===false?' · audit could not be written':''):data.tournament?(data.canRemove?'Withdraw before start; paid local entries are refunded.':'Registration withdrawal is closed after the event starts or is cancelled.'):data.canRemove?'Remove players between hands; their remaining play chips are returned.':'Running hand: removal is unavailable.';await refresh();
+ }catch(error){if(epoch===seatEpoch){seatList.replaceChildren();seatStatus.textContent=error.message}}
+ finally{seatsBusy=false;for(const b of document.querySelectorAll('button[aria-label^="Manage seats for "]'))b.disabled=false;if(epoch===seatEpoch){for(const b of seatList.querySelectorAll('button'))b.disabled=b.dataset.canRemove!=='true';pollSeatMonitor()}}
 }
 
 async function manageTournament(table){

@@ -77,7 +77,7 @@ function expireClock(room,now){while(autoTimeCard(room,now)){room.hand.historyEv
 function cashSitOut(r){return !!r?.settings&&!r.tournament&&[undefined,'holdem','plo','plo5','plo6'].includes(r.settings.variant)}
 function rabbitEligible(r,me){const g=r?.hand,p=r?.players[me];return !!(cashSitOut(r)&&p&&g?.end&&[0,3,4].includes(g.board.length)&&g.hands[me]?.length&&g.hudSubjects?.[me]===noteSubject(p))}
 function hasHandBalance(r,i){return !!(r.hand&&r.players[i]&&(r.hand.hands[i].length||r.hand.sittingOut?.[i]&&r.hand.hudSubjects?.[i]===noteSubject(r.players[i])))}
-function cashBalance(r,i){return !r.players[i]?0:hasHandBalance(r,i)?r.hand.stacks[i]:r.waitingStacks?.[i]??r.players[i].buyIn??r.settings?.stack??buyIns[i]??0}
+function cashBalance(r,i){return !r.players[i]?0:r.tournament&&r.hand?r.hand.stacks[i]:hasHandBalance(r,i)?r.hand.stacks[i]:r.waitingStacks?.[i]??r.players[i].buyIn??r.settings?.stack??buyIns[i]??0}
 function cashReady(r){return !r.tournament&&r.hand?.end&&r.players.every((p,i)=>!p||p.sitOutNextHand||r.ready[i])}
 function returnMinimum(r){return (r.settings?.blind||4)*2}
 function returnNeedsChips(r,i){return !!(r.hand?.sittingOut?.[i]&&hasHandBalance(r,i)&&Math.max(cashBalance(r,i)+(r.players[i].addChips?.amount||0),r.players[i].topUpTo||0)<returnMinimum(r))}
@@ -175,7 +175,14 @@ function flushCashLeaves(r,wallet,id,now,onlyAccount){
  if(!r.players.some(p=>p?.leaveNextHand))delete r.cashLeaveAt;return left;
 }
 function canRemoveSeat(table,r,now){return !!(table&&r&&(r.tournament?r.tournament.startedAt===null&&!r.tournament.cancelledAt&&!r.hand&&(!r.tournament.startsAt||now<r.tournament.startsAt):!r.hand||r.hand.end))}
-function seatRoster(r){return r?r.players.flatMap((p,seat)=>p?[{seat,name:p.name,bot:!!p.bot,accountBound:!!p.account,subject:digest('owner:'+noteSubject(p)).slice(0,24)}]:[]):[]}
+function seatRoster(r){
+ if(!r)return [];const g=r.hand,t=r.tournament,playing=!!g&&!g.end;
+ return r.players.flatMap((p,seat)=>{
+  if(!p)return [];
+  const status=t?.cancelledAt?'cancelled':t?.winner===seat?'winner':t?.out?.[seat]?'eliminated':playing?(!g.hands[seat]?.length||g.sittingOut?.[seat]?'sitting-out':g.folded[seat]?'folded':!g.stacks[seat]?'all-in':'playing'):g?'between-hands':t?'registered':'waiting';
+  return [{seat,name:p.name,bot:!!p.bot,accountBound:!!p.account,subject:digest('owner:'+noteSubject(p)).slice(0,24),stack:cashBalance(r,seat),committed:playing?g.committed[seat]:0,status,acting:playing&&g.turn===seat,place:t?.finishes?.[seat]??null,prize:t?.prizes?.[seat]??null}];
+ });
+}
 function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
   if(!/^[a-f0-9]{48}$/.test(id))fail(404,'Unknown room');
   const now=Date.now(),enteredVersion=rooms.get(id)?.version,enteredClockId=rooms.get(id)?.actionClock?.id;
@@ -211,7 +218,10 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
     }
     r.version++;return {...status(),changed:true};
   }
-  if(op==='owner-seats')return {version:r?.version??0,canRemove:canRemoveSeat(table,r,now),...(table?.mode==='tournament'?{tournament:true}:{}),players:seatRoster(r)};
+  if(op==='owner-seats'){
+    const players=seatRoster(r),g=r?.hand,t=r?.tournament,playing=!!g&&!g.end,pot=playing?g.committed.reduce((n,v)=>n+v,0):0;
+    return {version:r?.version??0,canRemove:canRemoveSeat(table,r,now),...(table?.mode==='tournament'?{tournament:true}:{}),monitor:{phase:t?.cancelledAt?'cancelled':t&&t.winner!==null?'finished':t?.pausedAt!=null?'paused':playing?'playing':g?'between-hands':table?.mode==='tournament'?'registration':'waiting',hand:r?.number??0,turn:playing?g.turn:null,pot,chipTotal:players.reduce((n,p)=>n+p.stack,0)+pot,blind:g?.blind??r?.settings?.blind??table?.blind??4,...(t?{level:t.level,prizePool:t.pool,pauseRequested:!!t.pauseRequested}:{})},players};
+  }
   if(op==='remove-seat'){
     if(!canRemoveSeat(table,r,now))fail(409,'Remove a cash seat between hands or a tournament registration before start');
     if(Object.keys(body).some(k=>!['tableId','seat','subject','version'].includes(k))||!Number.isInteger(body.seat)||body.seat<0||body.seat>=r.players.length||typeof body.subject!=='string'||!Number.isSafeInteger(body.version))fail(400,'Choose a current seat');
