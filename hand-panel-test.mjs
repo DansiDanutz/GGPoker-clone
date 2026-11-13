@@ -11,3 +11,5 @@ assert.ok(currentHandRank(['2s','Kd'],[],true)===null);assert.equal(currentHandR
 console.log('PASS current own HandRank:preflop pair choice,known flop/turn/river,exact-two Omaha,ShortDeck,privacy/malformed guards and immutable input');
 
 const now=1700000000000;for(const [elapsed,text]of [[0,'00m 00s'],[61000,'01m 01s'],[3599000,'59m 59s'],[3600000,'01h 00m'],[3661000,'01h 01m']])assert.equal(sessionDuration(now-elapsed,now),text);for(const start of [undefined,null,-1,1.5,NaN,Infinity])assert.equal(sessionDuration(start,now),'-');assert.equal(sessionDuration(now+1000,now),'00m 00s');console.log('PASS native session duration:seconds/minutes,hour boundary,unknown inputs andclock-skew clamp');
+
+assert.equal(currentHandRank(['Ah','Kh'],['Qh','Jh','2c']).drawKey,'RoyalStraightFlushDraw');assert.equal(currentHandRank(['Ah','Kh'],['Qh','Jh','2c','3d','4c']).drawKey,'');assert.equal(currentHandRank(['Ah','Kh','2d','3d'],['Qh','Jh','2c']).drawKey,'');console.log('PASS current-hand draw wiring:known flop hint,river hidden andOmaha excluded');

@@ -63,3 +63,23 @@ export function bestFiveFocus(hole,board,shortDeck=false){
  }
  return {hole:high.hole,board:high.board};
 }
+
+// Retained HandDraw client masks; this is a display hint, never a payout rule.
+export function handDraw(hole,board){
+ if(!Array.isArray(hole)||hole.length!==2||!Array.isArray(board)||![3,4].includes(board.length))return '';
+ const all=[...hole,...board];if(new Set(all).size!==all.length||!all.every(c=>typeof c==='string'&&/^[2-9TJQKA][cdhs]$/.test(c)))return '';
+ const position=c=>c[0]==='A'?(1|1<<13):1<<(faces.indexOf(c[0])+1),ranks=all.reduce((n,c)=>n|position(c),0),suits=[...'cdhs'].map(suit=>all.filter(c=>c[1]===suit)),suitMasks=suits.map(list=>list.reduce((n,c)=>n|position(c),0));
+ // The native source tests exactly four/five suits, including its six-suit-card quirk.
+ const flush=suits.some(list=>list.length===5)?'made':suits.some(list=>list.length===4)?'draw':'';let suited=false;
+ const sameSuit=mask=>suitMasks.some(suit=>{const indices=Array.from({length:14},(_,i)=>i).filter(i=>((suit&mask)&(1<<i))!==0);return indices.some((n,i)=>i>=3&&n-indices[i-3]<=4)});
+ const matches=(indices,span,checkSuit=false,shift=true)=>{const base=indices.reduce((n,i)=>n|1<<i,0);for(let offset=0;offset<(shift?15-span:1);offset++){const mask=base<<offset;if((ranks&mask)===mask){if(checkSuit&&sameSuit(mask))suited=true;return true}}return false};
+ let straight=matches([0,1,2,3,4],5)?'made':'';
+ if(!straight&&matches([1,2,3,4],6,!!flush))straight='OpenEndedStraightDraw';
+ if(!straight||straight==='OpenEndedStraightDraw')for(const [mask,span]of [[[0,2,3,4,6],7],[[0,1,3,4,6,7],8]])if(matches(mask,span,!!flush)&&!straight)straight='DoubleGutshotStraightDraw';
+ if(!straight||['OpenEndedStraightDraw','DoubleGutshotStraightDraw'].includes(straight))for(const [mask,span,shift]of [[[0,1,2,4],5,true],[[0,1,3,4],5,true],[[0,2,3,4],5,true],[[0,1,2,3],4,false],[[10,11,12,13],4,false]])if(matches(mask,span,!!flush,shift)&&!straight)straight='GutshotStraightDraw';
+ if(suited)straight=sameSuit([9,10,11,12,13].reduce((n,i)=>n|1<<i,0))?'RoyalStraightFlushDraw':'StraightFlushDraw';
+ if(!flush)return straight==='made'?'':straight;
+ if(flush==='made')return ['StraightFlushDraw','RoyalStraightFlushDraw'].includes(straight)?straight:'';
+ if(['StraightFlushDraw','RoyalStraightFlushDraw'].includes(straight))return straight;
+ return ['OpenEndedStraightDraw','DoubleGutshotStraightDraw','GutshotStraightDraw'].includes(straight)?'FlushDraw'+straight:'FlushDraw';
+}
