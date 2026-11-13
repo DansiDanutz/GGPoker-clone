@@ -212,6 +212,9 @@ function drawTable(g){
  const prev=lastDraw,changed=!!(g&&prev?.hand===state.number&&g!==prev.g),collected=changed&&!prev.g.end&&(g.board.length>prev.g.board.length||!!g.end);
  lastDraw=g?{hand:state.number,g}:null;
  const settling=!!(changed&&!prev.g.end&&g.end&&!matchMedia('(prefers-reduced-motion: reduce)').matches);
+ const multiPot=(g?.end?.pots?.length||0)>1;
+ // shortcut: keep the local 2s notification budget until native ordinary Delay is recovered.
+ const potDuration=multiPot ? 0.8+Math.max(2/g.end.pots.length-0.8,0.1) : 2;
  const focusBySeat=new Map(),boardFocus=new Set(),primaryPayouts=g?.end?.pots?.[0]?.payouts;
  if(primaryPayouts&&g.board.length===5)for(const [i,payout]of primaryPayouts.entries())if(payout&&g.cards[i]?.every(Boolean)&&!g.folded[i]){
   const focus=bestFiveFocus(g.cards[i],g.board,state.settings?.variant==='shortdeck');focusBySeat.set(i,focus);for(const index of focus.board)boardFocus.add(index);
@@ -231,12 +234,12 @@ function drawTable(g){
  $('collected').classList.toggle('settlingPot',settling);$('collected').hidden=!bank;amount($('collected').lastElementChild,bank);$('collected').setAttribute('aria-label','Collected pot: '+bank);
  const felt=document.querySelector('.felt');const variant=state?.settings?.variant||'holdem';if(felt.dataset.variant!==variant){felt.dataset.variant=variant;applyTableTheme()}felt.dataset.seats=count;const positions=variant==='aof'||count===4?fourPositions:count===3?threePositions:count===6?sixPositions:null;if(variant==='aof'||count===3||count===4)updateElement($('collected').firstElementChild,chipPile([bank],true,'center'));else if($('collected').firstElementChild.classList.contains('nativeChipPile')){const image=new Image();image.src='/home-art/bet-stack.png';image.alt='';$('collected').firstElementChild.replaceWith(image)}const wagers=new Map([...felt.querySelectorAll('.wager')].map(e=>[Number(e.dataset.seat),e]));
  const oldPots=new Map([...felt.querySelectorAll(':scope>.nativePot')].map(p=>[Number(p.dataset.pot),p]));
- const shownPots=settling?g.end.pots:g&&!g.end?g.pots:null;
+ const shownPots=g?.end&&(settling||felt.querySelector('.award'))?g.end.pots:g&&!g.end?g.pots:null;
  if(shownPots?.length>1){
   $('collected').hidden=true;
   for(const [index,pot]of shownPots.entries()){
-   const pile=element('div','nativePot'+(settling?' settlingPot':'')),[x,y]=nativePotPositions[index];pile.dataset.pot=index;pile.setAttribute('aria-label',(index?'Side pot '+index:'Main pot')+': '+pot.amount);pile.style.left=x/17+'cqw';pile.style.top=y/17+'cqw';pile.append(chipPile([pot.amount],true,'center'),amount(element('span',''),pot.amount));
-   pile.onanimationend=e=>{if(e.animationName==='releasePot')pile.remove()};
+   if(g.end&&!settling&&!felt.querySelector('.award[data-pot="'+index+'"]:not([data-started])'))continue;
+   const pile=element('div','nativePot'),[x,y]=nativePotPositions[index];pile.dataset.pot=index;pile.setAttribute('aria-label',(index?'Side pot '+index:'Main pot')+': '+pot.amount);pile.style.left=x/17+'cqw';pile.style.top=y/17+'cqw';pile.append(chipPile([pot.amount],true,'center'),amount(element('span',''),pot.amount));
    if(oldPots.has(index)){updateElement(oldPots.get(index),pile);oldPots.delete(index)}else felt.append(pile)
   }
  }
@@ -281,10 +284,11 @@ function drawTable(g){
     const handNumber=state.number,parts=g.end.pots?g.end.pots.map((p,pot)=>({pot,amount:p.payouts[i]})).filter(p=>p.amount):[{pot:0,amount:g.end.payouts[i]-g.end.returns[i]}];
     for(const part of parts){
      const award=element('span','award seatpos'+pos),origin=nativePotPositions[part.pot];award.dataset.pot=part.pot;award.dataset.seat=i;award.dataset.amount=part.amount;award.setAttribute('aria-label',(part.pot?'Side pot '+part.pot:'Main pot')+' payout: '+part.amount);
+     if(multiPot){award.classList.add('multiPot');award.style.setProperty('--payout-duration',potDuration+'s');if(part.pot){award.classList.add('payoutWaiting');award.style.setProperty('--payout-delay','0s')}}
      award.style.setProperty('--pot-x',origin[0]/17+'cqw');award.style.setProperty('--pot-y',origin[1]/17+'cqw');
      if(positions){nativeChipPosition(award,positions[pos],origin);award.classList.add('nativeChipMotion');award.append(chipPile([part.amount],true,'center'),amount(element('span',''),part.amount))}
-     let finished=false;const finish=()=>{if(finished)return;finished=true;credited+=part.amount;if(state?.number===handNumber&&state.hand?.end){const live=felt.querySelector('.seat[data-seat="'+i+'"] .stackSwitch');if(live)amount(live,credited,' chips')}award.remove();if(state?.number===handNumber&&state.hand?.end&&!felt.querySelector('.award')){const next=pendingHand;pendingHand=null;if(next)applyState(next);else render()}};
-     award.onanimationstart=e=>{if(e.target===award&&['payout','aofPayout'].includes(e.animationName)&&state?.number===handNumber&&state.hand?.end&&payoutSoundHand===handNumber&&!soundedPots.has(part.pot)){soundedPots.add(part.pot);playCues(['WinPot'])}};
+     let finished=false;const finish=e=>{if(finished||e?.type==='animationend'&&multiPot&&e.animationName!=='aofPotFinish')return;finished=true;credited+=part.amount;if(state?.number===handNumber&&state.hand?.end){const live=felt.querySelector('.seat[data-seat="'+i+'"] .stackSwitch');if(live)amount(live,credited,' chips')}award.remove();if(state?.number===handNumber&&state.hand?.end){if(!felt.querySelector('.award[data-pot="'+part.pot+'"]'))for(const waiting of felt.querySelectorAll('.award[data-pot="'+(part.pot+1)+'"]'))waiting.classList.remove('payoutWaiting');if(!felt.querySelector('.award')){const next=pendingHand;pendingHand=null;if(next)applyState(next);else render()}}};
+     award.onanimationstart=e=>{if(e.target!==award||!['payout','aofPayout','aofPotMove'].includes(e.animationName))return;award.dataset.started='true';felt.querySelector('.nativePot[data-pot="'+part.pot+'"]')?.remove();if(state?.number===handNumber&&state.hand?.end&&payoutSoundHand===handNumber&&!soundedPots.has(part.pot)){soundedPots.add(part.pot);playCues(['WinPot'])}};
      award.onanimationend=award.onanimationcancel=finish;felt.append(award)
     }
    }
