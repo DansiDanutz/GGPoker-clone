@@ -16,4 +16,12 @@ Bounded FFDec export of `LanguagePage` establishes a draft choice applied only b
 
 ## Not enabled yet
 
-Language remains disabled in the local settings UI. No application label or saved user preference has been changed by this foundation. Before enabling the page: establish local offered-language policy/brand evidence, connect actual UI labels and dynamic controls, preserve player names/amounts as user data, integrate draft OK/Cancel/Escape/persistence and cross-window refresh, validate fallback/missing files and font coverage, then run browser journeys. Do not present catalog extraction as a working translated application or full1:1Language parity.
+Language remains disabled in the local settings UI. The first explicit table bindings below are implemented; the settings selector is still disabled and no live user preference is changed by tests. Before enabling the page: establish local offered-language policy/brand evidence, connect actual UI labels and dynamic controls, preserve player names/amounts as user data, integrate draft OK/Cancel/Escape/persistence and cross-window refresh, validate fallback/missing files and font coverage, then run browser journeys. Do not present catalog extraction as a working translated application or full1:1Language parity.
+
+## First explicit table bindings
+
+`installTableLanguage` currently binds only marked nodes for ButtonReJoin (Deal Me In), TablePlayerInfoSittingOut and MobileSitOut. Keys are tied to retained source classes, not guessed from matching English words. Player names, chat, chip amounts and unmarked controls are never traversed for translation. The paused-seat accessible label composes the original player name with the translated status.
+
+The loader validates the language list and catalog before committing a new dictionary. Missing/unavailable catalogs retain the previous working language, while a generation counter discards older asynchronous loads. Cross-window storage updates and reload use the persisted local language preference. An optional module probe preserves the old English UI on running backends that do not yet serve the module. It does not start a game action or change a wallet.
+
+`node network-browser-test.mjs --table-language` checks Romanian labels, unchanged player named Deal Me In/chat/hand, actual shared-window English update, failed-catalog recovery, reload and a delayed English response that cannot replace newer French. This is partial label integration, not full translated-app coverage or an enabled Language settings page. Remaining labels, native list policy, OK/Cancel/Escape, visible loading/error flow and font coverage are still required before enabling it.
