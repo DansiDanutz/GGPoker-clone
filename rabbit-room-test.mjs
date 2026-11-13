@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';import {mkdtempSync,rmSync,mkdirSync,readFileSync,writeFileSync} from 'node:fs';import {tmpdir} from 'node:os';import {join} from 'node:path';import {openRooms} from './rooms.mjs';import {rabbitCards} from './engine/table.mjs';
 const dir=mkdtempSync(join(tmpdir(),'rabbit-room-')),file=join(dir,'rooms.json');
 try{
- let req=openRooms(file,()=>0,true);for(const [index,street]of [0,3,4].entries()){
-  const id=String(index+1).repeat(48),table={name:'Rabbit '+street,stack:120,blind:4,open:true},names=['Alice','Bob','Carol'],tokens=names.map((name,seat)=>req(id,'join',null,{name,seat},table,name).issued),state=(seat=0)=>req(id,'state',tokens[seat],{},table,names[seat]);let s=state();req(id,'start',tokens[0],{version:s.version},table,'Alice');s=state();assert.throws(()=>req(id,'rabbit',tokens[0],{number:s.number},table,'Alice'),e=>e.status===409);
+ let req=openRooms(file,()=>0,true);for(const [index,[mode,street]]of [['cash',0],['cash',3],['cash',4],['plo',3],['plo5',4],['plo6',0]].entries()){
+  const id=String(index+1).repeat(48),table={mode,name:'Rabbit '+street,stack:120,blind:4,open:true},names=['Alice','Bob','Carol'],tokens=names.map((name,seat)=>req(id,'join',null,{name,seat},table,name).issued),state=(seat=0)=>req(id,'state',tokens[seat],{},table,names[seat]);let s=state();req(id,'start',tokens[0],{version:s.version},table,'Alice');s=state();assert.throws(()=>req(id,'rabbit',tokens[0],{number:s.number},table,'Alice'),e=>e.status===409);
   while(s.hand.board.length<street){const seat=s.hand.turn,v=state(seat);s=req(id,'act',tokens[seat],{version:v.version,action:v.hand.options.due?'call':'check'},table,names[seat])}
   if(street){const seat=s.hand.turn,v=state(seat);s=req(id,'act',tokens[seat],{version:v.version,action:'raise',target:v.hand.options.min},table,names[seat])}
   while(!s.hand.end){const seat=s.hand.turn,v=state(seat);s=req(id,'act',tokens[seat],{version:v.version,action:'fold'},table,names[seat])}

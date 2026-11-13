@@ -42,8 +42,8 @@ The hypothetical faces occupy a separate layer; the played board remains unchang
 
 - rabbit-test: independent fixed preflop/flop/turn runouts including burns, engine deck/board immutability, live/full-board/insufficient-deck rejection and300-chip folded hand.
 - rabbit-peel-test: source linear/cubic point, half-plane inclusion, orientation-reversing isometry, fold-axis reflection and fixed mid-frame70/6.25.
-- rabbit-room-test: three streets; account/token/participant/stale-hand/body guards; late-seat/spectator privacy; exact remaining cards; failed-write rollback; idempotence; played results/wallet unchanged; invalid checkpoint; restart; next-hand reset.
+- rabbit-room-test: three streets and Hold’em/PLO/PLO5/PLO6; account/token/participant/stale-hand/body guards; late-seat/spectator privacy; exact remaining cards; failed-write rollback; idempotence; played results/wallet unchanged; invalid checkpoint; restart; next-hand reset.
 - rabbit-http-test: actual ephemeral server method/Origin/profile/token/JSON/size guards, privacy, no active leak and restart.
-- network-browser-test --rabbit: three isolated contexts, flop-two and turn-one cards, source geometry at850/1196, trusted pointer, rejected-request recovery, configurable H/Functions guard and Enter, reduced motion, exact double/single audio signatures/sample durations once, unchanged payouts/360chips, reload without replay and cold restart.
+- network-browser-test --rabbit (also --plo): three isolated contexts, flop-two and turn-one cards, source geometry at850/1196, trusted pointer, rejected-request recovery, configurable H/Functions guard and Enter, reduced motion, exact double/single audio signatures/sample durations once, unchanged payouts/360chips, reload without replay and cold restart.
 
 All gameplay uses temporary data and muted headless Chrome. No live owner hand, private server or real-money account is exercised.
