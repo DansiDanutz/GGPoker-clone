@@ -563,7 +563,7 @@ if(!keepActions){refreshBetEditor=null;for(const child of [...$('actions').child
  const act=(action,target)=>operate('act',{action,target});
  if(settings?.variant==='aof'){for(const [slot,label,action,key]of [[0,'Fold','fold','F1'],[1,'All in','allin','F3']]){const b=btn('',()=>{playCues(['AofButton']);act(action)},key);b.className='nativeAofAction';b.dataset.slot=String(slot);b.append(element('span','',label))}positionQuickFold();return}
  const mainButton=(label,chips,fn,key,slot)=>{const b=btn('',fn,key);b.className='nativeMainAction';b.dataset.slot=String(slot);const caption=element('span','actionLabel',label);caption.dataset.nativeLabel=actionLanguageKeys[label];b.replaceChildren(caption);if(chips!=null){b.classList.add('hasAmount');b.append(document.createTextNode(' '),amount(element('span','actionAmount'),chips))}b.setAttribute('aria-label',b.textContent);positionQuickFold();return b};
- mainButton(o.due?'Call':'Check',o.due?o.call:null,()=>act(o.due?'call':'check'),'F2',1);if(!rushMode)mainButton(o.due?'Fold':'Check/Fold',null,()=>{if(o.due){reservedAction=null;act('fold')}else {reservedAction={kind:'check-fold',retain:true,number:state.number,seat:state.me};renderReserved()}},'F1',0);
+ if(!rushMode)mainButton(o.due?'Fold':'Check/Fold',null,()=>{if(o.due){reservedAction=null;act('fold')}else {reservedAction={kind:'check-fold',retain:true,number:state.number,seat:state.me};renderReserved()}},'F1',0);mainButton(o.due?'Call':'Check',o.due?o.call:null,()=>act(o.due?'call':'check'),'F2',1);
  if(o.raise){
   const n=document.createElement('input'),slider=document.createElement('input'),sizes=element('div','betStrip');
   Object.assign(n,{type:'number',min:o.min,max:o.max,step:1,value:o.min,required:true});
