@@ -1,4 +1,4 @@
-# Emoticoane standard — traseu REA și implementare locală
+# Emoticoane Standard/Dneg/Greg — traseu REA și implementare locală
 
 ## Dovezi și limite
 
@@ -26,7 +26,7 @@ Pickerul golește draftul la selecție; la eșec îl restaurează dacă utilizat
 
 native-emoticon-test.mjs verifică28ID-uri, etichetele, payloadurile invalide/amestecate, limita comună, mute/Helmet, rollback atomic, restart, istoric și conservarea240jetoane. network-browser-test.mjs --helmet --native-emoticon folosește click real în popup, verifică geometria, eroare/retry, ID30 fără etichetă inventată, lipsa replayului, istoricul nativ și mâna completă cu restart.
 
-Nu sunt terminate categoriile Dneg1000, Greg4000 și avatar10000, animațiile lor MovieClip și întregul chrome al ferestrei de chat. Nu sunt declarate echivalență pixel-perfect, timing nativ sau sunet verificat fizic.
+Categoriile Standard/Dneg/Greg sunt implementate local. Rămân avatar10000, încărcarea seturilor dinamice și întregul chrome al ferestrei de chat. Nu sunt declarate echivalență pixel-perfect, timing nativ sau sunet verificat fizic.
 
 ## Bula asociată emoticonului standard
 
@@ -39,3 +39,19 @@ PlayerPosition.emoticon este(0,1), scala locului; EmoticonPosition.chat are scal
 Implementarea păstrează imaginea și bula ca noduri distincte ale aceluiași efect, evitând reluarea animației la reconcilierea locului. Click/Enter/Space pe oricare le ascunde pe ambele doar local; pollingul nu le reafișează. Nu schimbă jurnalul, mâna sau payoutul. ID30 nu primește o etichetă inventată și nu reutilizează bula mesajului anterior; aspectul exact al aliasului absent rămâne necunoscut.
 
 Fixture-ul native-emoticon verifică ancorele proprii/oponent, scala1/1,1 la850și1196, oglindirea la dreapta, grafică originală, lipsa tweenului pe bulă, nod stabil, ascundere locală cuplată, expirare și lipsa replayului la reconectare. Testul continuă cu o mână completă240jetoane și restart. Acestea verifică implementarea formulelor recuperate, nu un nou capture fizic nativ sau echivalența antialiasingului.
+
+## Dneg și Greg — timeline-uri recuperate
+
+TableEmoticonList oferă filtre0/1000/4000. Fiecare produce28ID-uri:base+1…27 și base+30. Cele84de controale și etichetele sunt enumerate în [catalog](emoticon-catalog.md). Iconurile de categorie sunt table_menu0173/0175/0382,40×40, la x12/61/110. Categoria selectată este activă/dezactivată pentru click; celelalte folosesc matricea nativă cu fiecare coeficient RGB=1/6 și alpha neschimbat, nu filtrul CSS grayscale standard. Preferința locală este izolată după cont și păstrată la reîncărcarea chatului; conturile anonime nu scriu o preferință globală.
+
+showEmoticon păstrează ID1000/4000 și apelează AnimateButton.setImage(100+ID−1). onLoadAnimation alege dneg_emoticon/dneg_ sau greg_emoticon/greg_. Clasele publicate sunt dneg_1100…1129 și greg_4100…4129; selecția exclude1127/1128 și4127/4128. Cele60de clase exportate au doar constructorul super(), fără addFrameScript/enterFrame/gotoAnd/stop/play. Numele simbolurilor provin din SymbolClass, nu din ordinea fișierelor.
+
+SWF-ul principal are60fps, iar pachetele au30fps. AnimateButton avansează explicit cu0,5 la enterFrame și cheamă gotoAndStop; cronologia locală folosește pași60Hz, nu rata monitorului. Păstrează faza celulei între reacții, reia la1 după depășirea totalFrames și nu aplică tweenul imaginii statice. Evenimentul enterFrame are loc o dată pe cadru conform [documentației AIR](https://airsdk.dev/docs/development/display/working-with-movie-clips/controlling-movie-clip-playback). Un caz rămâne nedemonstrat fizic: expresia nativă poate produce gotoAndStop(0); local îl limităm la primul cadru și marcăm explicit această limită în cod. Nu pretindem timing1-la-1 la această graniță.
+
+Sunt56de timeline-uri selectate:28Dneg×30cadre și28Greg×45cadre, total2100. FFDec exportă APNG-uri cu decupajul comun al fiecărui sprite. Prima transformare SVG păstrează originea inițială; de exemplu Dneg1001 are origine(18,55;3,55),186×198, Greg4001 are(27,1;4,6),143×189. Redarea locală adaugă originea la containerul nativ(−100,−100), aplicând scala locului și offsetul vertical1. Astfel nu întinde forțat fiecare decupaj la200×200.
+
+Extractorul tools/extract-animated-emoticons.py împachetează cadrele în56foi WebP lossless,58.797.590octeți. Re-decodează fiecare foaie și verifică întregul RGBA, inclusiv culorile invizibile, față de cadrele FFDec. Manifestul local păstrează hashuri sursă, cadre, simboluri, geometrie și foi. Extractorul pentru imagini statice produce acum84PNG-uri200×200,84miniaturi și10controale,4.925.362octeți. Resursele brute rămân ignorate de Git; codul, metadatele geometrice și extractoarele sunt publicate.
+
+Verificarea browserului compară toate valorile alpha și RGB ale pixelilor opaci cu referința recuperată. Nu cere egalitate numerică a RGB translucide după trecerea prin Canvas2D: conversia alpha premultiplicată este cu pierderi conform [standardului HTML](https://html.spec.whatwg.org/multipage/canvas.html). Verificarea completă a fișierelor RGBA rămâne separată și strictă. Nu schimbăm imaginile pentru a adapta testul la rotunjirea Canvas.
+
+Testul în două conturi verifică schimbarea reală a categoriilor,28elemente/categorie, iconurile40px, originile și dimensiunile, progresia30/45cadre, lipsa intrării statice, DOM păstrat la resize, reduced-motion și expirare. Preferințele se păstrează la reload și nu trec între conturi. Evenimentul animat în timpul mâinii este verificat în istoricul complet după payout/restart, inclusiv atunci când rezultatul este remiză și nu apare în coloanele Best/Worst ale HUD. Limite: paritatea randării native AIR/AA/timingului fizic, frame0 și seturile avatar nu sunt demonstrate.

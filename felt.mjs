@@ -1,4 +1,4 @@
-export const isNativeEmoticon=id=>Number.isInteger(id)&&(id>=1&&id<=27||id===30);
+export const isNativeEmoticon=id=>Number.isInteger(id)&&[0,1000,4000].some(base=>id-base>=1&&id-base<=27||id-base===30);
 import {bestFiveFocus} from './engine/hand.mjs';
 import {cardOrdinal} from './card-squeeze.mjs';
 export function gameClockText(ms){const seconds=Math.max(0,Math.ceil(ms/1000));return String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0')}
