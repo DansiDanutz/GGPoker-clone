@@ -31,3 +31,11 @@ FFDec bounded export of installed `NewDealMeInButton` confirms desktop `table_me
 The button appears only for the current player actually sitting out; it requests the existing current-table resume operation. The native command sets GlobalSitInData.isAll, so global multi-table behavior remains incomplete and is explicitly scoped in the local tooltip/code. Pending return disables duplicate clicks while the actual-pause marker remains until the next deal.
 
 Trusted headless mouse testing exposed the local diagnostic footer intercepting clicks at the correct button geometry. While the native return control is shown, the footer now follows the table instead of overlapping it. Tests assert hit-testability,270×90 geometry at850/1196, real click, persisted request and removal/restored avatar at the next deal.
+
+## Account-wide cash return
+
+The newly exported `GlobalSitInCommand` confirms isAll propagation to eligible table controllers. Local account-wide return is now supported for ordinary hosted cash Hold’em/PLO tables only. Rush and tournaments remain separate eligibility domains and are not claimed covered.
+
+`POST /local/cash-sit-in` requires local profile cookie, exact Origin, JSON ≤512 bytes and the expected account identity. It accepts no room IDs, target account selector or funding instructions. The room store clears only that account’s pending cash pause flags in one atomic save, preserving current hands and wallets. Failure restores every affected room in memory; retry is idempotent. Actual paused seats return only on later deals. No funds are automatically purchased.
+
+Model/HTTP tests cover two tables, other-account isolation, unchanged hand and wallet, restart and failed-write rollback. The authenticated headless browser scenario confirms one global request from the actual Deal Me In mouse click; guest seats keep the current-table route. Backend capability advertisement prevents the new frontend from assuming an older running backend supports global return.
