@@ -15,6 +15,10 @@ This project is a local play-money application under active development. It is n
 - Owner backups, integrity checks, transactional restore/recovery, audit records and chat moderation.
 - Table appearance, betting preferences, hotkeys, native-derived card/chip effects and sound controls.
 
+## Detailed source and behavior documentation
+
+The [REA functional manual](docs/rea/README.md) contains eight detailed guides. Current local table work includes the private HandRank/HUD/Stats panel, durable seat-session time and counters, and nine source-derived flop/turn draw hints. Native runtime/font/timing parity, full card choreography, button bitmaps, double-board gameplay and all-time operator statistics remain incomplete. See the guides for source limitations and the difference between current-seat statistics and room/pool HUD samples.
+
 ## Verification
 
 Node assertion scripts cover game rules, funding, privacy, persistence, owner recovery and settings. `network-browser-test.mjs` uses isolated temporary state and headless Chrome for real browser workflows. Representative checks:
