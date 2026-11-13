@@ -1,0 +1,41 @@
+import assert from 'node:assert/strict';
+import {mkdtempSync,rmSync,readFileSync,writeFileSync,mkdirSync,rmdirSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {openRooms} from './rooms.mjs';
+const dir=mkdtempSync(join(tmpdir(),'cash-sitout-')),file=join(dir,'rooms.json'),id='a'.repeat(48),plo=process.argv.includes('--plo'),table={name:'Cash pause',stack:120,minBuyIn:60,maxBuyIn:240,blind:4,open:true,...(plo?{mode:'plo'}:{})};
+try{
+ let req=openRooms(file,()=>0,true);const names=['Alice','Bob','Carol'],tokens=names.map((name,seat)=>req(id,'join',null,{name,seat,buyIn:120},table,name).issued);
+ const state=(i=0)=>req(id,'state',tokens[i],{},table,names[i]),op=(i,kind,body)=>req(id,kind,tokens[i],body,table,names[i]);
+ let s=state();s=op(0,'start',{version:s.version});const hand=structuredClone(s.hand),funds=req.wallet('Alice').available;
+ s=op(0,'sit-out',{paused:true});assert.equal(s.sitOutNextHand,true);assert.equal(s.sitOutSupported,true);assert.deepEqual(s.hand,hand,'Scheduling pause must not fold or otherwise alter this hand');assert.equal(req.wallet('Alice').available,funds);
+ assert.equal(req(id,'watch',null,{},table).sitOutNextHand,undefined,'Own desired action is private');
+ req=openRooms(file,()=>0,true);assert.equal(state().sitOutNextHand,true);assert.deepEqual(state().hand,hand);
+ s=state();s=op(0,'act',{version:s.version,action:'raise',target:12});for(const i of [1,2]){s=state(i);s=op(i,'act',{version:s.version,action:'fold'})}assert.ok(s.hand.end);assert.equal(s.hand.stacks[0],126);assert.equal(s.hand.stacks.reduce((a,b)=>a+b),360);
+ for(const i of [1,2]){s=state(i);s=op(i,'ready',{version:s.version,number:s.number})}
+ s=state();assert.equal(s.number,2);assert.equal(s.sittingOut[0],true);assert.deepEqual(s.hand.cards[0],[]);assert.equal(s.hand.committed[0],0);assert.equal(s.hand.options,null);assert.equal(s.seatBalances[0],126);assert.equal(s.hand.stacks[0],126,'Paused balance must not reset to the original120 buy-in');assert.notEqual(s.hand.button,0);assert.equal(s.hand.stacks.reduce((n,v,i)=>n+v+s.hand.committed[i],0),360);
+ const beforeLeave=structuredClone(state(1).hand);s=op(0,'leave',{version:s.version});assert.equal(s.cashOut,126);assert.equal(req.wallet('Alice').available,10006);assert.deepEqual(state(1).hand,beforeLeave,'Paused leave must not reset the other players hand');
+ const replacement=req(id,'join',null,{name:'Dana',seat:0,buyIn:120},table,'Dana').issued;tokens[0]=replacement;names[0]='Dana';s=state();assert.equal(s.seatBalances[0],120);assert.equal(s.sittingOut[0],false,'A replacement must not inherit paused state');assert.equal(s.sitOutNextHand,false);assert.equal(req.wallet('Dana').available,9880);
+ s=state(1);for(let n=0;n<6&&!s.hand.end;n++){const i=s.hand.turn;s=state(i);op(i,'act',{version:s.version,action:'fold'});s=state(1)}assert.ok(s.hand.end);
+ for(const i of [0,1,2]){s=state(i);s=op(i,'ready',{version:s.version,number:s.number})}s=state();assert.equal(s.number,3);assert.equal(s.hand.stacks[0]+s.hand.committed[0],120);assert.equal(s.hand.stacks.reduce((n,v,i)=>n+v+s.hand.committed[i],0),354,'Replacement funds and prior cash-out must be accounted once');
+ const unchanged=structuredClone(s.hand);for(const body of [{},{paused:'yes'},{paused:1},{paused:null},{paused:true,seat:1},{paused:false,version:-1}])assert.throws(()=>op(0,'sit-out',body),e=>e.status===400);assert.throws(()=>req(id,'sit-out',tokens[0],{paused:true},table,'Bob'),e=>e.status===401);assert.deepEqual(state().hand,unchanged);
+ mkdirSync(file+'.tmp');assert.throws(()=>op(0,'sit-out',{paused:true}));rmdirSync(file+'.tmp');assert.equal(state().sitOutNextHand,false);assert.deepEqual(state().hand,unchanged);
+ op(0,'sit-out',{paused:true});op(0,'sit-out',{paused:false});assert.deepEqual(state().hand,unchanged);req=openRooms(file,()=>0,true);assert.equal(state().sitOutNextHand,false);
+ const good=readFileSync(file),bad=JSON.parse(good);bad.find(([key])=>key===id)[1].players[0].sitOutNextHand='yes';writeFileSync(file,JSON.stringify(bad));assert.throws(()=>openRooms(file,()=>0,true),/sit.out/i);writeFileSync(file,good);
+ const small='b'.repeat(48),ts=['MinA','MinB','MinC'].map((name,seat)=>req(small,'join',null,{name,seat,buyIn:120},table,name).issued);for(const i of [0,1])req(small,'sit-out',ts[i],{paused:true},table,['MinA','MinB','MinC'][i]);let min=req(small,'state',ts[0],{},table,'MinA');assert.equal(min.canStart,false);assert.throws(()=>req(small,'start',ts[0],{version:min.version},table,'MinA'),e=>e.status===409);assert.equal(req(small,'state',ts[0],{},table,'MinA').hand,null);
+ req(small,'sit-out',ts[0],{paused:false},table,'MinA');min=req(small,'state',ts[0],{},table,'MinA');min=req(small,'start',ts[0],{version:min.version},table,'MinA');assert.deepEqual(min.sittingOut.slice(0,3),[false,true,false]);assert.equal(min.hand.committed[1],0);
+ const pausedHand=structuredClone(req(small,'state',ts[1],{},table,'MinB').hand);req(small,'sit-out',ts[1],{paused:false},table,'MinB');min=req(small,'state',ts[1],{},table,'MinB');assert.deepEqual(min.hand,pausedHand,'Resume must not insert a player into a running hand');assert.equal(min.sittingOut[1],true);assert.equal(min.sitOutNextHand,false);
+ req=openRooms(file,()=>0,true);min=req(small,'state',ts[1],{},table,'MinB');assert.equal(min.sitOutNextHand,false);assert.equal(min.sittingOut[1],true);
+ const smallNames=['MinA','MinB','MinC'];for(let n=0;n<6&&!min.hand.end;n++){const seat=min.hand.turn;req(small,'act',ts[seat],{version:min.version,action:'fold'},table,smallNames[seat]);min=req(small,'state',ts[1],{},table,'MinB')}assert.ok(min.hand.end);
+ for(let seat=0;seat<3;seat++){min=req(small,'state',ts[seat],{},table,smallNames[seat]);req(small,'ready',ts[seat],{version:min.version,number:min.number},table,smallNames[seat])}
+ min=req(small,'state',ts[1],{},table,'MinB');assert.equal(min.number,2);assert.equal(min.sittingOut[1],false);assert.equal(min.hand.cards[1].length,plo?4:2);assert.equal(min.hand.stacks.reduce((sum,n,i)=>sum+n+min.hand.committed[i],0),360,'Resume must preserve all table funds');
+ const clock=Date.now;let now=clock();Date.now=()=>now;
+ try{const botRoom='c'.repeat(48);let b=req(botRoom,'join',null,{name:'BotHost',buyIn:120},table,'BotHost');const host=b.issued;b=req(botRoom,'fill-bots',host,{version:b.version},table,'BotHost');req(botRoom,'sit-out',host,{paused:true},table,'BotHost');
+ const botState=()=>req(botRoom,'state',host,{},table,'BotHost');
+ for(let n=0;n<600&&botState().number<3;n++){b=botState();if(!b.hand.end&&b.hand.turn===b.me)req(botRoom,'act',host,{version:b.version,action:'fold'},table,'BotHost');now+=1000;req(botRoom,'tick',null,{},table)}
+ b=botState();assert.ok(b.number>=3,'Five computers must advance across hands without paused host Ready');assert.equal(b.sittingOut[b.me],true);assert.deepEqual(b.hand.cards[b.me],[]);const balance=b.seatBalances[b.me];req=openRooms(file,()=>0,true);assert.equal(botState().seatBalances[0],balance);req(botRoom,'sit-out',host,{paused:false},table,'BotHost');const number=botState().number;
+ for(let n=0;n<600&&botState().number===number;n++){now+=1000;req(botRoom,'tick',null,{},table)}b=botState();assert.ok(b.number>number);assert.equal(b.sittingOut[b.me],false);assert.equal(b.hand.cards[b.me].length,plo?4:2);assert.equal(b.hand.stacks[b.me]+b.hand.committed[b.me],balance);
+ console.log('PASS paused host: five computers continue multiple hands, checkpoint preserves balance, resume deals next hand only');
+ }finally{Date.now=clock}
+ console.log('PASS cash sit-out '+(plo?'PLO':'Holdem')+': next-hand-only,private desired flag,126 preserved/cashed once,mid-hand replacement,2-active minimum,auth/validation/write rollback/cold restart and354chips');
+}finally{rmSync(dir,{recursive:true,force:true})}

@@ -62,6 +62,9 @@ let reservedAction;
 const helmetModule=await fetch('/helmet-ui.mjs',{signal:AbortSignal.timeout(5000)}).then(r=>r.ok?import('./helmet-ui.mjs'):null,()=>null);
 const helmet=helmetModule?helmetModule.installHelmet(()=>({state,room:rushMode?'rush:'+rushPoolKind:room,token,account:state?.observerName||playerAccount,observer:!rushMode&&state?.canObserveChat===true,primary:!chatWindow,enabled:rushMode?!!state?.registered:state?.me!=null&&!!token,unsupported:rushMode&&typeof state?.helmet!=='boolean'}),async muted=>{if(rushMode&&typeof state?.helmet!=='boolean')throw Error('Rush Helmet requires the updated server');const identity=()=>JSON.stringify(rushMode?[rushPoolKind,playerAccount]:[room,token,state?.me,playerAccount]),expected=identity();const until=Date.now()+5000;while(busy){if(Date.now()>=until)throw Error('Table is busy; retry Helmet');await new Promise(resolve=>setTimeout(resolve,25))}if(expected!==identity())throw Error('Player or table changed');if(!await operate('helmet',{muted}))throw Error($('error').textContent||'Helmet update failed')},()=>renderChat()):{refresh(){},muted(){return false},reactionAllowed(){return true}};
 const playerNotes=installPlayerNotes($('tableSettings'),()=>({state,room:rushMode?'rush:'+rushPoolKind+':'+state?.noteTable:room,token,enabled:!chatWindow&&(!rushMode||!!state?.noteTable),...(rushMode?{notesPath:'/api/rush/'+rushPoolKind+'/notes',notesTable:state?.noteTable}:{} )}));
+// shortcut: current-table cash pause only; native global/next-blind menus need separate evidence.
+const cashSitOut=document.createElement('input'),cashSitOutLabel=element('label');cashSitOut.type='checkbox';cashSitOut.id='cashSitOut';cashSitOutLabel.append(cashSitOut,' Sit out next hand');cashSitOutLabel.hidden=true;tableSettings.append(cashSitOutLabel);cashSitOut.onchange=async()=>{cashSitOut.disabled=true;await operate('sit-out',{paused:cashSitOut.checked});updateCashSitOut()};
+function updateCashSitOut(){const enabled=!chatWindow&&!rushMode&&state?.sitOutSupported&&state.me!=null;cashSitOutLabel.hidden=!enabled;cashSitOut.disabled=!enabled;cashSitOut.checked=!!state?.sitOutNextHand;cashSitOutLabel.title=state?.sittingOut?.[state.me]?'Uncheck to return for the next hand':'Finish this hand, then pause before the next deal'}
 const rushSitOut=document.createElement('input'),rushSitOutLabel=element('label');rushSitOut.type='checkbox';rushSitOut.id='rushSitOut';rushSitOutLabel.append(rushSitOut,' Sit out next hand');rushSitOutLabel.hidden=!rushMode;tableSettings.append(rushSitOutLabel);rushSitOut.onchange=async()=>{rushSitOut.disabled=true;await operate('sit-out',{paused:rushSitOut.checked});rushSitOut.checked=!!state?.paused;rushSitOut.disabled=!state?.registered};
 const reservedPanel=element('div');reservedPanel.id='reservedActions';reservedPanel.setAttribute('role','group');reservedPanel.setAttribute('aria-label','Actions on your next turn');$('actions').before(reservedPanel);
 function fitSeatNames(){for(const label of document.querySelectorAll('.seatName')){label.style.removeProperty('font-size');const size=parseFloat(getComputedStyle(label).fontSize);if(label.clientWidth&&label.scrollWidth>label.clientWidth)label.style.fontSize=size*label.clientWidth/label.scrollWidth+'px'}}
@@ -172,12 +175,12 @@ async function request(op,body={}){
 }
 async function operate(op,body){if(op==='ready'&&document.querySelector('.award'))return false;if(chatWindow&&!['state','chat','helmet'].includes(op))return;if(rushMode&&['join','deal','fill-bots','cancel-queue','sit-out'].includes(op)&&!busy){try{await request('state')}catch(error){$('error').textContent=error.message;return false}}if(op==='state'&&busy)return;const version=state?.version,number=state?.number,boundHandVersion=state?.handVersion,actionFrame=op==='act'?JSON.stringify(state?.hand):null;while(busy)await new Promise(resolve=>setTimeout(resolve,25));busy=true;try{await request(op,{...body,version:op==='act'&&number===state?.number&&actionFrame===JSON.stringify(state?.hand)?state.version:version,...(['ready','show-cards'].includes(op)?{number}:{}),...(rushMode?{handVersion:op==='quick-fold'||op==='act'&&!(number===state?.number&&actionFrame===JSON.stringify(state?.hand))?boundHandVersion:state?.handVersion}:{})});$('error').textContent='';return true}catch(e){$('error').textContent=e.message;return false}finally{busy=false}}
 function topUpRequest(g,settings){
- if(!settings)return {};const nativeTarget=savedAddChips(settings)*settings.blind;if(nativeTarget){const stack=(g.dealtSeats&&!g.dealtSeats.includes(state.me)?state.buyIns?.[state.me]??settings.stack:g.stacks[state.me])+(state.pendingAdd?.amount||0);return stack<nativeTarget?{topUpTo:nativeTarget}:{}}
+ if(!settings)return {};const nativeTarget=savedAddChips(settings)*settings.blind;if(nativeTarget){const stack=(g.dealtSeats&&!g.dealtSeats.includes(state.me)?state.seatBalances?.[state.me]??state.buyIns?.[state.me]??settings.stack:g.stacks[state.me])+(state.pendingAdd?.amount||0);return stack<nativeTarget?{topUpTo:nativeTarget}:{}}
  if(localStorage.getItem('river-auto-topup')!=='1'||!settings)return {};
  let threshold=Number(localStorage.getItem('river-topup-threshold')??100),target=Number(localStorage.getItem('river-topup-target')??100);
  if(!Number.isInteger(threshold)||!Number.isInteger(target)||threshold<0||threshold>target||target<20||target>100)threshold=target=100;
  const max=settings.maxBuyIn??settings.stack;
- const stack=(g.dealtSeats&&!g.dealtSeats.includes(state.me)?state.buyIns?.[state.me]??settings.stack:g.stacks[state.me])+(state.pendingAdd?.amount||0);
+ const stack=(g.dealtSeats&&!g.dealtSeats.includes(state.me)?state.seatBalances?.[state.me]??state.buyIns?.[state.me]??settings.stack:g.stacks[state.me])+(state.pendingAdd?.amount||0);
  return stack*100<max*threshold?{topUpTo:Math.max(settings.minBuyIn??settings.stack,Math.floor(max*target/100))}:{};
 }
 function hotkeyHint(button){const key=button.dataset.key,role=({F1:'fold',F2:'call',F3:'raise'})[key]||(/^Ctrl\+[1-4]$/.test(key)?'preset'+key.at(-1):null);if(role){const keys=readHotkeys(localStorage.getItem('river-hotkey-bindings'))[role];button.dataset.hotkeyDisplay=readHotkeyGroups(localStorage.getItem('river-hotkey-groups'))[hotkeyGroup(role)]&&keys.length?keyCaption(keys):''}}
@@ -254,7 +257,7 @@ function drawTable(g){
   const plate=element('div','plate'),label=n||'Open seat';
   const name=element('span','seatName',n&&n.length>15?n.slice(0,14)+'..':label);name.title=label;name.setAttribute('aria-label',label+(n&&state.me===i?' (you)':''));plate.append(name);
   const stack=element('span','stack');plate.append(stack);
-  const value=element('button','stackSwitch');if(g){value.type='button';value.dataset.stackSwitch='';if(n)value.dataset.stackSeat=String(i);value.disabled=!chipSwitch.checked;value.title='Switch chip display';value.onclick=()=>{showBB=!showBB;repaintUnits()};stack.append(amount(value,g.dealtSeats&&!g.dealtSeats.includes(i)&&n?(state.buyIns?.[i]??state.settings.stack):pendingAward?Number(existing.querySelector('.stackSwitch').dataset.chips):g.stacks[i],' chips'))}else if(n&&Number.isSafeInteger(state.waitingStacks?.[i]??state.buyIns?.[i]))amount(stack,state.waitingStacks?.[i]??state.buyIns?.[i],' chips');else stack.textContent=n?'Seated':'Available';
+  const value=element('button','stackSwitch');if(g){value.type='button';value.dataset.stackSwitch='';if(n)value.dataset.stackSeat=String(i);value.disabled=!chipSwitch.checked;value.title='Switch chip display';value.onclick=()=>{showBB=!showBB;repaintUnits()};stack.append(amount(value,g.dealtSeats&&!g.dealtSeats.includes(i)&&n?(state.seatBalances?.[i]??state.buyIns?.[i]??state.settings.stack):pendingAward?Number(existing.querySelector('.stackSwitch').dataset.chips):g.stacks[i],' chips'))}else if(n&&Number.isSafeInteger(state.waitingStacks?.[i]??state.buyIns?.[i]))amount(stack,state.waitingStacks?.[i]??state.buyIns?.[i],' chips');else stack.textContent=n?'Seated':'Available';
   if(g?.turn===i&&g.deadline){
    const bar=element('span','turnClock'),remaining=Math.max(0,g.deadline-Date.now());bar.setAttribute('aria-hidden','true');bar.dataset.renderKey=String(g.deadline);plate.append(bar);
    bar.animate([{transform:'scaleX('+Math.min(1,remaining/((state.settings?.actionSeconds??90)*1000))+')'},{transform:'scaleX(0)'}],{duration:remaining,fill:'forwards'});
@@ -448,7 +451,7 @@ if(!keepActions){refreshBetEditor=null;for(const child of [...$('actions').child
  $('join').querySelector('button').textContent=tournament?'Register':'Take a seat';
  $('level').textContent=t&&g?'Level '+t.level+' · Blinds '+g.blind/2+' / '+g.blind+(g.ante?' · Ante '+g.ante+' per player':'')+(t.winner==null&&t.level<7?' · Next level scheduled '+new Date(t.startedAt+t.level*t.intervalMs).toLocaleTimeString()+' (new hands only)':''):'';
 
- drawTable(g);renderShuffles();playerNotes.refresh();
+ drawTable(g);renderShuffles();playerNotes.refresh();updateCashSitOut();
  renderChat();
  list('history',g?.history||[]);list('results',(state?.results||[]).map(r=>'Hand '+r.number+' · Board: '+(r.board?.join(' ')||'no board')+' · Final stacks: '+r.stacks.join(', ')+(r.pots||[]).map((p,i)=>' · '+(i?'Side pot '+i:'Main pot')+': '+p.amount+' → '+p.payouts.flatMap((n,seat)=>n?['Seat '+(seat+1)+' '+n]:[]).join(', ')).join('')+' · '+(r.history||[]).join('; ')));
  const net=Array(capacity()).fill(0);for(const r of state?.results||[])r.payouts.forEach((v,i)=>net[i]+=v-r.committed[i]);
@@ -540,7 +543,7 @@ document.addEventListener('keydown',e=>{
  if(action==='lastHands'){click(document.querySelector('#tableHandHistory'));return}
  if(action==='timeBank'){click(document.querySelector('.nativeTimeBank'));return}
  if(action==='toggleUnits'){click(document.querySelector('.stackSwitch:not([disabled])'));return}
- if(action==='sitOut'){if(rushMode)click(rushSitOut);return}
+ if(action==='sitOut'){click(rushMode?rushSitOut:cashSitOut);return}
  if(action==='newHand'){click([...$('actions').querySelectorAll('button')].find(b=>b.textContent==='Ready for next hand'||state.registered&&!state.table&&['Find next table',"I'm back"].includes(b.textContent)));return}
  if(!state.hand)return;
  if(action.startsWith('show')){const own=state.hand.cards[state.me],indices=action==='showLeft'?'0':action==='showRight'?'1':own?.map((_,i)=>i).join(',');click([...$('actions').querySelectorAll('.nativeShowCards')].find(b=>b.dataset.indices===indices));return}
@@ -572,7 +575,7 @@ async function refreshRebuyFunding(draft=rebuyFunding){
  if(!draft||draft.loading)return;draft.loading=true;
  try{const response=await fetch('/local/wallet',{cache:'no-store'});if(rebuyFunding!==draft)return;if(response.ok){const data=await response.json();if(rebuyFunding!==draft)return;if(data.account?.toLowerCase()!==state?.names?.[draft.seat]?.toLowerCase())throw Error('Sign in with the seated account to add chips');if(!Number.isSafeInteger(data.available)||data.available<0)throw Error('Local balance is unavailable');draft.available=data.available}else if(response.status===401)draft.available=null;else throw Error('Local balance is unavailable');draft.error=''}catch(e){if(rebuyFunding===draft){draft.available=null;draft.error=e.message}}finally{draft.loading=false;draft.pending=false;if(rebuyFunding===draft){syncSeatBuyIn(true);seatBuyIn?.refreshBalance?.()}}
 }
-function cashBalance(){const me=state?.me,g=state?.hand;return g&&(g.dealtSeats?.includes(me)||g.cards?.[me]?.length)?g.stacks[me]:state?.waitingStacks?.[me]??state?.buyIns?.[me]??state?.settings?.stack??0}
+function cashBalance(){const me=state?.me,g=state?.hand;return state?.seatBalances?.[me]??(g&&(g.dealtSeats?.includes(me)||g.cards?.[me]?.length)?g.stacks[me]:state?.waitingStacks?.[me]??state?.buyIns?.[me]??state?.settings?.stack??0)}
 function openAddChips(){if(rebuyFunding||!advertised||rushMode||advertised.mode==='tournament'||state?.tournament||state?.me==null||state.ready[state.me]||state.pendingAdd)return;rebuyFunding={number:state.number,seat:state.me,balance:cashBalance(),available:null,pending:true};refreshRebuyFunding()}
 
 function syncSeatBuyIn(open=false){

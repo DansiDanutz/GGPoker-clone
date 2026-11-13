@@ -42,7 +42,7 @@ try{
 
  say(second.issued,'Two');
  assert.throws(()=>say(chosen.issued,'Three'),/Wait before/);
- assert.throws(()=>say(undefined,'Unauthorized'),/Join this room/);
+ assert.throws(()=>say(undefined,'Unauthorized'),e=>e.status===401);
  assert.throws(()=>say(second.issued,'x'.repeat(281)),/1–280/);
 
  assert.throws(()=>join({name:'Other',seat:2}),/occupied/);
