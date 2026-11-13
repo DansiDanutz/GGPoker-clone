@@ -8,7 +8,7 @@ Există acum un fundament de server testat pentru starea Helmet per jucător. Nu
 
 HelmetModePopup are340×265;alegerile sunt140×120la24/50și177/50. Activarea selectează This table implicit. Confirmarea emite CHAT_MUTE_STATE_UPDATE cu isPutOnHelmet și isAll. UpdateChatMuteStateCommand trimite schimbarea fie către masa curentă,fie către controllerul global. SetChatMuteAllTableCommand folosește sendToTables(SET_CHAT_MUTE);RestChatMuteAllTableCommand folosește sendToTables(CHAT_MUTE_RESET). Comenzile per masă cer updatePlayerProfile numai dacă există propriul jucător.
 
-Globalul putOnHelmetMode este inițial false,iar setterul inspectat modifică doar câmpul în memorie;nu cheamă readyToSave în acea ramură. Nu rezultă de aici o regulă dovedită pentru mese viitoare sau restartul operatorului. UpdateChatMuteTableCountCommand numără fațadele cu tableInfo.isUserChatMute și notifică mesele deschise.
+Globalul putOnHelmetMode este inițial false,iar setterul inspectat atribuie câmpul și cheamă readyToSave(). Există deci un hook de salvare a preferinței;nu rezultă doar din acesta o regulă dovedită pentru mese viitoare sau restaurarea după restartul operatorului. UpdateChatMuteTableCountCommand numără fațadele cu tableInfo.isUserChatMute și notifică mesele deschise.
 
 Acestea sunt surse statice FFDec din clientul instalat. Providerul REA pentru SWF a fost respins;nu pretindem executarea lui sau recuperarea backendului operatorului.
 
