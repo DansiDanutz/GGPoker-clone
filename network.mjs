@@ -359,7 +359,7 @@ function renderSeatChat(){
  for(const seat of document.querySelectorAll('.felt .seat')){
   const index=Number(seat.dataset.seat),current=seat.querySelector(':scope>.seatChatBubble'),message=state?.chat?.findLast(m=>m.seat===index&&m.name===state.names[index]&&!m.reaction&&typeof m.text==='string');
   if(!message){current?.remove();continue}const key=keyFor(message);let display=chatDisplays.get(key);
-  if(!display){display={started:performance.now(),dismissed:helmet.muted()||Date.now()-message.at>=5000};chatDisplays.set(key,display);if(chatDisplays.size>200)chatDisplays.delete(chatDisplays.keys().next().value)}
+  if(!display){display={started:performance.now(),dismissed:helmet.muted()};chatDisplays.set(key,display);if(chatDisplays.size>200)chatDisplays.delete(chatDisplays.keys().next().value)}
   if(display.dismissed)continue;const elapsed=performance.now()-display.started;if(elapsed>=5000){current?.remove();continue}
   const position=(index-(state.me??(aof?2:0))+count)%count,right=aof?position===3:position>=4,[x,y]=offsets[position];
   if(current?.dataset.bubble===key){current.classList.toggle('right',right);current.style.left=(x-(right?178:0))/17+'cqw';current.style.top=(y+100-display.height)/17+'cqw';continue}current?.remove();
