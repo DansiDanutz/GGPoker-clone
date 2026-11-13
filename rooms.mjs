@@ -18,6 +18,7 @@ const entry=25, initialStack=100;
 const intervalMs=Number(process.env.POKER_LEVEL_MS||60000);
 if(!Number.isSafeInteger(intervalMs)||intervalMs<1000)throw Error('POKER_LEVEL_MS must be at least 1000');
 function tournamentHand(r,now,avatarFor){
+  if(r.tournament.pausedAt!=null)return;
   const t=r.tournament,stacks=r.hand?.stacks||r.players.map(p=>p?(r.settings?.stack||initialStack):0);
   const button=r.hand?nextDealer(stacks,r.hand):r.players.findIndex(Boolean);
   const level=blindLevel(t.startedAt,now,t.intervalMs,r.settings?.blind||4);
@@ -46,8 +47,9 @@ function record(room){
   const remaining=g.stacks.flatMap((s,i)=>s?[i]:[]);
   if(remaining.length===1){
     t.winner=remaining[0];t.finishes[t.winner]=1;const amounts=prizeAmounts(t.pool,t.prizeShares||[100]);t.prizes=t.finishes.map(place=>amounts[place-1]||0);
-    t.nextDealAt=null;
-  }else t.nextDealAt=Date.now()+3000;
+    t.nextDealAt=null;delete t.pauseRequested;delete t.pausedAt;delete t.pauseDelayMs;
+  }else if(t.pauseRequested){t.pausedAt=Date.now();t.pauseDelayMs=3000;t.nextDealAt=null;delete t.pauseRequested}
+  else t.nextDealAt=Date.now()+3000;
 }
 function settleTournamentWallet(r,wallet,id){
  const t=r?.tournament;if(!wallet||!t||t.walletSettled||!r.players.some(p=>p?.entryFunded))return;
@@ -172,6 +174,24 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
   const capacity=r?.players.length??(table?.mode==='tournament'?(table.tournamentSeats||4):table&&table.mode!=='aof'?6:4);
   if(op==='tick'&&!r&&table?.mode==='tournament'&&table.startsAt&&now>=table.startsAt){
     if(rooms.size>=100)fail(503,'Room limit reached');r=newRoom(table,{},capacity,now);rooms.set(id,r);
+  }
+  if(op==='owner-tournament'||op==='tournament-control'){
+    const t=r?.tournament;
+    const status=()=>({version:r?.version??0,canControl:!!(t&&t.startedAt!==null&&t.winner===null&&!t.cancelledAt),paused:t?.pausedAt!=null,pauseRequested:!!t?.pauseRequested});
+    if(op==='owner-tournament')return status();
+    if(!table||!status().canControl)fail(409,'Choose a running tournament');
+    if(Object.keys(body).some(k=>!['tableId','action','version'].includes(k))||!['pause','resume'].includes(body.action)||!Number.isSafeInteger(body.version))fail(400,'Choose pause or resume with a current version');
+    const wantsPause=body.action==='pause',isPaused=t.pausedAt!=null||!!t.pauseRequested;
+    if(wantsPause===isPaused)return {...status(),changed:false};
+    if(body.version!==r.version)fail(409,'Tournament changed; reload controls');
+    if(wantsPause){
+      if(r.hand&&!r.hand.end)t.pauseRequested=true;
+      else{t.pausedAt=now;t.pauseDelayMs=Math.max(0,(t.nextDealAt??now)-now);t.nextDealAt=null}
+    }else{
+      if(t.pausedAt!=null){t.startedAt+=Math.max(0,now-t.pausedAt);t.nextDealAt=now+(t.pauseDelayMs??3000)}
+      delete t.pauseRequested;delete t.pausedAt;delete t.pauseDelayMs;
+    }
+    r.version++;return {...status(),changed:true};
   }
   if(op==='owner-seats')return {version:r?.version??0,canRemove:!!(table&&r&&!r.tournament&&(!r.hand||r.hand.end)),players:seatRoster(r)};
   if(op==='remove-seat'){
@@ -419,6 +439,7 @@ export function openRooms(file,avatarFor=()=>0,walletsEnabled=false){
   for(const r of rooms.values())for(const p of r.players)if(p?.sitOutNextHand!==undefined&&(!cashSitOut(r)||p.bot||typeof p.sitOutNextHand!=='boolean'))throw Error('Invalid cash sit-out state');
   for(const r of rooms.values()){
    const t=r.tournament;
+   if(t&&(t.pauseRequested!==undefined&&t.pauseRequested!==true||t.pausedAt!==undefined&&(!Number.isSafeInteger(t.pausedAt)||t.pausedAt<0||!r.hand?.end||t.nextDealAt!==null||!Number.isSafeInteger(t.pauseDelayMs)||t.pauseDelayMs<0||t.pauseDelayMs>3000)||t.pauseDelayMs!==undefined&&t.pausedAt===undefined||(t.pauseRequested||t.pausedAt!==undefined)&&(t.startedAt===null||t.winner!==null||t.cancelledAt)||t.pauseRequested&&t.pausedAt!==undefined))throw Error('Invalid tournament pause');
    for(const p of r.players)if(p?.entryFunded!==undefined&&(p.entryFunded!==true||!r.settings||!t||p.bot||typeof p.account!=='string'||!Object.hasOwn(wallet.state.accounts,p.account.toLowerCase())))throw Error('Invalid funded tournament seat');
    if(r.players.some(p=>p?.entryFunded)){
     if(t.entry!==entry||!Number.isSafeInteger(t.pool)||t.pool!==(t.cancelledAt?0:r.players.filter(Boolean).length*entry))throw Error('Invalid funded tournament pool');

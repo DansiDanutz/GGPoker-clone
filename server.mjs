@@ -99,7 +99,7 @@ http.createServer(async(req,res)=>{
  if(path==='/api/hosted'&&req.method==='GET'){res.setHeader('X-Playgg-Time-Cards','1');res.setHeader('X-Playgg-Time-Card-Options','1');return json(200,tables.map(t=>({...t,room:hostedId(t.id),...roomRequest(hostedId(t.id),'summary',undefined,{},t)})))}
  if(path==='/api/tables'&&req.method==='GET')return json(200,tables);
  const backup=/^\/api\/owner-backups(?:\/([a-f0-9]{24})(\/restore)?)?$/.exec(path);
- if((['/api/owner-chat','/api/owner-reports','/api/owner-wallets','/api/owner-seats'].includes(path)&&['GET','POST'].includes(req.method))||(path==='/api/tables'&&req.method==='POST')||(path==='/api/owner-audit'&&req.method==='GET')||(backup&&(['GET','POST','DELETE'].includes(req.method)))){
+ if((['/api/owner-chat','/api/owner-reports','/api/owner-wallets','/api/owner-seats','/api/owner-tournaments'].includes(path)&&['GET','POST'].includes(req.method))||(path==='/api/tables'&&req.method==='POST')||(path==='/api/owner-audit'&&req.method==='GET')||(backup&&(['GET','POST','DELETE'].includes(req.method)))){
   if(origin!=='http://127.0.0.1:'+port||host!=='127.0.0.1')return json(403,{error:'Owner changes require local-only mode'});
   const token=Buffer.from((req.headers.authorization||'').replace(/^Bearer /,''));const expected=Buffer.from(key);
   if(req.headers.origin&&req.headers.origin!==origin)return json(403,{error:'Local origin required'});
@@ -115,6 +115,16 @@ http.createServer(async(req,res)=>{
    if(req.method==='GET')return json(200,roomRequest.notes.getReports());
    let text='';for await(const chunk of req){text+=chunk;if(Buffer.byteLength(text)>4096)return json(413,{error:'Request too large'})}
    try{const command=JSON.parse(text);if(!command||typeof command!=='object'||Array.isArray(command))return json(400,{error:'Invalid review command'});return json(200,roomRequest.notes.reviewReport(command.id,command))}catch(error){return json(error instanceof SyntaxError?400:error.status||500,{error:error.status?error.message:error instanceof SyntaxError?'Invalid JSON':'Could not save report review'})}
+  }
+  if(path==='/api/owner-tournaments'){
+   let command={};if(req.method==='POST'){
+    if(req.headers.origin!==origin)return json(403,{error:'Local origin required'});if(!req.headers['content-type']?.startsWith('application/json'))return json(415,{error:'Expected JSON'});
+    let text='';for await(const chunk of req){text+=chunk;if(Buffer.byteLength(text)>2048)return json(413,{error:'Request too large'})}try{command=JSON.parse(text);if(!command||typeof command!=='object'||Array.isArray(command))throw Error()}catch{return json(400,{error:'Invalid JSON'})}
+   }
+   const table=tables.find(t=>t.id===(req.method==='GET'?new URL(req.url,origin).searchParams.get('table'):command.tableId));if(!table)return json(404,{error:'Unknown hosted table'});
+   try{const result=roomRequest(hostedId(table.id),req.method==='GET'?'owner-tournament':'tournament-control',null,command,table);
+    let auditSaved=true;if(result.changed)try{appendFileSync(join(directory,'owner-audit.jsonl'),JSON.stringify({at:new Date().toISOString(),action:command.action+'-tournament',before:null,after:{...table,tournamentControl:result}})+'\n',{mode:0o600})}catch{auditSaved=false}return json(200,{...result,auditSaved});
+   }catch(error){return json(error.status||500,{error:error.status?error.message:'Could not save tournament control'})}
   }
   if(path==='/api/owner-seats'){
    let command={};if(req.method==='POST'){
