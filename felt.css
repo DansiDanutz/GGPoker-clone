@@ -443,3 +443,15 @@ html[data-panel=chat] #chatForm.nativeChatComposer{display:block;height:72px;min
 
 .nativeSitOut.gameClock img{top:calc(-80*var(--seat-scale)/17*1cqw)}
 .nativeSitOut.gameClock span{top:calc(-25*var(--seat-scale)/17*1cqw)}
+
+/* SitOutView viewport.width-298,1090; NewDealMeInButton 270x90. */
+.felt>.nativeDealMeIn{position:absolute;right:calc(28/17*1cqw);top:calc(1090/17*1cqw);width:calc(270/17*1cqw);height:calc(90/17*1cqw);min-width:0;margin:0;padding:0;border:0;border-radius:0;background:transparent url('/home-art/native-deal-me-in-up.png') center/100% 100%;z-index:9;color:white;font:calc(30/17*1cqw) NativeActionRoboto,Arial}
+.felt>.nativeDealMeIn:hover:not(:disabled){background-image:url('/home-art/native-deal-me-in-over.png');filter:none}
+.felt>.nativeDealMeIn:active:not(:disabled){background-image:url('/home-art/native-deal-me-in-down.png');filter:none;transform:none}
+.nativeDealMeIn span{position:absolute;left:calc(5/17*1cqw);top:calc(13/17*1cqw);width:calc(260/17*1cqw);line-height:1.2}
+.nativeDealMeIn:active:not(:disabled) span{top:calc(17/17*1cqw)}
+.nativeDealMeIn:disabled{opacity:1;cursor:default}
+.nativeDealMeIn:focus-visible{outline:2px solid white;outline-offset:2px}
+
+/* Keep the local diagnostic footer below the native return control. */
+body:has(#dealMeIn:not([hidden])) footer:has(#join[hidden]){margin-top:0}
