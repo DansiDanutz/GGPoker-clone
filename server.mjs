@@ -18,7 +18,7 @@ const cashWalletsEnabled=process.env.POKER_REFERENCE_HOME==='1'&&host==='127.0.0
 let restoring=false,restoreBlocked=false,activeRequests=0;recoverOwnerRestore(directory);
 let playerProfile=profiles(join(directory,'local-players.json'));
 let roomRequest=openRooms(join(directory,'rooms.json'),playerProfile.avatar,cashWalletsEnabled);
-let rushRequests={holdem:openRush(join(directory,'rush.json'),'holdem',playerProfile.avatar,roomRequest.notes),plo:openRush(join(directory,'rush-plo.json'),'plo',playerProfile.avatar,roomRequest.notes)};
+let rushRequests={holdem:openRush(join(directory,'rush.json'),'holdem',playerProfile.avatar,roomRequest.notes,roomRequest.rushStore),plo:openRush(join(directory,'rush-plo.json'),'plo',playerProfile.avatar,roomRequest.notes,roomRequest.rushStore)};
 setInterval(()=>{if(restoring||restoreBlocked)return;try{for(const request of Object.values(rushRequests))request.tick()}catch{console.error('Rush timer could not save state; prior checkpoint retained')}},500).unref();
 const keyPath=join(directory,'owner.key'),db=join(directory,'tables.json');
 try{writeFileSync(keyPath,randomBytes(32).toString('hex'),{mode:0o600,flag:'wx'})}catch(e){if(e.code!=='EEXIST')throw e}
@@ -27,7 +27,7 @@ let tables=[{id:'practice',name:'Green Felt',stack:200,blind:4,open:true}];
 try{tables=JSON.parse(readFileSync(db,'utf8'))}catch(e){if(e.code!=='ENOENT')throw e}
 function loadRestoredModels(){
  const nextTables=JSON.parse(readFileSync(db,'utf8'));if(!Array.isArray(nextTables)||new Set(nextTables.map(t=>t?.id)).size!==nextTables.length||nextTables.some(t=>!t||typeof t.id!=='string'||!/^[a-z0-9-]{1,40}$/.test(t.id)||typeof t.name!=='string'||!t.name.trim()||t.name.length>60||!Number.isInteger(t.stack)||!Number.isInteger(t.blind)||t.blind<2||t.blind%2||t.stack<t.blind*4||t.stack>1000000||typeof t.open!=='boolean'||t.mode!==undefined&&!['cash','plo','plo5','plo6','shortdeck','aof','tournament'].includes(t.mode)))throw Error('Invalid restored table definitions');
- const nextProfile=profiles(join(directory,'local-players.json')),nextRooms=openRooms(join(directory,'rooms.json'),nextProfile.avatar,cashWalletsEnabled),nextRush={holdem:openRush(join(directory,'rush.json'),'holdem',nextProfile.avatar,nextRooms.notes),plo:openRush(join(directory,'rush-plo.json'),'plo',nextProfile.avatar,nextRooms.notes)};
+ const nextProfile=profiles(join(directory,'local-players.json')),nextRooms=openRooms(join(directory,'rooms.json'),nextProfile.avatar,cashWalletsEnabled),nextRush={holdem:openRush(join(directory,'rush.json'),'holdem',nextProfile.avatar,nextRooms.notes,nextRooms.rushStore),plo:openRush(join(directory,'rush-plo.json'),'plo',nextProfile.avatar,nextRooms.notes,nextRooms.rushStore)};
  return {playerProfile:nextProfile,roomRequest:nextRooms,rushRequests:nextRush,tables:nextTables};
 }
 const hostedId=id=>createHash('sha256').update('river-hosted:'+id).digest('hex').slice(0,48);
@@ -65,7 +65,7 @@ http.createServer(async(req,res)=>{
   let data;try{data=await readFile(file.startsWith('home-art/')?join(referenceArt,file.slice(9)):new URL(file,import.meta.url))}catch{return json(404,{error:'Reference asset unavailable'})}
   res.writeHead(200,{'Content-Type':file.endsWith('.ttf')?'font/ttf':file.endsWith('.webp')?'image/webp':file.endsWith('.png')?'image/png':file.endsWith('.json')?'application/json':file.endsWith('.mjs')?'text/javascript':'text/html; charset=utf-8','Cache-Control':'private, no-store','Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff'});res.end(data);return;
  }
- const rush=/^\/api\/rush\/(?:(holdem|plo)\/)?(state|join|deal|act|quick-fold|fill-bots|cancel-queue|notes|sit-out|helmet)$/.exec(path);
+ const rush=/^\/api\/rush\/(?:(holdem|plo)\/)?(state|join|deal|act|quick-fold|fill-bots|cancel-queue|notes|sit-out|helmet|leave)$/.exec(path);
  if(rush&&localHome){
   const op=rush[2],rushRequest=rushRequests[rush[1]||'holdem'];
   if(op==='notes'?!['GET','POST'].includes(req.method):req.method!==(op==='state'?'GET':'POST'))return json(405,{error:'Method not allowed'});

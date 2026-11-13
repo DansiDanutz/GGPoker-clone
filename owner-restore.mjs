@@ -28,11 +28,17 @@ export function recoverOwnerRestore(directory){
 }
 function requireIdle(directory){
  try{
+  const embedded={};
+  const checkRush=saved=>{const pool=saved.pool?JSON.parse(saved.pool):null;if(pool){if(!Array.isArray(pool.tables))fail('Current Rush state is unreadable');if(pool.tables.some(([,table])=>!table.settled))fail('Finish active Rush hands before restoring')}};
   const file=join(directory,'rooms.json');if(regular(file)){
    const rooms=JSON.parse(readFileSync(file));if(!Array.isArray(rooms))fail('Current rooms are unreadable');
-   for(const entry of rooms){if(!Array.isArray(entry)||entry.length!==2||!entry[1]||typeof entry[1]!=='object')fail('Current rooms are unreadable');const r=entry[1];if(r.hand&&!r.hand.end||r.tournament?.startedAt!=null&&r.tournament.winner==null&&!r.tournament.cancelledAt)fail('Finish active hands and tournaments before restoring')}
+   for(const entry of rooms){
+    if(!Array.isArray(entry)||entry.length!==2||!entry[1]||typeof entry[1]!=='object')fail('Current rooms are unreadable');const r=entry[1];
+    if(entry[0]==='local-rush-pools'){if(Array.isArray(r)||Object.keys(r).some(k=>!['holdem','plo'].includes(k)))fail('Current Rush state is unreadable');for(const [variant,saved]of Object.entries(r)){checkRush(saved);embedded[variant]=true}}
+    if(r.hand&&!r.hand.end||r.tournament?.startedAt!=null&&r.tournament.winner==null&&!r.tournament.cancelledAt)fail('Finish active hands and tournaments before restoring');
+   }
   }
-  for(const name of ['rush.json','rush-plo.json'])if(regular(join(directory,name))){const saved=JSON.parse(readFileSync(join(directory,name))),pool=saved.pool?JSON.parse(saved.pool):null;if(pool){if(!Array.isArray(pool.tables))fail('Current Rush state is unreadable');if(pool.tables.some(([,table])=>!table.settled))fail('Finish active Rush hands before restoring')}}
+  for(const [variant,name]of [['holdem','rush.json'],['plo','rush-plo.json']])if(!embedded[variant]&&regular(join(directory,name)))checkRush(JSON.parse(readFileSync(join(directory,name))));
  }catch(error){if(error.status)throw error;fail('Current game state cannot be checked safely')}
 }
 // Call recovery before opening models at startup; publish returned models only after this commits.
