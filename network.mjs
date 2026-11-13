@@ -251,7 +251,7 @@ function drawTable(g){
  for(let i=0;i<count;i++){
   const pos=seatPosition(i),n=state?.names[i],seat=element('div','seat s'+pos+(g?.turn===i?' acting':'')+(g?.folded[i]&&(!g.dealtSeats||g.dealtSeats.includes(i))?' folded':'')+(g?.end&&g.end.payouts[i]>g.end.returns[i]?' winner':''));
   if(positions){const {x,y,scale:k}=positions[pos];seat.style.setProperty('--seat-x',String(x));seat.style.setProperty('--seat-y',String(y));seat.style.setProperty('--seat-scale',String(k))}
-  seat.dataset.seat=i;const existing=felt.querySelector('.seat[data-seat="'+i+'"]');
+  seat.classList.toggle('sittingOut',!!state?.sittingOut?.[i]);seat.dataset.seat=i;const existing=felt.querySelector('.seat[data-seat="'+i+'"]');
   seat.dataset.own=String(state?.me===i);
   const pendingAward=!settling&&prev?.hand===state?.number&&g?.end&&existing&&felt.querySelector('.award[data-seat="'+i+'"]');
   const plate=element('div','plate'),label=n||'Open seat';
@@ -266,6 +266,7 @@ function drawTable(g){
   const portrait=element(chooseSeat?'button':'div','portrait',n&&[3,4,6].includes(count)?'':n?n.slice(0,1).toUpperCase():'＋');
   if(chooseSeat){portrait.disabled=!!(state?.reservedSeats?.includes(i)||waitingState?.offer?.seat===i);portrait.type='button';portrait.setAttribute('aria-label',(portrait.disabled?'Reserved seat ':'Take seat ')+(i+1));portrait.onclick=()=>{$('seatChoice').value=String(i);$('join').requestSubmit()};if(positions){portrait.classList.add('nativeTakeSeat');portrait.dataset.status=portrait.disabled?'RESERVE_SEAT':'TAKE_SEAT';portrait.replaceChildren(element('span','takeSeatLabel',portrait.disabled?'R':'Take Seat'));plate.hidden=true}}
   if(n&&[3,4,6].includes(count)){portrait.classList.add('nativeAvatar');portrait.style.backgroundPosition=(i*20)+'% center';portrait.setAttribute('aria-label','Avatar for '+n)}renderPortrait(portrait,i);seat.append(portrait,plate);
+  if(state?.sittingOut?.[i]&&n&&positions){const paused=element('div','nativeSitOut');paused.classList.toggle('gameClock',!!state.settings?.timeBankSeconds);paused.setAttribute('role','status');paused.setAttribute('aria-label',n+' · Sitting Out');const icon=new Image();icon.src='/home-art/native-sitout-default.png';icon.alt='';paused.append(icon,element('span','','Sitting Out'));seat.append(paused)}
   if(g){const c=element('div','cards');if(g.cards[i]){c.append(...cards(g.cards[i]));if(runoutPlan){const step=runoutPlan.reveals.find(r=>r.seat===i);if(step){c.classList.add('showdownTurn');if(prev?.g.cards[i])c.classList.add('ownReveal');c.style.setProperty('--showdown-delay',step.at/1000+'s')}}else if(settling&&!prev.g.cards[i])c.classList.add('showdownTurn')}else if(!g.folded[i])c.append(...Array.from({length:({plo:4,plo5:5,plo6:6})[state.settings?.variant]||2},()=>element('span','back')));if(positions){
     const layout=holeCardLayout(({plo:4,plo5:5,plo6:6})[state.settings?.variant]||2);c.classList.add('nativeHoleCards');
     if(g.cards[i])c.classList.add(g.folded[i]&&!(g.shownIndices?.[i]&&i!==state.me)?'nativeFoldCards':'nativeRaisedCards');

@@ -15,3 +15,11 @@ Additional verified scenario: five computers continue across multiple hands whil
 `node network-browser-test.mjs --cash-sitout` passes on an ephemeral HTTP server and headless muted Chrome: actual checkbox and assigned S key pause/cancel, page reload, backend restart, current hand unchanged, private desired flag, and token/origin/body/method rejection. This test exposed a checkbox disabled by render-time busy state; control capability now determines availability.
 
 Pending before publication: final review and commit-bound QA. No live owner data or runtime has been changed.
+
+## Paused-seat dimming
+
+Static `PlayerCell3D.activateDim(.3)` specifies avatar alpha .5 with dim1 and label text alpha .6, unlike Fold’s tinted avatar. The renderer uses actual per-hand `sittingOut`, not the private next-hand request. Headless browser test completes the current hand, prepares the other five seats and confirms the next deal has no paused cards, avatar opacity .5/filter none and name opacity .6. Native status glyph, label placement and timer policy remain pending.
+
+Native status artwork is extracted by `tools/extract-sitout.py` from Starling frame player_cell0192 (72×72), with decoded RGBA equality checked. The label is the installed English `TablePlayerInfoSittingOut`: Sitting Out. For this unlimited-duration local cash policy, source timer offset -85 plus icon30/label90 yields -55/+5, scaled by the existing seat scale. Configured GameClock uses the source no-timer icon5/label60 branch (-80/-25). The status layer remains full opacity above the dimmed avatar. Source runtime font rasterization and physical comparison remain unverified.
+
+Browser geometry check passes at850 and1196px: relative icon(-36,-55),72×72,labelY5,font28 after seat-scale normalization. Reload preserves the actual-pause marker. Requesting return during that hand retains it; next deal clears marker/dimming and restores avatar opacity1. Native runtime raster comparison remains separate.
