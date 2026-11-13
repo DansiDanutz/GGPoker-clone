@@ -57,3 +57,11 @@ Verificarea browserului compară toate valorile alpha și RGB ale pixelilor opac
 Testul în două conturi verifică schimbarea reală a categoriilor,28elemente/categorie, iconurile40px, originile și dimensiunile, progresia30/45cadre, lipsa intrării statice, DOM păstrat la resize, reduced-motion și expirare. Preferințele se păstrează la reload și nu trec între conturi. Evenimentul animat în timpul mâinii este verificat în istoricul complet după payout/restart, inclusiv atunci când rezultatul este remiză și nu apare în coloanele Best/Worst ale HUD. Limite: paritatea randării native AIR/AA/timingului fizic, frame0 și seturile avatar nu sunt demonstrate.
 
 Contractul categoriei dinamice Avatar, recuperat separat din manager/set și ramura GIF, este documentat în [avatar-emoji.md](avatar-emoji.md). Categoria rămâne neimplementată; lipsa fișierelor în Game/assets nu demonstrează lipsa lor în toate cacheurile sau pe CDN.
+
+## Centrarea la derulare
+
+TableEmoticonList.alignEmoticonList centrează containerul la `viewPort.width / 2 - contentWidth / 2`, independent de scrollbarul separat. Layoutul local folosea `margin:auto` în viewportul HTML; când platforma rezervă un gutter, grila era deplasată cu jumătatea lui. Un test cu gutter real de11px a reprodus x10,5 în loc de x16, adică5,5px abatere. Layoutul fixează acum marginea stângă folosind lățimea panoului complet.
+
+Browserul verifică centrarea la trei lățimi, într-o fereastră scurtă cu scrollbar real și conținut care depășește viewportul. Ultimul element primește focus și este adus integral în zona vizibilă; apoi revenirea la dimensiunea inițială permite selecția reală cu pointerul. Starea mâinii rămâne identică. Mâna completă și restartul sunt verificate în același fixture. Skinul și lățimea scrollbarului nativ separat de8px nu sunt reconstruite prin această corecție; randarea browserului rămâne o diferență explicită.
+
+Redimensionarea numai pe verticală a fost reprodusă separat: meniul deschis păstra înălțimea veche deoarece formularul de72px nu își schimba dimensiunea. Același ResizeObserver urmărește acum și panoul de chat, astfel încât limita viewportului se recalculează la schimbarea înălțimii. Testul păstrează lățimea300 și reduce înălțimea736→480 înaintea verificărilor de gutter, apoi cere ca meniul să rămână integral în panou.
