@@ -1835,6 +1835,8 @@ async function playTournament(clients,api,click,url,browser){
  await inspectThree();
  if(count===3){const before=structuredClone((await state()).hand);assert.equal((await api(clients[1],'chat',{text:'3-Max message'}))[0],200);await Promise.all(clients.map(async(c,viewer)=>{await until(()=>c.run("(()=>{const n=document.querySelector('.seat[data-seat=\"1\"] .seatChatBubble');return n&&n.getAnimations().length===0})()"));const pose=await c.run("(()=>{const n=document.querySelector('.seat[data-seat=\"1\"] .seatChatBubble'),r=n.getBoundingClientRect(),f=document.querySelector('.felt').getBoundingClientRect(),k=f.width/1700;return [(r.x-f.x)/k,(r.y-f.y)/k,r.width/k,r.height/k,n.classList.contains('right')]})()");const [x,y]=[[366,131],[896,748],[1156,131]][viewer];for(const [i,v]of [x,y,178,100].entries())assert.ok(Math.abs(pose[i]-v)<.3,JSON.stringify(pose));assert.equal(pose[4],viewer===2);await c.run("document.querySelector('.seatChatBubble').click()")}));await delay(1100);assert.equal((await api(clients[1],'chat',{emoticon:1}))[0],200);await Promise.all(clients.map(async(c,viewer)=>{await until(()=>c.run("!!document.querySelector('.seat[data-seat=\"1\"] .seatEmoticonCaption')"));const pose=await c.run("(()=>{const n=document.querySelector('.seat[data-seat=\"1\"] .seatEmoticonCaption'),r=n.getBoundingClientRect(),f=document.querySelector('.felt').getBoundingClientRect(),k=f.width/1700;return [(r.x-f.x)/k,(r.y-f.y)/k,r.width/k,r.height/k,n.classList.contains('right')]})()");const [x,y,k]=[[346,149,1],[878.6,747.4,1.1],[1176,149,1]][viewer];for(const [i,v]of [x,y,178*k,100*k].entries())assert.ok(Math.abs(pose[i]-v)<.3,JSON.stringify(pose));assert.equal(pose[4],viewer===2);await c.run("document.querySelector('.seatEmoticonCaption').click()")}));assert.deepEqual((await state()).hand,before);console.log('PASS3Max source chat/reactions:three local perspectives,typeTwo anchors,right mirror,own1.1caption,real transport/dismissal and unchanged hand')}
 
+ const watchPayout=c=>c.run("window.payoutOverlaps=[];window.payoutSnapshots=[];window.payoutWatch=setInterval(()=>{const key=document.querySelector('#actions')?.dataset.handKey;if(key&&document.querySelector('.award'))payoutOverlaps.push({key,awards:document.querySelectorAll('.award').length})},20);const originalFetch=window.fetch;window.fetch=async(...args)=>{if(window.rejectPayoutPoll&&args[1]?.cache==='no-store'&&String(args[0]).endsWith('/state')){window.rejectPayoutPoll=false;return new Response(JSON.stringify({error:'Fixture expired seat session'}),{status:401})}const r=await originalFetch(...args);if(r.ok&&args[1]?.cache==='no-store'&&String(args[0]).endsWith('/state')){const data=await r.clone().json();payoutSnapshots.push({number:data.number,awards:document.querySelectorAll('.award').length})}return r}");
+ for(const c of clients)await watchPayout(c);
  // Let a scheduled boundary pass without changing the blinds or bets mid-hand.
  await delay(10100);s=await state();assert.equal(s.hand.blind,4);
  const eliminated=new Set();
@@ -1869,7 +1871,14 @@ async function playTournament(clients,api,click,url,browser){
      console.log('Tournament hand',last,'blinds',g.blind/2,g.blind,'stacks',g.stacks);
    }
    if(t.winner!==null)break;
-   if(g.end){await until(async()=>(await state()).number>s.number);continue}
+   if(g.end){await until(async()=>(await state()).number>s.number);
+    if(count===3&&last===1){
+     for(const c of clients)await until(()=>c.run("payoutSnapshots.some(s=>s.number===2&&s.awards>0)"));
+     await clients[1].motion(true);await until(()=>clients[1].run("!document.querySelector('.award')&&!!document.querySelector('#actions').dataset.handKey"));await clients[1].motion(false);
+     assert.deepEqual(await clients[2].run('payoutOverlaps'),[]);const savedSeat=await clients[2].run("sessionStorage.getItem('river-seat:'+location.hash.slice(1))");await clients[2].run('window.rejectPayoutPoll=true');await until(()=>clients[2].run("!sessionStorage.getItem('river-seat:'+location.hash.slice(1))&&!document.querySelector('#join').hidden&&!document.querySelector('.award')"));await delay(4500);assert.equal(await clients[2].run("!document.querySelector('#join').hidden&&!document.querySelector('.award')&&!sessionStorage.getItem('river-seat:'+location.hash.slice(1))"),true,'Expired identity must not resume a queued private hand');await clients[2].run("sessionStorage.setItem('river-seat:'+location.hash.slice(1),"+JSON.stringify(savedSeat)+")");await clients[2].reload();await until(()=>clients[2].run("!!document.querySelector('#actions').dataset.handKey"));assert.equal(await clients[2].run("document.querySelectorAll('.award,.showdownTurn').length"),0,'Reload catches up without replaying the old payout');await watchPayout(clients[2]);
+     console.log('PASS queued payout interruption:actual newer server snapshot observed,reduce-motion drains once,401 discards private queue,reload catches up without replay');
+    }
+    for(const c of clients){await until(()=>c.run("(()=>{const key=document.querySelector('#actions').dataset.handKey;return key.split(':')[key.startsWith('waiting:')?2:1]==='"+(s.number+1)+"'})()"));assert.deepEqual(await c.run('payoutOverlaps'),[],'Next hand must not appear before the previous payout completes')}continue}
    if(eliminated.size===count-2)sawHeadsUp=true;
    assert.ok(!eliminated.has(g.turn));
    const i=g.turn,own=await state(i),o=own.hand.options;
@@ -1879,6 +1888,7 @@ async function playTournament(clients,api,click,url,browser){
    const re=!battle.includes(i)&&o.due?/^Fold$/:battle.includes(i)&&o.raise?/^All in$/:o.due?/^Call /:/^Check$/;
    await click(i,re);await until(async()=>(await state()).version>s.version);
  }
+ for(const c of clients){assert.deepEqual(await c.run('payoutOverlaps'),[]);await c.run('clearInterval(payoutWatch)')}console.log('PASS payout sequencing:every tournament transition retains old hand until all chip awards finish');
  s=await state();const w=s.tournament.winner;
  assert.notEqual(w,null);assert.deepEqual([...s.tournament.finishes].sort((a,b)=>a-b),indices.map(i=>i+1));assert.equal(s.tournament.finishes[w],1);assert.equal(eliminated.size,count-1);assert.ok(sawIncrease);assert.ok(sawHeadsUp);
  const prizes=Array(count).fill(0);prizes[w]=count*25;
