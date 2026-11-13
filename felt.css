@@ -464,3 +464,5 @@ body:has(#dealMeIn:not([hidden])) footer:has(#join[hidden]){margin-top:0}
 .nativeSitOutStates button img{position:absolute;left:calc(4/17*1cqw);top:calc(4/17*1cqw);width:calc(60/17*1cqw);height:calc(60/17*1cqw);pointer-events:none}
 .nativeSitOutStates button:active img{top:calc(8/17*1cqw)}
 .nativeSitOutStates button:focus-visible{outline:2px solid white;outline-offset:2px}
+
+.bestFiveHud span{color:#ccc;height:calc(36/17*1cqw);line-height:calc(36/17*1cqw);white-space:nowrap}
