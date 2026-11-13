@@ -39,3 +39,11 @@ The newly exported `GlobalSitInCommand` confirms isAll propagation to eligible t
 `POST /local/cash-sit-in` requires local profile cookie, exact Origin, JSON ≤512 bytes and the expected account identity. It accepts no room IDs, target account selector or funding instructions. The room store clears only that account’s pending cash pause flags in one atomic save, preserving current hands and wallets. Failure restores every affected room in memory; retry is idempotent. Actual paused seats return only on later deals. No funds are automatically purchased.
 
 Model/HTTP tests cover two tables, other-account isolation, unchanged hand and wallet, restart and failed-write rollback. The authenticated headless browser scenario confirms one global request from the actual Deal Me In mouse click; guest seats keep the current-table route. Backend capability advertisement prevents the new frontend from assuming an older running backend supports global return.
+
+## Insufficient stack on return
+
+Retained `TableInfo.dealMeInMin` defaults to2×bigBlind for ordinary two-blind games when no operator override exists. Other native branches use4×buttonBlind or2×thirdBlind; those formats/overrides are not introduced here. `SitIn.onRequest` opens OPEN_GET_CHIPS below that threshold for normal Hold’em/Omaha.
+
+The local room store publishes the ordinary default minimum and a private funding-required flag. A seated paused player below it cannot clear pause through the direct API; global return skips that seat and returns only that account’s required-funding room/minimum/balance. Other eligible cash seats can still return. No wallet is debited by this operation. Confirmed pending chips count toward the next-hand minimum.
+
+The settings toggle or Deal Me In opens the existing Add Chips dialog for the affected current seat. Cancel/Escape preserves pause and spends nothing; confirmation uses the existing single-debit pending-increment flow. The user requests return again after funding. Browser test starts a legal16-chip stake, plays raise12/raise20/fold/fold to leave4, schedules pause, verifies Escape, confirms12 once and returns next deal with16; total268 and the current hand remain correct. No private operator override or automatic purchase is guessed.
