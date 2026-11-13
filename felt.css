@@ -455,3 +455,12 @@ html[data-panel=chat] #chatForm.nativeChatComposer{display:block;height:72px;min
 
 /* Keep the local diagnostic footer below the native return control. */
 body:has(#dealMeIn:not([hidden])) footer:has(#join[hidden]){margin-top:0}
+
+/* SitOutView selector x=1700-298-305,y1100; SitOutStateUI four68px buttons at73px pitch. */
+.nativeSitOutStates{position:absolute;left:calc(1097/17*1cqw);top:calc(1100/17*1cqw);display:flex;gap:calc(5/17*1cqw);z-index:9}
+.nativeSitOutStates button{position:relative;width:calc(68/17*1cqw);height:calc(68/17*1cqw);min-width:0;padding:0;border:0;border-radius:0;background:transparent url('/home-art/native-sitout-choice-base.png') center/100% 100%;opacity:.3}
+.nativeSitOutStates button[aria-pressed=true]{opacity:1}
+.nativeSitOutStates button:hover{filter:none}
+.nativeSitOutStates button img{position:absolute;left:calc(4/17*1cqw);top:calc(4/17*1cqw);width:calc(60/17*1cqw);height:calc(60/17*1cqw);pointer-events:none}
+.nativeSitOutStates button:active img{top:calc(8/17*1cqw)}
+.nativeSitOutStates button:focus-visible{outline:2px solid white;outline-offset:2px}

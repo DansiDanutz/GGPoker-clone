@@ -61,3 +61,18 @@ Tests cover two rooms, other-account isolation, no hand/wallet changes, failed-w
 Native `SitOutMenuView` registers HotKey.SIT_OUT_ALL_TABLES. The local binding catalog now exposes the implemented cash-specific action in Functions, initially unassigned (no native default combination is inferred). It dispatches the same capability/account-gated settings button; the native broader all-game/Rush/tournament scope remains incomplete.
 
 Binding tests cover assignment, persistence, Functions categorization and conflict rejection without changing existing assignments. Authenticated headless keyboard input with a test-only G binding schedules the pause without a betting action; disabling Functions blocks it. The normal current-table S test remains independent.
+
+## Four native pause statuses
+
+FFDec export of `SitOutStateUI` establishes Smoking/Toilet/Drink/Charge with ESitOutState1/2/4/8, desktop table_menu366..369 icons60×60 on table_menu121 buttons68×68; icons(4,4), pressed y8, button pitch73. SitOutView anchors the selector at(1097,1100) for1700px viewport. Unselected alpha .3, selected1. Opponent/player status glyphs are Starling player_cell193..196,72×72. The extractor verifies source-region decoded RGBA, with native art remaining private.
+
+The status endpoint is separate from pause eligibility: `POST /api/rooms/:id/sit-out-state` accepts only state0/1/2/4/8 and optional nonnegative version, requires the seated identity and an actually paused ordinary cash seat. Status does not change the hand, stack or wallet; replay is idempotent, save errors roll back, and checkpoint validation rejects unsupported values. Returning at a new deal clears the cosmetic state. Other players see the status glyph only for that actual paused identity.
+
+| Control | Local action | Native evidence / remaining limit |
+|---|---|---|
+| Smoking | Persist state1, select button, show smoking glyph | SitOutStateUI366 / player_cell193 |
+| Restroom | Persist state2, select button, show restroom glyph | SitOutStateUI367 / player_cell194 |
+| Drink | Persist state4, select button, show drink glyph | SitOutStateUI368 / player_cell195 |
+| Charge | Persist state8, select button, show charge glyph | SitOutStateUI369 / player_cell196; no invented time grant |
+
+Native `ChangeSitOutState` can receive added-time information from its private server. Local cash has no expiry clock, so these controls do not fabricate a countdown or extra-time grant. Operator timing and brand-specific N8IN Charge artwork remain incomplete. Browser tests check all four trusted clicks, selected alpha, changed glyph, reload, next-deal reset and source selector geometry at850/1196. A render-cache dependency defect found by the test was repaired by including pause/status/balance fields in the existing draw signature.
