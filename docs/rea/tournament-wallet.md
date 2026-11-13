@@ -43,3 +43,14 @@ tournament-wallet-test.mjs verifică debitare/recuperare/retragere, fonduri insu
 tournament-wallet-http-test.mjs verifică autentificare/Origin, identitatea stabilită de server, debitare unică, rollback la retragere, rambursare, chitanțe private și restart. network-browser-test.mjs --tournament --event-seats=3 folosește sesiuni separate și controalele reale până la winner; verifică portofelele tuturor, istoricul efectiv al câștigătorului și al unui eliminat, apoi restart și absența plăților duplicate.
 
 Rush și Spin nu sunt activate financiar prin această schimbare. Spin rămâne informativ până la recuperarea configurației sale. Aspectul nativ al Cashierului, taxele operatorului, multi-table și comparația fizică a animațiilor/sunetului rămân în inventarul general de paritate.
+
+
+## Configurable local event entries
+
+The owner can now set `entryCost` from0 through1000000 whole play chips, independently of the tournament starting stack. Omitting it preserves the existing25-chip entry. Zero creates an unsponsored free practice event with a zero prize pool. This is independent local administrator policy; neither the native private admin console nor its fee/rake/guarantee rules have been recovered.
+
+The entry is copied into the event when the room is created. HTTP updates cannot change it while players are registered. Signup debits that amount once; withdrawal and scheduled cancellation refund the same amount. Computer/guest entries remain virtual sponsorship at the configured cost. The current prize pool and final prizes use the event's stored entry, not a fresh client value. No registration body can choose a cheaper entry.
+
+The owner form is capability-gated for older local backends. Edit preserves the configured value. Home uses the real amount for the Buy-in column, numeric filtering/sorting and selected-event details; Prize uses the actual advertised pool, including zero after cancellation. The playable table shows the configured entry and current pool. Free entries require no available wallet funds and create no zero-value receipt.
+
+Tests cover0/37/250 entries, signup rollback, withdrawal, exact111/0/750 pools and independently expected60/30/10 rounding, full tournaments/300 tournament chips, account-wallet conservation and restart. HTTP tests cover type/range/format validation, occupied locking, empty-room editing, attempted client override,37-chip scheduled refund, cancellation pool zero and free signup with an empty wallet. Three isolated browser players verify owner create/edit, native-style lobby rows/filter, actual seat controls, full tournament, exact winner/loser wallet histories and restart for37 and0. Native Cashier pixels, operator fee/guarantee policy and complete format parity remain unverified.
