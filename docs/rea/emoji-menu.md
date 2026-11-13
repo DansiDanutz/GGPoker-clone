@@ -26,4 +26,16 @@ Pickerul golește draftul la selecție; la eșec îl restaurează dacă utilizat
 
 native-emoticon-test.mjs verifică28ID-uri, etichetele, payloadurile invalide/amestecate, limita comună, mute/Helmet, rollback atomic, restart, istoric și conservarea240jetoane. network-browser-test.mjs --helmet --native-emoticon folosește click real în popup, verifică geometria, eroare/retry, ID30 fără etichetă inventată, lipsa replayului, istoricul nativ și mâna completă cu restart.
 
-Nu sunt terminate categoriile Dneg1000, Greg4000 și avatar10000, animațiile lor MovieClip, bula de text asociată emoticonului și întregul chrome al ferestrei de chat. Nu sunt declarate echivalență pixel-perfect, timing nativ sau sunet verificat fizic.
+Nu sunt terminate categoriile Dneg1000, Greg4000 și avatar10000, animațiile lor MovieClip și întregul chrome al ferestrei de chat. Nu sunt declarate echivalență pixel-perfect, timing nativ sau sunet verificat fizic.
+
+## Bula asociată emoticonului standard
+
+Clasa privată EmoticonChatBox este definită la sfârșitul Emoticon.as, nu într-un fișier separat. Extinde ChatBox și suprascrie show/hide exclusiv cu visible=true/false: nu execută tweenul vertical200ms și durata5secunde a mesajului text normal. Este copil al Emoticon, după imagine, și dispare împreună cu extensia la4secunde sau click. Numai imaginea are animația0,5→1; bula nu se mărește odată cu ea.
+
+Emoticon.showEmoticon traduce MOBILE_BUBBLE+indice și cheamă setMessage/show. Constructorul setează AUTO_CHANGE și useStringTable=true. UniqueLabel alege pentru text latin fontul implicit Roboto Condensed: InitFont.defaultFont și LabelModel.useRoboto=false, fără resetLabelFormat20 în acest traseu. Reutilizăm fontul original deja extras NativeActionRoboto,24px,#333. Grafica rămâne player_cell0023 originală, alpha0,7, cu umbra0024 și slice9 identic ChatBox. Nu există setColor în traseul emoticonului; colorarea aurie a chatului propriu nu i se aplică.
+
+PlayerPosition.emoticon este(0,1), scala locului; EmoticonPosition.chat are scala implicită1 și nu primește owner. Bula este deci în coordonatele locale ale emoticonului, apoi întregul ansamblu este scalat cu scala locului. Preseturile pentru6locuri sunt(26,−187),(58,−142),(64,−95),(70,−81),oglindit(−64,−95),(−58,−142). AoF folosește pozițiile0,1,3,5 ale aceleiași liste. În dreapta, corpul și umbra sunt oglindite, textul rămâne lizibil. Originea scenei este seat+(0,1)×scale; ancora bulei este apoi adăugată și scalată, cu178unități scăzute dinx la oglindire. Înălțimea urmează max(100,textHeight+34), y local crește cu100−height.
+
+Implementarea păstrează imaginea și bula ca noduri distincte ale aceluiași efect, evitând reluarea animației la reconcilierea locului. Click/Enter/Space pe oricare le ascunde pe ambele doar local; pollingul nu le reafișează. Nu schimbă jurnalul, mâna sau payoutul. ID30 nu primește o etichetă inventată și nu reutilizează bula mesajului anterior; aspectul exact al aliasului absent rămâne necunoscut.
+
+Fixture-ul native-emoticon verifică ancorele proprii/oponent, scala1/1,1 la850și1196, oglindirea la dreapta, grafică originală, lipsa tweenului pe bulă, nod stabil, ascundere locală cuplată, expirare și lipsa replayului la reconectare. Testul continuă cu o mână completă240jetoane și restart. Acestea verifică implementarea formulelor recuperate, nu un nou capture fizic nativ sau echivalența antialiasingului.

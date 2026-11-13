@@ -288,7 +288,7 @@ function drawTable(g){
   if(n&&state.settings?.timeBankSeconds){const clock=element('span','nativeGameClock');clock.dataset.clockSeat=String(i);clock.setAttribute('role','img');for(let d=0;d<5;d++){const glyph=element('span','nativeClockDigit');glyph.style.left=([0,21,42,53,74][d]*.88)/17+'cqw';clock.append(glyph)}seat.append(clock)}
   if(g?.clock?.canDisableLimit&&i===state.me&&g.turn===i){const bank=element('button','nativeTimeBank');bank.type='button';bank.setAttribute('aria-label','Use remaining time bank');bank.title='Use the remaining local time bank for this turn';bank.dataset.renderKey=g.clock.actionId;bank.onclick=()=>operate('time-bank',{actionId:g.clock.actionId});seat.append(bank);const progress=element('span','nativeLimitProgress');progress.setAttribute('aria-hidden','true');progress.append(element('span','nativeLimitFill'),element('span','nativeLimitPointer'));seat.append(progress)}
   playerNotes.decorateSeat(seat,i);
-  const extensions=[...existing?.querySelectorAll(':scope>.seatReaction,:scope>.seatChatBubble,:scope>.seatHelmet')||[]];for(const node of extensions)node.remove();
+  const extensions=[...existing?.querySelectorAll(':scope>.seatReaction,:scope>.seatEmoticonCaption,:scope>.seatChatBubble,:scope>.seatHelmet')||[]];for(const node of extensions)node.remove();
   const mounted=existing?updateElement(existing,seat):felt.appendChild(seat),glow=mounted.querySelector('.nativeTurnGlow');
   mounted.append(...extensions);
   if(glow&&!glow.hidden&&i===state.me&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&!glow.getAnimations().some(a=>a.effect.getTiming().duration===400)){
@@ -350,7 +350,7 @@ const chatDisplays=new Map();let chatBubblesInitialized=false;
 const reactionDisplays=new Map(),reactionReduced=matchMedia('(prefers-reduced-motion: reduce)');
 reactionReduced.addEventListener('change',()=>{if(reactionReduced.matches)for(const node of document.querySelectorAll('.seatReaction,.seatChatBubble'))for(const animation of node.getAnimations())animation.cancel()});
 // Seat contents are reconciled; keep dismissal on the stable felt parent.
-for(const type of ['mousedown','click','keydown'])document.querySelector('.felt').addEventListener(type,event=>{const node=event.target.closest('.seatReaction,.seatChatBubble');if(!node)return;if(type==='mousedown')event.stopImmediatePropagation();else if(type==='click'){event.stopPropagation();const display=node.classList.contains('seatReaction')?reactionDisplays.get(node.dataset.reaction):chatDisplays.get(node.dataset.bubble);if(display)display.dismissed=true;node.remove()}else if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();node.click()}});
+for(const type of ['mousedown','click','keydown'])document.querySelector('.felt').addEventListener(type,event=>{const node=event.target.closest('.seatReaction,.seatEmoticonCaption,.seatChatBubble');if(!node)return;if(type==='mousedown')event.stopImmediatePropagation();else if(type==='click'){event.stopPropagation();const display=!node.classList.contains('seatChatBubble')?reactionDisplays.get(node.dataset.reaction):chatDisplays.get(node.dataset.bubble);if(display)display.dismissed=true;if(node.dataset.reaction)clearSeatReaction(node.parentElement);else node.remove()}else if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();node.click()}});
 function renderSeatChat(){
  const aof=state?.settings?.variant==='aof',count=capacity();if(!state||chatWindow||count!==6&&!aof){document.querySelectorAll('.seatChatBubble').forEach(node=>node.remove());if(!state){chatDisplays.clear();chatBubblesInitialized=false}return}
  const keyFor=m=>JSON.stringify([m.at,m.seat,m.name,m.text]);
@@ -371,20 +371,27 @@ function renderSeatChat(){
 }
 function chatReaction(m){if(isNativeEmoticon(m.emoticon)&&m.reaction===undefined)return {image:'/home-art/native-emoticon-'+m.emoticon+'.png',label:m.text||'Emoticon '+m.emoticon};if(m.emoticon===undefined&&[1,2,3].includes(m.reaction))return {image:'/home-art/reaction-'+m.reaction+'.png',label:m.text};return null}
 const reactionKey=m=>JSON.stringify([m.at,m.seat,m.name,m.emoticon===undefined?m.reaction:['emoticon',m.emoticon]]);let nativeReactionsInitialized=false;
+function clearSeatReaction(seat){seat.querySelectorAll(':scope>.seatReaction,:scope>.seatEmoticonCaption').forEach(node=>node.remove())}
+function renderEmoticonCaption(seat,message,key){
+ const aof=state.settings.variant==='aof',count=capacity();if(!isNativeEmoticon(message.emoticon)||!message.text||count!==6&&!aof)return null;
+ const position=(message.seat-(state.me??(aof?2:0))+count)%count,right=aof?position===3:position>=4,offsets=aof?[[26,-187],[58,-142],[70,-81],[-58,-142]]:[[26,-187],[58,-142],[64,-95],[70,-81],[-64,-95],[-58,-142]],[x,y]=offsets[position];let node=seat.querySelector(':scope>.seatEmoticonCaption');
+ if(!node){node=element('span','seatEmoticonCaption'),node.dataset.reaction=key;node.tabIndex=0;node.setAttribute('role','button');node.setAttribute('aria-label','Hide '+message.text+' reaction');for(const name of ['seatChatBox','seatChatShadow']){const art=element('span',name);art.setAttribute('aria-hidden','true');node.append(art)}const label=element('span','seatChatText',message.text);node.append(label);seat.append(node);const scale=document.querySelector('.felt').getBoundingClientRect().width/1700*parseFloat(getComputedStyle(seat).getPropertyValue('--seat-scale'));let length=message.text.length-1;while(length>=0&&label.getBoundingClientRect().height/scale>100){label.textContent=message.text.slice(0,length)+'..';length--}const textHeight=label.getBoundingClientRect().height/scale,height=Math.max(100,textHeight+34);node.dataset.height=height;node.style.height=height/17+'cqw';label.style.top=Math.floor((height-15-textHeight)/2)/17+'cqw'}
+ node.classList.toggle('right',right);node.style.left='calc('+String(x-(right?178:0))+'*var(--seat-scale)/17*1cqw)';node.style.top='calc('+String(1+y+100-Number(node.dataset.height))+'*var(--seat-scale)/17*1cqw)';return node;
+}
 function renderSeatReactions(){
  renderSeatChat();
  if(!state)nativeReactionsInitialized=false;else if(!nativeReactionsInitialized){for(const m of state.chat||[])if(isNativeEmoticon(m.emoticon))reactionDisplays.set(reactionKey(m),{started:Date.now(),dismissed:true});nativeReactionsInitialized=true}
  for(const seat of document.querySelectorAll('.felt .seat')){
   const current=seat.querySelector('.seatReaction'),i=Number(seat.dataset.seat);
   const reaction=(state?.chat||[]).findLast(m=>m.seat===i&&m.name===state.names[i]&&chatReaction(m)&&Date.now()-m.at<4000);
-  if(helmet.muted()){if(i===state.me)current?.remove();if(reaction)helmet.reactionAllowed(reaction);continue}if(reaction&&!helmet.reactionAllowed(reaction)){current?.remove();continue}
-  const key=reaction?reactionKey(reaction):'';if(current?.dataset.reaction===key)continue;current?.remove();
+  if(helmet.muted()){if(i===state.me)clearSeatReaction(seat);if(reaction)helmet.reactionAllowed(reaction);continue}if(reaction&&!helmet.reactionAllowed(reaction)){clearSeatReaction(seat);continue}
+  const key=reaction?reactionKey(reaction):'';if(current?.dataset.reaction===key){if(reaction)renderEmoticonCaption(seat,reaction,key);continue}clearSeatReaction(seat);
   if(reaction){
    let display=reactionDisplays.get(key);if(!display){display={started:Date.now(),dismissed:false};reactionDisplays.set(key,display);if(reactionDisplays.size>200)reactionDisplays.delete(reactionDisplays.keys().next().value)}
    const elapsed=Date.now()-display.started;if(display.dismissed||elapsed>=4000)continue;
-   const art=chatReaction(reaction),image=new Image();image.dataset.reaction=key;if(isNativeEmoticon(reaction.emoticon))image.dataset.emoticon=reaction.emoticon;image.src=art.image;image.alt=reaction.name+': '+art.label;image.className='seatReaction';image.tabIndex=0;image.setAttribute('role','button');image.setAttribute('aria-label','Hide '+art.label+' reaction');seat.append(image);
+   const art=chatReaction(reaction),image=new Image();image.dataset.reaction=key;if(isNativeEmoticon(reaction.emoticon))image.dataset.emoticon=reaction.emoticon;image.src=art.image;image.alt=reaction.name+': '+art.label;image.className='seatReaction';image.tabIndex=0;image.setAttribute('role','button');image.setAttribute('aria-label','Hide '+art.label+' reaction');seat.append(image);const caption=renderEmoticonCaption(seat,reaction,key);
    if(!reactionReduced.matches&&elapsed<200){const frames=Array.from({length:61},(_,i)=>{const t=i/60-1;return {transform:'scale('+(i===0?.5:i===60?1:.5+.5*(t*t*(2.70158*t+1.70158)+1))+')'}});image.animate(frames,{duration:200,easing:'linear'}).currentTime=elapsed}
-   setTimeout(()=>image.remove(),4000-elapsed);
+   setTimeout(()=>{image.remove();caption?.remove()},4000-elapsed);
   }
  }
 }
