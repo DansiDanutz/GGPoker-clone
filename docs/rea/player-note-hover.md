@@ -12,7 +12,7 @@ PlayerNoteView listens for Starling hover touches. It refuses broadcast mode, a 
 
 For an eligible opponent it obtains the private note by stable alias, sets content and schedules showing after **300 ms**. Hiding kills the delayed callback, clears the note player, and hides the tooltip. Mouse leave and leaving the player touch area dismiss it. Showing dispatches GET_PLAYER_NOTE_FOR_TOOLTIP, so a refreshed private note can replace the cached content. A returned update is accepted only when its player ID matches the current hovered player. The own player has no opponent-note tooltip. An open auto-fold view suppresses the tooltip for native player x greater than980.
 
-The current local app has clickable opponent HUDs, private note frames and editors. It does **not yet implement this hover tooltip**. A browser title or an immediately opened HUD is not equivalent to the recovered delayed surface.
+The local app now implements this separate delayed surface through `note-tooltip.mjs`, sharing the existing private seated-note APIs. Clickable HUDs and editors remain separate controls. The implementation follows the recovered native behavior; physical window/font/raster comparison remains unverified.
 
 ## Positioning
 
@@ -38,8 +38,16 @@ The label uses `table0252` as the full tooltip frame and `table0251` for its tit
 
 The StageAssets desktop atlas, not the Starling ATF atlas, resolves these keys. Verified atlas rectangles: table0412=(3203,3428,40,40), table0251=(213,994,24,30), table0252=(3778,3391,42,42). Each is unrotated. applySlice9Grid must be followed when extracting/rendering; the atlas sourceSize metadata is not the cropped bitmap size.
 
-## Remaining implementation and acceptance
+## Implementation acceptance contract
 
-Implement cached private hover data with300ms cancellation, identity checks before and after asynchronous refresh, dismissal on pointer exit/window blur/hidden document/account or target change/401, and no mutation of betting state. Reuse the existing note APIs and palette; no new public note endpoint is needed for a seated hover tooltip.
+The acceptance contract requires cached private hover data with300ms cancellation, identity checks before and after asynchronous refresh, dismissal on pointer exit/window blur/hidden document/account or target change/401, and no mutation of betting state. Reuse the existing note APIs and palette; no new public note endpoint is needed for a seated hover tooltip.
 
 Verify header/metrics/notes, both text bounds and the literal `..` suffix; colored/title/default frames; own/observer privacy; six-seat and AoF viewer rotations; updates while visible; replacement and delayed-response isolation; early pointer exit; no click or focus theft; unchanged actions/cards; full hand payout and restart. A physical native comparison and native font timing remain separate unverified acceptance gates.
+
+## Local implementation and explicit limits
+
+`player-note-ui.mjs` supplies only the authorized current opponent row, recorded local metrics, palette/title and known stack. A transparent192-unit source-backed PlayerTouchArea above the name plate/cards restores both actual pointer hover and click-to-HUD; keyboard focus stays on the existing accessible portrait. The overlay is an input hit area, not a replacement image of the player. Pointer exit, blur, hidden document, identity/target change and401 clear the private DOM. A delayed response cannot reopen an abandoned hover. Hover does not move focus. Existing notes update the visible surface; unchanged polls retain its DOM.
+
+Native cropped/tinted nine-patch skins are extracted by `tools/extract-note-tooltip.swift`;23PNGs total14992bytes, decoded RGBA equality verified. CPU tint multiplication rounds to8bits; exact native GPU rounding remains unverified. No existing installed artwork is overwritten. Native metric percent suffixes and integer angular fill are used; source language keys annotate captions. Unknown country/badges are omitted, not fabricated.
+
+The browser adapter measures rendered font line boxes for the native two/six-line bounds and uses the source binary prefix search. AIR glyph-bound equivalence and native parent clipping remain unverified. Font-load completion remeasures the surface. The transparent name-plate region is also accepted as a local hover adapter; its exact native hit mask is unverified. Native broadcast/VIP/casino/auto-fold restrictions have no corresponding local modes, so this does not establish those formats.

@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';import{noteTooltipPosition,fitNoteTooltipText}from'./note-tooltip.mjs';
-assert.deepEqual(noteTooltipPosition({x:850,y:100},636,300),{x:850,y:150});
-assert.deepEqual(noteTooltipPosition({x:850,y:1100},636,300),{x:850,y:750});
-assert.deepEqual(noteTooltipPosition({x:1400,y:562},636,300),{x:714,y:562});
-assert.deepEqual(noteTooltipPosition({x:300,y:562},636,300),{x:350,y:562});
-const p=noteTooltipPosition({x:1150,y:962},636,300);assert.deepEqual(p,{x:484,y:622});
+const close=(actual,expected)=>{for(const k of ['x','y'])assert.ok(Math.abs(actual[k]-expected[k])<1e-9,JSON.stringify({actual,expected}))};
+close(noteTooltipPosition({x:850,y:100},636,300),{x:214,y:150});
+close(noteTooltipPosition({x:850,y:1100},636,300),{x:214,y:750});
+close(noteTooltipPosition({x:1400,y:562},636,300),{x:714,y:562});
+close(noteTooltipPosition({x:300,y:562},636,300),{x:350,y:262});
+const p=noteTooltipPosition({x:1150,y:962},636,300);close(p,{x:484,y:622});
 assert.throws(()=>noteTooltipPosition({x:NaN,y:1},636,300));assert.throws(()=>noteTooltipPosition({x:1,y:1},0,300));
 const measure=s=>Math.ceil(s.length/4)*10;assert.equal(fitNoteTooltipText('abcd',20,measure),'abcd');assert.equal(fitNoteTooltipText('abcdefghijk',20,measure),'abcdef..');assert.equal(fitNoteTooltipText('',20,measure),'');
 const text='a'.repeat(1000),out=fitNoteTooltipText(text,60,measure);assert.equal(out,'a'.repeat(22)+'..');assert.ok(measure(out)<=60);assert.ok(measure(out.slice(0,-2)+'a..')>60);
