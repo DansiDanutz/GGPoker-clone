@@ -60,7 +60,7 @@ header:has(#sound){height:30px;padding-block:2px}#sound{margin-left:auto;margin-
 .cards:has(>:nth-child(4)){gap:0}
 .cards:has(>:nth-child(4))>:nth-child(n+2){margin-left:-1.8cqw}
 
-.seatReaction{position:absolute;right:-3cqw;top:0;width:7cqw;height:7cqw;object-fit:contain;z-index:5;pointer-events:none}.reactionButton{padding:3px!important}.reactionLabel{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.seatReaction{position:absolute;right:-3cqw;top:0;width:7cqw;height:7cqw;object-fit:contain;z-index:5;cursor:pointer;pointer-events:auto}.reactionButton{padding:3px!important}.reactionLabel{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
 
 .seatName{display:block;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 

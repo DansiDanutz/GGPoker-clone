@@ -347,13 +347,21 @@ function renderPortrait(portrait,i){
  if(custom)for(const node of [...portrait.childNodes])if(node.nodeType===Node.TEXT_NODE)node.remove();portrait.setAttribute('aria-label','Avatar for '+state.names[i]);
 }
 function renderSeatAvatars(){for(const seat of document.querySelectorAll('.felt .seat'))renderPortrait(seat.querySelector('.portrait'),Number(seat.dataset.seat))}
+const reactionDisplays=new Map(),reactionReduced=matchMedia('(prefers-reduced-motion: reduce)');
+reactionReduced.addEventListener('change',()=>{if(reactionReduced.matches)for(const node of document.querySelectorAll('.seatReaction'))for(const animation of node.getAnimations())animation.cancel()});
 function renderSeatReactions(){
  for(const seat of document.querySelectorAll('.felt .seat')){
   const current=seat.querySelector('.seatReaction'),i=Number(seat.dataset.seat);
   const reaction=(state?.chat||[]).findLast(m=>m.seat===i&&m.name===state.names[i]&&[1,2,3].includes(m.reaction)&&Date.now()-m.at<4000);
   if(helmet.muted()){if(i===state.me)current?.remove();if(reaction)helmet.reactionAllowed(reaction);continue}if(reaction&&!helmet.reactionAllowed(reaction)){current?.remove();continue}
-  const key=reaction?reaction.at+':'+reaction.reaction:'';if(current?.dataset.reaction===key)continue;current?.remove();
-  if(reaction){const image=new Image();image.dataset.reaction=key;image.src='/home-art/reaction-'+reaction.reaction+'.png';image.alt=reaction.name+': '+reaction.text;image.className='seatReaction';seat.append(image);setTimeout(()=>image.remove(),Math.max(0,4000-(Date.now()-reaction.at)))}
+  const key=reaction?JSON.stringify([reaction.at,i,reaction.name,reaction.reaction]):'';if(current?.dataset.reaction===key)continue;current?.remove();
+  if(reaction){
+   let display=reactionDisplays.get(key);if(!display){display={started:Date.now(),dismissed:false};reactionDisplays.set(key,display);if(reactionDisplays.size>200)reactionDisplays.delete(reactionDisplays.keys().next().value)}
+   const elapsed=Date.now()-display.started;if(display.dismissed||elapsed>=4000)continue;
+   const image=new Image();image.dataset.reaction=key;image.src='/home-art/reaction-'+reaction.reaction+'.png';image.alt=reaction.name+': '+reaction.text;image.className='seatReaction';image.tabIndex=0;image.setAttribute('role','button');image.setAttribute('aria-label','Hide '+reaction.text+' reaction');image.onmousedown=e=>e.stopImmediatePropagation();image.onclick=e=>{e.stopPropagation();display.dismissed=true;image.remove()};image.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();image.click()}};seat.append(image);
+   if(!reactionReduced.matches&&elapsed<200){const frames=Array.from({length:61},(_,i)=>{const t=i/60-1;return {transform:'scale('+(i===0?.5:i===60?1:.5+.5*(t*t*(2.70158*t+1.70158)+1))+')'}});image.animate(frames,{duration:200,easing:'linear'}).currentTime=elapsed}
+   setTimeout(()=>image.remove(),4000-elapsed);
+  }
  }
 }
 function renderChat(){
