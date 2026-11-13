@@ -53,3 +53,37 @@ spin-test.mjs trece pentru cele două mize observate: suma frecvențelor100milio
 TourneyEntry.startingChips returnează configuration.StartingChips. configuration este tagTourneyTableConfiguration, iar StartingChips este deserializat din mesaj prin AlphaProtocolReader.readLong; TimeBankType este citit ca enumerare și MaxTimeChipCount ca întreg. TourneyBlindStructure.sync primește Timebank, Duration, TimeChipCount și HandCount1 din tagTourneyBlindStructureItem. Astfel sursa valorilor concrete este protocolul, nu intervalul generic din textul ferestrei. Nu avem încă un mesaj activ salvat care să asocieze valorile cu fiecare multiplicator.
 
 Căutarea suplimentară a inspectat342fișiere JSON/XML/TXT independente din Game/assets sub limita12MB și nu a găsit cheile exacte StartingChips,TimeChipCount,NoDealing,BetMuckConditionRank. Dicționarul mare de traduceri a fost exclus din această căutare de chei, fiind deja analizat separat pentru texte. Arhivele și resursele binare nu sunt acoperite de acest rezultat negativ. Rezultatul căutării și limita sunt consemnate în verificare-spin-resurse.json.
+
+## Rezultatul roții și separarea aleatoriului vizual
+
+Au fost recuperate încă cinci clase prin export punctual, fără execuție nativă: SpinAndGoldStartupCommand, OnStartSpinAndGoldWheelCommand, SpinAndGoldWheelData, tagNotifySpinAndGoldMultiplierDecidedParameter și SpinAndGoldWheel. Startupul folosește SpinAndGoldTableView3D și moneda de afișare CHIP. Comanda OnStartSpinAndGoldWheelCommand are corpul execute gol după super; aceasta nu dovedește absența altor consumatori ai evenimentului.
+
+SpinAndGoldWheelData.setWheelIndex citește multiplicatorul deja stabilit în TableInfo, caută aceeași valoare în setul de premii și reține poziția găsită. Pentru WSOP compară segmentId în locul multiplicatorului; ramurile nu trebuie amestecate. SpinAndGoldWheel transformă poziția în `7−wheelIndex`, iar offsetul unghiular este `targetIndex×45°`. Math.random alege numai varianta vizuală1…4 a decelerării. Nu alege câștigul. Backendul local trebuie să persiste un singur rezultat înaintea animației; fiecare browser trebuie să arate acel rezultat, nu să extragă alt bilet.
+
+Notificarea recuperată are TourneyType, SitAndGoId, TableId, SitAndGoTypeIndex, Multiplier și WinSegment. Nu conține StartingChips ori TimeBank. Aceste valori trebuie recuperate din configurația turneului, nu deduse din animația roții. Getterul isMaxMultiplier compară în sursă wheelIndex cu maxMultiplier; această comparație neobișnuită este consemnată, nu corectată sau reinterpretată fără verificarea apelanților.
+
+## Cadre, sunete și încheierea prezentării
+
+Resursa instalată assets/spinandgold/spinAndGoldWheelMotion.json conține următoarele trackuri, verificate pentru chei de cadru consecutive și câmpuri numerice wd/ad, respectiv ss în0/1:
+
+| Track | Cadre | Marcaje ss | Ultimul wd/ad |
+|---|---:|---:|---|
+| constantVelocityMotion | 38 | 7 | −9,23/−5,22 |
+| reductionMotion01 | 583 | 34 | 38/0 |
+| reductionMotion02 | 499 | 33 | 34,98/0 |
+| reductionMotion03 | 558 | 34 | 33/0 |
+| reductionMotion04 | 583 | 33 | 19,02/0 |
+
+În total sunt2.261cadre. wd rotește baza roții și ad rotește acul. ss cere sunetul WHEEL_STUCK_HIGH. Codul cere STUCK_LOW când trecerea dintre unghiurile eșantionate depășește pragul10°, inclusiv trecerile peste semnul unghiului. La pornire este cerut SOUND_SPIN_AND_GOLD_SPIN. Marcajele sunt solicitări din cod, nu măsurători ale boxelor.
+
+Faza inițială folosește constantVelocityMotion până la ținta unghiulară sau finalul trackului; apoi decelerarea folosește unul dintre cele patru trackuri și adaugă offsetul țintei. La date de cadru lipsă există un fallback către ultimul cadru de decelerare și încheiere. Contorul avansează cu `ceil(deltaSeconds/0,033)` după procesarea eșantionului. Durata reală nu poate fi declarată simplu numărCadre×33ms: pasul depinde de cadența callbackurilor enterFrame și rotunjire.
+
+Pentru3-Max obișnuit, motionType este0 până la multiplicator5 inclusiv,1 peste5 până la25 inclusiv și2 peste25. Faza premiului programează completePrizeMotion după0,5/4,5/9,5secunde. Tipurile1și2 pornesc efecte suplimentare, iar2 cere artificii și poate continua într-o felicitare. Aceste întârzieri nu reprezintă durata totală până la masă. Ramura6-Max are praguri10și50; WSOP are altă mapare.
+
+applyOnComplete verifică obiectul, faptul că nu este expirat și callbackul înaintea apelului, apoi golește referința; semnalul COMPLETE este emis separat. Resetul oprește roata și anulează tweenuri/callbackuri. O reconstrucție trebuie să păstreze această protecție la închidere, schimbarea mesei și reconnect. Animația nu trebuie să crediteze bani sau să împartă cărți independent de backend.
+
+## Limita activării locale
+
+Căutarea read-only după nume în Game nu a găsit un fișier de configurație Spin cu valorile concrete lipsă; fișierele identificate sunt atlasuri, motion și fundaluri. Această căutare nu acoperă memoria procesului, toate cacheurile, toate arhivele sau serviciul operatorului. Nu s-au folosit contul, o masă reală ori cereri către operator. Cele cinci exporturi și datele roții nu rezolvă stackul, rezerva de timp sau NoDealing.
+
+Modelul local de probabilități și blinduri rămâne verificat prin spin-test.mjs, cu câmpurile necunoscute necompletate. Play Now rămâne dezactivat: nu există încă înregistrare/matching, roată randată, masă Spin și decontare autoritativă. Această etapă completează contractul necesar implementării; nu este o funcție jucabilă nouă și nu închide paritatea Spin. Hashurile, inventarul cadrelor și limitele sunt în raportul privat spin-wheel-source-audit.json.
