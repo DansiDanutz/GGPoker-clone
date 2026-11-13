@@ -7,7 +7,7 @@ import {join} from 'node:path';
 assert.deepEqual([0,9,10,20,2450,2460].map(remoteShuffleFrame),[1,1,1,2,245,null],'Native elapsed-time frame clock and completion boundary');
 const defaults={enabled:true,direction:0,sensitivity:1};assert.deepEqual(readChipShuffle(null),defaults);
 for(const raw of ['bad','[]',JSON.stringify({...defaults,enabled:'true'}),JSON.stringify({...defaults,direction:2}),JSON.stringify({...defaults,sensitivity:3})])assert.deepEqual(readChipShuffle(raw),defaults);
-assert.equal(nextShuffleFrame(37,-1,0,defaults),52);assert.equal(nextShuffleFrame(37,1,30,defaults),37);
+assert.equal(nextShuffleFrame(37,-1,1600,defaults),37,'Native wheel truncates the first step after a long idle; the next immediate step advances');assert.equal(nextShuffleFrame(37,-1,0,defaults),52);assert.equal(nextShuffleFrame(37,1,30,defaults),37);
 assert.equal(nextShuffleFrame(37,-1,0,{...defaults,sensitivity:0}),47);assert.equal(nextShuffleFrame(37,1,0,{...defaults,direction:1,sensitivity:2}),62);
 assert.equal(nextShuffleFrame(190,-1,30,defaults),47);assert.equal(nextShuffleFrame(37,-1,300,defaults),42);assert.equal(nextShuffleFrame(52,0,30,defaults),52);
 const cues=[],art={dataset:{},style:{}},oldNow=Object.getOwnPropertyDescriptor(performance,'now');Object.defineProperty(performance,'now',{value:()=>0,configurable:true});
