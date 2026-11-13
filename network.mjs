@@ -5,7 +5,7 @@ import {playChipLayout,aofBetParts,readChipShuffle,createChipShuffle,paintShuffl
 import {createSqueezePanel} from './card-squeeze.mjs';
 import {bbValue,chipsFromBetInput,betIncrement,snapBetAmount,wheelBetAmount,readBettingPreferences,betShortcuts,reservedChoices,resolveReservedAction} from './betting-preferences.mjs';
 import {createClockAudio,tableCues,installAudio,showdownPlan,streetPlan,voluntaryReveals} from './table-audio.mjs';
-import {gameClockText,holeCardLayout,voluntaryCardPose,voluntaryCardFrames,remoteVoluntaryFrames,element,cards,updateElement,avatarSource,tableThemes,tableTheme,feltColours,feltColour,tablePreference,applyTableTheme,cardBacks,cardBack,applyCardBack,cardFronts,cardFront,applyCardFront} from './felt.mjs';
+import {isNativeEmoticon,gameClockText,holeCardLayout,voluntaryCardPose,voluntaryCardFrames,remoteVoluntaryFrames,element,cards,updateElement,avatarSource,tableThemes,tableTheme,feltColours,feltColour,tablePreference,applyTableTheme,cardBacks,cardBack,applyCardBack,cardFronts,cardFront,applyCardFront} from './felt.mjs';
 const $=id=>document.getElementById(id);
 const chatWindow=document.documentElement.dataset.panel==='chat';
 const playCues=chatWindow?()=>{}:installAudio(document.querySelector('#sound'));
@@ -56,7 +56,7 @@ function updateAddChipsControl(){const seated=!chatWindow&&!rushMode&&!!advertis
 
 $('copy').onclick=async()=>{try{await navigator.clipboard.writeText(location.href);$('copy').textContent='Copied'}catch{$('invite').select()}};
 const key='river-seat:'+room;
-let token=sessionStorage.getItem(key),state,busy=false,lastCashOut=null;
+let token=sessionStorage.getItem(key),state,busy=false,lastCashOut=null,emoticonPicker=null;
 let reservedAction;
 const helmetModule=await fetch('/helmet-ui.mjs',{signal:AbortSignal.timeout(5000)}).then(r=>r.ok?import('./helmet-ui.mjs'):null,()=>null);
 const helmet=helmetModule?helmetModule.installHelmet(()=>({state,room:rushMode?'rush:'+rushPoolKind:room,token,account:playerAccount,primary:!chatWindow,enabled:rushMode?!!state?.registered:state?.me!=null&&!!token,unsupported:rushMode&&typeof state?.helmet!=='boolean'}),async muted=>{if(rushMode&&typeof state?.helmet!=='boolean')throw Error('Rush Helmet requires the updated server');const identity=()=>JSON.stringify(rushMode?[rushPoolKind,playerAccount]:[room,token,state?.me,playerAccount]),expected=identity();const until=Date.now()+5000;while(busy){if(Date.now()>=until)throw Error('Table is busy; retry Helmet');await new Promise(resolve=>setTimeout(resolve,25))}if(expected!==identity())throw Error('Player or table changed');if(!await operate('helmet',{muted}))throw Error($('error').textContent||'Helmet update failed')}):{refresh(){},muted(){return false},reactionAllowed(){return true}};
@@ -149,7 +149,7 @@ function applyState(data){
 
 async function request(op,body={}){
  const headers={'Content-Type':'application/json'};if(token)headers.Authorization='Bearer '+token;
- const res=await fetch(rushMode?'/api/rush/'+rushPoolKind+'/'+op:'/api/rooms/'+room+'/'+op,{method:op==='state'?'GET':'POST',headers,body:op==='state'?undefined:JSON.stringify(body),cache:'no-store',...(op==='helmet'?{signal:AbortSignal.timeout(5000)}:{})});
+ const res=await fetch(rushMode?'/api/rush/'+rushPoolKind+'/'+op:'/api/rooms/'+room+'/'+op,{method:op==='state'?'GET':'POST',headers,body:op==='state'?undefined:JSON.stringify(body),cache:'no-store',...(op==='helmet'||op==='chat'&&body.emoticon!==undefined?{signal:AbortSignal.timeout(5000)}:{})});
  let data=await res.json();
  if(!res.ok){if(rushMode&&res.status===409&&op!=='state')await request('state');if(res.status===401||res.status===404){sessionStorage.removeItem(key);token=null;state=null;render()}throw Error(data.error)}
  if(rushMode){
@@ -354,10 +354,10 @@ for(const type of ['mousedown','click','keydown'])document.querySelector('.felt'
 function renderSeatChat(){
  const aof=state?.settings?.variant==='aof',count=capacity();if(!state||chatWindow||count!==6&&!aof){document.querySelectorAll('.seatChatBubble').forEach(node=>node.remove());if(!state){chatDisplays.clear();chatBubblesInitialized=false}return}
  const keyFor=m=>JSON.stringify([m.at,m.seat,m.name,m.text]);
- if(!chatBubblesInitialized){for(const m of state?.chat||[])if(!m.reaction)chatDisplays.set(keyFor(m),{started:performance.now(),dismissed:true});chatBubblesInitialized=true}
+ if(!chatBubblesInitialized){for(const m of state?.chat||[])if(!m.reaction&&!m.emoticon)chatDisplays.set(keyFor(m),{started:performance.now(),dismissed:true});chatBubblesInitialized=true}
  const offsets=aof?[[46,-204],[78,-159],[90,-98],[-78,-159]]:[[46,-204],[78,-159],[84,-112],[90,-98],[-84,-112],[-78,-159]];
  for(const seat of document.querySelectorAll('.felt .seat')){
-  const index=Number(seat.dataset.seat),current=seat.querySelector(':scope>.seatChatBubble'),message=state?.chat?.findLast(m=>m.seat===index&&m.name===state.names[index]&&!m.reaction&&typeof m.text==='string'&&!['MODE_EMOJI','MODE_SNAPCAM','MODE_VOICE'].some(marker=>m.text.includes(marker)));
+  const index=Number(seat.dataset.seat),current=seat.querySelector(':scope>.seatChatBubble'),message=state?.chat?.findLast(m=>m.seat===index&&m.name===state.names[index]&&!m.reaction&&!m.emoticon&&typeof m.text==='string'&&!['MODE_EMOJI','MODE_SNAPCAM','MODE_VOICE'].some(marker=>m.text.includes(marker)));
   if(!message){current?.remove();continue}const key=keyFor(message);let display=chatDisplays.get(key);
   if(!display){display={started:performance.now(),dismissed:helmet.muted()};chatDisplays.set(key,display);if(chatDisplays.size>200)chatDisplays.delete(chatDisplays.keys().next().value)}
   if(display.dismissed)continue;const elapsed=performance.now()-display.started;if(elapsed>=5000){current?.remove();continue}
@@ -369,17 +369,20 @@ function renderSeatChat(){
   setTimeout(()=>node.remove(),5000-elapsed);
  }
 }
+function chatReaction(m){if(isNativeEmoticon(m.emoticon)&&m.reaction===undefined)return {image:'/home-art/native-emoticon-'+m.emoticon+'.png',label:m.text||'Emoticon '+m.emoticon};if(m.emoticon===undefined&&[1,2,3].includes(m.reaction))return {image:'/home-art/reaction-'+m.reaction+'.png',label:m.text};return null}
+const reactionKey=m=>JSON.stringify([m.at,m.seat,m.name,m.emoticon===undefined?m.reaction:['emoticon',m.emoticon]]);let nativeReactionsInitialized=false;
 function renderSeatReactions(){
  renderSeatChat();
+ if(!state)nativeReactionsInitialized=false;else if(!nativeReactionsInitialized){for(const m of state.chat||[])if(isNativeEmoticon(m.emoticon))reactionDisplays.set(reactionKey(m),{started:Date.now(),dismissed:true});nativeReactionsInitialized=true}
  for(const seat of document.querySelectorAll('.felt .seat')){
   const current=seat.querySelector('.seatReaction'),i=Number(seat.dataset.seat);
-  const reaction=(state?.chat||[]).findLast(m=>m.seat===i&&m.name===state.names[i]&&[1,2,3].includes(m.reaction)&&Date.now()-m.at<4000);
+  const reaction=(state?.chat||[]).findLast(m=>m.seat===i&&m.name===state.names[i]&&chatReaction(m)&&Date.now()-m.at<4000);
   if(helmet.muted()){if(i===state.me)current?.remove();if(reaction)helmet.reactionAllowed(reaction);continue}if(reaction&&!helmet.reactionAllowed(reaction)){current?.remove();continue}
-  const key=reaction?JSON.stringify([reaction.at,i,reaction.name,reaction.reaction]):'';if(current?.dataset.reaction===key)continue;current?.remove();
+  const key=reaction?reactionKey(reaction):'';if(current?.dataset.reaction===key)continue;current?.remove();
   if(reaction){
    let display=reactionDisplays.get(key);if(!display){display={started:Date.now(),dismissed:false};reactionDisplays.set(key,display);if(reactionDisplays.size>200)reactionDisplays.delete(reactionDisplays.keys().next().value)}
    const elapsed=Date.now()-display.started;if(display.dismissed||elapsed>=4000)continue;
-   const image=new Image();image.dataset.reaction=key;image.src='/home-art/reaction-'+reaction.reaction+'.png';image.alt=reaction.name+': '+reaction.text;image.className='seatReaction';image.tabIndex=0;image.setAttribute('role','button');image.setAttribute('aria-label','Hide '+reaction.text+' reaction');seat.append(image);
+   const art=chatReaction(reaction),image=new Image();image.dataset.reaction=key;if(isNativeEmoticon(reaction.emoticon))image.dataset.emoticon=reaction.emoticon;image.src=art.image;image.alt=reaction.name+': '+art.label;image.className='seatReaction';image.tabIndex=0;image.setAttribute('role','button');image.setAttribute('aria-label','Hide '+art.label+' reaction');seat.append(image);
    if(!reactionReduced.matches&&elapsed<200){const frames=Array.from({length:61},(_,i)=>{const t=i/60-1;return {transform:'scale('+(i===0?.5:i===60?1:.5+.5*(t*t*(2.70158*t+1.70158)+1))+')'}});image.animate(frames,{duration:200,easing:'linear'}).currentTime=elapsed}
    setTimeout(()=>image.remove(),4000-elapsed);
   }
@@ -388,10 +391,10 @@ function renderSeatReactions(){
 function renderChat(){
  helmet.refresh();$('chatMessages').hidden=helmet.muted();
  const messages=$('chatMessages'),fresh=messages.cloneNode(false);
- for(const m of state?.chat||[]){const li=element('li','',m.name+': '+m.text);if([1,2,3].includes(m.reaction)){const img=new Image();img.src='/home-art/reaction-'+m.reaction+'.png';img.alt=m.text;img.width=50;img.height=50;li.append(img)}fresh.append(li)}
+ for(const m of state?.chat||[]){const li=element('li','',m.name+': '+m.text);const reaction=chatReaction(m);if(reaction){const img=new Image();img.src=reaction.image;img.alt=reaction.label;img.width=50;img.height=50;li.append(img)}fresh.append(li)}
  updateElement(messages,fresh);
 $('chatForm').hidden=!chatWindow&&state?.me==null;
- $('chatStatus').textContent=rushMode?'Chat is unavailable in the local Rush pool.':state?.chatMuted?'Chat muted by table owner':helmet.muted()?'Helmet is on':'';for(const control of $('chatForm').querySelectorAll('input,button'))control.disabled=rushMode||state?.me==null||!!state?.chatMuted||helmet.muted();
+ $('chatStatus').textContent=rushMode?'Chat is unavailable in the local Rush pool.':state?.chatMuted?'Chat muted by table owner':helmet.muted()?'Helmet is on':'';for(const control of $('chatForm').querySelectorAll('input,button'))control.disabled=rushMode||state?.me==null||!!state?.chatMuted||helmet.muted();emoticonPicker?.refresh(!rushMode&&state?.me!=null&&!state?.chatMuted&&!helmet.muted());
 }
 function renderShowCards(g){
  const own=g.cards[state.me],choices=own.length===2?[[0],[1],[0,1]]:[own.map((_,i)=>i)],felt=document.querySelector('.felt').getBoundingClientRect(),k=felt.width/1700;
@@ -528,7 +531,8 @@ document.addEventListener('keydown',e=>{
 },{capture:true});
 
 for(const [id,label] of [[1,'Angry'],[2,'Listening'],[3,'Laughing']]){const button=document.createElement('button');button.type='button';const icon=new Image();icon.src='/home-art/reaction-'+id+'.png';icon.alt='';icon.width=38;icon.height=38;const text=element('span','reactionLabel',label);button.setAttribute('aria-label',label);button.append(icon,text);button.className='reactionButton';button.onclick=()=>operate('chat',{reaction:id});$('chatForm').append(button)}
-$('chatForm').onsubmit=async e=>{e.preventDefault();await operate('chat',{text:$('chatText').value});if(!$('error').textContent)$('chatText').value=''};
+const emoticonModule=rushMode?null:await fetch('/emoticon-picker.mjs',{signal:AbortSignal.timeout(5000)}).then(r=>r.ok?import('./emoticon-picker.mjs'):null).catch(()=>null);if(emoticonModule){$('chatForm').querySelectorAll('.reactionButton').forEach(button=>button.remove());emoticonPicker=emoticonModule.installEmoticonPicker($('chatForm'),async id=>{const input=$('chatText'),draft=input.value;input.value='';input.dispatchEvent(new Event('input'));const accepted=await operate('chat',{emoticon:id});if(!accepted&&!input.value)input.value=draft;input.dispatchEvent(new Event('input'));return accepted})}
+$('chatForm').onsubmit=async e=>{e.preventDefault();await operate('chat',{text:$('chatText').value});if(!$('error').textContent){$('chatText').value='';$('chatText').dispatchEvent(new Event('input'))}};
 $('join').onsubmit=async e=>{e.preventDefault();const useProfile=new URLSearchParams(location.search).has('player'),seat=$('seatChoice').value!==''?{seat:Number($('seatChoice').value)}:{};if(!token&&advertised&&advertised.mode!=='tournament'&&!rushMode){if(waitingBusy)return;await updateWaiting();if(useProfile&&!waitingState?.offer){if(!await updateWaiting('reserve',seat))return}}if(state?.me!=null)return;if(waitingState?.offer){syncSeatBuyIn(true);return}operate('join',{useProfile,name:$('name').value,...(!$('buyIn').disabled?{buyIn:Number($('buyIn').value)}:{}),...seat,mode:tournamentLink?'tournament':'cash'})};
 const waitingPanel=element('section','waitingPanel'),waitingStatus=element('output'),waitingButton=element('button'),waitingLabel=element('span','waitingButtonLabel'),waitingCount=element('div','waitingCount'),waitingPosition=element('div','waitingPosition'),waitingCountValue=element('span'),waitingPositionValue=element('span');waitingPanel.hidden=true;waitingPanel.setAttribute('aria-label','Waiting list');waitingStatus.setAttribute('role','status');waitingButton.type='button';waitingButton.append(waitingLabel);waitingCount.append(element('span','','Waiting Player : '),waitingCountValue);waitingPosition.append(element('span','','My Position : '),waitingPositionValue);waitingStatus.append(waitingCount,waitingPosition);waitingPanel.append(waitingStatus,waitingButton);document.querySelector('.felt').append(waitingPanel);let waitingState=null,waitingBusy=false,waitingRequest=0,seatBuyIn=null,walletAvailable=null,autoBuyInAttempt=null,rebuyFunding=null;
 function positionWaiting(){if(waitingPanel.hidden)return;const r=document.querySelector('.felt').getBoundingClientRect(),scale=r.width/1700;waitingPanel.style.left=r.left+1344*scale+'px';waitingPanel.style.top=r.top+1085*scale+'px';waitingPanel.style.setProperty('--waiting-scale',String(scale))}

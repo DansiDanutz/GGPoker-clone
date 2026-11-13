@@ -1,3 +1,4 @@
+export const isNativeEmoticon=id=>Number.isInteger(id)&&(id>=1&&id<=27||id===30);
 import {bestFiveFocus} from './engine/hand.mjs';
 import {cardOrdinal} from './card-squeeze.mjs';
 export function gameClockText(ms){const seconds=Math.max(0,Math.ceil(ms/1000));return String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0')}
@@ -116,8 +117,9 @@ export function historyActionColumns(hand){
 
   if(event?.type==='reaction'){
    const seat=event.seat,anchor=event.afterAction,stage=stages.indexOf(event.street);
-   if(!Number.isInteger(seat)||seat<0||seat>=n||!hand.dealtSeats[seat]||!Number.isInteger(anchor)||anchor<0||anchor>trace.actions.length||stage<0||event.street>hand.board.length||event.street<(trace.actions[anchor-1]?.street??0)||event.street>(trace.actions[anchor]?.street??hand.board.length)||!Number.isInteger(event.reaction)||![1,2,3].includes(event.reaction))continue;
-   const rows=columns[stage+1].rows,next=actionRows.find((row,i)=>i>=anchor&&row.street===event.street),at=next?rows.indexOf(next):rows.length;rows.splice(at,0,{kind:'reaction',seat,reaction:event.reaction});continue;
+   const native=event.emoticon!==undefined,validReaction=native?isNativeEmoticon(event.emoticon)&&event.reaction===undefined:Number.isInteger(event.reaction)&&[1,2,3].includes(event.reaction);
+   if(!Number.isInteger(seat)||seat<0||seat>=n||!hand.dealtSeats[seat]||!Number.isInteger(anchor)||anchor<0||anchor>trace.actions.length||stage<0||event.street>hand.board.length||event.street<(trace.actions[anchor-1]?.street??0)||event.street>(trace.actions[anchor]?.street??hand.board.length)||!validReaction)continue;
+   const rows=columns[stage+1].rows,next=actionRows.find((row,i)=>i>=anchor&&row.street===event.street),at=next?rows.indexOf(next):rows.length;rows.splice(at,0,{kind:'reaction',seat,...(native?{emoticon:event.emoticon}:{reaction:event.reaction})});continue;
   }
   const seat=event?.seat,hole=hand.cards?.[seat],indices=event?.indices;
   if(event?.type!=='show-cards'||!Number.isInteger(seat)||seat<0||seat>=n||!hand.dealtSeats[seat]||event.street!==hand.board.length||event.afterAction!==hand.history.length||!Array.isArray(hole)||hole.length!==({plo:4,plo5:5,plo6:6}[hand.variant]||2)||!Array.isArray(indices)||!indices.length||new Set(indices).size!==indices.length||!indices.every(i=>Number.isInteger(i)&&i>=0&&i<hole.length&&/^[2-9TJQKA][cdhs]$/.test(hole[i])))continue;
