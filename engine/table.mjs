@@ -115,13 +115,13 @@ export function preflopRaised(game,seat){
 }
 
 export function preflopOpportunities(game,seat){
- if(!['holdem','plo','plo5','plo6','rush'].includes(game?.variant)||preflopRaised(game,seat)===null)return null;
+ if(!['holdem','plo','plo5','plo6','rush','shortdeck'].includes(game?.variant)||preflopRaised(game,seat)===null)return null;
  const actions=game.historyTrace.actions.filter(a=>a.street===0);if(!actions.every(a=>typeof a.canRaise==='boolean'))return null;
  const seats=game.hands.flatMap((cards,i)=>cards.length?[i]:[]),button=seats.indexOf(game.button);if(button<0)return null;
  const late=new Set([game.button,seats.length===2?game.button:seats[(button+1)%seats.length]]);if(seats.length>=4)late.add(seats[(button+seats.length-1)%seats.length]);
  const stats={stealOpportunities:0,stealRaises:0,threeBetOpportunities:0,threeBets:0};let raises=0,unopened=true;
  for(const a of actions){
-  if(a.seat===seat&&a.canRaise){if(unopened&&late.has(seat)){stats.stealOpportunities++;if(a.action==='raise')stats.stealRaises++}if(raises===1){stats.threeBetOpportunities++;if(a.action==='raise')stats.threeBets++}}
+  if(a.seat===seat&&a.canRaise){if(game.variant!=='shortdeck'&&unopened&&late.has(seat)){stats.stealOpportunities++;if(a.action==='raise')stats.stealRaises++}if(raises===1){stats.threeBetOpportunities++;if(a.action==='raise')stats.threeBets++}}
   if(a.action==='raise')raises++;if(a.action==='raise'||a.action==='call')unopened=false;
  }
  return stats;
