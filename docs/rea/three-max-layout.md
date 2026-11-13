@@ -6,7 +6,7 @@ Analiza folosește exporturi statice FFDec, fallback REA pentru SWF. Sursele și
 
 TableSettingManager.create selectează ThreeRingSetting pentru maxPlayers=3, exceptând ramura explicită Avatar Race. Alegerea nu depinde de activarea Spin. SpinAndGoldStartupCommand instanțiază SpinAndGoldTableView3D, dar pozițiile sunt furnizate prin setările comune. Putem folosi geometria dovedită în turneele locale de trei persoane, fără să inventăm stackul ori rezerva de timp Spin.
 
-Separarea dintre numele clasei și regulile jocului contează: pentru maxPlayers=4 și GameType.TOURNEY, fabrica alege AofSetting, dar păstrează gameType=TOURNEY. Aceasta nu transformă un turneu Hold’em în All-In or Fold. Geometria nativă pentru turneele cu patru locuri rămâne o integrare separată; această schimbare nu o declară terminată.
+Separarea dintre numele clasei și regulile jocului contează: pentru maxPlayers=4 și GameType.TOURNEY, fabrica alege AofSetting, dar păstrează gameType=TOURNEY. Aceasta nu transformă un turneu Hold’em în All-In or Fold. Geometria comună pentru turneele și mesele obișnuite cu patru locuri este documentată separat în four-seat-spectator.md, împreună cu rotația spectatorului.
 
 ## Coordonatele recuperate
 
