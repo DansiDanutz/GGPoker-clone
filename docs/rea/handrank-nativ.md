@@ -18,7 +18,7 @@ Surse: BestFiveCardView, HandRankView, SingleBoardHandRank, DoubleBoardHandRank,
 | Stats | Stats | Statistici |
 | ButtonClose | Close | Închide |
 
-Pentru MobileHudSmartHud există textul englezesc Smart HUD, dar câmpul românesc din catalogul citit este gol. Nu inventăm o traducere livrată. Dicționarul și mecanismul de fallback trebuie deosebite.
+Pentru MobileHudSmartHud există textul englezesc Smart HUD, iar cheia ro lipsește din rândul catalogului instalat (verificat direct). Nu este un șir gol intenționat: mecanismul nativ folosește fallbackul englezesc Smart HUD. Această constatare corectează descrierea inițială a câmpului drept gol.
 
 Panoul nu este o pagină de clasament al utilizatorilor. HandRank arată combinația curentă proprie, cărțile care o formează și, în ramurile disponibile, un indiciu de draw. HUD și Stats sunt file ale aceluiași ansamblu, cu date diferite descrise în fișa HUD sesiune/all-time.
 
@@ -247,3 +247,11 @@ NewHandManager.getRankOfHand transmite cheia și valorile separat prin HandDescr
 | RF | a royal flush | Fără parametri |
 
 getStraight mută asul la sfârșitul vectorului descrescător pentru wheel; prin urmare valorile sunt A,5 sau A,9în Short Deck. Clona completează aceste texte fără să modifice selecția best-five,acțiunile sau plățile. Testele includ toate șabloanele,rangT,roială Omaha cu exact două cărți proprii și o culoare reală A-high în fixture-ul de browser. Traducerile RO sunt inventariate în receiptul privat,dar nu introducem aici un selector de limbă neimplementat. Această analiză folosește exportul static FFDec al clientului instalat; providerul REA nu execută SWF-ul. Nu este verificare vizuală sau de timing pe clientul nativ.
+
+## Actualizare: limbă pentru file și etichete de sesiune
+
+HandRank/MobileHudSmartHud/Stats și MobileMyProfileBTN/ButtonClose sunt conectate la catalogul ales. Identitatea filelor rămâne separată de text prin data-hand-tab; selectarea și tastele Home/End/săgeți nu interpretează traducerile. Panoul tabpanel este asociat prin aria-labelledby cu fila selectată.
+
+StatusView confirmă cheile celor șase etichete locale: MobileRushSessionTime, Hands, PotsWonAtShowdown, PotsWonWithoutShowdown, MobileTimeBank și SitOutTime. Numerele, contoarele și durata rămân date de sesiune separate, nu text de tradus. Valorile necunoscute rămân necunoscute. Etichetele metrice Smart HUD nu sunt deduse din tooltipurile CircleGraphView; necesită trasare suplimentară.
+
+Fixture-ul cu șase jucători verifică titluri/Profil/Închide și etichete Stats franceze, asocierea accesibilă și revenirea prin Home la Hand Rank, apoi termină mâna, plata720 și restartul. Detaliile localizării descrierilor/drawurilor sunt în language.md. Aceste verificări nu demonstrează încadrarea fontului nativ sau comparația vizuală fizică.
