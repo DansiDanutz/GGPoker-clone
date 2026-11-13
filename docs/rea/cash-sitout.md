@@ -1,4 +1,4 @@
-# Cash-table Sit Out — implementation checkpoint
+# Cash-table Sit Out — behavior, controls and evidence
 
 Ordinary hosted Hold’em/PLO tables now support a private next-hand pause flag. The current hand remains unchanged. Paused players retain their actual stack, receive no cards or forced contributions on the next hand, and do not block the other players’ Ready gate. At least two funded, active seats are required before a deal consumes pending funding. Resuming during a hand takes effect at the next deal.
 
@@ -6,7 +6,7 @@ The table settings checkbox and existing Sit Out hotkey dispatch the same authen
 
 ## Evidence and limits
 
-REA retained static source: `SitOutCommand.as` uses `SitOutNextHand` for ordinary cash; `SitOutMenuView.as` binds `HotKey.SIT_OUT_NEXT_HAND`. This is not evidence of native AIR runtime timing or operator missed-blind policy. Global pause, next-blind pause, native menu placement and full pixel parity are not implemented by this checkpoint.
+REA retained static source: `SitOutCommand.as` uses `SitOutNextHand` for ordinary cash; `SitOutMenuView.as` binds `HotKey.SIT_OUT_NEXT_HAND`. This is not evidence of native AIR runtime timing or operator missed-blind policy. Account-wide ordinary cash pause/return and the four status controls are implemented below. Next-blind pause, leave-all, global Rush/tournament eligibility, complete native menu placement and full pixel parity remain incomplete.
 
 `room-sitout-test.mjs` covers Hold’em and PLO: next-hand-only scheduling, private flag, 126-chip retained/cashed balance, replacement isolation, two-active minimum, validation/authentication, write rollback, cold restart and resumed deal with conserved 360 chips. Existing wallet, add-chips, rebuy, Ready, sparse-seat, positions and tick tests pass locally.
 
@@ -14,11 +14,11 @@ Additional verified scenario: five computers continue across multiple hands whil
 
 `node network-browser-test.mjs --cash-sitout` passes on an ephemeral HTTP server and headless muted Chrome: actual checkbox and assigned S key pause/cancel, page reload, backend restart, current hand unchanged, private desired flag, and token/origin/body/method rejection. This test exposed a checkbox disabled by render-time busy state; control capability now determines availability.
 
-Pending before publication: final review and commit-bound QA. No live owner data or runtime has been changed.
+The implementation through PR67 is merged and applied to the local server. Commit-bound QA and guarded rollout receipts record the exact source heads and preservation of all six saved owner files. Gameplay tests use temporary data; rollout checks never play or alter the owner’s hands.
 
 ## Paused-seat dimming
 
-Static `PlayerCell3D.activateDim(.3)` specifies avatar alpha .5 with dim1 and label text alpha .6, unlike Fold’s tinted avatar. The renderer uses actual per-hand `sittingOut`, not the private next-hand request. Headless browser test completes the current hand, prepares the other five seats and confirms the next deal has no paused cards, avatar opacity .5/filter none and name opacity .6. Native status glyph, label placement and timer policy remain pending.
+Static `PlayerCell3D.activateDim(.3)` specifies avatar alpha .5 with dim1 and label text alpha .6, unlike Fold’s tinted avatar. The renderer uses actual per-hand `sittingOut`, not the private next-hand request. Headless browser test completes the current hand, prepares the other five seats and confirms the next deal has no paused cards, avatar opacity .5/filter none and name opacity .6. Source-backed status glyph/label placement is implemented below; native runtime rasterization and operator timer policy remain unverified.
 
 Native status artwork is extracted by `tools/extract-sitout.py` from Starling frame player_cell0192 (72×72), with decoded RGBA equality checked. The label is the installed English `TablePlayerInfoSittingOut`: Sitting Out. For this unlimited-duration local cash policy, source timer offset -85 plus icon30/label90 yields -55/+5, scaled by the existing seat scale. Configured GameClock uses the source no-timer icon5/label60 branch (-80/-25). The status layer remains full opacity above the dimmed avatar. Source runtime font rasterization and physical comparison remain unverified.
 
@@ -28,7 +28,7 @@ Browser geometry check passes at850 and1196px: relative icon(-36,-55),72×72,lab
 
 FFDec bounded export of installed `NewDealMeInButton` confirms desktop `table_menu`127..133, button270×90, full gauge mask(5,1,260,80), label key ButtonReJoin (installed English: Deal Me In), font30,x5,y13/down17. `SitOutView` anchors at viewport.width-298,y1090. Local unlimited-duration policy uses progress1; no expiry is fabricated. The extractor composes up/over/down states with the source masks.
 
-The button appears only for the current player actually sitting out; it requests the existing current-table resume operation. The native command sets GlobalSitInData.isAll, so global multi-table behavior remains incomplete and is explicitly scoped in the local tooltip/code. Pending return disables duplicate clicks while the actual-pause marker remains until the next deal.
+The button appears only for the current player actually sitting out; it requests the existing current-table resume operation. The native command sets GlobalSitInData.isAll; account-wide ordinary cash behavior is implemented below, while global Rush/tournament eligibility remains incomplete. Guest seats retain current-table return. Pending return disables duplicate clicks while the actual-pause marker remains until the next deal.
 
 Trusted headless mouse testing exposed the local diagnostic footer intercepting clicks at the correct button geometry. While the native return control is shown, the footer now follows the table instead of overlapping it. Tests assert hit-testability,270×90 geometry at850/1196, real click, persisted request and removal/restored avatar at the next deal.
 
@@ -76,3 +76,7 @@ The status endpoint is separate from pause eligibility: `POST /api/rooms/:id/sit
 | Charge | Persist state8, select button, show charge glyph | SitOutStateUI369 / player_cell196; no invented time grant |
 
 Native `ChangeSitOutState` can receive added-time information from its private server. Local cash has no expiry clock, so these controls do not fabricate a countdown or extra-time grant. Operator timing and brand-specific N8IN Charge artwork remain incomplete. Browser tests check all four trusted clicks, selected alpha, changed glyph, reload, next-deal reset and source selector geometry at850/1196. A render-cache dependency defect found by the test was repaired by including pause/status/balance fields in the existing draw signature.
+
+## Failure recovery verification
+
+The headless browser injects a rejected status request and verifies the error message, release of the buttons, unchanged server state/default glyph and no unhandled rejection. Subsequent trusted status clicks succeed. Model tests also corrupt a persisted status to the unsupported value3 and confirm cold-start rejection, then restore the fixture. These checks validate recovery without adding a new production behavior.
