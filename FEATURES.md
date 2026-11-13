@@ -972,3 +972,5 @@ Avatar emoji REA contract recovered:account-selected dynamic sets,80px preload/b
 Native emoji grid centering:source full-panel origin now survives classic HTML scrollbar gutters instead of shifting by half the reserved gutter. RED11pxgutter→5.5pxerror;browser checks3widths/shortwindow/finalitemfocus andunchangedhand before real selection/fullhand/restart. Native separate8pxscrollbar skin remainsopen.
 
 Emoji vertical-only resize:the existing observer also watches chat-panel dimensions,so an open menu recomputes its native viewport limit when the72pxcomposer itself stays unchanged. RED300×736→300×480 menu overflow;explicit height-only browser gate precedes gutter/selection/fullhand checks.
+
+Native emoji separate scrollbar:sourceItemSliderScrollBar/common0275recovered;8pxblacktrack atwidth−8/y1,source9slice,proportionalminimum80thumb/nativecontentbounds,no platformgutter,hidewhenfit. Actualtrackclick/thumbdrag,wheel,keyboard/ARIA added;keyboard40pxsteps/line16adapter local accessibility,notrecoverednative mappings. Tests cover geometry/min80/fit/pointer/wheel/unchangedhand/full240chiphand/restart. PhysicalAIRtiming/raster remainsunverified.
