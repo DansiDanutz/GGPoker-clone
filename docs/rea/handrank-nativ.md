@@ -227,3 +227,23 @@ Pierderea autorizării, identității sau schimbarea mâinii anulează tranziți
 ## Butoane native extrase și integrate
 
 Blocajul anterior de spațiu a fost reevaluat prin preflight și extragerea a fost permisă. Cele patru stări40×44(profile up/down,close up/down) însumează3248bytes PNG; comparația RGBA decodată cu regiunile atlasului este exactă. Regiunile și hashurile sunt păstrate în receiptul local best-five-buttons.json. Frame-urile over nu sunt folosite. CSS folosește22/19/21/20fill,cu margini de aceeași dimensiune în unitățile mesei,pentru grila20/22/1/1. Fundalul procedural și bordura gri sunt eliminate. Grafica originală rămâne în pachetul local de referință; publicarea codului nu publică atlasul sau capturile private. Testul verifică imaginile,nine-slice și starea down prin pointer real. Nu dovedește alinierea fizică exactă a textului sau antialiasingul nativ.
+
+
+## Descrierile native și valorile lor
+
+NewHandManager.getRankOfHand transmite cheia și valorile separat prin HandDescriptionWithValue. HC și F primesc rangul maxim;1P/3K/4K rangul grupului;2P rangurile perechilor descrescător;FH rangul triplei înaintea perechii;S/SF capătul mic și apoi capătul mare din getStraight;RF nu are parametri. Rank.TEN.shortDescription este T.
+
+| Cheie | Șablon EN instalat | Valori |
+|---|---|---|
+| HC | {0} high | Rang maxim |
+| 1P | a pair of {0}s | Pereche |
+| 2P | two pair, {0}s and {1}s | Pereche mare,mică |
+| 3K | three of a kind, {0}s | Triplă |
+| S | a straight, {0} to {1} | Capăt mic,mare |
+| F | a flush {0} high | Rang maxim |
+| FH | a full house, {0}s full of {1}s | Triplă,pereche |
+| 4K | four of a kind, {0}s | Careu |
+| SF | a straight flush, {0} to {1} | Capăt mic,mare |
+| RF | a royal flush | Fără parametri |
+
+getStraight mută asul la sfârșitul vectorului descrescător pentru wheel; prin urmare valorile sunt A,5 sau A,9în Short Deck. Clona completează aceste texte fără să modifice selecția best-five,acțiunile sau plățile. Testele includ toate șabloanele,rangT,roială Omaha cu exact două cărți proprii și o culoare reală A-high în fixture-ul de browser. Traducerile RO sunt inventariate în receiptul privat,dar nu introducem aici un selector de limbă neimplementat. Această analiză folosește exportul static FFDec al clientului instalat; providerul REA nu execută SWF-ul. Nu este verificare vizuală sau de timing pe clientul nativ.
