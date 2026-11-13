@@ -87,7 +87,20 @@ function hudHands(room,subject,viewer){
  });
 }
 function chatMuted(r,p){return !!(p?.chatMuted||p?.account&&r.mutedAccounts?.includes(p.account))}
-function chatRoster(r){return r?r.players.flatMap((p,seat)=>p&&!p.bot?[{seat,name:p.name,muted:chatMuted(r,p),accountBound:!!p.account,subject:digest(p.account?'account:'+p.account:'seat:'+p.digest).slice(0,24)}]:[]):[]}
+function chatRoster(r){if(!r)return [];const seated=r.players.flatMap((p,seat)=>p&&!p.bot?[{seat,name:p.name,muted:chatMuted(r,p),accountBound:!!p.account,subject:digest(p.account?'account:'+p.account:'seat:'+p.digest).slice(0,24)}]:[]),accounts=new Set([...(r.chat||[]).filter(m=>m.observer===true).map(m=>m.name),...(r.mutedAccounts||[])]);return [...seated,...[...accounts].filter(account=>typeof account==='string'&&account.trim()&&account.length<=24&&!r.players.some(p=>p?.account===account)).map(account=>({seat:null,name:account,muted:chatMuted(r,{account}),accountBound:true,subject:digest('account:'+account).slice(0,24)}))]}
+function chatContent(body,strict=false){
+ const native=body.emoticon!==undefined,item=native?emoticonById(body.emoticon):null,kind=native?'emoticon':body.reaction!==undefined?'reaction':'text';
+ if((strict||native)&&(Object.keys(body).some(k=>![kind,'version'].includes(k))||body.version!==undefined&&(!Number.isSafeInteger(body.version)||body.version<0)))fail(400,'Invalid chat message');
+ if(native&&!item)fail(400,'Unknown native emoticon');const reactions={1:'Angry',2:'Listening',3:'Laughing'};if(body.reaction!==undefined&&(!Number.isInteger(body.reaction)||!Object.hasOwn(reactions,body.reaction)))fail(400,'Unknown reaction');
+ const text=native?item.label:body.reaction!==undefined?reactions[body.reaction]:typeof body.text==='string'?body.text.trim():'';if(!native&&!text||text.length>280)fail(400,'Message must contain 1–280 characters');return {text,...(native?{emoticon:item.id}:body.reaction!==undefined?{reaction:body.reaction}:{})};
+}
+function recordChat(r,seat,player,body,now,observer=false){
+ if(chatMuted(r,player))fail(403,'Chat muted by table owner');if(player.helmet)fail(403,'Take off your helmet to chat');const content=chatContent(body,observer),sender=noteSubject(player);r.chat??=[];
+ const last=r.chat.findLast(m=>m.sender===sender||m.sender===undefined&&m.seat===seat&&m.name===player.name);if(last&&now-last.at<1000)fail(429,'Wait before sending another message');
+ r.chat.push({seat,name:player.name,...content,at:now,...(observer?{observer:true}:{}),sender});if(r.chat.length>50)r.chat.shift();r.version++;
+ const g=r.hand;if(!observer&&(content.emoticon!==undefined||content.reaction!==undefined)&&g?.hands[seat]?.length&&g.hudSubjects?.[seat]===noteSubject(player)){const event={type:'reaction',seat,street:g.board.length,afterAction:g.history.length,...(content.emoticon!==undefined?{emoticon:content.emoticon}:{reaction:content.reaction})};g.historyEvents??=[];g.historyEvents.push(event);const history=g.end&&r.hudHistory?.find(h=>h.number===r.number);if(history){history.historyEvents??=[];history.historyEvents.push({...event})}}
+}
+
 const reservedSeats=r=>[...(r?.reservations||[]).map(p=>p.seat),...(r?.waiting||[]).flatMap(p=>p.offer?[p.offer.seat]:[])];
 // shortcut: local FIFO offers last30s; replace only with observed operator arbitration rules.
 function advanceWaiting(r,table,now){
@@ -105,7 +118,7 @@ function advanceWaiting(r,table,now){
 }
 function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
   if(!/^[a-f0-9]{48}$/.test(id))fail(404,'Unknown room');
-  const now=Date.now();
+  const now=Date.now(),enteredVersion=rooms.get(id)?.version;
   for(const [k,r] of rooms)if(!r.settings&&now-r.touched>4*hour)rooms.delete(k);
   let r=rooms.get(id);
   if(r&&table&&!r.hand&&!r.players.some(Boolean)){
@@ -121,13 +134,13 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
   }
   if(op==='moderation')return chatRoster(r);
   if(op==='moderate-chat'){
-    if(!Number.isInteger(body.seat)||typeof body.muted!=='boolean')fail(400,'Choose a player and mute state');
-    const player=chatRoster(r).find(p=>p.seat===body.seat);
+    if(body.seat!==null&&!Number.isInteger(body.seat)||typeof body.muted!=='boolean')fail(400,'Choose a player and mute state');
+    const player=chatRoster(r).find(p=>p.seat===body.seat&&p.subject===body.subject);
     if(!player||player.subject!==body.subject)fail(409,'Seat changed; reload players');
     if(player.muted===body.muted)return {changed:false,players:chatRoster(r)};
-    const p=r.players[body.seat];p.chatMuted=body.muted;
+    const p=body.seat===null?{account:player.name}:r.players[body.seat];if(body.seat!==null)p.chatMuted=body.muted;
     if(p.account){const accounts=new Set(r.mutedAccounts||[]);if(body.muted)accounts.add(p.account);else accounts.delete(p.account);r.mutedAccounts=[...accounts]}
-    r.version++;return {changed:true,players:chatRoster(r)};
+    r.version++;return {changed:true,players:chatRoster(r),moderated:{...player,muted:body.muted}};
   }
   scheduledStart(r,now,avatarFor);
   if(op==='tick'){
@@ -142,8 +155,8 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
   advanceWaiting(r,table,now);
   if(op==='watch'){
     if(!table)fail(404,'Unknown hosted table');
-    if(!r)return {me:null,version:0,names:Array(capacity).fill(null),settings:table,hand:null,results:[]};
-    return view(r,null,avatarFor);
+    if(!r)return {me:null,version:0,names:Array(capacity).fill(null),settings:table,hand:null,results:[],...(account?{canObserveChat:!!table.open,observerName:account}:{})};
+    return view(r,null,avatarFor,account);
   }
   if(op==='summary'){
     const results=r?.results||[],dealt=results.reduce((n,h)=>n+(h.dealt||0),0);
@@ -178,11 +191,13 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
   }
   if(op==='join'&&body.seat!==undefined&&(!Number.isInteger(body.seat)||body.seat<0||body.seat>=capacity))fail(400,'Invalid seat');
   if(op==='join'&&(typeof body.name!=='string'||!body.name.trim()||body.name.trim().length>24))fail(400,'Enter a name (1–24 characters)');
+  const observingChat=op==='chat'&&!token&&!!table&&typeof account==='string'&&!!account.trim()&&account.length<=24;
+  if(op==='chat'&&!token&&table&&!observingChat)fail(401,'Sign in locally to chat as an observer');
   if(!r){
-    if(op!=='join')fail(404,'Room not found');
+    if(op!=='join'&&!observingChat)fail(404,'Room not found');if(observingChat)chatContent(body,true);
     if(table&&!table.open)fail(409,'Owner closed registration');
     if(rooms.size>=100)fail(503,'Room limit reached');
-    r=newRoom(table,body,capacity,now);rooms.set(id,r);
+    r=newRoom(table,op==='join'?body:{},capacity,now);rooms.set(id,r);
   }
   scheduledStart(r,now,avatarFor);
   let me=token?r.players.findIndex(p=>p&&p.digest===digest(token)):-1,issued;
@@ -209,6 +224,7 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
     if(!r.players.includes(null)&&r.tournament){if(!r.tournament.startsAt){r.tournament.startedAt=now;tournamentHand(r,now,avatarFor)}else scheduledStart(r,now,avatarFor)}
     else if(!r.players.includes(null)&&!r.hand)cashHand(r,now,avatarFor);
   }
+  if(observingChat){if(r.players.some(p=>p?.account===account))fail(409,'Recover your seated session to chat');recordChat(r,null,{name:account,account},body,now,true);r.touched=now;return view(r,null,avatarFor,account)}
   if(me<0)fail(401,'Join this room first');
   if(wallet&&r.settings&&r.players[me].account&&!r.tournament&&['join','ready','leave','end-practice','add-chips'].includes(op)&&!r.players[me].walletFunded){const p=r.players[me],stake=r.hand?.hands[me].length?r.hand.stacks[me]:r.waitingStacks?.[me]??p.buyIn??r.settings?.stack??0;const pending=p.topUpTo?Math.max(0,p.topUpTo-stake-(p.addChips?.amount||0)):0;wallet.adopt(p.account,stake+pending+(p.addChips?.amount||0)+(!r.hand?.end?(r.hand?.committed[me]||0):0),id);p.walletFunded=true;if(pending)p.walletTopUp=pending}
   r.touched=now;
@@ -250,21 +266,7 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
     if(last&&now-last.at<3000)fail(429,'Wait before shuffling again');
     r.shuffles=r.shuffles.filter(e=>e.seat!==me);r.shuffles.push({seat:me,subject:r.players[me].digest,at:now});r.version++;
   }
-  if(op==='chat'){
-    if(chatMuted(r,r.players[me]))fail(403,'Chat muted by table owner');
-    if(r.players[me].helmet)fail(403,'Take off your helmet to chat');
-    const reactions={1:'Angry',2:'Listening',3:'Laughing'};
-    const native=body.emoticon!==undefined,item=native?emoticonById(body.emoticon):null;if(native&&(!item||Object.keys(body).some(k=>!['emoticon','version'].includes(k))||body.version!==undefined&&(!Number.isSafeInteger(body.version)||body.version<0)))fail(400,'Unknown native emoticon');
-    if(body.reaction!==undefined&&(!Number.isInteger(body.reaction)||!Object.hasOwn(reactions,body.reaction)))fail(400,'Unknown reaction');
-    const text=native?item.label:body.reaction!==undefined?reactions[body.reaction]:typeof body.text==='string'?body.text.trim():'';
-    if(!native&&!text||text.length>280)fail(400,'Message must contain 1–280 characters');
-    r.chat??=[];const lastMessage=r.chat.findLast(message=>message.seat===me);if(lastMessage&&now-lastMessage.at<1000)fail(429,'Wait before sending another message');
-    r.chat.push({seat:me,name:r.players[me].name,text,at:now,...(native?{emoticon:item.id}:body.reaction!==undefined?{reaction:Number(body.reaction)}:{})});if(r.chat.length>50)r.chat.shift();r.version++;
-    const g=r.hand;if((native||body.reaction!==undefined)&&g?.hands[me]?.length&&g.hudSubjects?.[me]===noteSubject(r.players[me])){
-      const event={type:'reaction',seat:me,street:g.board.length,afterAction:g.history.length,...(native?{emoticon:item.id}:{reaction:body.reaction})};g.historyEvents??=[];g.historyEvents.push(event);
-      const history=g.end&&r.hudHistory?.find(h=>h.number===r.number);if(history){history.historyEvents??=[];history.historyEvents.push({...event})}
-    }
-  }
+  if(op==='chat')recordChat(r,me,r.players[me],body,now);
 
   const host=r.host??r.players.findIndex(p=>p&&!p.bot),canFill=!!(table?.open&&!r.hand&&!r.tournament?.cancelledAt&&me===host&&r.players.includes(null));
   const canStart=!!(canFill&&!r.tournament&&r.players.filter(Boolean).length>=2);
@@ -301,7 +303,8 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
     if(reserveClock(r,me,body.actionId,now)){r.hand.historyEvents??=[];r.hand.historyEvents.push({type:'clock-limit-disabled',seat:me,street:r.hand.board.length,afterAction:r.hand.history.length});r.version++}
   }
   if(['act','ready','leave'].includes(op)){
-    if(body.version!==r.version&&!(op==='ready'&&body.number===r.number&&r.hand?.end))fail(409,'Table changed; refresh and try again');
+    const chatOnlyStale=op==='act'&&r.version===enteredVersion&&Number.isSafeInteger(body.version)&&body.version>=(r.actionVersion??r.version)&&body.version<=r.version;
+    if(body.version!==r.version&&!chatOnlyStale&&!(op==='ready'&&body.number===r.number&&r.hand?.end))fail(409,'Table changed; refresh and try again');
     if(op==='act'){
       if(!r.hand||r.hand.end||r.hand.turn!==me)fail(409,'Not your turn');
       if(body.reserved!==undefined&&typeof body.reserved!=='boolean')fail(400,'Invalid reserved action flag');
@@ -334,10 +337,10 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
   if(op==='state'&&r.hand&&!r.hand.end&&r.players[r.hand.turn]?.bot&&now>=(r.actionClock?.startedAt??r.deadline-turnMs(r))+500){const g=r.hand;step(r,...computerMove(g.hands[g.turn],g.board,g.blind,g.price,options(g),g.variant))}
   return {...view(r,me,avatarFor),issued,canStart:canStart&&!r.hand,canFill:canFill&&!r.hand,soloBots:r.players.some(p=>p?.bot)&&r.players.every((p,i)=>i===me||p?.bot)};
 }
-function view(r,me,avatarFor){
+function view(r,me,avatarFor,account){
   const g=r.hand,clock=clockView(r,me,Date.now());
   if(clock){delete clock.bankRemainingMs;clock.bankEndsAt=r.actionClock.bankEnd}
-  return {me,helmets:r.players.map(p=>!!p?.helmet),...(me!=null&&r.players[me]?.sessionStats?{sessionStats:{...r.players[me].sessionStats}}:{}),...(me!=null&&Number.isSafeInteger(r.players[me]?.sessionStartedAt)?{sessionStartedAt:r.players[me].sessionStartedAt}:{}),...(me!=null&&r.players[me]?.addChips?{pendingAdd:{...r.players[me].addChips}}:{}),reservedSeats:reservedSeats(r),...(me!=null?{noteSubjects:r.players.map((p,i)=>p&&i!==me?noteSubject(p):null)}:{}),...(me!=null&&r.topUps?{topUps:r.topUps.filter(t=>t.subject===(r.players[me]?.account||r.players[me]?.digest)).map(({subject,...t})=>t)}:{}),...(r.players.some(p=>p?.buyIn!==undefined)?{buyIns:r.players.map(p=>p?p.buyIn??r.settings.stack:0)}:{}),...(me!=null&&chatMuted(r,r.players[me])?{chatMuted:true}:{}),...(g&&me!=null&&!g.hands[me].length?{waitingForHand:true}:{}),...(r.waitingStacks?{waitingStacks:r.waitingStacks}:{}),...(r.shuffles?{shuffles:r.shuffles.filter(e=>e.subject===r.players[e.seat]?.digest&&Date.now()-e.at<2450).map(({seat,at})=>({seat,at}))}:{}),avatars:r.players.map(p=>p?.account?avatarFor(p.account):null),chat:r.chat||[],settings:r.settings,tournament:r.tournament,version:r.version,number:r.number,names:r.players.map(p=>p?.name??null),ready:r.ready,results:r.results,
+  return {me,...(me==null&&account?{canObserveChat:!r.players.some(p=>p?.account===account),observerName:account,...(chatMuted(r,{account})?{chatMuted:true}:{})}:{}),helmets:r.players.map(p=>!!p?.helmet),...(me!=null&&r.players[me]?.sessionStats?{sessionStats:{...r.players[me].sessionStats}}:{}),...(me!=null&&Number.isSafeInteger(r.players[me]?.sessionStartedAt)?{sessionStartedAt:r.players[me].sessionStartedAt}:{}),...(me!=null&&r.players[me]?.addChips?{pendingAdd:{...r.players[me].addChips}}:{}),reservedSeats:reservedSeats(r),...(me!=null?{noteSubjects:r.players.map((p,i)=>p&&i!==me?noteSubject(p):null)}:{}),...(me!=null&&r.topUps?{topUps:r.topUps.filter(t=>t.subject===(r.players[me]?.account||r.players[me]?.digest)).map(({subject,...t})=>t)}:{}),...(r.players.some(p=>p?.buyIn!==undefined)?{buyIns:r.players.map(p=>p?p.buyIn??r.settings.stack:0)}:{}),...(me!=null&&chatMuted(r,r.players[me])?{chatMuted:true}:{}),...(g&&me!=null&&!g.hands[me].length?{waitingForHand:true}:{}),...(r.waitingStacks?{waitingStacks:r.waitingStacks}:{}),...(r.shuffles?{shuffles:r.shuffles.filter(e=>e.subject===r.players[e.seat]?.digest&&Date.now()-e.at<2450).map(({seat,at})=>({seat,at}))}:{}),avatars:r.players.map(p=>p?.account?avatarFor(p.account):null),chat:(r.chat||[]).map(({sender,...message})=>message),settings:r.settings,tournament:r.tournament,version:r.version,number:r.number,names:r.players.map(p=>p?.name??null),ready:r.ready,results:r.results,
     hand:g&&{dealtSeats:g.hands.flatMap((cards,i)=>cards.length?[i]:[]),...(g.end&&g.shownIndices?{shownIndices:g.shownIndices.map(indices=>indices?[...indices]:null)}:{}),...(me!=null&&g.end&&g.hands[me].length&&!g.shownIndices?.[me]&&(g.folded[me]||g.folded.filter(f=>!f).length<2)?{canShowCards:true}:{}),...(r.settings?.timeBankSeconds?{timeBanks:r.players.map(p=>p?p.timeBankMs??r.settings.timeBankSeconds*1000:null)}:{}),...(clock?{clock}:{}),...(r.settings?.cardSqueeze?{squeezeActivated:true}:{}),blind:g.blind,...(g.ante?{ante:g.ante}:{}),button:g.button,turn:g.turn,deadline:g.end?null:r.deadline,stacks:g.stacks,bets:g.bets,committed:g.committed,folded:g.folded,board:g.board,pots:collectedPots(g),
       ...(me!=null&&!g.end&&!g.folded[me]&&g.stacks[me]>0&&g.hands[me].length?{preAction:{...(g.variant==='aof'?{aof:true}:{}),due:Math.max(0,g.price-g.bets[me]),call:Math.min(g.stacks[me],Math.max(0,g.price-g.bets[me])),acted:g.actedAt[me]!==null,reservedCheck:g.reservedChecks?.[me]===g.board.length,foldEnabled:g.stacks.some((stack,i)=>i!==me&&!g.folded[i]&&g.bets[i]+stack>g.bets[me])}}:{}),cards:visibleCards(g,me),history:g.history,end:g.end,options:g.turn===me?options(g):null}};
 }
@@ -356,6 +359,7 @@ export function openRooms(file,avatarFor=()=>0,walletsEnabled=false){
   for(const r of rooms.values())for(const p of r.players)if(p?.sessionStats!==undefined){const v=p.sessionStats;if(!v||typeof v!=='object'||Array.isArray(v)||Object.keys(v).length!==4||!['hands','showdowns','showdownWins','nonShowdownWins'].every(k=>Number.isSafeInteger(v[k])&&v[k]>=0)||!Number.isSafeInteger(p.sessionStartedAt)||v.showdownWins>v.showdowns||v.showdowns>v.hands||v.showdowns+v.nonShowdownWins>v.hands)throw Error('Invalid player session statistics')}
   for(const r of rooms.values())for(const p of r.players)if(p?.helmet!==undefined&&typeof p.helmet!=='boolean')throw Error('Invalid player helmet state');
   const notes=openNotes(file+'.notes.json');
+  for(const r of rooms.values())if(r.actionVersion!==undefined&&(!Number.isSafeInteger(r.version)||!Number.isSafeInteger(r.actionVersion)||r.actionVersion<0||r.actionVersion>r.version))throw Error('Invalid action version');
   let migrated=false;for(const r of rooms.values())for(const p of r.players)if(p?.bot&&!p.noteId){p.noteId=randomBytes(16).toString('hex');migrated=true}
   if(migrated){writeFileSync(file+'.tmp',JSON.stringify(packed()),{mode:0o600});renameSync(file+'.tmp',file)}
   const request=(id,op,token,body,table,account)=>{
@@ -365,6 +369,7 @@ export function openRooms(file,avatarFor=()=>0,walletsEnabled=false){
     if(!failed){
     advanceWaiting(rooms.get(id),table,Date.now());
     if(rooms.get(id)?.version!==version||JSON.stringify(wallet.state)!==walletBefore){
+      const changed=rooms.get(id);if(changed&&changed.version!==version){if(op==='chat'&&changed.version===(version??0)+1)changed.actionVersion??=version??0;else changed.actionVersion=changed.version}
       try{
         writeFileSync(file+'.tmp',JSON.stringify(packed()),{mode:0o600});
         renameSync(file+'.tmp',file);

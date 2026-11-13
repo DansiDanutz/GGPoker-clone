@@ -1,0 +1,27 @@
+import assert from 'node:assert/strict';
+import {spawn} from 'node:child_process';
+import {once} from 'node:events';
+import {mkdtempSync,rmSync,readFileSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {createServer} from 'node:net';
+const dir=mkdtempSync(join(tmpdir(),'observer-http-')),probe=createServer();await new Promise(r=>probe.listen(0,'127.0.0.1',r));const port=probe.address().port;await new Promise(r=>probe.close(r));const origin='http://127.0.0.1:'+port;
+let server;
+const request=(path,body,headers={})=>fetch(origin+path,{method:body===undefined?'GET':'POST',headers:{'Content-Type':'application/json',Origin:origin,...headers},body:body===undefined?undefined:JSON.stringify(body)});
+async function boot(){server=spawn(process.execPath,['server.mjs'],{cwd:new URL('.',import.meta.url),env:{...process.env,PORT:String(port),POKER_PUBLIC_ORIGIN:origin,POKER_BIND_HOST:'127.0.0.1',POKER_REFERENCE_HOME:'1',POKER_DATA_DIR:dir},stdio:['ignore','ignore','inherit']});for(let n=0;;n++){if(n>100||server.exitCode!==null)throw Error('Server not ready');try{if((await request('/api/tables')).ok)break}catch{}await new Promise(r=>setTimeout(r,30))}}
+async function stop(){if(server?.exitCode===null&&!server.signalCode){const done=once(server,'exit');server.kill();await done}}
+try{
+ await boot();const cookies=[];for(const name of ['WatcherOne','WatcherTwo']){const r=await request('/local/create',{name,pin:'123456'});assert.equal(r.status,200);cookies.push(r.headers.get('set-cookie').split(';')[0])}
+ const key=readFileSync(join(dir,'owner.key'),'utf8').trim(),owner={Authorization:'Bearer '+key};assert.equal((await request('/api/tables',{id:'observers',name:'Observer HTTP',stack:120,blind:4,open:true},owner)).status,200);const table=(await(await request('/api/hosted')).json()).find(t=>t.id==='observers'),base='/api/rooms/'+table.room,one={Cookie:cookies[0]},two={Cookie:cookies[1]};
+ assert.equal((await request(base+'/chat',{text:'Anonymous'})).status,401);assert.equal((await request(base+'/chat',{text:'Foreign'},{...one,Origin:'https://foreign.invalid'})).status,403);
+ assert.equal((await fetch(origin+base+'/chat',{method:'POST',headers:{Cookie:cookies[0],'Content-Type':'application/json'},body:JSON.stringify({text:'No origin'})})).status,403);
+ assert.equal((await request(base+'/chat',undefined,one)).status,405);assert.equal((await request(base+'/chat',{text:'Spoof',name:'Other'},one)).status,400);assert.equal((await request(base+'/chat',{text:'Huge',padding:'x'.repeat(2100)},one)).status,413);
+ let r=await request(base+'/chat',{text:'First trusted message'},one);assert.equal(r.status,200);let state=await r.json();assert.equal(state.me,null);assert.equal(state.observerName,'WatcherOne');assert.equal(state.chat.at(-1).name,'WatcherOne');assert.equal(state.chat.at(-1).observer,true);assert.ok(state.names.every(name=>name===null));assert.equal(state.hand,null);assert.equal('sender'in state.chat.at(-1),false);assert.equal((await request(base+'/chat',{text:'Too fast'},one)).status,429);
+ assert.equal((await request(base+'/chat',{emoticon:4001},two)).status,200);assert.equal((await request('/api/owner-chat?table=observers')).status,401);const roster=await(await request('/api/owner-chat?table=observers',undefined,owner)).json(),target=roster.find(p=>p.name==='WatcherTwo');assert.equal(target.seat,null);const command={tableId:'observers',seat:null,subject:target.subject,muted:true};
+ r=await request('/api/owner-chat',command,owner);assert.equal(r.status,200);assert.equal((await r.json()).auditSaved,true);let audit=await(await request('/api/owner-audit',undefined,owner)).json();assert.equal(audit.at(-1).after.moderation.name,'WatcherTwo');assert.equal((await request(base+'/chat',{text:'Blocked'},two)).status,403);assert.equal((await(await request(base+'/watch',undefined,two)).json()).chatMuted,true);
+ assert.equal((await request('/api/owner-chat',{...command,subject:'wrong'},owner)).status,409);await stop();await boot();assert.equal((await(await request(base+'/watch',undefined,two)).json()).chatMuted,true);assert.equal((await(await request(base+'/watch',undefined,one)).json()).chat.at(-1).emoticon,4001);
+ assert.equal((await request('/api/owner-chat',{...command,muted:false},owner)).status,200);await new Promise(r=>setTimeout(r,1100));assert.equal((await request(base+'/chat',{text:'Resumed'},two)).status,200);
+ const joined=await(await request(base+'/join',{useProfile:true},one)).json();assert.ok(joined.issued);assert.equal((await request(base+'/chat',{text:'Cannot pretend observer'},one)).status,409);const publicView=await(await request(base+'/watch',undefined,two)).json();assert.equal(publicView.names.filter(Boolean).length,1);assert.equal(publicView.hand,null);assert.equal(publicView.chat[0].observer,true);
+ assert.equal((await request('/local/logout',{},two)).status,200);assert.equal((await request(base+'/chat',{text:'Logged out'},two)).status,401);assert.equal((await(await request(base+'/watch',undefined,two)).json()).canObserveChat,undefined);assert.ok(!readFileSync(join(dir,'rooms.json'),'utf8').includes(joined.issued));
+ console.log('PASS observer HTTP:cookie identity/exact origin/method/size/body guards,owner-key moderation of distinct unseated accounts,correct audit identity,rate limits,restart/unmute/logout,seating authority and role-at-send preservation');
+}finally{await stop();rmSync(dir,{recursive:true,force:true})}

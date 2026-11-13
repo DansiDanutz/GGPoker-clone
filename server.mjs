@@ -80,6 +80,7 @@ http.createServer(async(req,res)=>{
    try{body=JSON.parse(Buffer.concat(chunks));if(!body||typeof body!=='object'||Array.isArray(body))throw Error()}catch{return json(400,{error:'Invalid JSON'})}
   }
   const account=localHome?playerProfile.identity(req):null;
+  if(op==='chat'&&account&&!(req.headers.authorization||'').replace(/^Bearer /,'')&&req.headers.origin!==origin)return json(403,{error:'Local origin required'});
   if((op==='waiting'||op==='join'&&body.useProfile===true)&&!account)return json(401,{error:'Sign in locally'});
   if(op==='join'&&body.useProfile===true&&account)body.name=account;
   try{return json(200,roomRequest(id,op,(req.headers.authorization||'').replace(/^Bearer /,''),body,tables.find(t=>hostedId(t.id)===id),op==='join'&&body.useProfile!==true?null:account))}
@@ -112,7 +113,7 @@ http.createServer(async(req,res)=>{
    try{
     const result=roomRequest(hostedId(table.id),req.method==='GET'?'moderation':'moderate-chat',null,command,table);
     if(req.method==='GET')return json(200,result);
-    let auditSaved=true;if(result.changed)try{appendFileSync(join(directory,'owner-audit.jsonl'),JSON.stringify({at:new Date().toISOString(),action:command.muted?'mute-chat':'unmute-chat',before:null,after:{...table,moderation:{seat:command.seat,name:result.players.find(p=>p.seat===command.seat).name,muted:command.muted}}})+'\n',{mode:0o600})}catch{auditSaved=false}
+    let auditSaved=true;if(result.changed)try{appendFileSync(join(directory,'owner-audit.jsonl'),JSON.stringify({at:new Date().toISOString(),action:command.muted?'mute-chat':'unmute-chat',before:null,after:{...table,moderation:{seat:command.seat,name:result.moderated.name,muted:command.muted}}})+'\n',{mode:0o600})}catch{auditSaved=false}
     return json(200,{...result,auditSaved});
    }catch(error){return json(error.status||500,{error:error.status?error.message:'Could not save chat moderation'})}
   }
