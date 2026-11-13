@@ -401,7 +401,7 @@ function renderChat(){
  for(const m of state?.chat||[]){const li=element('li','',m.name+': '+m.text);const reaction=chatReaction(m);if(reaction){const img=new Image();img.src=reaction.image;img.alt=reaction.label;img.width=50;img.height=50;li.append(img)}fresh.append(li)}
  updateElement(messages,fresh);
 $('chatForm').hidden=!chatWindow&&state?.me==null;
- $('chatStatus').textContent=rushMode?'Chat is unavailable in the local Rush pool.':state?.chatMuted?'Chat muted by table owner':helmet.muted()?'Helmet is on':'';for(const control of $('chatForm').querySelectorAll('input,button'))control.disabled=rushMode||state?.me==null||!!state?.chatMuted||helmet.muted();emoticonPicker?.refresh(!rushMode&&state?.me!=null&&!state?.chatMuted&&!helmet.muted());
+ $('chatStatus').textContent=rushMode?'Chat is unavailable in the local Rush pool.':state?.chatMuted?'Chat muted by table owner':helmet.muted()?'Helmet is on':'';for(const control of $('chatForm').querySelectorAll('input,button'))control.disabled=rushMode||state?.me==null||(!control.matches('#chatMore,#chatHelmet')&&(!!state?.chatMuted||helmet.muted()));emoticonPicker?.refresh(!rushMode&&state?.me!=null&&!state?.chatMuted&&!helmet.muted());
 }
 function renderShowCards(g){
  const own=g.cards[state.me],choices=own.length===2?[[0],[1],[0,1]]:[own.map((_,i)=>i)],felt=document.querySelector('.felt').getBoundingClientRect(),k=felt.width/1700;
