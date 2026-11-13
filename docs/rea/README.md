@@ -14,12 +14,11 @@ Aceasta este versiunea publică a fișelor detaliate. Explică aspectul,controal
 | [HUD,note și raportări](hud-note-raportari.md) | Statistici,eșantioane,note private,raportare și revizuire |
 | [HUD nativ](hud-sesiune-all-time.md) | Sesiune/all-time,protocoale,rutare,Stats și geometrie |
 | [HandRank](handrank-nativ.md) | Cărți,animații,două boarduri,sesiune persistentă,draw-uri și butoane |
-
-| [Helmet](helmet-local.md) | Contract nativ și server local per loc;interfață încă neconectată |
+| [Helmet](helmet-local.md) | Contract nativ,server,selector între ferestre,chat și grafica originală |
 
 ## Starea curentă și proveniența
 
-Până la PR #35,codul publicat include animațiile și descrierile complete EN ale HandRank,butoanele native,corecția WIN la dezvăluirea voluntară și recuperarea loginului local. PR #35 a fost verificat pe `07b0ee55f64296e49435e61715b517a183e59c6f` cu10verificări;rapoartele separate păstrează limitele de fidelitate. Fundamentul Helmet descris aici este o etapă de server;interfața nu este încă conectată.
+Până la PR #35,codul publicat include animațiile și descrierile complete EN ale HandRank,butoanele native,corecția WIN la dezvăluirea voluntară și recuperarea loginului local. PR #35 a fost verificat pe `07b0ee55f64296e49435e61715b517a183e59c6f` cu10verificări;rapoartele separate păstrează limitele de fidelitate. Fișa Helmet descrie acum și integrarea frontend;instalarea runtime și verificările finale sunt consemnate separat.
 
 Panoul local HandRank/HUD/Stats folosește propriile cărți cunoscute,geometrie urmărită din sursă,statistici private de sesiune și cele9 etichete de draw pe flop/turn. Sloturile native complete de animație,bitmapurile butoanelor,două boarduri în joc,TimeBankCard,sit-out și statisticile globale rămân incomplete ori neverificate. Nu echivalăm fiecare resursă identificată cu o funcție implementată.
 

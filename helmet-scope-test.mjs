@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {installHelmetScope} from './helmet-scope.mjs';
+const items=new Map();globalThis.localStorage={get length(){return items.size},key:i=>[...items.keys()][i],getItem:k=>items.get(k)??null,setItem:(k,v)=>items.set(k,v),removeItem:k=>items.delete(k)};
+const channels=[],sent=[];globalThis.BroadcastChannel=class{constructor(){channels.push(this)}postMessage(data){sent.push(data);for(const peer of channels)if(peer!==this)queueMicrotask(()=>peer.onmessage?.({data:structuredClone(data)}))}close(){channels.splice(channels.indexOf(this),1)}};
+const a={account:'Alice',token:'secret-seat-a',room:'a',enabled:true},b={account:'Alice',token:'secret-seat-b',room:'b',enabled:true},other={account:'Bob',room:'c',enabled:true},calls=[];
+const make=(c,label)=>installHelmetScope(()=>c,async muted=>{calls.push([label,muted]);if(c.fail)throw Error('Rejected '+label)});
+const x=make(a,'a'),y=make(b,'b'),z=make(other,'c');x.refresh();y.refresh();z.refresh();
+await x.apply(true,false);assert.deepEqual(calls,[['a',true]]);calls.length=0;
+await x.apply(false,true);assert.deepEqual(calls.sort(),[['a',false],['b',false]]);assert.ok(!JSON.stringify([[...items],sent]).includes('secret-seat'));assert.ok(!JSON.stringify([...items]).includes('token'));
+items.set('playgg-helmet-peer:missing',JSON.stringify({account:'alice',room:'missing'}));await assert.rejects(x.apply(true,true),/did not confirm/);items.delete('playgg-helmet-peer:missing');
+b.fail=true;await assert.rejects(x.apply(true,true),/Rejected b/);b.fail=false;
+b.enabled=false;y.refresh();calls.length=0;await x.apply(false,true);assert.deepEqual(calls,[['a',false]]);
+a.account=null;x.refresh();await assert.rejects(x.apply(true,true),/Sign in/);await x.apply(true,false);
+x.close();y.close();z.close();assert.equal(items.size,0);console.log('PASS helmet scope:this vsall registered open tables,account isolation,peer failure,identity removal,guest guard andregistry cleanup');
