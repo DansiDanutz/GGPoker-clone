@@ -6,3 +6,13 @@ export function languageCatalog(value,expected){
  if(!value||Array.isArray(value)||value.code!==expected||!value.strings||Array.isArray(value.strings)||typeof value.strings!=='object'||Object.values(value.strings).some(v=>typeof v!=='string'))throw Error('Invalid language catalog');
  return value.strings;
 }
+
+export function installTableLanguage(root,changed){
+ let strings={},generation=0;
+ const apply=()=>{let updated=false;for(const node of root.querySelectorAll('[data-native-label]')){if(!node.hasAttribute('data-native-fallback'))node.dataset.nativeFallback=node.textContent;const key=node.dataset.nativeLabel,text=Object.hasOwn(strings,key)?languageText(strings,key):node.dataset.nativeFallback;if(node.textContent!==text){node.textContent=text;updated=true}}if(updated)changed?.()};
+ const refresh=async()=>{const ticket=++generation;try{
+  const manifestResponse=await fetch('/home-art/native-language-manifest.json');if(!manifestResponse.ok)throw Error('Language list unavailable');const manifest=await manifestResponse.json();if(!Array.isArray(manifest.languages)||!manifest.languages.length||manifest.languages.some(l=>!l||typeof l.code!=='string'||!/^[a-z]{2}(?:-[a-z]{2})?$/.test(l.code)))throw Error('Invalid language list');
+  const code=languageCode(localStorage.getItem('river-language'),manifest.languages.map(l=>l.code)),response=await fetch('/home-art/native-language-'+code+'.json');if(!response.ok)throw Error('Language catalog unavailable');const next=languageCatalog(await response.json(),code);if(ticket!==generation)return false;strings=next;root.documentElement.lang=code;delete root.documentElement.dataset.nativeLanguageError;apply();return true;
+ }catch(error){if(ticket===generation)root.documentElement.dataset.nativeLanguageError=error.message;return false}};
+ const observer=new MutationObserver(apply);observer.observe(root,{subtree:true,childList:true,attributes:true,attributeFilter:['data-native-label']});addEventListener('storage',event=>{if(event.key===null||event.key==='river-language')refresh()});apply();return {refresh,ready:refresh()};
+}
