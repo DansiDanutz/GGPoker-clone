@@ -15,14 +15,17 @@ Aceasta este versiunea publică a fișelor detaliate. Explică aspectul,controal
 | [HUD nativ](hud-sesiune-all-time.md) | Sesiune/all-time,protocoale,rutare,Stats și geometrie |
 | [HandRank](handrank-nativ.md) | Cărți,animații,două boarduri,sesiune persistentă,draw-uri și butoane |
 | [Helmet](helmet-local.md) | Contract nativ,server,selector între ferestre,chat și grafica originală |
+| [Reacții statice](reaction-motion.md) | Curbă nativă,ancore,dismissal și Add Chips concurent |
+| [Bule text](chat-bubbles.md) | Grafică,Arial,ancore,scurtare,durată și Helmet |
+| [Meniu emoji](emoji-menu.md) | Inventar nativ și componente încă netrasate |
 
 ## Starea curentă și proveniența
 
-Până la PR #35,codul publicat include animațiile și descrierile complete EN ale HandRank,butoanele native,corecția WIN la dezvăluirea voluntară și recuperarea loginului local. PR #35 a fost verificat pe `07b0ee55f64296e49435e61715b517a183e59c6f` cu10verificări;rapoartele separate păstrează limitele de fidelitate. Fișa Helmet descrie acum și integrarea frontend;instalarea runtime și verificările finale sunt consemnate separat.
+PR #36–41 au integrat Helmet în cash/Rush,coordonarea între ferestre,grafica și mișcarea reacțiilor și confirmarea Add Chips după recitirea stării. PR #41 a trecut19verificări pe889147719cabea25bdb301e8c6f99638834bd0f2. Fișele de bule text și meniu emoji separă funcțiile implementate de inventarul încă incomplet.
 
 Panoul local HandRank/HUD/Stats folosește propriile cărți cunoscute,geometrie urmărită din sursă,statistici private de sesiune și cele9 etichete de draw pe flop/turn. Sloturile native complete de animație,bitmapurile butoanelor,două boarduri în joc,TimeBankCard,sit-out și statisticile globale rămân incomplete ori neverificate. Nu echivalăm fiecare resursă identificată cu o funcție implementată.
 
-Furnizorul REA a respins formatul SWF;analiza clientului a continuat prin FFDec pe artefactul păstrat Game/51/IronDesktop.swf. Nu pretindem execuție REA nativă reușită. Corpusul local are469 copii/447 unități AS3 distincte în10 rădăcini de export;nu toate rădăcinile au automat proveniență demonstrată din același SWF.14854 frame-uri grafice sunt inventariate,iar75 stări sunt explicate explicit. Frame,iconiță și funcție nu sunt sinonime.
+Furnizorul REA a respins formatul SWF;analiza clientului a continuat prin FFDec pe artefactul păstrat Game/51/IronDesktop.swf. Nu pretindem execuție REA nativă reușită. Corpusul local este inventariat în raportul privat,cu hashuri și rădăcini de export distincte;nu toate rădăcinile au automat proveniență demonstrată din același SWF.14854 frame-uri grafice sunt inventariate,iar75 stări sunt explicate explicit. Frame,iconiță și funcție nu sunt sinonime.
 
 ## Frontend și backend local
 

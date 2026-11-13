@@ -403,3 +403,7 @@ body #actions button:is(.nativeMainAction,.nativeQuickFold)[data-key],body #acti
 #helmetSetting,#chatHelmet{padding:4px 8px 4px 28px;min-height:24px;border:0;background:#333 url('/home-art/native-helmet-entry.png') 5px center/18px 18px no-repeat;text-align:left}#helmetSetting:hover,#chatHelmet:hover{background-image:url('/home-art/native-helmet-entry-over.png')}#helmetSetting:active,#chatHelmet:active{background-image:url('/home-art/native-helmet-entry-down.png')}
 
 html[data-panel=chat] body>.helmetDialog[open]{display:block!important}
+
+.seatChatBubble{position:absolute;width:calc(178/17*1cqw);height:calc(100/17*1cqw);z-index:6;cursor:pointer;user-select:none;line-height:normal}.seatChatBox,.seatChatShadow{position:absolute;inset:0;border-style:solid;border-color:transparent;border-width:calc(50/17*1cqw) calc(88/17*1cqw) calc(49/17*1cqw) calc(89/17*1cqw);border-image: url('/home-art/native-chat-box-white.png') 50 88 49 89 fill stretch;pointer-events:none}.seatChatBox{opacity:.7}.seatChatShadow{border-image-source:url('/home-art/native-chat-shadow.png')}.seatChatBubble.right :is(.seatChatBox,.seatChatShadow){transform:scaleX(-1)}.seatChatText{position:absolute;left:calc(12/17*1cqw);width:calc(154/17*1cqw);font:normal calc(24/17*1cqw) Arial,sans-serif;color:#333;white-space:pre-wrap;overflow-wrap:break-word;pointer-events:none}
+
+.seat[data-own=true] .seatChatBox{border-image-source:url('/home-art/native-chat-box-own.png')}
