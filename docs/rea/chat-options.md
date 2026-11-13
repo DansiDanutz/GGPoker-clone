@@ -2,9 +2,9 @@
 
 ## Dovezi și limite de acoperire
 
-Analiza este statică FFDec, fallback în fluxul REA pentru SWF; nu este execuție AIR observată. Clase: ChatSender/ChatSetting, TableChat, ChatOptionPanel/ChatMuteCell și Button. Căile și hashurile sunt păstrate în raportul local. Constructorul nativ are trei opțiuni: AutoTranslate, HelmetMode și MobileObserverChat. Versiunea locală implementează aici doar accesul More și rândul Helmet, conectat la backendul existent. Traducerea și mesajele spectatorilor nu sunt declarate implementate și nu au butoane fictive.
+Analiza este statică FFDec, fallback în fluxul REA pentru SWF; nu este execuție AIR observată. Clase: ChatSender/ChatSetting, TableChat, ChatOptionPanel/ChatMuteCell și Button. Căile și hashurile sunt păstrate în raportul local. Constructorul nativ are trei opțiuni: AutoTranslate, HelmetMode și MobileObserverChat. Versiunea locală implementează More, Helmet și Observer Chat; spectatorii autentificați au trimitere și moderare reale. Traducerea rămâne neimplementată, fără buton fictiv. Contractul complet local este în observer-chat.md.
 
-Panoul complet al mesei native nemute are trei rânduri la y20/50/80, înălțime124. Observatorul nu are Helmet; Helmet activ ascunde rândul spectatorilor. Local există un singur rând funcțional la y20 și un panou64, conform formulei de aliniere a rândurilor disponibile. Aceasta este o diferență rămasă față de panoul complet nativ, nu o potrivire1-la-1 declarată.
+Panoul complet al mesei native nemute are trei rânduri la y20/50/80, înălțime124. Observatorul nu are Helmet; Helmet activ ascunde rândul spectatorilor. Local există două rânduri funcționale la y20/50 și un panou94 pentru participantul nemute; observatorul sau participantul cu Helmet are un singur rând în64px. Aceasta este o diferență rămasă față de panoul complet nativ, nu o potrivire1-la-1 declarată.
 
 ## Butonul More
 
@@ -24,4 +24,4 @@ Fundalul mesei este#2a2a2a. Linia de jos este albă cu alpha0,1, x12 și lățim
 
 Fixture-ul Helmet folosește pointer real pe rând, verifică geometria/sprite-urile/fontul, eșantioanele animației, întreruperea/reduced-motion, Escape, excluderea Emoji, draftul și Cancel. Verifică accesul cu Helmet activ, apoi confirmarea din chat și scopul All fără comenzi duplicate, o mână240jetoane și restart. Fallbackul fără modulul de emoticoane păstrează controalele legacy și un More în fluxul formularului.
 
-Rămân: traducere automată reală, chat pentru observatori și filtrarea acestuia după rolul la momentul mesajului, toate cele trei rânduri și dimensiunea panoului complet, SnapCam/Giphy, comparație fizică AIR/WKWebView și temporizare/sunet native. Nu există un nou protocol de chat sau un motor de traducere în acest lot.
+Rămân: traducere automată reală, toate cele trei rânduri și dimensiunea panoului complet, SnapCam/Giphy, comparație fizică AIR/WKWebView și temporizare/sunet native. Chatul spectatorilor extinde protocolul local existent; nu este un protocol operator recuperat și nu include un motor de traducere.
