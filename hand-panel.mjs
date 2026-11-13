@@ -13,6 +13,11 @@ export function currentHandRank(hole,board,short=false){
  const category=wheel?(selected.every(c=>c.card[1]===selected[0].card[1])?8:4):r[0],labelKey=category===8&&r[1]===14&&!wheel?'RF':['HC','1P','2P','3K','S','F','FH','4K','SF'][category],labelValues=labelKey==='RF'?[]:labelKey==='S'||labelKey==='SF'?(wheel?['A','9']:[r[1]===5?'A':face(r[1]-4),face(r[1])]):[face(r[1]),...(['2P','FH'].includes(labelKey)?[face(r[2])]:[])];
  return {cards:selected,drawKey:handDraw(hole,board),labelKey,labelValues,label:wheel?(selected.every(c=>c.card[1]===selected[0].card[1])?'a straight flush, ':'a straight, ')+range:labels[r[0]]};
 }
+export function currentSeatHandRank(state,rabbitOpened=false){
+ const g=state?.hand,hole=g?.cards?.[state?.me],short=state?.settings?.variant==='shortdeck',actual=currentHandRank(hole,g?.board,short);
+ if(!actual||!rabbitOpened||!g.end||!Array.isArray(g.rabbitCards)||g.board.length+g.rabbitCards.length!==5)return actual;
+ return currentHandRank(hole,[...g.board,...g.rabbitCards],short)||actual;
+}
 export function sessionDuration(startedAt,now=Date.now()){
  if(!Number.isSafeInteger(startedAt)||startedAt<0||startedAt>8640000000000000||!Number.isFinite(now))return '-';
  const seconds=Math.floor(Math.max(0,now-startedAt)/1000),minutes=Math.floor(seconds/60),pad=n=>String(n).padStart(2,'0');
@@ -48,7 +53,7 @@ export function installHandPanel(context,getHud,onProfile){
   const animation=panel.animate([{opacity},{opacity:0}],{duration:200,easing:'cubic-bezier(0.3333333333,1,0.6666666667,1)',fill:'forwards'});closing=animation;
   animation.finished.then(()=>{if(closing===animation)close()},()=>{});
  }
- function own(){const c=context(),s=c.state,g=s?.hand,hole=g?.cards?.[s.me];return identity()&&identity()!==revokedScope&&g&&hole?.every(Boolean)&&!document.body.classList.contains('squeeze-active')?currentHandRank(hole,g.board,s.settings?.variant==='shortdeck'):null;}
+ function own(){const c=context(),s=c.state,g=s?.hand,hole=g?.cards?.[s.me];return identity()&&identity()!==revokedScope&&g&&hole?.every(Boolean)&&!document.body.classList.contains('squeeze-active')?currentSeatHandRank(s,c.rabbitOpened):null;}
  function paint(){
   const c=context(),s=c.state,g=s?.hand,hand=own();if(!hand||scope!==identity()||closing&&cardHand&&cardHand!==JSON.stringify([scope,s.number])){close();return}if(!opened)return;
   const hud=getHud(),stats=hud?.stats,key=JSON.stringify([tab,s.number,hand,hud,s.sessionStats,tab==='Stats'?sessionDuration(s.sessionStartedAt):null,tab==='Stats'?Math.ceil((gameClockRemaining(g,s.me)??0)/1000):null,g.clock,s.timeCardCount]);if(key===paintKey)return;paintKey=key;

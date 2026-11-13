@@ -1,7 +1,7 @@
 import {languageText} from './native-language.mjs';
 const templates={HC:'{0} high','1P':'a pair of {0}s','2P':'two pair, {0}s and {1}s','3K':'three of a kind, {0}s',S:'a straight, {0} to {1}',F:'a flush {0} high',FH:'a full house, {0}s full of {1}s','4K':'four of a kind, {0}s',SF:'a straight flush, {0} to {1}',RF:'a royal flush'};
 import assert from 'node:assert/strict';
-globalThis.Image=class{};globalThis.document={querySelector:()=>null};globalThis.localStorage={getItem:()=>null};globalThis.addEventListener=()=>{};const {currentHandRank,sessionDuration,bestFiveMotion}=await import('./hand-panel.mjs');
+globalThis.Image=class{};globalThis.document={querySelector:()=>null};globalThis.localStorage={getItem:()=>null};globalThis.addEventListener=()=>{};const {currentHandRank,currentSeatHandRank,sessionDuration,bestFiveMotion}=await import('./hand-panel.mjs');
 assert.deepEqual(currentHandRank(['As','Kd'],[]).cards,[{card:'As',hole:true},{card:'Kd',hole:true}]);
 assert.match(currentHandRank(['As','Ad'],[]).label,/pair of As/);
 assert.deepEqual(currentHandRank(['As','Kd','Kh','2d'],[]).cards.map(c=>c.card),['Kd','Kh'],'Native preflop any pair outranks high cards');
@@ -44,3 +44,13 @@ assert.equal(currentHandRank(['Ts','Td'],[]).label,'a pair of Ts');
 console.log('PASS all native description templates andT rank abbreviation;Omaha exact-two royal andpreflop pair');
 
 assert.equal(currentHandRank(['As','Ad'],[]).labelKey,'1P');assert.deepEqual(currentHandRank(['As','Ad'],[]).labelValues,['A']);assert.equal(currentHandRank(['Ah','6h'],['7h','8h','9h'],true).labelKey,'SF');assert.deepEqual(currentHandRank(['Ah','6h'],['7h','8h','9h'],true).labelValues,['A','9']);assert.equal(currentHandRank(['Ah','Kh'],['Qh','Jh','Th']).labelKey,'RF');assert.deepEqual(currentHandRank(['Ah','Kh'],['Qh','Jh','Th']).labelValues,[]);
+
+const rabbitState={me:0,settings:{variant:'holdem'},hand:{end:{winner:1},cards:[['Ah','Kh']],board:['Qh','Jh','2c'],rabbitCards:['Th','3d']}};
+const rabbitSaved=JSON.stringify(rabbitState);
+assert.equal(currentSeatHandRank(rabbitState,false).labelKey,'HC');
+assert.equal(currentSeatHandRank(rabbitState,true).labelKey,'RF');
+assert.equal(JSON.stringify(rabbitState),rabbitSaved,'Hypothetical HandRank cannot mutate authoritative state');
+for(const patch of [{end:null},{rabbitCards:['Th']},{rabbitCards:['Qh','3d']},{rabbitCards:['Ah','3d']},{rabbitCards:['?','3d']}])assert.equal(currentSeatHandRank({...rabbitState,hand:{...rabbitState.hand,...patch}},true).labelKey,'HC');
+assert.equal(currentSeatHandRank({...rabbitState,me:null},true),null);
+const omaha={...rabbitState,settings:{variant:'plo'},hand:{...rabbitState.hand,cards:[['Ah','Kh','7c','8d']]}};assert.equal(currentSeatHandRank(omaha,true).labelKey,'RF');assert.equal(currentSeatHandRank(omaha,true).cards.filter(c=>c.hole).length,2);
+console.log('PASS Rabbit own HandRank: only completed opened preview, valid complete runout, exact-two Omaha, no spectator/invalid/future leak and immutable real state');
