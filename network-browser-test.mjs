@@ -1230,7 +1230,7 @@ console.log('PASS selected-table comparison: loaded original/local images, equal
    }await until(()=>c.run("document.querySelector('#invite')?.value"));url=await c.run('location.href');
    clients.push(c);
    if(bots){assert.equal(await c.run("document.querySelector('#name').value"),'PlayerOne');if(!autoBuyIn)await c.run("document.querySelector('#join button').click()");else {await until(()=>c.run("document.querySelector('#join').hidden"));assert.equal(await c.run("new URLSearchParams(location.search).has('autojoin')"),false);assert.equal(await c.run("new URL(document.querySelector('#invite').value).searchParams.has('autojoin')"),false);assert.equal((await(await fetch(origin+'/api/hosted')).json()).find(t=>t.id==='club-test').seats[0].stack,120);assert.equal(await c.run("__qaBuyInDialogs"),0,'Auto buy-in never mounts a confirmation dialog');assert.equal(await c.run("fetch('/local/wallet').then(r=>r.json()).then(d=>d.available)"),9880,'Auto buy-in debits the selected120 exactly once')}}
-   else if(tournament){assert.equal(await c.run("document.querySelector('#name').readOnly && document.querySelector('#name').value"),'Player'+(i+1));await c.run("document.querySelector('#join button').click()")}
+   else if(tournament){assert.equal(await c.run("document.querySelector('#name').readOnly && document.querySelector('#name').value"),'Player'+(i+1));await c.run("document.querySelector('#join button').click()");await until(()=>c.run("fetch('/local/wallet').then(r=>r.json()).then(w=>w.available===9975&&w.events.filter(e=>e.kind==='tournament-entry').length===1)"))}
    else if(ranged){
     if(i===0){
      await c.size(1200,957);await c.go(origin+'/playgg.html');await until(()=>c.run("!!document.querySelector('#openGameSettings')?.onclick"));await c.run("document.querySelector('#settings').click();document.querySelector('#openGameSettings').click()");
@@ -1506,7 +1506,7 @@ assert.equal(await c.run("document.querySelectorAll('.winner .portrait .winMark 
   await until(()=>watcher.run("document.querySelector('#groups button[aria-pressed=true] .seatBlocks')?.getAttribute('aria-label')==='0 of 6 seats occupied'&&document.querySelectorAll('#groups button[aria-pressed=true] .seatBlocks .filled').length===0"));
   console.log('PASS one browser + five bots: showdown pot',pot,'independent payouts',payouts,'stacks',g.stacks,'reconnect and release');
  }else if(tournament){
-   await playTournament(clients,api,click,url);
+   await playTournament(clients,api,click,url,browser);
  }else{
  const initial=await Promise.all(clients.map(async(c,i)=>{const [status,s]=await api(c);assert.equal(status,200);assert.equal(s.me,i);assert.deepEqual(s.hand.cards.map(Boolean),clients.map((_,j)=>j===i));assert.ok(!('deck' in s.hand));return s}));
  if(hosted){
@@ -1826,7 +1826,7 @@ assert.equal(await c.run("document.querySelectorAll('.winner .portrait .winMark 
  }
 }}}finally{ws?.close();await stop(chrome);await stop(server);rmSync(directory,{recursive:true,force:true,maxRetries:3,retryDelay:100})}
 
-async function playTournament(clients,api,click,url){
+async function playTournament(clients,api,click,url,browser){
  const count=clients.length,indices=Array.from({length:count},(_,i)=>i);
  const state=async(i=0)=>(await api(clients[i]))[1];
  let s=await state(),last=0,stackBefore=Array(count).fill(100),sawHeadsUp=false,sawIncrease=false;
@@ -1889,10 +1889,13 @@ async function playTournament(clients,api,click,url){
   console.log('PASS '+count+'seat default tournament history:original640x460background,active seats/private cards,5columns/Hide/BB andunchanged prize');
  };
  await inspectTournamentHistory();
+ for(let i=0;i<count;i++){const wallet=await clients[i].run("fetch('/local/wallet').then(r=>r.json())");assert.equal(wallet.available,9975+prizes[i]);assert.equal(wallet.events.filter(e=>e.kind==='tournament-entry').length,1);assert.equal(wallet.events.filter(e=>e.kind==='tournament-prize').length,prizes[i]>0?1:0)}
+ const walletTabs=[];for(const i of [w,indices.find(i=>i!==w)]){const c=await browser(clients[i].contextId);walletTabs.push([c,i]);await c.go(origin+'/playgg.html?player=1');await until(()=>c.run("!!document.querySelector('#profile')?.onclick"));await c.run("document.querySelector('#profile').click();[...document.querySelectorAll('#profileSidebar button')].find(b=>b.textContent==='Transaction History').click()");await until(()=>c.run("document.querySelector('#walletAvailable').textContent==='"+(9975+prizes[i])+"'"));assert.equal(await c.run("document.querySelector('#walletEvents [data-kind=\"tournament-entry\"]').dataset.amount"),'-25');assert.equal(await c.run("document.querySelector('#walletEvents [data-kind=\"tournament-entry\"]').textContent.includes('Tournament entry')"),true);if(prizes[i])assert.equal(await c.run("document.querySelector('#walletEvents [data-kind=\"tournament-prize\"]').dataset.amount"),String(prizes[i]))}
  assert.equal((await api(clients[w],'ready',{version:s.version}))[0],409);
  await stop(server);await boot();await clients[w].go(url);
  assert.deepEqual((await until(async()=>{try{return (await state(w)).tournament}catch{return false}})).prizes,prizes);
  await inspectTournamentHistory();
+ for(let i=0;i<count;i++){const wallet=await clients[i].run("fetch('/local/wallet').then(r=>r.json())");assert.equal(wallet.available,9975+prizes[i]);assert.equal(wallet.events.filter(e=>e.kind==='tournament-entry').length,1);assert.equal(wallet.events.filter(e=>e.kind==='tournament-prize').length,prizes[i]>0?1:0)}for(const [c,i]of walletTabs){await c.run("document.querySelector('#refreshPlayerWallet').click()");await until(()=>c.run("document.querySelector('#walletAvailable').textContent==='"+(9975+prizes[i])+"'"));assert.deepEqual(await c.run('__qaErrors'),[])}console.log('PASS tournament wallet UI:separate signed-in entries25 once,winner/loser actual transaction history,conserved play-wallet totals and no duplicate prizes after restart');
  console.log('PASS '+count+' registered browsers; scheduled levels, '+(count-1)+' eliminations, heads-up, persisted final prize. Winner: Player',w+1,'prizes:',prizes);
 }
 
