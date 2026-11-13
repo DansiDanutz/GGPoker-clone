@@ -20,8 +20,16 @@ Language remains disabled in the local settings UI. The first explicit table bin
 
 ## First explicit table bindings
 
-`installTableLanguage` currently binds only marked nodes for ButtonReJoin (Deal Me In), TablePlayerInfoSittingOut and MobileSitOut. Keys are tied to retained source classes, not guessed from matching English words. Player names, chat, chip amounts and unmarked controls are never traversed for translation. The paused-seat accessible label composes the original player name with the translated status.
+`installTableLanguage` binds explicitly marked nodes. The initial keys are ButtonReJoin (Deal Me In), TablePlayerInfoSittingOut and MobileSitOut; the six main betting-action keys are documented below. Keys are tied to retained source classes, not guessed from matching English words. Player names, chat, chip amounts and unmarked controls are never traversed for translation. The paused-seat accessible label composes the original player name with the translated status.
 
 The loader validates the language list and catalog before committing a new dictionary. Missing/unavailable catalogs retain the previous working language, while a generation counter discards older asynchronous loads. Cross-window storage updates and reload use the persisted local language preference. An optional module probe preserves the old English UI on running backends that do not yet serve the module. It does not start a game action or change a wallet.
 
 `node network-browser-test.mjs --table-language` checks Romanian labels, unchanged player named Deal Me In/chat/hand, actual shared-window English update, failed-catalog recovery, reload and a delayed English response that cannot replace newer French. This is partial label integration, not full translated-app coverage or an enabled Language settings page. Remaining labels, native list policy, OK/Cancel/Escape, visible loading/error flow and font coverage are still required before enabling it.
+
+## Betting-action bindings
+
+Retained native constructors establish Fold→MyTurnBetFoldText, Call→MyTurnBetCallText, Check→HandSummaryCheck, Bet→MyTurnBetBetText and Raise→MyTurnBetRaiseToText. FoldButton’s free-action branch uses CheckFold. The local main-action captions now use those six exact keys; typed amounts remain separate numeric nodes and action closures keep their original engine operations. Accessible labels use the translated caption plus the actual amount. Existing native auto-fit runs after label changes.
+
+The French catalog intentionally uses Parole for Check and Checker / Passer for CheckFold; those source values are preserved. The canonical English CheckFold text is Check / Fold, including spaces, so the six-session reserved-action regression expects that native label.
+
+`node network-browser-test.mjs --bet-language` plays an actual three-player hand through French Call and Bet clicks. It verifies all six captions, fit of CheckFold, original player named Call/chat text, typed12 and input focus across EN→FR, localized amount aria, no game-version change from language updates, payout24/uncalled return12 and final128/116/116 (360 total). `--preactions --hosted` verifies the complete six-human reserved-action/reload/restart flow and720-chip conservation with canonical English labels. Other betting formats, remaining labels and font/runtime parity are not claimed complete.
