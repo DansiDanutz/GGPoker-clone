@@ -20,7 +20,7 @@ Nu schimbăm rezultatul poker, eligibilitatea, stackurile, walletul sau istoricu
 
 Fixture-urile audio cu două și trei poturi verifică numărul corect de badge-uri la prezentarea proaspătă, zero la începutul poturilor secundare, zero după ultimul payout și după polling. Un redraw real prin Helmet și restartul serverului nu le readuc. Verificările geometriei imaginii și ale pixelilor care ar putea acoperi rankul/suita cărților se execută cât WIN este prezent, cu o verificare explicită că ținta există; dispariția corectă nu transformă testul într-un succes pe o colecție goală.
 
-Modurile reduced-motion și reconectarea verifică absența unei prezentări vechi. Sunetul WinPot rămâne legat de mișcarea fiecărui pot, separat de badge. Nu am redat audio prin difuzoarele fizice; testele Chrome sunt headless și mute.
+Modurile reduced-motion și reconectarea verifică absența unei prezentări vechi. Sunetul WinPot rămâne legat de mișcarea fiecărui pot, separat de badge. Corelarea folosește timestampul nativ al evenimentului CSS și păstrează separat momentul observării în listenerul de bubbling; un callback audio poate rula înaintea acestui listener, fără să preceadă evenimentul care l-a declanșat. Nu am redat audio prin difuzoarele fizice; testele Chrome sunt headless și mute.
 
 ## Trei poturi
 
