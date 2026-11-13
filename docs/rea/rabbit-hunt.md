@@ -47,3 +47,7 @@ The hypothetical faces occupy a separate layer; the played board remains unchang
 - network-browser-test --rabbit (also --plo): three isolated contexts, flop-two and turn-one cards, source geometry at850/1196, trusted pointer, rejected-request recovery, configurable H/Functions guard and Enter, reduced motion, exact double/single audio signatures/sample durations once, unchanged payouts/360chips, reload without replay and cold restart.
 
 All gameplay uses temporary data and muted headless Chrome. No live owner hand, private server or real-money account is exercised.
+
+### Resource responsiveness regression
+
+Static UI files, private reference art and table audio are read asynchronously. A delayed iCloud-backed resource must not block authenticated session or hosted-table API requests. `node static-io-http-test.mjs` holds a unique temporary graphics FIFO open, verifies both APIs respond before releasing it, and checks the exact delivered bytes. The test failed with synchronous reads and passes with asynchronous reads. Atomic room and wallet persistence is unchanged. This proves API responsiveness during a stalled resource read; it does not guarantee that an unavailable image finishes loading.
