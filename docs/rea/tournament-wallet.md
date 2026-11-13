@@ -12,7 +12,7 @@ Pentru trei conturi cu grant inițial10000, înscrierea lasă9975 fiecăruia. La
 
 Numai o înscriere nouă, autentificată și găzduită debitează portofelul. Serverul stabilește contul din sesiunea locală; un nume ori un cont trimis în JSON nu poate selecta portofelul altcuiva. Fluxul useProfile cere autentificare și păstrează protecțiile Origin existente. Debitul este făcut după validarea locului și a stării înscrierilor, în aceeași tranzacție cu ocuparea locului.
 
-Recuperarea propriului loc rotește credentialul conform fluxului existent și nu debitează din nou. Fondurile insuficiente resping înscrierea fără loc nou sau modificare de sold. În API-ul propriei sesiuni, tournamentEntryPaid spune dacă acel entry este finanțat; spectatorii nu primesc acest câmp. Textul mesei distinge intrarea plătită de o intrare de practică fără transfer.
+Recuperarea propriului loc rotește credentialul conform fluxului existent și nu debitează din nou. Fondurile insuficiente resping înscrierea fără loc nou sau modificare de sold. În API-ul propriei sesiuni, tournamentEntryPaid spune dacă acel entry este finanțat; spectatorii nu primesc acest câmp. Textul mesei distinge intrarea plătită de o intrare de practică fără transfer. Înaintea înscrierii, taxa este afișată numai dacă backendul o confirmă în catalog; o interfață nouă pe backendul vechi nu pretinde că debitarea este deja activă.
 
 ## Retragere, anulare și rezultat
 

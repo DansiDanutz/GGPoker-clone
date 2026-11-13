@@ -6,7 +6,7 @@ import {ownerBackup} from './owner-backup.mjs';import {restoreOwnerBackup} from 
 const dir=mkdtempSync(join(tmpdir(),'tournament-wallet-')),file=join(dir,'rooms.json'),id='a'.repeat(48),realNow=Date.now;let now=realNow();Date.now=()=>now;
 const table={...(process.argv.includes('--plo')?{variant:'plo'}:{}),name:'Funded event',mode:'tournament',tournamentSeats:3,stack:100,blind:4,open:true,prizeShares:[60,30,10]};
 try{
- let req=openRooms(file,()=>0,true);const call=(op,token,body={},room=id,settings=table,account)=>req(room,op,token,body,settings,account);
+ let req=openRooms(file,()=>0,true);assert.equal(req(id,'summary',null,{},table).accountEntryCost,25);assert.equal(openRooms(join(dir,'free.json'))(id,'summary',null,{},table).accountEntryCost,undefined);const call=(op,token,body={},room=id,settings=table,account)=>req(room,op,token,body,settings,account);
  mkdirSync(file+'.tmp');assert.throws(()=>call('join',null,{name:'Alice'},id,table,'Alice'));rmdirSync(file+'.tmp');assert.equal(req.wallet('Alice').available,10000);
  let s=call('join',null,{name:'Alice'},id,table,'Alice');assert.equal(req.wallet('Alice').available,9975,'Registration debits entry');assert.equal(s.tournamentEntryPaid,true);assert.equal(call('watch',null).tournamentEntryPaid,undefined);let alice=s.issued;
  s=call('join',null,{name:'Alice'},id,table,'Alice');alice=s.issued;assert.equal(req.wallet('Alice').available,9975,'Recovery never debits twice');assert.equal(req.wallet('Alice').events.filter(e=>e.kind==='tournament-entry').length,1);
