@@ -55,3 +55,9 @@ Static `SitOutMenuView` registers SIT_OUT_ALL_TABLES with SitOutNextHand; `Globa
 `POST /local/cash-sit-out` shares the origin/cookie/expected-account/body/size boundary of global return. Both use the same atomic account-scoped store loop and shared seat pause transition. Pause never applies the return funding requirement, never folds a running hand and never debits a wallet. Guests cannot target another account’s tables. The button is capability-gated and a repeated click is idempotent.
 
 Tests cover two rooms, other-account isolation, no hand/wallet changes, failed-write rollback/retry and cold restart for both pause and return. Authenticated headless trusted settings click verifies the actual action and current-hand preservation; the guest control remains hidden. Next-blind, leave-all, global Rush/tournament eligibility and native whole-menu geometry/hotkeys remain incomplete.
+
+## Configurable global cash pause hotkey
+
+Native `SitOutMenuView` registers HotKey.SIT_OUT_ALL_TABLES. The local binding catalog now exposes the implemented cash-specific action in Functions, initially unassigned (no native default combination is inferred). It dispatches the same capability/account-gated settings button; the native broader all-game/Rush/tournament scope remains incomplete.
+
+Binding tests cover assignment, persistence, Functions categorization and conflict rejection without changing existing assignments. Authenticated headless keyboard input with a test-only G binding schedules the pause without a betting action; disabling Functions blocks it. The normal current-table S test remains independent.

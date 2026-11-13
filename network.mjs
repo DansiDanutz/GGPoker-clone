@@ -550,6 +550,7 @@ document.addEventListener('keydown',e=>{
  if(action==='lastHands'){click(document.querySelector('#tableHandHistory'));return}
  if(action==='timeBank'){click(document.querySelector('.nativeTimeBank'));return}
  if(action==='toggleUnits'){click(document.querySelector('.stackSwitch:not([disabled])'));return}
+ if(action==='sitOutAllCash'){click(globalCashPauseButton);return}
  if(action==='sitOut'){click(rushMode?rushSitOut:cashSitOut);return}
  if(action==='newHand'){click([...$('actions').querySelectorAll('button')].find(b=>b.textContent==='Ready for next hand'||state.registered&&!state.table&&['Find next table',"I'm back"].includes(b.textContent)));return}
  if(!state.hand)return;
