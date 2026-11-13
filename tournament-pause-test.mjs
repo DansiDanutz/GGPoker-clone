@@ -24,7 +24,7 @@ try{
  const saved=readFileSync(file,'utf8'),packed=JSON.parse(saved);packed.find(([key])=>key===id)[1].tournament.pausedAt=-1;writeFileSync(file,JSON.stringify(packed));assert.throws(()=>openRooms(file),/Invalid tournament pause/);writeFileSync(file,saved);
  now=state().tournament.nextDealAt;room(id,'tick',null,{},table);control('pause');
  let terminal=state();for(let n=0;n<200&&terminal.tournament.winner===null;n++){
-  if(terminal.hand.end){control('resume');now=state().tournament.nextDealAt;room(id,'tick',null,{},table);control('pause');terminal=state();continue}
+  if(terminal.hand.end){control('resume');now=state().tournament.nextDealAt;room(id,'tick',null,{},table);terminal=state();if(terminal.tournament.winner===null)control('pause');terminal=state();continue}
   const token=players[terminal.hand.turn].issued,v=room(id,'state',token,{},table),o=v.hand.options;terminal=room(id,'act',token,{version:v.version,action:o.raise?'raise':o.due?'call':'check',target:o.max},table);
  }
  assert.notEqual(terminal.tournament.winner,null);assert.equal(terminal.tournament.pausedAt,undefined);assert.equal(terminal.tournament.pauseRequested,undefined);assert.equal(terminal.tournament.prizes.reduce((a,b)=>a+b),75);assert.throws(()=>control('pause'),/running tournament/);
