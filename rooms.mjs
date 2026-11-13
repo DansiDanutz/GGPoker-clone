@@ -8,7 +8,7 @@ import {bestShortDeck} from './engine/hand.mjs';
 import {eliminationPlaces} from './engine/eliminations.mjs';
 import {best} from './game.mjs';
 import {blindLevel} from './blind-level.mjs';
-import {startClock,finishClock,reserveClock,clockView} from './game-clock.mjs';
+import {startClock,finishClock,reserveClock,clockView,autoTimeCard} from './game-clock.mjs';
 import {visibleCards,collectedPots} from './room-view.mjs';
 import {openNotes,noteColors,saveNoteLabels,reportTypes,saveHandReport} from './player-notes.mjs';
 const buyIns=[30,70,100,100], hour=3600000;
@@ -63,9 +63,14 @@ export function computerMove(cards,board,blind,price,o,variant='holdem'){
   return [o.due?'call':'check'];
 }
 function step(room,action,target){
+  const actor=room.hand?.turn,paidBefore=room.hand?.committed?.[actor];
   try{act(room.hand,action,target)}catch{fail(400,'Illegal action')}
+  // VPIP is preflop-only; this rule also covers later voluntary bets.
+  if(room.settings?.timeChipCount&&room.hand.committed[actor]>paidBefore){room.hand.timeCardVoluntary??=Array(room.players.length).fill(false);room.hand.timeCardVoluntary[actor]=true}
   const now=Date.now();finishClock(room,now);startClock(room,now);room.version++;record(room);
 }
+function timeCardEvent(room,automatic=false){return {type:'time-card-used',seat:room.hand.turn,street:room.hand.board.length,afterAction:room.hand.history.length,sequence:room.actionClock.cardsUsed-1,seconds:room.settings.freeTimeChipSecondsPerUnit,...(automatic?{automatic:true}:{})}}
+function expireClock(room,now){while(autoTimeCard(room,now)){room.hand.historyEvents??=[];room.hand.historyEvents.push(timeCardEvent(room,true));room.version++}if(now>=room.deadline)step(room,room.hand.variant==='aof'||options(room.hand).due?'fold':'check')}
 function cashSitOut(r){return !!r?.settings&&!r.tournament&&[undefined,'holdem','plo','plo5','plo6'].includes(r.settings.variant)}
 function hasHandBalance(r,i){return !!(r.hand&&r.players[i]&&(r.hand.hands[i].length||r.hand.sittingOut?.[i]&&r.hand.hudSubjects?.[i]===noteSubject(r.players[i])))}
 function cashBalance(r,i){return !r.players[i]?0:hasHandBalance(r,i)?r.hand.stacks[i]:r.waitingStacks?.[i]??r.players[i].buyIn??r.settings?.stack??buyIns[i]??0}
@@ -192,7 +197,7 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
     if(r.tournament?.nextDealAt!=null&&now>=r.tournament.nextDealAt)tournamentHand(r,now,avatarFor);
     if(cashSitOut(r)&&cashReady(r)&&(!r.players.some(p=>p?.walletFunded)||wallet)&&cashHand(r,now,avatarFor))r.version++;
     if(r.hand&&!r.hand.end){
-      if(now>=r.deadline)step(r,r.hand.variant==='aof'||options(r.hand).due?'fold':'check');
+      if(now>=r.deadline)expireClock(r,now);
       else if(r.players[r.hand.turn]?.bot&&now>=(r.actionClock?.startedAt??r.deadline-turnMs(r))+500){const g=r.hand;step(r,...computerMove(g.hands[g.turn],g.board,g.blind,g.price,options(g),g.variant))}
     }
     return view(r,null,avatarFor);
@@ -342,7 +347,7 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
     if(wallet&&r.players[me].walletFunded)wallet.move(r.players[me].account,r.hand.stacks[me]+(r.players[me].walletTopUp||0)+(r.players[me].addChips?.amount||0),'cash-out',id);rooms.delete(id);return {left:true}
   }
   if(r.tournament?.nextDealAt!=null&&now>=r.tournament.nextDealAt)tournamentHand(r,now,avatarFor);
-  if(r.hand&&!r.hand.end&&now>=r.deadline)step(r,r.hand.variant==='aof'||options(r.hand).due?'fold':'check');
+  if(r.hand&&!r.hand.end&&now>=r.deadline)expireClock(r,now);
   if(op==='show-cards'){
     const g=r.hand,indices=body.indices;
     if(r.players[me].account&&r.players[me].account!==account)fail(401,'Log in as the seated player');
@@ -357,9 +362,10 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
       const history=r.hudHistory?.find(h=>h.number===r.number);if(history){history.cards=visibleCards(g,null).map(hand=>hand?[...hand]:null);history.historyEvents??=[];history.historyEvents.push({type:'show-cards',seat:me,street:g.board.length,afterAction:g.history.length,indices:[...selected]})}
     }
   }
+  if(op==='time-card-option'){if(!r.settings?.timeChipCount)fail(409,'Free time cards are unavailable');if(Object.keys(body).some(k=>!['option','version'].includes(k))||!Number.isInteger(body.option)||body.option<0||body.option>3)fail(400,'Choose a time-card option from 0 through 3');if((r.players[me].timeCardOption??3)!==body.option){r.players[me].timeCardOption=body.option;r.version++}}
   if(op==='time-bank'){
     if(body.isPaidAction!==undefined&&body.isPaidAction!==false||body.isTimeChipToggle!==undefined&&body.isTimeChipToggle!==false)fail(400,'Paid time chips are unavailable');
-    if(reserveClock(r,me,body.actionId,now,body.cardSequence)){r.hand.historyEvents??=[];r.hand.historyEvents.push({type:r.actionClock.phase==='cards'?'time-card-used':'clock-limit-disabled',seat:me,street:r.hand.board.length,afterAction:r.hand.history.length,...(r.actionClock.phase==='cards'?{sequence:r.actionClock.cardsUsed-1,seconds:r.settings.freeTimeChipSecondsPerUnit}:{})});r.version++}
+    if(reserveClock(r,me,body.actionId,now,body.cardSequence)){r.hand.historyEvents??=[];r.hand.historyEvents.push(r.actionClock.phase==='cards'?timeCardEvent(r):{type:'clock-limit-disabled',seat:me,street:r.hand.board.length,afterAction:r.hand.history.length});r.version++}
   }
   if(['act','ready','leave'].includes(op)){
     const chatOnlyStale=op==='act'&&r.version===enteredVersion&&Number.isSafeInteger(body.version)&&body.version>=(r.actionVersion??r.version)&&body.version<=r.version;
@@ -391,7 +397,7 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
 function view(r,me,avatarFor,account){
   const g=r.hand,clock=clockView(r,me,Date.now());
   if(clock){delete clock.bankRemainingMs;clock.bankEndsAt=r.actionClock.bankEnd}
-  return {me,...(me!=null&&r.settings?.timeChipCount?{timeCardCount:r.players[me]?.freeTimeChipCount??r.settings.timeChipCount}:{}),...(cashSitOut(r)?{sitOutSupported:true,sitOutStateSupported:true,sitOutStates:r.players.map((p,i)=>p&&r.hand?.sittingOut?.[i]&&hasHandBalance(r,i)?p.sitOutState||0:0),globalCashReturn:true,globalCashPause:true,returnMinimum:returnMinimum(r),...(me!=null?{returnFundingRequired:returnNeedsChips(r,me)}:{}),...(me!=null?{sitOutNextHand:!!r.players[me]?.sitOutNextHand}:{}),sittingOut:r.players.map((p,i)=>!!p&&(g?!!g.sittingOut?.[i]&&hasHandBalance(r,i):!!p.sitOutNextHand)),seatBalances:r.players.map((p,i)=>p?cashBalance(r,i):null)}:{}),...(me!=null&&r.tournament?{tournamentEntryPaid:!!r.players[me]?.entryFunded}:{}),...(me==null&&account?{canObserveChat:!r.players.some(p=>p?.account===account),observerName:account,...(chatMuted(r,{account})?{chatMuted:true}:{})}:{}),helmets:r.players.map(p=>!!p?.helmet),...(me!=null&&r.players[me]?.sessionStats?{sessionStats:{...r.players[me].sessionStats}}:{}),...(me!=null&&Number.isSafeInteger(r.players[me]?.sessionStartedAt)?{sessionStartedAt:r.players[me].sessionStartedAt}:{}),...(me!=null&&r.players[me]?.addChips?{pendingAdd:{...r.players[me].addChips}}:{}),reservedSeats:reservedSeats(r),...(me!=null?{noteSubjects:r.players.map((p,i)=>p&&i!==me?noteSubject(p):null)}:{}),...(me!=null&&r.topUps?{topUps:r.topUps.filter(t=>t.subject===(r.players[me]?.account||r.players[me]?.digest)).map(({subject,...t})=>t)}:{}),...(r.players.some(p=>p?.buyIn!==undefined)?{buyIns:r.players.map(p=>p?p.buyIn??r.settings.stack:0)}:{}),...(me!=null&&chatMuted(r,r.players[me])?{chatMuted:true}:{}),...(g&&me!=null&&!g.hands[me].length?{waitingForHand:true}:{}),...(r.waitingStacks?{waitingStacks:r.waitingStacks}:{}),...(r.shuffles?{shuffles:r.shuffles.filter(e=>e.subject===r.players[e.seat]?.digest&&Date.now()-e.at<2450).map(({seat,at})=>({seat,at}))}:{}),avatars:r.players.map(p=>p?.account?avatarFor(p.account):null),chat:(r.chat||[]).map(({sender,...message})=>message),settings:r.settings,tournament:r.tournament,version:r.version,number:r.number,names:r.players.map(p=>p?.name??null),ready:r.ready,results:r.results,
+  return {me,...(me!=null&&r.settings?.timeChipCount?{timeCardCount:r.players[me]?.freeTimeChipCount??r.settings.timeChipCount,timeCardOption:r.players[me]?.timeCardOption??3,timeCardOptionsSupported:true}:{}),...(cashSitOut(r)?{sitOutSupported:true,sitOutStateSupported:true,sitOutStates:r.players.map((p,i)=>p&&r.hand?.sittingOut?.[i]&&hasHandBalance(r,i)?p.sitOutState||0:0),globalCashReturn:true,globalCashPause:true,returnMinimum:returnMinimum(r),...(me!=null?{returnFundingRequired:returnNeedsChips(r,me)}:{}),...(me!=null?{sitOutNextHand:!!r.players[me]?.sitOutNextHand}:{}),sittingOut:r.players.map((p,i)=>!!p&&(g?!!g.sittingOut?.[i]&&hasHandBalance(r,i):!!p.sitOutNextHand)),seatBalances:r.players.map((p,i)=>p?cashBalance(r,i):null)}:{}),...(me!=null&&r.tournament?{tournamentEntryPaid:!!r.players[me]?.entryFunded}:{}),...(me==null&&account?{canObserveChat:!r.players.some(p=>p?.account===account),observerName:account,...(chatMuted(r,{account})?{chatMuted:true}:{})}:{}),helmets:r.players.map(p=>!!p?.helmet),...(me!=null&&r.players[me]?.sessionStats?{sessionStats:{...r.players[me].sessionStats}}:{}),...(me!=null&&Number.isSafeInteger(r.players[me]?.sessionStartedAt)?{sessionStartedAt:r.players[me].sessionStartedAt}:{}),...(me!=null&&r.players[me]?.addChips?{pendingAdd:{...r.players[me].addChips}}:{}),reservedSeats:reservedSeats(r),...(me!=null?{noteSubjects:r.players.map((p,i)=>p&&i!==me?noteSubject(p):null)}:{}),...(me!=null&&r.topUps?{topUps:r.topUps.filter(t=>t.subject===(r.players[me]?.account||r.players[me]?.digest)).map(({subject,...t})=>t)}:{}),...(r.players.some(p=>p?.buyIn!==undefined)?{buyIns:r.players.map(p=>p?p.buyIn??r.settings.stack:0)}:{}),...(me!=null&&chatMuted(r,r.players[me])?{chatMuted:true}:{}),...(g&&me!=null&&!g.hands[me].length?{waitingForHand:true}:{}),...(r.waitingStacks?{waitingStacks:r.waitingStacks}:{}),...(r.shuffles?{shuffles:r.shuffles.filter(e=>e.subject===r.players[e.seat]?.digest&&Date.now()-e.at<2450).map(({seat,at})=>({seat,at}))}:{}),avatars:r.players.map(p=>p?.account?avatarFor(p.account):null),chat:(r.chat||[]).map(({sender,...message})=>message),settings:r.settings,tournament:r.tournament,version:r.version,number:r.number,names:r.players.map(p=>p?.name??null),ready:r.ready,results:r.results,
     hand:g&&{dealtSeats:g.hands.flatMap((cards,i)=>cards.length?[i]:[]),...(g.end&&g.shownIndices?{shownIndices:g.shownIndices.map(indices=>indices?[...indices]:null)}:{}),...(me!=null&&g.end&&g.hands[me].length&&!g.shownIndices?.[me]&&(g.folded[me]||g.folded.filter(f=>!f).length<2)?{canShowCards:true}:{}),...(r.settings?.timeBankSeconds?{timeBanks:r.players.map(p=>p?p.timeBankMs??r.settings.timeBankSeconds*1000:null)}:{}),...(clock?{clock}:{}),...(r.settings?.cardSqueeze?{squeezeActivated:true}:{}),blind:g.blind,...(g.ante?{ante:g.ante}:{}),button:g.button,turn:g.turn,deadline:g.end?null:r.deadline,stacks:g.stacks,bets:g.bets,committed:g.committed,folded:g.folded,board:g.board,pots:collectedPots(g),
       ...(me!=null&&!g.end&&!g.folded[me]&&g.stacks[me]>0&&g.hands[me].length?{preAction:{...(g.variant==='aof'?{aof:true}:{}),due:Math.max(0,g.price-g.bets[me]),call:Math.min(g.stacks[me],Math.max(0,g.price-g.bets[me])),acted:g.actedAt[me]!==null,reservedCheck:g.reservedChecks?.[me]===g.board.length,foldEnabled:g.stacks.some((stack,i)=>i!==me&&!g.folded[i]&&g.bets[i]+stack>g.bets[me])}}:{}),cards:visibleCards(g,me),history:g.history,end:g.end,options:g.turn===me?options(g):null}};
 }
