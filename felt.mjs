@@ -1,6 +1,11 @@
 export const isNativeEmoticon=id=>Number.isInteger(id)&&[0,1000,4000].some(base=>id-base>=1&&id-base<=27||id-base===30);
 import {bestFiveFocus} from './engine/hand.mjs';
 import {cardOrdinal} from './card-squeeze.mjs';
+export function gameClockRemaining(hand,seat,now=Date.now()){
+ if(!Number.isInteger(seat)||seat<0)return null;const saved=hand?.timeBanks?.[seat],clock=hand?.clock;
+ if(clock?.seat===seat&&!hand.end&&Number.isFinite(clock.bankEndsAt)&&Number.isFinite(hand.deadline)&&Number.isFinite(now)){const left=Math.max(0,clock.bankEndsAt-Math.min(now,hand.deadline));return clock.phase==='bank'&&Number.isFinite(saved)?Math.min(Math.max(0,saved),left):left}
+ return Number.isFinite(saved)?Math.max(0,saved):null;
+}
 export function gameClockText(ms){const seconds=Math.max(0,Math.ceil(ms/1000));return String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0')}
 export function element(tag,cls,text){const e=document.createElement(tag);e.className=cls;if(text!==undefined)e.textContent=text;return e}
 export function cards(list){return list.map(c=>{if(c===null){const back=element('span','back');back.setAttribute('role','img');back.setAttribute('aria-label','Hidden card');return back}const rank=c[0]==='T'?'10':c[0],suit=({h:'♥',s:'♠',c:'♣',d:'♦'})[c[1]],e=element('span','card'+('dh'.includes(c[1])?' red':''),rank);e.append(element('i','',suit));e.style.setProperty('--face-x',('23456789TJQKA'.indexOf(c[0])*100/12)+'%');e.style.setProperty('--face-y',('cdhs'.indexOf(c[1])*100/3)+'%');e.setAttribute('role','img');e.setAttribute('aria-label',rank+' of '+({h:'hearts',s:'spades',c:'clubs',d:'diamonds'})[c[1]]);return e})}
