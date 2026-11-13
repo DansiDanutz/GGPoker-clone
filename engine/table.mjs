@@ -134,6 +134,32 @@ export function preflopOpportunities(game,seat){
  return stats;
 }
 
+export function continuationStats(game,seat){
+ if(showdownStats(game,seat)===null)return null;
+ const actions=game.historyTrace.actions;
+ if(!actions.every((a,i)=>typeof a.canRaise==='boolean'&&['paid','bet','stack'].every(key=>Number.isSafeInteger(a[key])&&a[key]>=0)&&(!i||a.street>=actions[i-1].street)))return null;
+ const stats={};
+ // shortcut: local recorded opportunities, not the unavailable operator-wide HUD denominator.
+ for(const [street,previous,prefix]of [[3,0,'flop'],[4,3,'turn']]){
+  for(const key of ['Opportunities','Bets','Responses','Folds','Calls','Raises'])stats[prefix+'Cb'+key]=0;
+  const aggressor=actions.findLast(a=>a.street===previous&&a.action==='raise')?.seat;
+  if(aggressor===undefined)continue;
+  let opened=false,decided=false,continuation=false;const responded=new Set();
+  for(const a of actions.filter(a=>a.street===street)){
+   if(a.seat===aggressor&&!decided){
+    decided=true;
+    if(!opened&&a.canRaise){if(seat===aggressor){stats[prefix+'CbOpportunities']++;if(a.action==='raise')stats[prefix+'CbBets']++}continuation=a.action==='raise'}
+   }else if(continuation&&a.seat!==aggressor&&!responded.has(a.seat)&&['fold','call','raise'].includes(a.action)){
+    responded.add(a.seat);
+    if(a.seat===seat){stats[prefix+'CbResponses']++;stats[prefix+'Cb'+({fold:'Folds',call:'Calls',raise:'Raises'})[a.action]]++}
+    if(a.action==='raise')continuation=false;
+   }
+   if(a.action==='raise')opened=true;
+  }
+ }
+ return stats;
+}
+
 export function showdownStats(game,seat){
  if(!['holdem','plo','plo5','plo6','rush','shortdeck'].includes(game?.variant)||preflopRaised(game,seat)===null||!Array.isArray(game.board)||![0,3,4,5].includes(game.board.length)||!Array.isArray(game.folded)||game.folded.length!==game.hands.length||!game.folded.every(v=>typeof v==='boolean')||!game.end||!['payouts','returns'].every(key=>Array.isArray(game.end[key])&&game.end[key].length===game.hands.length&&game.end[key].every(n=>Number.isSafeInteger(n)&&n>=0)))return null;
  const sawFlop=game.board.length>=3&&!game.historyTrace.actions.some(a=>a.seat===seat&&a.street===0&&a.action==='fold'),showdown=sawFlop&&game.board.length===5&&!game.folded[seat]&&game.folded.filter(v=>!v).length>=2;
