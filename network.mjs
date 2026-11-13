@@ -26,6 +26,24 @@ function chipPile(parts,pot,align){
  for(const chip of playChipLayout(parts,pot,align)){const img=new Image();img.src='/home-art/native-reserved-play-chip-'+chip.raw+'.png';img.alt='';img.dataset.raw=chip.raw;img.style.left=chip.x/17+'cqw';img.style.top=chip.y/17+'cqw';pile.append(img)}return pile;
 }
 $('openChat').hidden=rushMode;
+const tournamentAnnounce=element('div','nativeTournamentAnnounce'),tournamentAnnounceText=element('span','nativeTournamentAnnounceText','Break will start after the current hand.'),tournamentAnnounceClose=element('button','nativeTournamentAnnounceClose');
+tournamentAnnounce.hidden=true;tournamentAnnounce.setAttribute('role','status');tournamentAnnounceText.dataset.nativeLabel='TourneyAnnounceBreak';tournamentAnnounceClose.type='button';const tournamentAnnounceCloseText=element('span','','Close');tournamentAnnounceCloseText.dataset.nativeLabel='ButtonClose';tournamentAnnounceClose.append(tournamentAnnounceCloseText);tournamentAnnounce.append(tournamentAnnounceText,tournamentAnnounceClose);document.querySelector('.felt').append(tournamentAnnounce);
+let announceRequested=false,announceQueue=0,announcePlaying=false,announceHiding=false,announceTimer,announceMotion;
+function animateTournamentAnnounce(show,complete){
+ announceMotion?.cancel();const frames=show?[{opacity:0,transform:'translateY(-1.1764705882cqw)'},{opacity:1,transform:'translateY(0)'}]:[{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(-1.1764705882cqw)'}];
+ tournamentAnnounce.style.opacity=show?'1':'0';tournamentAnnounce.style.transform=show?'translateY(0)':'translateY(-1.1764705882cqw)';
+ if(matchMedia('(prefers-reduced-motion: reduce)').matches){announceMotion=null;complete();return}
+ const motion=tournamentAnnounce.animate(frames,{duration:500,easing:'cubic-bezier(.3333333333,1,.6666666667,1)'});announceMotion=motion;motion.onfinish=()=>{if(announceMotion===motion){announceMotion=null;complete()}};
+}
+function showTournamentAnnounce(){if(announcePlaying||!announceQueue)return;announceQueue--;announcePlaying=true;announceHiding=false;tournamentAnnounce.hidden=false;animateTournamentAnnounce(true,()=>{announceTimer=setTimeout(hideTournamentAnnounce,5000)})}
+function hideTournamentAnnounce(){if(!announcePlaying||announceHiding)return;announceHiding=true;clearTimeout(announceTimer);animateTournamentAnnounce(false,()=>{tournamentAnnounce.hidden=true;announcePlaying=false;announceHiding=false;showTournamentAnnounce()})}
+tournamentAnnounceClose.onclick=event=>{event.stopPropagation();hideTournamentAnnounce()};
+function updateTournamentAnnounce(){
+ const requested=!chatWindow&&!!state?.tournament?.pauseRequested;
+ if(!state?.tournament){announceMotion?.cancel();announceMotion=null;clearTimeout(announceTimer);announceQueue=0;announcePlaying=false;announceHiding=false;tournamentAnnounce.hidden=true}
+ if(requested&&!announceRequested){announceQueue++;showTournamentAnnounce()}announceRequested=requested;
+}
+matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',event=>{if(event.matches)announceMotion?.finish()});
 const tournamentNotice=element('div','nativeTournamentNotice'),tournamentNoticeText=element('div','nativeTournamentNoticeText');
 tournamentNotice.hidden=true;tournamentNotice.setAttribute('role','status');tournamentNotice.setAttribute('aria-live','polite');
 for(const [key,text]of [['MoblieTournamentHansBeenPaused','Tournament has been paused by the operator.'],['MobilePleaseWaitTournamentResume','Please wait for tournament to resume.']]){const line=element('span','',text);line.dataset.nativeLabel=key;tournamentNoticeText.append(line)}
@@ -458,6 +476,7 @@ function renderShowCards(g){
  }
 }
 function render(){
+ updateTournamentAnnounce();
  updateTournamentNotice();
  updateAddChipsControl();
  if(!state){pendingHand=null;clearPayout();reservedAction=null;reservedPanel.hidden=true;runoutPlan=null;boardSounds.clear();payoutSoundHand=null;soundedPots.clear()}
