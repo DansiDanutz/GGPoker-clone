@@ -14,9 +14,15 @@ Bounded FFDec export of `LanguagePage` establishes a draft choice applied only b
 
 `native-language-test.mjs` covers these rules with portable fixtures; `--native` additionally verifies all28 actual local catalogs and Romanian Deal Me In text.
 
-## Not enabled yet
+## Local settings selector
 
-Language remains disabled in the local settings UI. The first explicit table bindings below are implemented; the settings selector is still disabled and no live user preference is changed by tests. Before enabling the page: establish local offered-language policy/brand evidence, connect actual UI labels and dynamic controls, preserve player names/amounts as user data, integrate draft OK/Cancel/Escape/persistence and cross-window refresh, validate fallback/missing files and font coverage, then run browser journeys. Do not present catalog extraction as a working translated application or full1:1Language parity.
+The settings page now offers the28 compiled default languages as an explicit local policy. Brandy.as proves that a downloaded brand configuration can override this default through its languages array; the actual PLAYGG.RO override remains unobserved. This is not proof of the native brand-enabled list.
+
+The selector uses the source three-column positions/pitch and241×24 choices, title(33,20), list(36,63),14px labels and selected color#ddbc73. Native OptionViewToggleButton uses lobby_option346/347/350 backgrounds and345 icon; the current CSS/browser radio is an acknowledged raster difference, not a pixel-match claim. Native label keys are evaluated against the currently saved catalog, rather than assuming endonyms: MobileLang_ro is Română in English fallback but Romanian in the Romanian catalog.
+
+Selecting a radio only changes the draft. Cancel/Escape discard it. OK validates the selected catalog before writing any settings, persists river-language and updates already-open table windows through the existing storage listener. Failed loads leave the dialog open with an error and retain the saved language. A dialog-generation token prevents a delayed OK request from saving after Cancel/Escape, even when the dialog is reopened with the same selection. Other settings retain their existing commit behavior.
+
+Browser coverage includes28 choices, no live preview, Cancel reset, OK→Romanian in another table, failed-catalog retention, and delayed-response/Escape/reopen cancellation. This enables a functioning partial-language preference, not a fully translated app. Remaining lobby/table labels, native toggle raster, script font coverage, brand list and native runtime comparisons remain open.
 
 ## First explicit table bindings
 
@@ -24,7 +30,7 @@ Language remains disabled in the local settings UI. The first explicit table bin
 
 The loader validates the language list and catalog before committing a new dictionary. Missing/unavailable catalogs retain the previous working language, while a generation counter discards older asynchronous loads. Cross-window storage updates and reload use the persisted local language preference. An optional module probe preserves the old English UI on running backends that do not yet serve the module. It does not start a game action or change a wallet.
 
-`node network-browser-test.mjs --table-language` checks Romanian labels, unchanged player named Deal Me In/chat/hand, actual shared-window English update, failed-catalog recovery, reload and a delayed English response that cannot replace newer French. This is partial label integration, not full translated-app coverage or an enabled Language settings page. Remaining labels, native list policy, OK/Cancel/Escape, visible loading/error flow and font coverage are still required before enabling it.
+`node network-browser-test.mjs --table-language` checks Romanian labels, unchanged player named Deal Me In/chat/hand, actual shared-window English update, failed-catalog recovery, reload and a delayed English response that cannot replace newer French. This is partial label integration, not full translated-app coverage or full Language parity. Remaining labels, native brand policy, raster and font coverage still need verification.
 
 ## Betting-action bindings
 
