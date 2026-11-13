@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {startHand,act,options} from './engine/table.mjs';
+const make=()=>{const g=startHand([120,120]);g.hands=[['As','Ad'],['Ks','Kd']];g.deck=['Tc','2c','3d','4h','Jc','8s','Qc','9c'].reverse();return g};
+const finish=g=>{let n=0;while(!g.end&&n++<100)act(g,options(g).due?'call':'check');assert.ok(g.end)};
+const g=make();finish(g);
+const {showdownStats}=await import('./engine/table.mjs');assert.equal(typeof showdownStats,'function','Showdown samples must be computed from recorded hands');
+assert.deepEqual(showdownStats(g,0),{flopsSeen:1,showdowns:1,showdownWins:1});assert.deepEqual(showdownStats(g,1),{flopsSeen:1,showdowns:1,showdownWins:0});
+const pre=make();act(pre,'fold');assert.deepEqual(showdownStats(pre,0),{flopsSeen:0,showdowns:0,showdownWins:0});
+const flop=make();act(flop,'call');act(flop,'check');act(flop,'raise',4);act(flop,'fold');assert.deepEqual(showdownStats(flop,0),{flopsSeen:1,showdowns:0,showdownWins:0});assert.equal(showdownStats(flop,1).showdownWins,0,'An uncontested award is not a showdown win');
+const river=make();while(river.board.length<5)act(river,options(river).due?'call':'check');act(river,'raise',4);act(river,'fold');assert.equal(showdownStats(river,1).showdowns,0,'A river fold does not create a showdown');
+const side=startHand([20,50,100]);side.hands=[['As','Ad'],['Ks','Kd'],['Qs','Qd']];side.deck=['Tc','2c','3d','4h','Jc','8s','Qc','9c'].reverse();act(side,'call');act(side,'raise',50);act(side,'raise',100);act(side,'call');assert.ok(side.end);assert.equal(side.end.returns[2],50);assert.equal(showdownStats(side,2).showdownWins,0,'Returned chips are not a showdown award');assert.equal(showdownStats(side,1).showdownWins,1,'A side-pot award counts');assert.equal(side.stacks.reduce((a,b)=>a+b),170);
+const tie=make();tie.hands=[['2c','3d'],['4c','5d']];tie.deck=['6c','Ah','Kh','Qh','7c','Jh','8c','Th'].reverse();finish(tie);assert.deepEqual(tie.end.payouts,[4,4]);assert.equal(showdownStats(tie,0).showdownWins,1);assert.equal(showdownStats(tie,1).showdownWins,1,'Local split-pot shares count, independent of net profit');
+const snapshot=JSON.stringify(g);showdownStats(g,0);assert.equal(JSON.stringify(g),snapshot);assert.equal(showdownStats({...g,historyTrace:null},0),null);assert.equal(showdownStats({...g,variant:'aof'},0),null);assert.equal(showdownStats({...g,folded:[]},0),null);
+console.log('PASS showdown stats: seen-flop denominator, contested wins/losses, preflop/flop/river folds, side pots versus uncalled returns, legacy/AoF exclusions and immutable reads');
