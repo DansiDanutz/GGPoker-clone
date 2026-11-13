@@ -135,8 +135,8 @@ http.createServer(async(req,res)=>{
    }
    const table=tables.find(t=>t.id===(req.method==='GET'?new URL(req.url,origin).searchParams.get('table'):command.tableId));if(!table)return json(404,{error:'Unknown hosted table'});
    try{const result=roomRequest(hostedId(table.id),req.method==='GET'?'owner-seats':'remove-seat',null,command,table);if(req.method==='GET')return json(200,result);
-    let auditSaved=true;try{appendFileSync(join(directory,'owner-audit.jsonl'),JSON.stringify({at:new Date().toISOString(),action:'remove-seat',before:null,after:{...table,removed:result.removed}})+'\n',{mode:0o600})}catch{auditSaved=false}return json(200,{...result,auditSaved});
-   }catch(error){return json(error.status||500,{error:error.status?error.message:'Could not remove cash seat'})}
+    let auditSaved=true;try{appendFileSync(join(directory,'owner-audit.jsonl'),JSON.stringify({at:new Date().toISOString(),action:result.removed.entryRefund!==undefined?'withdraw-registration':'remove-seat',before:null,after:{...table,removed:result.removed}})+'\n',{mode:0o600})}catch{auditSaved=false}return json(200,{...result,auditSaved});
+   }catch(error){return json(error.status||500,{error:error.status?error.message:'Could not remove player'})}
   }
   if(path==='/api/owner-chat'){
    let command={};

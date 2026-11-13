@@ -6,7 +6,7 @@ This is an independently designed local owner feature. The native operator’s p
 
 Each cash table in the owner lobby has Manage seats. The owner enters the existing local owner key; the roster includes occupied human and computer seats. Remove player is available only before a cash hand begins or after settlement. It opens an in-page dialog identifying the player and seat; Cancel/Escape performs no operation. Confirmation returns the player’s remaining local play chips and pending paid funding, revokes their seated token and refreshes the roster. The audit identifies the removed player, cash-out and pending refund.
 
-A running hand cannot be interrupted, including when the target is paused. Tournament removal is unavailable. Cash Hold’em/Omaha and other hosted cash formats reuse the existing leave/settlement path. This feature does not implement mid-hand ejection, tournament disqualification or account bans.
+A running hand cannot be interrupted, including when the target is paused. Tournament registration withdrawal before start is documented in [owner-tournament-registration.md](owner-tournament-registration.md). Cash Hold’em/Omaha and other hosted cash formats reuse the existing leave/settlement path. This feature does not implement mid-hand ejection, tournament disqualification or account bans.
 
 ## Backend and money boundary
 
