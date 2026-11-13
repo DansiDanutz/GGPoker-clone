@@ -1047,3 +1047,7 @@ Cash sit-out dropdown: source560×288/four508×56rows,common0301check,real curre
 - Flop/Turn CB, FCB, CCB, RCB now derive from completed recorded action traces in ordinary rooms and Rush; table/pool scope is explicit, missing history stays unknown.
 - Native per-street color thresholds retained from `HudAverageView.as`; no panel geometry changes. See `docs/rea/continuation-bet-hud.md`.
 - Engine and six-player persisted-ledger tests plus muted headless browser assertions at850/1196px cover actual hand/payout, own CB/response percentages, native color thresholds and cold restart. Release requires exact-head installed QA.
+
+### Primary betting controls — keyboard order and source audit
+
+Seven native action-panel classes establish the source button textures, geometry, pressed label offsets and hotkey identities. Ordinary local controls now follow their visible left-to-right DOM/Tab order. Isolated browser checks cover focus without a wager, hover/press/cancel, source geometry, full-hand payout and restart. Native physical seated/Tab parity is not claimed; see `docs/rea/main-action-controls.md`.
