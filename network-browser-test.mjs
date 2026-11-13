@@ -47,7 +47,7 @@ function saveRushFixture(variant,saved){
 let server,chrome,ws;
 async function boot(reference='1'){
  const runtime=process.env.POKER_RUNTIME_DIR?resolve(process.env.POKER_RUNTIME_DIR):null,args=[];
- if(runtime){assert.ok(process.env.POKER_REFERENCE_ART_DIR,'Installed runtime tests require installed artwork');assert.notEqual(runtime,resolve('.'));args.push('--permission','--allow-fs-read='+runtime,'--allow-fs-read='+directory,'--allow-fs-write='+directory,'--allow-fs-read='+resolve(process.env.POKER_REFERENCE_ART_DIR),'--allow-fs-read='+join(homedir(),'Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/sounds'))}
+ if(runtime){assert.ok(process.env.POKER_REFERENCE_ART_DIR,'Installed runtime tests require installed artwork');assert.notEqual(runtime,resolve('.'));args.push('--permission','--allow-net','--allow-fs-read='+runtime,'--allow-fs-read='+directory,'--allow-fs-write='+directory,'--allow-fs-read='+resolve(process.env.POKER_REFERENCE_ART_DIR),'--allow-fs-read='+join(homedir(),'Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/sounds'))}
  server=spawn(process.execPath,[...args,runtime?join(runtime,'server.mjs'):'server.mjs'],{cwd:runtime||new URL('.',import.meta.url),env:{...process.env,POKER_REFERENCE_HOME:reference,PORT:String(port),POKER_LEVEL_MS:'10000',POKER_PUBLIC_ORIGIN:origin,POKER_BIND_HOST:'127.0.0.1',POKER_DATA_DIR:directory},stdio:['ignore','pipe','inherit']});await until(async()=>{if(server.exitCode!==null)throw Error('Server failed');return fetch(origin+'/api/tables').then(r=>r.ok,()=>false)})}
 async function stop(p){if(!p||p.exitCode!==null||p.signalCode)return;const done=once(p,'exit');p.kill();await done}
 try{

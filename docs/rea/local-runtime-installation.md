@@ -14,7 +14,7 @@ This graph is intended for the current literal module paths and explicit server 
 
 The installer fixture verifies dependency selection, nested imports/query URLs, hashes, private permissions, data/test/Git exclusion, dirty/overwrite/checkout/escape rejection, and a Node launch after moving its temporary source away. A Node permission probe explicitly confirms source reads are denied.
 
-`POKER_RUNTIME_DIR=DESTINATION POKER_REFERENCE_ART_DIR=INSTALLED_ART node network-browser-test.mjs --bots` starts the backend from the installed directory. This test mode enables Node filesystem restrictions allowing installed code/art, native sound assets and temporary test data, while excluding the source checkout. The ordinary launcher keeps its existing permissions. Additional installed tests cover tournament registration/payout and Rush wallet/reconnect. All browser/data profiles remain ephemeral.
+`POKER_RUNTIME_DIR=DESTINATION POKER_REFERENCE_ART_DIR=INSTALLED_ART node network-browser-test.mjs --bots` starts the backend from the installed directory. This test mode permits the local HTTP listener and enables Node filesystem restrictions allowing installed code/art, native sound assets and temporary test data, while excluding the source checkout. The ordinary launcher keeps its existing permissions. Additional installed tests cover tournament registration/payout and Rush wallet/reconnect. All browser/data profiles remain ephemeral.
 
 ## Live deployment and subsequent changes
 
