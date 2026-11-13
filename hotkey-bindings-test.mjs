@@ -15,3 +15,5 @@ assert.deepEqual(readHotkeys().lastHands,[]);assert.equal(hotkeyGroup("lastHands
 assert.deepEqual(readHotkeys().addChips,[]);assert.equal(hotkeyGroup("addChips"),"functions");assert.deepEqual(readHotkeys(JSON.stringify(assignHotkey(readHotkeys(),"addChips",[17,71]))).addChips,[17,71]);
 
 assert.deepEqual(readHotkeys().sitOutAllCash,[]);assert.equal(hotkeyGroup("sitOutAllCash"),"functions");const globalPause=assignHotkey(readHotkeys(),"sitOutAllCash",[71]);assert.deepEqual(readHotkeys(JSON.stringify(globalPause)).sitOutAllCash,[71]);assert.throws(()=>assignHotkey(globalPause,"sitOut",[71]),/already assigned/);
+
+assert.deepEqual(readHotkeys().rabbit,[]);assert.equal(hotkeyGroup('rabbit'),'functions');assert.deepEqual(readHotkeys(JSON.stringify(assignHotkey(readHotkeys(),'rabbit',[72]))).rabbit,[72]);

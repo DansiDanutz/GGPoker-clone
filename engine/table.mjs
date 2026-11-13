@@ -46,6 +46,13 @@ export function startHand(stacks,blind=4,button=0,variant='holdem',ante=0,sittin
 function recordAction(g,seat,action,paid=0,canRaise=false){if(g.historyTrace)g.historyTrace.actions.push({seat,street:g.board.length,action,paid,canRaise,bet:g.bets[seat],stack:g.stacks[seat],pot:g.committed.reduce((a,b)=>a+b,0),allIn:paid>0&&g.stacks[seat]===0})}
 function pay(g,i,n){const v=Math.min(n,g.stacks[i]);g.stacks[i]-=v;g.bets[i]+=v;g.committed[i]+=v}
 function street(g){g.deck.pop();const n=g.board.length?1:3;for(let i=0;i<n;i++)g.board.push(g.deck.pop())}
+export function rabbitCards(g){
+ if(!g?.end)throw Error('Rabbit cards require a finished hand');
+ if(!Array.isArray(g.board)||![0,3,4].includes(g.board.length))throw Error('Board is complete or invalid');
+ const needed=g.board.length===0?8:g.board.length===3?4:2;
+ if(!Array.isArray(g.deck)||g.deck.length<needed)throw Error('Rabbit deck is incomplete');
+ const copy={board:[...g.board],deck:[...g.deck]};while(copy.board.length<5)street(copy);return copy.board.slice(g.board.length);
+}
 function advance(g,last){
   const seats=g.stacks.map((_,i)=>i).filter(i=>!g.folded[i]),active=seats.filter(i=>g.stacks[i]>0);
   if(active.length===1)g.price=Math.max(...seats.map(i=>g.bets[i]));

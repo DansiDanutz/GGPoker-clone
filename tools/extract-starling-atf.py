@@ -9,8 +9,8 @@ from PIL import Image
 
 
 def decode_atf(data):
-    if len(data) < 16 or data[:3] != b'ATF' or data[6:8] != b'\xff\x02' or data[12] != 5:
-        raise ValueError('Expected ATF v2 raw DXT5 alpha texture')
+    if len(data) < 16 or data[:3] != b'ATF' or (data[6] != 255 or data[7] not in (2,3)) or data[12] != 5:
+        raise ValueError('Expected ATF v2/v3 raw DXT5 alpha texture')
     if int.from_bytes(data[8:12], 'big') != len(data) - 12:
         raise ValueError('Invalid ATF declared length')
     width, height = 1 << data[13], 1 << data[14]
@@ -18,7 +18,7 @@ def decode_atf(data):
         raise ValueError('Invalid ATF dimensions or mip count')
     offset, pixels = 16, None
     for level in range(data[15]):
-        for plane in range(3):
+        for plane in range(4 if data[7] == 3 else 3):
             if offset + 4 > len(data):
                 raise ValueError('Truncated ATF plane header')
             size = int.from_bytes(data[offset:offset + 4], 'big')
@@ -42,6 +42,8 @@ def self_test():
         return b'ATF\0\0\0\xff\x02' + len(body).to_bytes(4, 'big') + body
     white = bytes([255, 0]) + bytes(6) + struct.pack('<HHI', 65535, 0, 0)
     assert decode_atf(texture(white)).tobytes() == bytes([255, 255, 255, 255])*16
+    v3=bytearray(texture(white)+bytes(4));v3[7]=3;v3[8:12]=(len(v3)-12).to_bytes(4,'big')
+    assert decode_atf(bytes(v3)).tobytes() == bytes([255, 255, 255, 255])*16
     clear = bytes([0, 255]) + bytes(6) + struct.pack('<HHI', 0, 65535, 0)
     assert decode_atf(texture(clear)).tobytes() == bytes(64)
     red = bytes([255, 0]) + bytes(6) + struct.pack('<HHI', 0xf800, 0, 0)
@@ -50,7 +52,7 @@ def self_test():
     assert decode_atf(texture(half_alpha)).tobytes() == bytes([255, 255, 255, 128])*16
     def declared_length(data):
         return data[:8] + (len(data)-12).to_bytes(4, 'big') + data[12:]
-    for bad in [b'', texture(white)[:-1], texture(white)[:12] + bytes([4]) + texture(white)[13:], texture(white) + b'x', declared_length(texture(white)[:30]), declared_length(texture(white)[:-4])]:
+    for bad in [declared_length(bytes(v3[:-4])),b'', texture(white)[:-1], texture(white)[:12] + bytes([4]) + texture(white)[13:], texture(white) + b'x', declared_length(texture(white)[:30]), declared_length(texture(white)[:-4])]:
         try:
             decode_atf(bad)
         except ValueError:

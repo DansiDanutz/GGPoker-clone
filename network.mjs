@@ -111,6 +111,8 @@ let token=sessionStorage.getItem(key),state,busy=false,lastCashOut=null,emoticon
 let reservedAction;
 const helmetModule=await fetch('/helmet-ui.mjs',{signal:AbortSignal.timeout(5000)}).then(r=>r.ok?import('./helmet-ui.mjs'):null,()=>null);
 const helmet=helmetModule?helmetModule.installHelmet(()=>({state,room:rushMode?'rush:'+rushPoolKind:room,token,account:state?.observerName||playerAccount,observer:!rushMode&&state?.canObserveChat===true,primary:!chatWindow,enabled:rushMode?!!state?.registered:state?.me!=null&&!!token,unsupported:rushMode&&typeof state?.helmet!=='boolean'}),async muted=>{if(rushMode&&typeof state?.helmet!=='boolean')throw Error('Rush Helmet requires the updated server');const identity=()=>JSON.stringify(rushMode?[rushPoolKind,playerAccount]:[room,token,state?.me,playerAccount]),expected=identity();const until=Date.now()+5000;while(busy){if(Date.now()>=until)throw Error('Table is busy; retry Helmet');await new Promise(resolve=>setTimeout(resolve,25))}if(expected!==identity())throw Error('Player or table changed');if(!await operate('helmet',{muted}))throw Error($('error').textContent||'Helmet update failed')},()=>renderChat()):{refresh(){},muted(){return false},reactionAllowed(){return true}};
+const rabbitModule=await fetch('/rabbit-view.mjs',{signal:AbortSignal.timeout(5000)}).then(r=>r.ok?import('./rabbit-view.mjs'):null,()=>null);
+const rabbitView=rabbitModule?rabbitModule.installRabbitView(document.querySelector('.boardArea'),()=>chatWindow?null:state,number=>operate('rabbit',{number}),playCues):{update(){}};
 const playerNotes=installPlayerNotes($('tableSettings'),()=>({state,room:rushMode?'rush:'+rushPoolKind+':'+state?.noteTable:room,token,enabled:!chatWindow&&(!rushMode||!!state?.noteTable),...(rushMode?{notesPath:'/api/rush/'+rushPoolKind+'/notes',notesTable:state?.noteTable}:{} )}));
 // shortcut: current-table cash pause only; native global/next-blind menus need separate evidence.
 const cashSitOut=document.createElement('input'),cashSitOutLabel=element('label');cashSitOut.type='checkbox';cashSitOut.id='cashSitOut';const cashSitOutCaption=element('span','',' Sit out next hand');cashSitOutCaption.dataset.nativeLabel='MobileSitOut';cashSitOutLabel.append(cashSitOut,cashSitOutCaption);cashSitOutLabel.hidden=true;tableSettings.append(cashSitOutLabel);cashSitOut.onchange=async()=>{if(!cashSitOut.checked&&state?.returnFundingRequired){updateCashSitOut();openAddChips();return}cashSitOut.disabled=true;await operate('sit-out',{paused:cashSitOut.checked});updateCashSitOut()};
@@ -520,7 +522,7 @@ if(!keepActions){refreshBetEditor=null;for(const child of [...$('actions').child
  $('join').querySelector('button').textContent=tournament?'Register':'Take a seat';
  $('level').textContent=t&&g?'Level '+t.level+' · Blinds '+g.blind/2+' / '+g.blind+(g.ante?' · Ante '+g.ante+' per player':'')+(t.winner==null&&t.level<7?' · Next level scheduled '+new Date(t.startedAt+t.level*t.intervalMs).toLocaleTimeString()+' (new hands only)':''):'';
 
- drawTable(g);renderShuffles();playerNotes.refresh();updateCashSitOut();
+ drawTable(g);rabbitView.update();renderShuffles();playerNotes.refresh();updateCashSitOut();
  renderChat();
  list('history',g?.history||[]);list('results',(state?.results||[]).map(r=>'Hand '+r.number+' · Board: '+(r.board?.join(' ')||'no board')+' · Final stacks: '+r.stacks.join(', ')+(r.pots||[]).map((p,i)=>' · '+(i?'Side pot '+i:'Main pot')+': '+p.amount+' → '+p.payouts.flatMap((n,seat)=>n?['Seat '+(seat+1)+' '+n]:[]).join(', ')).join('')+' · '+(r.history||[]).join('; ')));
  const net=Array(capacity()).fill(0);for(const r of state?.results||[])r.payouts.forEach((v,i)=>net[i]+=v-r.committed[i]);
@@ -612,6 +614,7 @@ document.addEventListener('keydown',e=>{
  const click=button=>{if(button&&!button.disabled){e.preventDefault();button.click();return true}return false};
  if(action==='addChips'){click(nativeAddChipsButton);return}
  if(action==='lastHands'){click(document.querySelector('#tableHandHistory'));return}
+ if(action==='rabbit'){click(document.querySelector('.nativeRabbitCover:not(:disabled)'));return}
  if(action==='timeBank'){click(document.querySelector('.nativeTimeCard:not(:disabled),.nativeTimeBank'));return}
  if(action==='toggleUnits'){click(document.querySelector('.stackSwitch:not([disabled])'));return}
  if(action==='sitOutAllCash'){click(globalCashPauseButton);return}
