@@ -18,6 +18,10 @@ export function currentSeatHandRank(state,rabbitOpened=false){
  if(!actual||!rabbitOpened||!g.end||!Array.isArray(g.rabbitCards)||g.board.length+g.rabbitCards.length!==5)return actual;
  return currentHandRank(hole,[...g.board,...g.rabbitCards],short)||actual;
 }
+export function currentSeatHandHint(state,rabbitOpened=false){
+ const hand=currentSeatHandRank(state,rabbitOpened),omaha=['plo','plo5','plo6'].includes(state?.settings?.variant);
+ return hand&&!['HC','1P',...(omaha?['2P']:[])].includes(hand.labelKey)?hand:null;
+}
 export function sessionDuration(startedAt,now=Date.now()){
  if(!Number.isSafeInteger(startedAt)||startedAt<0||startedAt>8640000000000000||!Number.isFinite(now))return '-';
  const seconds=Math.floor(Math.max(0,now-startedAt)/1000),minutes=Math.floor(seconds/60),pad=n=>String(n).padStart(2,'0');
@@ -29,7 +33,7 @@ export function bestFiveMotion(previous,next){
  return {out:previous.length?200:0,fadeOut:next.flatMap((c,i)=>positions.has(c.card)?[]:[i]),cards:next.map((c,i)=>({...c,from:(positions.has(c.card)?positions.get(c.card):i)*103,to:i*103,y:c.hole?44:68,delay:positions.has(c.card)?0:500,duration:positions.has(c.card)?500:300,fresh:!positions.has(c.card)}))};
 }
 export function installHandPanel(context,getHud,onProfile){
- const felt=document.querySelector('.felt'),panel=element('section','nativeBestFive');if(!felt)return {refresh(){},setAuthorized(){}};
+ const felt=document.querySelector('.felt'),panel=element('section','nativeBestFive');if(!felt)return {refresh(){},setAuthorized(){},decorateSeat(){}};
  panel.hidden=true;panel.setAttribute('role','dialog');panel.setAttribute('aria-label','Current hand, HUD and session statistics');felt.append(panel);
  let opened=false,tab='Hand Rank',scope='',paintKey='',timer=null,cardTimer=null,cardLayer=null,cardKey='',cardHand='',shown=[],cardEpoch=0,revokedScope='',closing=null;
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
@@ -53,7 +57,13 @@ export function installHandPanel(context,getHud,onProfile){
   const animation=panel.animate([{opacity},{opacity:0}],{duration:200,easing:'cubic-bezier(0.3333333333,1,0.6666666667,1)',fill:'forwards'});closing=animation;
   animation.finished.then(()=>{if(closing===animation)close()},()=>{});
  }
- function own(){const c=context(),s=c.state,g=s?.hand,hole=g?.cards?.[s.me];return identity()&&identity()!==revokedScope&&g&&hole?.every(Boolean)&&!document.body.classList.contains('squeeze-active')?currentSeatHandRank(s,c.rabbitOpened):null;}
+ function own(hint=false){const c=context(),s=c.state,g=s?.hand,hole=g?.cards?.[s.me];return identity()&&identity()!==revokedScope&&g&&hole?.every(Boolean)&&!document.body.classList.contains('squeeze-active')?(hint?currentSeatHandHint(s,c.rabbitOpened):currentSeatHandRank(s,c.rabbitOpened)):null;}
+ function decorateSeat(seat,index){
+  const hand=context().state?.me===index?own(true):null,previous=seat.querySelector('.nativePlayerBestFive');
+  if(!hand){previous?.remove();return}
+  const hint=element('output','nativePlayerBestFive',hand.label);hint.dataset.nativeLabel=hand.labelKey;hint.dataset.nativeValues=JSON.stringify(hand.labelValues);
+  if(previous)updateElement(previous,hint);else seat.append(hint);
+ }
  function paint(){
   const c=context(),s=c.state,g=s?.hand,hand=own();if(!hand||scope!==identity()||closing&&cardHand&&cardHand!==JSON.stringify([scope,s.number])){close();return}if(!opened)return;
   const hud=getHud(),stats=hud?.stats,key=JSON.stringify([tab,s.number,hand,hud,s.sessionStats,tab==='Stats'?sessionDuration(s.sessionStartedAt):null,tab==='Stats'?Math.ceil((gameClockRemaining(g,s.me)??0)/1000):null,g.clock,s.timeCardCount]);if(key===paintKey)return;paintKey=key;
@@ -79,5 +89,5 @@ export function installHandPanel(context,getHud,onProfile){
  document.addEventListener('click',e=>{if(!e.bestFiveBlocked&&e.target.closest?.('[data-best-five-open]')){opened?hide():open()}});
  document.addEventListener('pointerdown',e=>{if(opened&&!panel.contains(e.target)&&!e.target.closest?.('[data-best-five-open]'))hide()});
  document.addEventListener('keydown',e=>{if(opened&&e.key==='Escape'){e.preventDefault();hide();felt.querySelector('[data-best-five-open]')?.focus()}else if(e.target.closest?.('[data-best-five-open]')&&e.target.dataset.active!=='true'&&['Enter',' '].includes(e.key)){e.preventDefault();opened?hide():open()}});
- return {setAuthorized(allowed){revokedScope=allowed?'':identity();if(!allowed)close()},refresh(){if(!own()||scope&&scope!==identity())close();for(const portrait of felt.querySelectorAll('.seat[data-own=true] .portrait,.chipShuffleArt:not(.remoteShuffle)')){const enabled=!!own()&&portrait.dataset.active!=='true';if(enabled){portrait.dataset.bestFiveOpen='';portrait.setAttribute('role','button');portrait.tabIndex=0;portrait.setAttribute('aria-label','Open current hand rank')}else{delete portrait.dataset.bestFiveOpen;portrait.removeAttribute('tabindex');if(portrait.classList.contains('chipShuffleArt')){portrait.setAttribute('role','img');portrait.setAttribute('aria-label','Your chip shuffle')}else{portrait.removeAttribute('role');portrait.setAttribute('aria-label','Avatar for '+context().state?.names?.[context().state.me])}}}paint()}};
+ return {decorateSeat,setAuthorized(allowed){revokedScope=allowed?'':identity();if(!allowed){close();felt.querySelectorAll('.nativePlayerBestFive').forEach(n=>n.remove())}},refresh(){for(const seat of felt.querySelectorAll('.seat'))decorateSeat(seat,Number(seat.dataset.seat));if(!own()||scope&&scope!==identity())close();for(const portrait of felt.querySelectorAll('.seat[data-own=true] .portrait,.chipShuffleArt:not(.remoteShuffle)')){const enabled=!!own()&&portrait.dataset.active!=='true';if(enabled){portrait.dataset.bestFiveOpen='';portrait.setAttribute('role','button');portrait.tabIndex=0;portrait.setAttribute('aria-label','Open current hand rank')}else{delete portrait.dataset.bestFiveOpen;portrait.removeAttribute('tabindex');if(portrait.classList.contains('chipShuffleArt')){portrait.setAttribute('role','img');portrait.setAttribute('aria-label','Your chip shuffle')}else{portrait.removeAttribute('role');portrait.setAttribute('aria-label','Avatar for '+context().state?.names?.[context().state.me])}}}paint()}};
 }

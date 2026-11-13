@@ -1,7 +1,7 @@
 import {languageText} from './native-language.mjs';
 const templates={HC:'{0} high','1P':'a pair of {0}s','2P':'two pair, {0}s and {1}s','3K':'three of a kind, {0}s',S:'a straight, {0} to {1}',F:'a flush {0} high',FH:'a full house, {0}s full of {1}s','4K':'four of a kind, {0}s',SF:'a straight flush, {0} to {1}',RF:'a royal flush'};
 import assert from 'node:assert/strict';
-globalThis.Image=class{};globalThis.document={querySelector:()=>null};globalThis.localStorage={getItem:()=>null};globalThis.addEventListener=()=>{};const {currentHandRank,currentSeatHandRank,sessionDuration,bestFiveMotion}=await import('./hand-panel.mjs');
+globalThis.Image=class{};globalThis.document={querySelector:()=>null};globalThis.localStorage={getItem:()=>null};globalThis.addEventListener=()=>{};const {currentHandRank,currentSeatHandRank,currentSeatHandHint,sessionDuration,bestFiveMotion}=await import('./hand-panel.mjs');
 assert.deepEqual(currentHandRank(['As','Kd'],[]).cards,[{card:'As',hole:true},{card:'Kd',hole:true}]);
 assert.match(currentHandRank(['As','Ad'],[]).label,/pair of As/);
 assert.deepEqual(currentHandRank(['As','Kd','Kh','2d'],[]).cards.map(c=>c.card),['Kd','Kh'],'Native preflop any pair outranks high cards');
@@ -54,3 +54,12 @@ for(const patch of [{end:null},{rabbitCards:['Th']},{rabbitCards:['Qh','3d']},{r
 assert.equal(currentSeatHandRank({...rabbitState,me:null},true),null);
 const omaha={...rabbitState,settings:{variant:'plo'},hand:{...rabbitState.hand,cards:[['Ah','Kh','7c','8d']]}};assert.equal(currentSeatHandRank(omaha,true).labelKey,'RF');assert.equal(currentSeatHandRank(omaha,true).cards.filter(c=>c.hole).length,2);
 console.log('PASS Rabbit own HandRank: only completed opened preview, valid complete runout, exact-two Omaha, no spectator/invalid/future leak and immutable real state');
+
+const hintState=(hole,board,variant='holdem')=>({me:0,settings:{variant},hand:{cards:[hole],board}});
+for(const hole of [['As','Kd'],['As','Ad']])assert.equal(currentSeatHandHint(hintState(hole,['2c','5h','8s'])),null);
+assert.equal(currentSeatHandHint(hintState(['As','Kd'],['Ac','Kh','8s'])).labelKey,'2P');
+assert.equal(currentSeatHandHint(hintState(['As','Kd','2d','3d'],['Ac','Kh','8s'],'plo')),null);
+assert.equal(currentSeatHandHint(hintState(['As','Ad','2d','3d'],['Ac','Kh','8s'],'plo')).labelKey,'3K');
+assert.equal(currentSeatHandHint({...hintState(['As','Ad'],['Ac','Kh','8s']),me:null}),null);
+assert.equal(currentSeatHandHint(rabbitState,true).labelKey,'RF');
+console.log('PASS own-seat hint source policy: Holdem HC/pair hidden, two-pair shown, Omaha two-pair hidden/trips shown, spectator privacy and Rabbit preview');

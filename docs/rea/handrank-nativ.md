@@ -257,3 +257,12 @@ StatusView confirmă cheile celor șase etichete locale: MobileRushSessionTime, 
 Fixture-ul cu șase jucători verifică titluri/Profil/Închide și etichete Stats franceze, asocierea accesibilă și revenirea prin Home la Hand Rank, apoi termină mâna, plata720 și restartul. Detaliile localizării descrierilor/drawurilor sunt în language.md. Aceste verificări nu demonstrează încadrarea fontului nativ sau comparația vizuală fizică.
 
 Actualizare Smart HUD: trasarea CircleGraphView.HudDescriptionButton și ToolTipType separă acum denumirile vizibile de explicații. Etichetele normale/AoF și explicațiile sunt conectate la catalog,cu micșorare în92×36 la fontmaxim24; aria-description urmărește explicația. Numerele sunt păstrate,iar metricile AoF indisponibile rămân necunoscute. Browserul folosește propriul tooltip title; aspectul și întârzierea bulei native rămân neconfirmate. Teste: --hand-draw și --aof-reserve; detalii în language.md.
+
+
+## Indiciul combinației lângă propriul loc
+
+Exportul punctual `PlayerBestFive` din clientul instalat confirmă o capsulă neagră cu înălțime30, colțuri rotunde30, text22 de culoare0xfefefe, padding12 pe fiecare parte și centrare pe lățimea textului. `PlayerPosition` fixează originea la(0,162), iar scala urmărește locul. Nu este o imagine a textului și nu este panoul HandRank.
+
+`TableMediator.refreshBestFiveCards`, liniile2889–2939, trimite cheia și valorile combinației. HC și1P sunt ascunse; pentru toate variantele Omaha este ascuns suplimentar2P. Celelalte combinații pot apărea numai la propriul jucător autorizat, niciodată la adversarii ale căror cărți au fost dezvăluite. Squeeze și revocarea autorizării elimină indiciul. Rabbit folosește aceeași previzualizare privată gata deschisă ca HandRank; boardul și plățile reale nu se schimbă.
+
+Implementarea reutilizează evaluatorul, traducerile și actualizarea stabilă a elementelor existente. Testul `--seat-hand-hint` verifică Hold’em/Omaha, geometria la850/1196, culorile, traducerea, identitatea DOM la polling, revocarea401, spectatorul, restartul și plata independentă360. Fontul/rasterizarea fizică AIR și ordinea exactă a suprapunerilor native rămân neverificate. Double-board și Streamer Mode nu sunt implementate prin această schimbare.
