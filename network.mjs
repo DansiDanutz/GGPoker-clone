@@ -26,6 +26,20 @@ function chipPile(parts,pot,align){
  for(const chip of playChipLayout(parts,pot,align)){const img=new Image();img.src='/home-art/native-reserved-play-chip-'+chip.raw+'.png';img.alt='';img.dataset.raw=chip.raw;img.style.left=chip.x/17+'cqw';img.style.top=chip.y/17+'cqw';pile.append(img)}return pile;
 }
 $('openChat').hidden=rushMode;
+const tournamentNotice=element('div','nativeTournamentNotice'),tournamentNoticeText=element('div','nativeTournamentNoticeText');
+tournamentNotice.hidden=true;tournamentNotice.setAttribute('role','status');tournamentNotice.setAttribute('aria-live','polite');
+for(const [key,text]of [['MoblieTournamentHansBeenPaused','Tournament has been paused by the operator.'],['MobilePleaseWaitTournamentResume','Please wait for tournament to resume.']]){const line=element('span','',text);line.dataset.nativeLabel=key;tournamentNoticeText.append(line)}
+tournamentNotice.append(tournamentNoticeText);document.querySelector('.felt').append(tournamentNotice);
+let tournamentNoticeShown=false,tournamentNoticeMotion;
+function updateTournamentNotice(){
+ const shown=!chatWindow&&state?.tournament?.pausedAt!=null&&state.tournament.winner===null;
+ if(shown===tournamentNoticeShown)return;tournamentNoticeShown=shown;
+ const opacity=tournamentNotice.hidden?0:Number(getComputedStyle(tournamentNotice).opacity);tournamentNoticeMotion?.cancel();tournamentNotice.hidden=false;tournamentNotice.style.opacity=shown?'1':'0';
+ if(matchMedia('(prefers-reduced-motion: reduce)').matches){tournamentNotice.hidden=!shown;return}
+ tournamentNoticeMotion=tournamentNotice.animate([{opacity},{opacity:shown?1:0}],{duration:1000,easing:shown?'cubic-bezier(.3333333333,1,.6666666667,1)':'cubic-bezier(.3333333333,0,.6666666667,0)'});
+ const motion=tournamentNoticeMotion;motion.onfinish=()=>{if(tournamentNoticeMotion===motion){tournamentNotice.hidden=!tournamentNoticeShown;tournamentNoticeMotion=null}};
+}
+matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',event=>{if(event.matches){tournamentNoticeMotion?.cancel();tournamentNoticeMotion=null;tournamentNotice.hidden=!tournamentNoticeShown;tournamentNotice.style.opacity=tournamentNoticeShown?'1':'0'}});
 const tournamentLink=new URLSearchParams(location.search).get('mode')==='tournament';
 if(new URLSearchParams(location.search).get('from')==='home'){
  const query=new URLSearchParams(location.search),back=document.createElement('a');
@@ -444,6 +458,7 @@ function renderShowCards(g){
  }
 }
 function render(){
+ updateTournamentNotice();
  updateAddChipsControl();
  if(!state){pendingHand=null;clearPayout();reservedAction=null;reservedPanel.hidden=true;runoutPlan=null;boardSounds.clear();payoutSoundHand=null;soundedPots.clear()}
  if(!state?.hand?.quickFoldAllowed)$('actions').querySelector('.nativeQuickFold')?.remove();
