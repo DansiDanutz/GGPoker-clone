@@ -1,15 +1,16 @@
-import {rank5} from './engine/hand.mjs';
+import {rank5,handDraw} from './engine/hand.mjs';
 import {element,cards,historyWinningCards,hudPercent,hudColor,updateElement} from './felt.mjs';
 const faces='23456789TJQKA';
+const drawLabels={RoyalStraightFlushDraw:'Royal Flush Draw',StraightFlushDraw:'Straight Flush Draw',FlushDrawDoubleGutshotStraightDraw:'Flush & Double Gutshot Draw',FlushDrawGutshotStraightDraw:'Flush & Gutshot Draw',FlushDrawOpenEndedStraightDraw:'Flush & Open Ended Draw',DoubleGutshotStraightDraw:'Double Gutshot Draw',OpenEndedStraightDraw:'Open Ended Draw',GutshotStraightDraw:'Gutshot Draw',FlushDraw:'Flush Draw'};
 export function currentHandRank(hole,board,short=false){
  const all=[...(Array.isArray(hole)?hole:[]),...(Array.isArray(board)?board:[])];
  if(typeof short!=='boolean'||!Array.isArray(hole)||![2,4,5,6].includes(hole.length)||!Array.isArray(board)||![0,3,4,5].includes(board.length)||short&&hole.length!==2||new Set(all).size!==all.length||!all.every(c=>typeof c==='string'&&(short?/^[6-9TJQKA][cdhs]$/:/^[2-9TJQKA][cdhs]$/).test(c)))return null;
- if(!board.length){let pair=null,score=-1;for(let a=0;a<hole.length-1;a++)for(let b=a+1;b<hole.length;b++){const x=faces.indexOf(hole[a][0]),y=faces.indexOf(hole[b][0]),value=x===y?1000+x:Math.max(x,y)*13+Math.min(x,y);if(value>score){score=value;pair=[hole[a],hole[b]]}}return {cards:pair.map(card=>({card,hole:true})),label:pair[0][0]===pair[1][0]?'a pair of '+pair[0][0]+'s':faces[Math.max(...pair.map(c=>faces.indexOf(c[0]))) ]+' high'};}
+ if(!board.length){let pair=null,score=-1;for(let a=0;a<hole.length-1;a++)for(let b=a+1;b<hole.length;b++){const x=faces.indexOf(hole[a][0]),y=faces.indexOf(hole[b][0]),value=x===y?1000+x:Math.max(x,y)*13+Math.min(x,y);if(value>score){score=value;pair=[hole[a],hole[b]]}}return {cards:pair.map(card=>({card,hole:true})),drawKey:'',label:pair[0][0]===pair[1][0]?'a pair of '+pair[0][0]+'s':faces[Math.max(...pair.map(c=>faces.indexOf(c[0]))) ]+' high'};}
  const selected=historyWinningCards(hole,board,short);if(!selected)return null;const r=rank5(selected.map(c=>c.card)),face=n=>faces[n-2];
  const labels=[face(r[1])+' high','a pair of '+face(r[1])+'s','two pair, '+face(r[1])+'s and '+face(r[2])+'s','three of a kind, '+face(r[1])+'s','a straight','a flush','a full house, '+face(r[1])+'s full of '+face(r[2])+'s','four of a kind, '+face(r[1])+'s',r[1]===14?'a royal flush':'a straight flush'];
  // Short Deck A6789 is not a standard-deck straight.
  const wheel=short&&selected.map(c=>c.card[0]).sort().join('')==='6789A';
- return {cards:selected,label:wheel?(selected.every(c=>c.card[1]===selected[0].card[1])?'a straight flush':'a straight'):labels[r[0]]};
+ return {cards:selected,drawKey:handDraw(hole,board),label:wheel?(selected.every(c=>c.card[1]===selected[0].card[1])?'a straight flush':'a straight'):labels[r[0]]};
 }
 export function sessionDuration(startedAt,now=Date.now()){
  if(!Number.isSafeInteger(startedAt)||startedAt<0||startedAt>8640000000000000||!Number.isFinite(now))return '-';
@@ -30,7 +31,7 @@ export function installHandPanel(context,getHud,onProfile){
   for(const name of ['Hand Rank','HUD','Stats']){const b=element('button','',name);b.type='button';b.setAttribute('role','tab');b.setAttribute('aria-selected',String(tab===name));b.tabIndex=tab===name?0:-1;b.onclick=()=>{tab=name;paintKey='';paint();panel.querySelector('[aria-selected=true]').focus()};b.onkeydown=e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();const names=['Hand Rank','HUD','Stats'];tab=names[e.key==='Home'?0:e.key==='End'?2:(names.indexOf(tab)+(e.key==='ArrowRight'?1:2))%3];paintKey='';paint();panel.querySelector('[aria-selected=true]').focus()}};tabs.append(b)}next.append(tabs);
   const body=element('div','bestFiveBody');body.setAttribute('role','tabpanel');body.setAttribute('aria-label',tab);
   if(tab==='Hand Rank'){
-   const label=element('output','bestFiveLabel',hand.label),list=element('div','bestFiveCards');for(const [i,item]of hand.cards.entries()){const card=cards([item.card])[0];card.dataset.hole=String(item.hole);card.dataset.card=item.card;card.style.left=(i*103)/17+'cqw';card.style.top=(item.hole?44:68)/17+'cqw';list.append(card)}body.append(label,list);
+   const label=element('output','bestFiveLabel',hand.label),list=element('div','bestFiveCards');for(const [i,item]of hand.cards.entries()){const card=cards([item.card])[0];card.dataset.hole=String(item.hole);card.dataset.card=item.card;card.style.left=(i*103)/17+'cqw';card.style.top=(item.hole?44:68)/17+'cqw';list.append(card)}const draw=element('output','bestFiveDraw',drawLabels[hand.drawKey]||'');draw.dataset.draw=hand.drawKey;draw.setAttribute('aria-label','Current draw: '+(draw.textContent||'none'));body.append(label,draw,list);
   }else if(tab==='HUD'){
    const graphs=element('div','bestFiveHud');for(const [name,value]of Object.entries({...((s.settings?.variant==='aof'?{AllIn:null,ATS:null,Fold:null,FTA:null}:hud?.values)||{VPIP:null,PFR:null,ATS:null,'3-bet':null}),Hands:stats?.hands??null})){const cell=element('div'),label=element('span','',name),valueNode=element('output','',value===null?'-':name==='Hands'?String(value):value+'%');cell.dataset.stat=name;cell.style.setProperty('--best-hud-color',name==='Hands'?'#999':hudColor(value,name));cell.style.setProperty('--best-hud-ratio',(name==='Hands'||value===null?0:Math.trunc(value/100*360))+'deg');cell.append(label,valueNode);graphs.append(cell)}body.append(graphs);
   }else{

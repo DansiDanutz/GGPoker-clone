@@ -392,3 +392,5 @@ body #actions button:is(.nativeMainAction,.nativeQuickFold)[data-key],body #acti
 .bestFiveHud [data-stat=Hands]:before,.bestFiveHud [data-stat=Hands]:after{display:none}
 
 .nativeBestFive :is(.bestFiveProfile,.bestFiveClose){filter:brightness(1);transition:filter .2s}.nativeBestFive :is(.bestFiveProfile,.bestFiveClose):hover{filter:brightness(1.3)}.nativeBestFive :is(.bestFiveProfile,.bestFiveClose):active{color:#999;filter:brightness(1);transition:none}
+
+.bestFiveDraw{position:absolute;left:0;top:0;width:calc(516/17*1cqw);height:calc(42/17*1cqw);font-size:calc(28/17*1cqw);text-align:right;white-space:nowrap;color:#ff8d8d;pointer-events:none}
