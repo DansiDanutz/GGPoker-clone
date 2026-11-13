@@ -7,10 +7,10 @@ export function currentHandRank(hole,board,short=false){
  if(typeof short!=='boolean'||!Array.isArray(hole)||![2,4,5,6].includes(hole.length)||!Array.isArray(board)||![0,3,4,5].includes(board.length)||short&&hole.length!==2||new Set(all).size!==all.length||!all.every(c=>typeof c==='string'&&(short?/^[6-9TJQKA][cdhs]$/:/^[2-9TJQKA][cdhs]$/).test(c)))return null;
  if(!board.length){let pair=null,score=-1;for(let a=0;a<hole.length-1;a++)for(let b=a+1;b<hole.length;b++){const x=faces.indexOf(hole[a][0]),y=faces.indexOf(hole[b][0]),value=x===y?1000+x:Math.max(x,y)*13+Math.min(x,y);if(value>score){score=value;pair=[hole[a],hole[b]]}}return {cards:pair.map(card=>({card,hole:true})),drawKey:'',label:pair[0][0]===pair[1][0]?'a pair of '+pair[0][0]+'s':faces[Math.max(...pair.map(c=>faces.indexOf(c[0]))) ]+' high'};}
  const selected=historyWinningCards(hole,board,short);if(!selected)return null;const r=rank5(selected.map(c=>c.card)),face=n=>faces[n-2];
- const labels=[face(r[1])+' high','a pair of '+face(r[1])+'s','two pair, '+face(r[1])+'s and '+face(r[2])+'s','three of a kind, '+face(r[1])+'s','a straight','a flush','a full house, '+face(r[1])+'s full of '+face(r[2])+'s','four of a kind, '+face(r[1])+'s',r[1]===14?'a royal flush':'a straight flush'];
  // Short Deck A6789 is not a standard-deck straight.
- const wheel=short&&selected.map(c=>c.card[0]).sort().join('')==='6789A';
- return {cards:selected,drawKey:handDraw(hole,board),label:wheel?(selected.every(c=>c.card[1]===selected[0].card[1])?'a straight flush':'a straight'):labels[r[0]]};
+ const wheel=short&&selected.map(c=>c.card[0]).sort().join('')==='6789A',range=wheel?'A to 9':r[0]===4||r[0]===8?(r[1]===5?'A':face(r[1]-4))+' to '+face(r[1]):'';
+ const labels=[face(r[1])+' high','a pair of '+face(r[1])+'s','two pair, '+face(r[1])+'s and '+face(r[2])+'s','three of a kind, '+face(r[1])+'s','a straight, '+range,'a flush '+face(r[1])+' high','a full house, '+face(r[1])+'s full of '+face(r[2])+'s','four of a kind, '+face(r[1])+'s',r[1]===14?'a royal flush':'a straight flush, '+range];
+ return {cards:selected,drawKey:handDraw(hole,board),label:wheel?(selected.every(c=>c.card[1]===selected[0].card[1])?'a straight flush, ':'a straight, ')+range:labels[r[0]]};
 }
 export function sessionDuration(startedAt,now=Date.now()){
  if(!Number.isSafeInteger(startedAt)||startedAt<0||startedAt>8640000000000000||!Number.isFinite(now))return '-';
