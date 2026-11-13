@@ -1,3 +1,5 @@
+import {languageText} from './native-language.mjs';
+const templates={HC:'{0} high','1P':'a pair of {0}s','2P':'two pair, {0}s and {1}s','3K':'three of a kind, {0}s',S:'a straight, {0} to {1}',F:'a flush {0} high',FH:'a full house, {0}s full of {1}s','4K':'four of a kind, {0}s',SF:'a straight flush, {0} to {1}',RF:'a royal flush'};
 import assert from 'node:assert/strict';
 globalThis.Image=class{};globalThis.document={querySelector:()=>null};globalThis.localStorage={getItem:()=>null};globalThis.addEventListener=()=>{};const {currentHandRank,sessionDuration,bestFiveMotion}=await import('./hand-panel.mjs');
 assert.deepEqual(currentHandRank(['As','Kd'],[]).cards,[{card:'As',hole:true},{card:'Kd',hole:true}]);
@@ -25,7 +27,7 @@ for(const [hole,board,short,label]of [
  [['Ah','2h'],['3h','4h','5h'],false,'a straight flush, A to 5'],
  [['Ah','6h'],['7h','8h','9h'],true,'a straight flush, A to 9'],
  [['Ah','Kh'],['Qh','Jh','Th'],false,'a royal flush']
-])assert.equal(currentHandRank(hole,board,short).label,label);
+]){const hand=currentHandRank(hole,board,short);assert.equal(hand.label,label);assert.equal(languageText(templates,hand.labelKey,hand.labelValues),label)}
 console.log('PASS native hand descriptions:straight endpoints,normal/ShortDeck ace-low,flush highcard,straightflush androyal');
 
 for(const [hole,board,label]of [
@@ -37,6 +39,8 @@ for(const [hole,board,label]of [
  [['As','Ad'],['Ac','Ah','Ks'],'four of a kind, As'],
  [['6s','Td'],['7c','8h','9s'],'a straight, 6 to T'],
  [['Ah','Kh','2c','3c'],['Qh','Jh','Th','6d','7s'],'a royal flush']
-])assert.equal(currentHandRank(hole,board).label,label);
+]){const hand=currentHandRank(hole,board);assert.equal(hand.label,label);assert.equal(languageText(templates,hand.labelKey,hand.labelValues),label)}
 assert.equal(currentHandRank(['Ts','Td'],[]).label,'a pair of Ts');
 console.log('PASS all native description templates andT rank abbreviation;Omaha exact-two royal andpreflop pair');
+
+assert.equal(currentHandRank(['As','Ad'],[]).labelKey,'1P');assert.deepEqual(currentHandRank(['As','Ad'],[]).labelValues,['A']);assert.equal(currentHandRank(['Ah','6h'],['7h','8h','9h'],true).labelKey,'SF');assert.deepEqual(currentHandRank(['Ah','6h'],['7h','8h','9h'],true).labelValues,['A','9']);assert.equal(currentHandRank(['Ah','Kh'],['Qh','Jh','Th']).labelKey,'RF');assert.deepEqual(currentHandRank(['Ah','Kh'],['Qh','Jh','Th']).labelValues,[]);
