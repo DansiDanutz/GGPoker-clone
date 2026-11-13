@@ -20,7 +20,7 @@ Language remains disabled in the local settings UI. The first explicit table bin
 
 ## First explicit table bindings
 
-`installTableLanguage` currently binds only marked nodes for ButtonReJoin (Deal Me In), TablePlayerInfoSittingOut and MobileSitOut. Keys are tied to retained source classes, not guessed from matching English words. Player names, chat, chip amounts and unmarked controls are never traversed for translation. The paused-seat accessible label composes the original player name with the translated status.
+`installTableLanguage` binds explicitly marked nodes. The initial keys are ButtonReJoin (Deal Me In), TablePlayerInfoSittingOut and MobileSitOut; the six main betting-action keys are documented below. Keys are tied to retained source classes, not guessed from matching English words. Player names, chat, chip amounts and unmarked controls are never traversed for translation. The paused-seat accessible label composes the original player name with the translated status.
 
 The loader validates the language list and catalog before committing a new dictionary. Missing/unavailable catalogs retain the previous working language, while a generation counter discards older asynchronous loads. Cross-window storage updates and reload use the persisted local language preference. An optional module probe preserves the old English UI on running backends that do not yet serve the module. It does not start a game action or change a wallet.
 
