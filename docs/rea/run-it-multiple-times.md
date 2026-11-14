@@ -83,3 +83,14 @@ The explicit local dealing policy reuses the existing street burn/draw function,
 The full engine fixture uses contributions 50/120/4 with the third player folded: a 104-chip contested pot and a 70-chip unmatched return. Three explicit portions 35/35/34 produce final stacks 52/122/116, preserving all 290 initial chips. Tests cover one/two/three boards, a blind-only all-in, shared flop/turn, pending/final JSON reconstruction, idempotent completion and atomic failures. Existing no-limit, pots, live-pot/privacy/restart, inactive-seat, PLO variants, Short Deck, AoF, Rush, Rabbit, tournament-wallet and insured Spin tests pass.
 
 Because browser practice pages import the shared hand engine, its new RIMT dependency was added to the server's closed module allowlist. A red browser test reproduced its 404 before the route change; the final test loaded the dependency, existing four-seat controls and the negotiation module successfully. This is module compatibility, not a new RIMT UI acceptance test. Room opt-in, authenticated role commands, durable timers/restore validation, multi-board public state/history and native proposal/decision controls are the next integration work. No live installation or owner data changed in this stage.
+
+
+## Durable room and authenticated HTTP integration — fixture-gated
+
+The room adapter now binds negotiation to signed-in seated accounts and the current hand. Suggest/decide endpoints require the local Origin, JSON, seat bearer token and matching account cookie. Actor, stale-hand, extra payout fields and unknown adapter operations are rejected. The ordinary betting clock stops during negotiation. Public state exposes roles, choice, phase and deadlines while excluding the private base hand, remaining deck, allocation plans and future boards. Completed history retains all runout boards.
+
+Private checkpoints validate the original pending hand and every explicit allocation plan against engine completion. A failed final write rolls the whole in-memory operation back; retry cannot double-credit or append another result. Room-file reopen and actual HTTP server-process restart are tested both after proposal and after completion. Deadline expiry resolves once under the documented local one-board fallback.
+
+Seven targeted suites pass: rimt-room, rimt-http, rimt-hand, rimt-negotiation, room-live-pots, game-clock-room and spin-insurance-entry. The HTTP fixture has unequal all-ins and a folded contribution, a 104-chip contested pot and a 70-chip return; three boards preserve the 290-chip bankroll. Tests use temporary files and processes, never owner balances.
+
+This remains fixture-gated source work, not a live release or browser gameplay claim. No ordinary room arming route, native equity-role calculation, owner opt-in or proposal/decision UI exists yet. Native burn order, odd-chip allocation and timeout defaults remain unverified.

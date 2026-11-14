@@ -95,12 +95,12 @@ http.createServer(async(req,res)=>{
   }
   try{return json(200,rushRequest(account,op,body))}catch(e){if(e.status)return json(e.status,{error:e.message});throw e}
  }
- const match=/^\/api\/rooms\/([0-9a-f]{48})\/(watch|join|state|act|spin-ready|ready|add-chips|leave|fill-bots|start|end-practice|chat|helmet|sit-out|sit-out-state|shuffle|time-bank|time-card-option|notes|rabbit|show-cards|waiting)$/.exec(path);
+ const match=/^\/api\/rooms\/([0-9a-f]{48})\/(watch|join|state|act|rimt-suggest|rimt-decide|spin-ready|ready|add-chips|leave|fill-bots|start|end-practice|chat|helmet|sit-out|sit-out-state|shuffle|time-bank|time-card-option|notes|rabbit|show-cards|waiting)$/.exec(path);
  if(match){
   const [,id,op]=match;
   if(['notes','waiting'].includes(op)?!['GET','POST'].includes(req.method):req.method!==(['state','watch'].includes(op)?'GET':'POST'))return json(405,{error:'Method not allowed'});
   if(req.headers.origin&&req.headers.origin!==origin)return json(403,{error:'Origin not allowed'});
-  if(['waiting','spin-ready'].includes(op)&&req.method==='POST'&&req.headers.origin!==origin)return json(403,{error:'Local origin required'});
+  if(['waiting','spin-ready','rimt-suggest','rimt-decide'].includes(op)&&req.method==='POST'&&req.headers.origin!==origin)return json(403,{error:'Local origin required'});
   let body={};
   if(req.method==='POST'){
    if(!req.headers['content-type']?.startsWith('application/json'))return json(415,{error:'Expected JSON'});

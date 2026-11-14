@@ -1121,3 +1121,6 @@ REA insurance visibility correction: the recovered Account getter derives `hideS
 
 
 Released PR123: native-source catch-up sound policy now keeps interrupted insurance replays silent while retaining their graphics. Fifteen exact-head installed checks passed, including fresh three-source versus silent zero-source animation and a complete mixed-insurance tournament after mid-award restart. The guarded rollout preserved all six owner files and reused existing art. Native physical timing and operator callback delay remain open.
+
+
+RIMT backend checkpoint (unreleased): authenticated hand-bound suggest/decide operations, private checkpoint validation, stopped betting clock, atomic write rollback, multi-board history and once-only expiry/completion pass seven targeted suites, including actual HTTP process restarts. Tests seed an isolated armed hand; normal room activation and native controls are still absent. See docs/rea/run-it-multiple-times.md.
