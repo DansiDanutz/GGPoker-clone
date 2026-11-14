@@ -20,7 +20,7 @@ Target: reproduce player-visible workflows using independent code and an owner-c
 | Leaderboard | Private room standings (net chips over last 20 hands), durable hand results | Cross-room rankings and account identity |
 | Player notes | Private1000-char notes, native opponent HUD editor/frames, ten private20-char label titles, account persistence, auth/backup/restart, shared Hold’em/PLO Rush notes and isolated-browser tests | Advanced own HUD metrics/full native window/skin/global statistics, offline list entry point (unconfirmed), physical comparison of the300ms opponent-note hover tooltip, advanced/global Rush metrics and native Rush HUD comparison |
 | Owner console | Local owner key, table management, private audit, bounded local snapshots, verified private downloads, confirmed transactional restore with rescue/recovery, exact-ID archive deletion, integrity checks and per-table chat moderation; confirmed between-hand cash-seat removal with atomic cash-out/refund and stale-seat protection; running tournament pause/resume and prestart registration withdrawal with atomic entry refund; owner-only live seat/actor/pot/standings/prize monitor with stable DOM and reconnect | Tournament disqualification, mid-hand policy, multi-user permissions and complete recovery/import workflows |
-| Cashier | Account-bound local cash wallet; atomic buy-in/top-up/cash-out and pending increments; private balance/receipt | Native Cashier UI; no real funds |
+| Cashier | Account-bound local cash wallet; atomic buy-in/top-up/cash-out and pending increments; private balance/receipt; Home Cashier opens the authenticated local wallet with guest login and keyboard return | Native remote Cashier UI, table entry and button state/light parity; no real funds |
 | Visual and platform fidelity | Native artwork layers, local browser implementation, verified nonsynced code/art installations and same-size captures | Screen-by-screen comparison, accessibility and native packaging |
 
 The operator’s private admin system was not observed. Admin workflows here must be specified and tested independently.
@@ -1071,3 +1071,7 @@ Save exports the players actual result to a356×535PNG using the native UTC/titl
 ### Tournament prize bitmap digits
 
 The native newspinandgold lobby atlas supplies the32px prize digits with original advances/offsets and43-glyph metadata. The table/history variants are distinct and are not substituted. The local play-credit unit stays readable separately. Browser checks cover actual digit sprites,exported glyph-ink comparison with source atlas,Save lifecycle andreadable fallback for missing/malformed font data. Metrics reject null/duplicate/zero-size/out-of-bounds records. Physical AIR baseline/smoothing andwhole-image parity remain open. See docs/rea/tournament-result-font.md.
+
+### Home Cashier — local wallet entry
+
+The captured Cashier button now opens the existing authenticated My Wallet without external navigation; guests enter local login. Escape returns focus to Cashier andEnter reopens it. Pointer/keyboard/guest,grant/buyin/cashout,stale response/error/restart/account safety andprofile/avatar regression are verified in headless sessions. Native source establishes a configured remote/in-app-browser cashier; its UI andoperator services remain unobserved. See docs/rea/cashier-local-wallet.md.

@@ -193,6 +193,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('chipSettings').
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('homeSettings').hidden){e.preventDefault();closeHomeSettings()}});
 document.addEventListener('click',e=>{if(!$('homeSettings').hidden&&!$('homeSettings').contains(e.target)&&!$('settings').contains(e.target))$('homeSettings').hidden=true});
 function navigate(p){
+ if(p.id==='cash'){openProfile();if(player){profileReturnFocus=$('cash');selectProfilePage('My Wallet')}return}
  if(p.id==='spin'){spinUI.open();return}
  if(p.id==='settings'){$('homeSettings').hidden=!$('homeSettings').hidden;return}
 
@@ -212,7 +213,7 @@ for(const p of parts){
  const inf=p.y>=150&&p.x<1084&&p.id!=='floatingAsk';(inf?canvas:frame).append(e);
  box(e,p.x-(inf?5:0),p.y-(inf?150:0),p.w,p.h);
  if(input){e.type='button';e.setAttribute('aria-label',p.label);e.onclick=()=>navigate(p);
- if(!['spin','holdem','plo','shortdeck','aof','rush','tournaments','navhome','poker','collapse','floatingAsk','ask','settings'].includes(p.id)){e.disabled=true;e.title=(audit[p.id]?.note||'Destination unverified')+' · Unavailable locally'}}
+ if(!['cash','spin','holdem','plo','shortdeck','aof','rush','tournaments','navhome','poker','collapse','floatingAsk','ask','settings'].includes(p.id)){e.disabled=true;e.title=(audit[p.id]?.note||'Destination unverified')+' · Unavailable locally'}}
  if(p.mode==='button'){const img=new Image();img.src=art+p.id+'.png';img.alt='';e.append(img)}
  else if(p.mode==='art'){e.src=art+(p.id==='logo'?'dangg-logo-512-transparent.png':p.id+'.png');e.alt=p.id==='logo'?'DanGG':p.label;if(p.id==='logo')e.style.objectFit='contain'}
  else e.textContent=p.label;
@@ -412,7 +413,7 @@ if(!journey){$('profile').disabled=false;$('profile').setAttribute('aria-label',
 let selectedAvatar=player?.avatar||0,avatarSaving=false,pendingAvatar=null,avatarCategory='All',avatarUploadRequest=0;
 
 const avatarPane=$('profilePreview').closest('.profileContent'),walletPane=document.createElement('section');walletPane.id='profileWallet';walletPane.className='settingsContent profileContent';walletPane.hidden=true;walletPane.setAttribute('aria-label','Local cash wallet');walletPane.innerHTML='<h2 id="walletHeading">My Wallet</h2><p>Local play chips for hosted cash, tournaments and funded Rush sessions.</p><div class="walletOverview"><span>Available play chips</span><strong id="walletAvailable">—</strong><dl><dt>Total grants</dt><dd id="walletGranted">—</dd><dt>Funded seats and top-ups</dt><dd id="walletSpent">—</dd><dt>Returned from tables</dt><dd id="walletReturned">—</dd></dl></div><button id="refreshPlayerWallet" type="button">Refresh balance</button><p id="playerWalletStatus" role="status"></p><h3 id="walletHistoryHeading">Recent transactions</h3><p class="walletHistoryScope">Opening local grant: 10,000 chips. Up to 100 retained wallet movements. Chips committed to a table or session are held separately.</p><table class="walletHistory"><thead><tr><th scope="col">Time</th><th scope="col">Type</th><th scope="col">Chips</th><th scope="col">Note</th></tr></thead><tbody id="walletEvents"></tbody></table>';$('profilePane').append(walletPane);
-let walletPage='My Game Profile',walletRead=0;
+let walletPage='My Game Profile',walletRead=0,profileReturnFocus=null;
 function clearWallet(){for(const id of ['walletAvailable','walletGranted','walletSpent','walletReturned'])$(id).textContent='—';$('walletEvents').replaceChildren()}
 async function loadProfileWallet(){const request=++walletRead;clearWallet();$('playerWalletStatus').textContent='Loading wallet…';$('refreshPlayerWallet').disabled=true;try{
  const response=await fetch('/local/wallet',{cache:'no-store'}),data=await response.json();if(request!==walletRead||walletPane.hidden||$('profilePane').hidden)return;if(!response.ok)throw Error(data.error);if(data.account!==player.name)throw Error('Signed-in account changed. Reload the app before viewing this wallet.');
@@ -430,10 +431,11 @@ function renderProfile(){
 }
 function openProfile(){
  if(!player){location.assign('/launch.html');return}
+ profileReturnFocus=$('profile');
  $('homeSettings').hidden=true;$('profilePane').hidden=false;for(const el of frame.children)if(el!==$('profilePane'))el.inert=true;
  pendingAvatar=null;selectedAvatar=player.avatar||0;$('profileError').textContent='';selectProfilePage('My Game Profile');size();$('closeProfile').focus();
 }
-function closeProfile(){avatarUploadRequest++;walletRead++;pendingAvatar=null;$('profilePane').hidden=true;for(const el of frame.children)el.inert=false;size();$('profile').focus()}
+function closeProfile(){avatarUploadRequest++;walletRead++;pendingAvatar=null;$('profilePane').hidden=true;for(const el of frame.children)el.inert=false;size();(profileReturnFocus||$('profile')).focus()}
 for(const name of ['GGPass Account','My Action Voice','My Game Profile','My Wallet','Verify ID','Transaction History','Message','Redeem Coupons','Current Stakers','Sellers you follow','PokerCraft','Responsible Gaming']){
  const b=document.createElement('button');b.textContent=name;b.disabled=!['My Game Profile','My Wallet','Transaction History'].includes(name);if(!b.disabled){if(name==='My Game Profile')b.setAttribute('aria-current','page');b.onclick=()=>selectProfilePage(name)}$('profileSidebar').append(b);
 }
