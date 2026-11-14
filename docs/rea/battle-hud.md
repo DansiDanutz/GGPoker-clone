@@ -1,6 +1,6 @@
 # Battle Royale Smart HUD — recovered contract
 
-This inventory binds20 selected installed-client classes in battle-hud-source.json. It establishes client rendering and request/response boundaries. It does not recover the original server’s career calculations or implement a working local HUD.
+This inventory binds22 selected installed-client classes in battle-hud-source.json. It establishes client rendering and request/response boundaries. It does not recover the original server’s career calculations or implement a working local HUD.
 
 ## Entry and identity
 
@@ -79,7 +79,7 @@ Account-switch regression during lobby failure: a focused browser test first hol
 
 ## Private label-title popup
 
-Recovered PlayerColorPopup is320x324 with panel#242424/border#333 and4px corner radius. Nickname16px at y24. Grid origin24,64; two132x28 items per row with8px gaps, five rows. COLOR_ORDER is red/cyan/orange/blue/yellow/brown/lime/purple/green/pink, corresponding to local indices6,3,7,1,9,4,5,2,0,8. Each color block is28px, input x36/y5/88x24 and maxChars20. Selected input background#171717 uses the color outline and height27; unselected#333 with a6percent white outline. Save140x40 at90,260. Native getChanageLabel returns only changed labelId/title pairs; Save dispatches SEND_PLAYERNOTES_LABEL only for a nonempty change list, then closes. Ordinary popup close dispatches CLOSE without saving.
+Recovered PlayerColorPopup is320x324 with panel#242424/border#333 and4px corner radius. Nickname16px at y24. Grid origin24,64; two132x28 items per row with8px gaps, five rows. COLOR_ORDER is red/cyan/orange/blue/yellow/brown/lime/purple/green/pink, corresponding to local indices6,3,7,1,9,4,5,2,0,8. Each color block is28px, input x36/y5/88x24 and maxChars20. Selected input background#171717 uses the color outline and height27; unselected#333 with a6percent white outline. Save width140 at90,260; its actual constructor-default height is37. The40px constant only places it vertically. Native getChanageLabel returns only changed labelId/title pairs; Save dispatches SEND_PLAYERNOTES_LABEL only for a nonempty change list, then closes. Ordinary popup close dispatches CLOSE without saving.
 
 Local Label is now an actual button opening this geometry. Save sends only changed color/title pairs through the existing private endpoint, with expected canonical viewer; note text/color and label-title updates must be separate. The adapter reuses saveNoteLabels and owner-bound openNotes, so disjoint title edits preserve other fields and share table label titles. Validation preserves ten single-line titles, each max20, rejects duplicate/out-of-range colors and mixed note/title payloads. It never accepts a client-supplied owner. Returned viewer/target must still match before updating the caption/palette tooltips.
 
@@ -90,3 +90,5 @@ Model/HTTP tests cover separate owners, table-store label sharing, disjoint patc
 Recovered PlayerNoteLabelUpdateCommand confirms that only alias and changed list are consumed; the popup color field is not forwarded as a note-color update. It calls updatePlayerNoteLabels(list), maps200/201 into setLabelTitle plus change/receive-data notifications, and otherwise shows MobileFailedToSavePlayerNote. Native securityMode returns before sending. Local label editing therefore intentionally leaves note text/color untouched. Its inline error with retained editable draft is a local robustness behavior; original popup close/alert cadence is not claimed identical.
 
 Popup placement uses DesktopSmartHudView’s400px parent calculation x200−320/2=40 and y300−324/2−30=108. Its popup layer y−40 cancels the local desktop title translation+40. The local popup is positioned40,108 from the HUD content origin, clamped to the local viewport and recalculated on resize. The browser fixture measures these relative offsets. Native host-window borders and cross-window modal behavior still need physical calibration.
+
+Save inheritance correction: PlayerColorPopup calls GlobalButton(SAVE,GREEN,140) without height or font size. Its actual defaults are37px and19px, not the SAVE_BTN_H40 used in the y calculation. Browser RED measured40; local CSS now uses37/19 with the recovered existing condensed-font chain. ButtonColor.GREEN maps common21/up,23/down,22/over; the constructor still passes no hover texture. Actual green face/shadow/disabled paint remains the next artwork task.
