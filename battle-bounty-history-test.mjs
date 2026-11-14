@@ -10,3 +10,5 @@ console.log('PASS bounty public history: award-bound retained hand, explicit pub
 const archived=battleBountyPublicHand(room,[award],3),archiveBefore=JSON.stringify(archived);assert.deepEqual(readBattleBountyArchive([archived],[award],hand.names,20),[archived]);assert.equal(JSON.stringify(archived),archiveBefore);
 for(const bad of [[{...archived,privateCards:hand.privateCards}],[archived,archived],[{...archived,number:4}],[{...archived,stacks:[0,21]}],[{...archived,cards:[['As','Ad'],['As','Ad']]}],[{...archived,awards:[{...archived.awards[0],amount:99}]}]])assert.throws(()=>readBattleBountyArchive(bad,[award],hand.names,20));
 console.log('PASS bounty archive schema: exact public projection, unique award-bound records, no private fields, valid cards/chip conservation/ledger shares and immutable reads');
+
+const partial={...archived,cards:[[null,'7d'],['As','Ad']]};assert.deepEqual(readBattleBountyArchive([partial],[award],hand.names,20)[0].cards,partial.cards);

@@ -140,7 +140,7 @@
     "All funded local awards are included; native Epic eligibility/window/top record policy not established",
     "Any signed-in local account may read only already disclosed showdown information for a recorded bounty hand",
     "Guest401, cross-origin403, wrong method405, malformed/duplicate query400, unretained/non-award hand404",
-    "History currently shares existing30-hand retention; expired history is reported explicitly"
+    "New bounty hands persist as validated public-only event archives in the same atomic settlement. Legacy checkpoints fall back to retained HUD data; already missing legacy hands are never invented."
   ],
   "limits": [
     "Native global winner protocol/date format/native eligibility/recency semantics unverified",
