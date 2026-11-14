@@ -1572,14 +1572,14 @@ console.log('PASS selected-table comparison: loaded original/local images, equal
   if(process.argv.includes('--free-fold')){
    await turn(1);await until(()=>clients[1].run("document.querySelector('.nativeMainAction[data-key=F1]')?.textContent==='Check / Fold'"));assert.equal(await clients[1].run("(()=>{const l=document.querySelector('.nativeMainAction[data-key=F1] span');return l.scrollWidth<=l.clientWidth+1&&getComputedStyle(l).whiteSpace==='nowrap'})()"),true,'Check/Fold label must fit one native line');await clients[1].run("document.querySelector('.nativeMainAction[data-key=F1]').click()");s=await turn(2);assert.equal(s.hand.folded[1],false);assert.equal(s.hand.history.filter(h=>h==='Seat 2: check').length,1);await until(()=>clients[1].run("document.querySelector('[data-reserve=\"check-fold\"]').getAttribute('aria-pressed')==='true'"));
    assert.equal((await api(clients[2],'act',{action:'raise',target:4,version:s.version}))[0],200);
-   for(let n=0;n<40;n++){s=await read();if(s.hand.end)break;const own=await read(s.hand.turn);if(s.hand.turn!==1)await click(s.hand.turn,own.hand.options.due?/^Call/:/^Check/);await until(async()=>{const v=await read();return v.version>s.version})}
+   for(let n=0;n<40;n++){s=await read();if(s.hand.end)break;const own=await read(s.hand.turn);if(s.hand.turn!==1)await click(s.hand.turn,own.hand.options.due?/^Call/:/^Check$/);await until(async()=>{const v=await read();return v.version>s.version})}
    s=await read();assert.ok(s.hand.end);assert.equal(s.hand.folded[1],true);assert.equal(s.hand.history.filter(h=>h==='Seat 2: fold').length,1);verifyHandPayout(s.hand,6,'holdem');assert.equal(s.hand.stacks.reduce((a,b)=>a+b,0),720);await stop(server);await boot();assert.deepEqual((await read()).hand,s.hand);console.log('PASS native free Fold: Check once, retained reservation, automatic Fold to later bet, independently verified payout720 and restart');
   }else{
-  await reserve(3,'check');await reserve(4,'check-fold');await turn(1);await click(1,/^Check/);s=await turn(2);assert.equal((await api(clients[2],'act',{action:'raise',target:4,version:s.version}))[0],200);await turn(3);await until(()=>clients[3].run("document.querySelector('[data-reserve=check]').getAttribute('aria-pressed')==='false'"));
+  await reserve(3,'check');await reserve(4,'check-fold');await turn(1);await click(1,/^Check$/);s=await turn(2);assert.equal((await api(clients[2],'act',{action:'raise',target:4,version:s.version}))[0],200);await turn(3);await until(()=>clients[3].run("document.querySelector('[data-reserve=check]').getAttribute('aria-pressed')==='false'"));
   await click(3,/^Call/);s=await turn(5);assert.equal(s.hand.folded[4],true,'Check/Fold must fold facing a later bet');await click(5,/^Call/);await turn(0);await click(0,/^Call/);await turn(1);await click(1,/^Call/);await until(async()=>{const v=await read();return v.hand.board.length===4});
-  await reserve(2,'check-fold');await turn(1);await click(1,/^Check/);s=await turn(3);assert.ok(s.hand.history.includes('Seat 3: check'),'Check/Fold must check with no bet');await until(()=>clients[2].run("!document.querySelector('#reservedActions').hidden&&!document.querySelector('[data-reserve=\"check-fold\"]').hidden&&document.querySelector('[data-reserve=check]').hidden"));
+  await reserve(2,'check-fold');await turn(1);await click(1,/^Check$/);s=await turn(3);assert.ok(s.hand.history.includes('Seat 3: check'),'Check/Fold must check with no bet');await until(()=>clients[2].run("!document.querySelector('#reservedActions').hidden&&!document.querySelector('[data-reserve=\"check-fold\"]').hidden&&document.querySelector('[data-reserve=check]').hidden"));
   await reserve(5,'check');await clients[5].reload();await until(()=>clients[5].run("document.querySelector('#join')?.hidden&&document.querySelector('[data-reserve=check]')?.getAttribute('aria-pressed')==='false'"));
-  for(let n=0;n<30;n++){s=await read();if(s.hand.end)break;const own=await read(s.hand.turn);await click(s.hand.turn,own.hand.options.due?/^Call/:/^Check/);await until(async()=>{const v=await read();return v.version>s.version})}
+  for(let n=0;n<30;n++){s=await read();if(s.hand.end)break;const own=await read(s.hand.turn);await click(s.hand.turn,own.hand.options.due?/^Call/:/^Check$/);await until(async()=>{const v=await read();return v.version>s.version})}
   s=await read();assert.ok(s.hand.end);verifyHandPayout(s.hand,6,'holdem');assert.equal(s.hand.stacks.reduce((a,b)=>a+b,0),720);const watch=await(await fetch(origin+'/api/rooms/'+new URL(url).hash.slice(1)+'/watch')).json();assert.equal('preAction' in watch.hand,false,'Spectator must not receive private pending action');
   await stop(server);await boot();assert.deepEqual((await read()).hand,s.hand);for(const c of clients)assert.deepEqual(await c.run('__qaErrors'),[]);console.log('PASS six-session reserved actions: toggle/cancel, changed-call cancellation, one-shot Call, Check cancellation, Check/Fold check/fold, reload reset, independent payout,720 chips and restart');
   }
@@ -1736,7 +1736,7 @@ console.log('PASS selected-table comparison: loaded original/local images, equal
   assert.equal(await spectator.run("document.querySelectorAll('.cards .card,#actions button').length"),0);
   const s=await until(async()=>{
     const s=await snap();if(s.hand.end)return s;
-    if(s.hand.turn===0)await click(0,s.hand.options.due?/^Call/:/^Check/);
+    if(s.hand.turn===0)await click(0,s.hand.options.due?/^Call/:/^Check$/);
     return false;
   },600);const g=s.hand;
   assert.equal(g.board.length,5);assert.ok(g.committed.every(n=>n===g.committed[0]&&n>0));
@@ -1793,7 +1793,7 @@ assert.equal(await c.run("document.querySelectorAll('.winner .portrait .winMark 
   assert.ok(second.hand.committed[2]>=second.hand.blind/2);assert.ok(second.hand.committed[3]>=second.hand.blind);
   assert.deepEqual(second.hand.stacks.map((stack,i)=>stack+second.hand.committed[i]),g.stacks);
   const again=await until(async()=>{const [,v]=await api(fresh);if(v.hand.end)return v;
-   if(v.hand.turn===0)await click(0,v.hand.options.due?/^Call/:/^Check/);return false},600);
+   if(v.hand.turn===0)await click(0,v.hand.options.due?/^Call/:/^Check$/);return false},600);
   assert.equal(again.results.length,2);assert.equal(again.hand.stacks.reduce((a,b)=>a+b),720);
   if(!variant){await until(()=>watcher.run("document.querySelector('#preview .dealerPosition')?.dataset.seat==='1'"));assert.deepEqual(await watcher.run("[...document.querySelectorAll('#preview .previewPosition')].map(e=>[e.textContent,Number(e.dataset.seat)])"),[['D',1],['SB',2],['BB',3]])}
   console.log('Second hand: button moved to seat 2, blinds posted, balances carried forward and 720 chips retained');
@@ -1971,7 +1971,7 @@ assert.equal(await c.run("document.querySelectorAll('.winner .portrait .winMark 
    await actor.run("document.querySelector('.s0 .stackSwitch').click()");assert.equal(await actor.run("document.querySelector('.s0 .stack').textContent"),'120 chips');
    assert.equal(await actor.run("document.querySelector('#actions input[type=number]').value"),'12');
    await actor.run("window.shuffleOriginalFetch=window.fetch;window.fetch=(...args)=>String(args[0]).endsWith('/state')?shuffleOriginalFetch(...args).then(r=>new Promise(resolve=>window.releaseHeldPoll=()=>resolve(r))):shuffleOriginalFetch(...args)");await until(()=>actor.run("typeof window.releaseHeldPoll==='function'"));
-   await actor.run(shortcut('F2'));await actor.run("window.fetch=window.shuffleOriginalFetch;window.releaseHeldPoll()");await until(async()=>(await api(actor))[1].hand.turn===4);await click(4,/^Call/);await click(5,/^Call/);await click(0,/^Call/);await click(1,/^Call/);await click(2,/^Check/);
+   await actor.run(shortcut('F2'));await actor.run("window.fetch=window.shuffleOriginalFetch;window.releaseHeldPoll()");await until(async()=>(await api(actor))[1].hand.turn===4);await click(4,/^Call/);await click(5,/^Call/);await click(0,/^Call/);await click(1,/^Call/);await click(2,/^Check$/);
    await until(()=>clients[1].run("document.querySelectorAll('#board .card').length===3"));
    await until(()=>clients[1].run("[...document.querySelectorAll('#actions button')].every(b=>b.getBoundingClientRect().bottom<=innerHeight)"));await until(()=>clients[1].run("window.motionLog.includes('aofCollect')"));await delay(550);
    await until(()=>clients[1].run("!document.querySelector('#collected').hidden && document.querySelector('#collected span').textContent==='24'"));
