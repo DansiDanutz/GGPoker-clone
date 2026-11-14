@@ -11,11 +11,11 @@ try{
  const result=rooms.startBattleFinal(settings.id),qualified=v.qualification.qualified;assert.match(result.room,/^[a-f0-9]{48}$/);
  const saved=readFileSync(file);assert.deepEqual(rooms.startBattleFinal(settings.id),result);assert.deepEqual(readFileSync(file),saved);
  rooms=openRooms(file,()=>0,true);assert.deepEqual(rooms.startBattleFinal(settings.id),result);
- const tokens=[];for(const p of qualified){const own=rooms(result.room,'join',undefined,{name:p.id},undefined,p.id);tokens.push(own.issued);assert.equal(own.me,tokens.length-1);assert.deepEqual(own.hand.stacks.map((n,i)=>n+own.hand.committed[i]),qualified.map(p=>p.stack))}
+ const tokens=[];let firstVersion;for(const p of qualified){const own=rooms(result.room,'join',undefined,{name:p.id},undefined,p.id);tokens.push(own.issued);firstVersion??=own.version;assert.equal(own.me,tokens.length-1);assert.deepEqual(own.hand.stacks.map((n,i)=>n+own.hand.committed[i]),qualified.map(p=>p.stack))}
  assert.throws(()=>rooms(result.room,'join',undefined,{name:'Player11'},undefined,'outsider'),/qualified/i);
  assert.throws(()=>rooms(result.room,'fill-bots',tokens[0],{},undefined,qualified[0].id),/fixed/i);
  assert.throws(()=>rooms(result.room,'leave',tokens[0],{},undefined,qualified[0].id),/fixed/i);
- let hand=rooms(result.room,'state',tokens[0],{},undefined,qualified[0].id),moves=0;
+ let hand=rooms(result.room,'state',tokens[0],{},undefined,qualified[0].id),moves=0;assert.equal(hand.hand.turn,0);const firstOptions=hand.hand.options;rooms(result.room,'act',tokens[0],{action:firstOptions.due?'call':'check',version:firstVersion},undefined,qualified[0].id);assert.throws(()=>rooms(result.room,'act',tokens[0],{action:'check',version:firstVersion},undefined,qualified[0].id));hand=rooms(result.room,'state',tokens[0],{},undefined,qualified[0].id);
  while(!hand.hand.end){const seat=hand.hand.turn,own=rooms(result.room,'state',tokens[seat],{},undefined,qualified[seat].id),o=own.hand.options;rooms(result.room,'act',tokens[seat],{action:o.due?'call':'check',version:own.version},undefined,qualified[seat].id);hand=rooms(result.room,'state',tokens[0],{},undefined,qualified[0].id);if(++moves>50)throw Error('Final hand stalled')}
  assert.equal(hand.hand.stacks.reduce((a,b)=>a+b),1200);for(let i=0;i<12;i++)assert.equal(rooms.wallet('Player'+i).available,9975);
  rooms=openRooms(file,()=>0,true);assert.deepEqual(rooms(result.room,'state',tokens[0],{},undefined,qualified[0].id).hand.end,hand.hand.end);
