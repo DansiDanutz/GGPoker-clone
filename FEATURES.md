@@ -1166,3 +1166,5 @@ Tournament Latin typography (unreleased): actual inherited Roboto18 tabs, Conden
 Tournament registration paint (unreleased): actual up/down/disabled/shadow sprites, native asymmetric nine-slice, constructor-specific hover multiplier, half-alpha label/equal RGB disabled matrix; pointer and rendered pixel probe tests. Physical transition timing remains unverified.
 
 Tournament search release PR157/158: native-derived inline Players search and7original sprites, Enter/min3/max30/Reset/blur controls, immutable wallet/room/polling/restart and sixbrowserfinal600chips/150prizes/14bounties verified on installed runtime. Search matching is an explicit local substring policy. Selected-table preview/profile remain unfinished;9-class source/actual seat/marker contracts are recorded in docs/rea/tourney-preview-source.json and tourney-lobby.md.
+
+Tournament preview backend (unreleased): authenticated read-only actual table/seat/chips/Dealer-SB-BB/avatar projection for Rush and final, fast-fold reassignment exclusion and unchanged file bytes/restart verified. Preview graphics and lobby HUD adapter are still unimplemented.
