@@ -19,8 +19,19 @@ export function saveHandReport(notes,owner,room,hand,command,now){
  const seats=[...command.seats].sort((a,b)=>a-b),detail=command.detail.replace(/\r\n?/g,'\n'),category=command.category,id=createHash('sha256').update(JSON.stringify([owner,room,hand.startedAt,hand.number,category,seats,detail])).digest('hex');
  return notes.saveReport({id,owner,room,number:hand.number,startedAt:hand.startedAt,at:now,reporter:hand.names[hand.viewerSeat],seats,category,detail,status:'open',reviewNote:'',hand});
 }
+export function savePlayerReport(notes,owner,event,reporter,reported,command,now){
+ if(typeof command?.detail!=='string')throw Object.assign(Error('Use at most1000 report detail characters'),{status:400});
+ const category=command.category,detail=command.detail.replace(/\r\n?/g,'\n'),id=createHash('sha256').update(JSON.stringify([owner,event.id,reported,category,detail])).digest('hex');
+ return notes.saveReport({kind:'profile',id,owner,event:event.id,eventName:event.name,at:now,reporter,reported,category,detail,status:'open',reviewNote:''});
+}
 function cleanReport(row){
  const invalid=()=>{throw Object.assign(Error('Invalid local report'),{status:400})};
+ if(row?.kind==='profile'){
+  if(Object.keys(row).sort().join(',')!=='at,category,detail,event,eventName,id,kind,owner,reported,reporter,reviewNote,status'||!['id','owner'].every(k=>typeof row[k]==='string'&&/^[a-f0-9]{64}$/.test(row[k]))||typeof row.event!=='string'||!/^[a-z0-9-]{1,40}$/.test(row.event)||typeof row.eventName!=='string'||!row.eventName.trim()||row.eventName.length>60||!Number.isSafeInteger(row.at)||row.at<0||!['reporter','reported'].every(k=>typeof row[k]==='string'&&/^[a-z0-9][a-z0-9_-]{1,19}$/.test(row[k]))||row.reporter===row.reported||!Number.isInteger(row.category)||!Object.hasOwn(reportTypes,row.category)||row.category===6||typeof row.detail!=='string'||row.detail.length>1000||row.detail.includes('\r')||!['open','reviewed'].includes(row.status)||typeof row.reviewNote!=='string'||row.reviewNote.length>1000)invalid();
+  const id=createHash('sha256').update(JSON.stringify([row.owner,row.event,row.reported,row.category,row.detail])).digest('hex');if(row.id!==id)invalid();return structuredClone(row);
+ }
+ if(row?.kind!==undefined)invalid();
+
  if(!row||!['id','owner'].every(k=>typeof row[k]==='string'&&/^[a-f0-9]{64}$/.test(row[k]))||typeof row.room!=='string'||!/^[a-f0-9]{48}$/.test(row.room)||!['number','startedAt','at'].every(k=>Number.isSafeInteger(row[k])&&row[k]>=0)||typeof row.reporter!=='string'||row.reporter.length>24||!Number.isInteger(row.category)||!Object.hasOwn(reportTypes,row.category)||!Array.isArray(row.seats)||!row.seats.length||row.seats.length>8||new Set(row.seats).size!==row.seats.length||!row.seats.every(i=>Number.isInteger(i)&&i>=0&&i<9)||!['open','reviewed'].includes(row.status)||typeof row.detail!=='string'||row.detail.length>1000||typeof row.reviewNote!=='string'||row.reviewNote.length>1000||!row.hand||row.hand.number!==row.number||!Array.isArray(row.hand.names)||!Array.isArray(row.hand.cards))invalid();
  return structuredClone(row);
 }
