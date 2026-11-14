@@ -29,8 +29,9 @@ export function battleRush(entries,config,checkpoint=null){
   const p=pool.players.get(account);if(arguments.length===3&&(p.table!==table||!Number.isSafeInteger(table)))throw Error('Stale Battle Rush table');return p;
  }
  function view(account,session){
-  const p=player(account,session),table=pool.tables.get(p.table),seat=table?.ids.indexOf(account),g=table?.game;
-  return structuredClone({eventId:config.eventId,phase:phase(),table:p.table,stack:p.balance,...(g?{hand:{board:[...g.board],stacks:[...g.stacks],bets:[...g.bets],committed:[...g.committed],turn:g.turn,button:g.button,cards:visibleCards(g,seat),end:structuredClone(g.end),legal:g.turn===seat&&!g.end?options(g):null}}:{})});
+  const p=player(account,session),table=pool.tables.get(p.table),seat=table?.ids.indexOf(account),g=table?.game,last=[...pool.tables].findLast(([,t])=>t.settled&&t.ids.includes(account));
+  const hand=(game,viewer)=>({board:[...game.board],stacks:[...game.stacks],bets:[...game.bets],committed:[...game.committed],turn:game.turn,button:game.button,cards:visibleCards(game,viewer),end:structuredClone(game.end),legal:game.turn===viewer&&!game.end?options(game):null});
+  return structuredClone({eventId:config.eventId,phase:phase(),table:p.table,stack:p.balance,...(g?{me:seat,names:table.ids,hand:hand(g,seat)}:{}),...(last?{result:{table:last[0],names:last[1].ids,me:last[1].ids.indexOf(account),hand:hand(last[1].game,last[1].ids.indexOf(account))}}:{})});
  }
  function deal(account,session,now){player(account,session);tick(now);if(closed)throw Error('Battle Rush stage is closed');pool.deal(account);return view(account,session)}
  function move(account,session,table,action,target,now){player(account,session,table);tick(now);pool.move(account,action,target);tick(now);return view(account,session)}
