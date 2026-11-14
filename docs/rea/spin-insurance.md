@@ -68,3 +68,10 @@ The three-browser insured journey exercises cancellation, lost-reply retry, acco
 A structured server rejection `spin_rules_changed` distinguishes an uncommitted stale operation from an uncertain network failure. Prior committed operation lookup runs first, so retrying an already paid entry remains idempotent. On this rejection the client clears only its unchanged saved batch, refreshes terms and requires another explicit purchase. Changed storage is preserved for review; this guard is not an atomic cross-tab lock. HTTP and normal stale-term browser tests verify no charge, no registration, a fresh operation after review and one refund.
 
 These source changes are not enabled in the live PR119 installation. Native award graphics/delay, full physical comparison and commit-bound installed-release QA remain pending. Historical stage sections above describe their respective earlier implementation boundaries.
+
+
+## Insurance motion interpreter — not yet rendered
+
+`spin-insurance-motion.mjs` reconstructs the selected PlayerSpinAndGoldInsurance tweens and the recovered Ease cubic functions. Text grows/fades at0–500/2000–2500ms; the coin falls/fades at2000–2800ms; amount motion starts at3200ms, reaches−95at3700ms and fades4700–5200ms. Text stays at y−65, coin scale0.7; its caller supplies two explicit random rotations within±90degrees. The text-highlight sweep repeats a500ms delay followed by1500ms cubic ease-in/out. Completion is terminal at5200ms. The function accepts elapsed presentation time only and performs no award, random draw or wallet transfer.
+
+Boundary/halfway/invalid-input tests pass, including cubic interpolation and terminal stability. Floating-point scale comparisons use tolerance rather than rounding native interpolation. This is a pure motion interpreter, not a rendered award: Insurance_Glow timeline, language-specific atlas text, plus/coin glyphs,40px amount rendering, sound cues, seat coordinates and server presentation/replay synchronization remain to be connected. No live installation was changed.
