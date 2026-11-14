@@ -1,5 +1,7 @@
+import {installBattleHighlights} from './battle-highlights.mjs';
 import {updateElement} from './felt.mjs';
 export function installBattleLobby(pane,select){
+ const highlights=installBattleHighlights(pane);
  const nav=document.createElement('nav');nav.className='battleCatalogNav';nav.setAttribute('aria-label','Battle Royale pages');
  const logo=new Image();logo.src='/home-art/native-battle-lobby-logo.png';logo.alt='Mystery Battle Royale';logo.className='battleLobbyLogo';nav.append(logo);
  const page=document.createElement('section');page.id='battleLobbyPage';page.setAttribute('aria-label','Game Lobby');page.innerHTML='<div id="battleCards" aria-label="Local Battle events"></div><p class="battleEmpty">No local Battle Royale events have been created.</p><a id="battleJoin" aria-disabled="true">Join Now</a><button id="battleLobbyRules" type="button" disabled>Mystery Battle Royale details…</button><button id="battleMyTables" type="button" hidden aria-expanded="false">My Tables</button><div id="battleMyTableList" hidden></div>';
@@ -7,9 +9,10 @@ export function installBattleLobby(pane,select){
  pane.append(nav,page);nav.querySelector('button').click();
  const cards=page.querySelector('#battleCards'),join=page.querySelector('#battleJoin'),mine=page.querySelector('#battleMyTables'),tables=page.querySelector('#battleMyTableList');const rules=page.querySelector('#battleLobbyRules');rules.onclick=()=>document.getElementById('battleRules').click();mine.onclick=()=>{tables.hidden=!tables.hidden;mine.setAttribute('aria-expanded',String(!tables.hidden))};
  function update(events,selected){
+  highlights.update(events);
   const fresh=cards.cloneNode(false);for(const event of events){const e=event.settings,b=document.createElement('button');b.type='button';b.className='battleEventCard';b.dataset.event=e.id;b.dataset.renderKey=e.id;b.setAttribute('aria-label',e.name);b.setAttribute('aria-pressed',String(e.id===selected));b.title=e.name;b.onclick=()=>select(e.id);for(const [cls,text]of [['battleCardEntry','Buy-in '+e.entryCost],['battleCardBudgetTitle','Bounty budget'],['battleCardBudget',event.bounty?String(event.bounty.remaining):'—'],['battleCardPlayers',event.count+' / '+e.capacity]]){const span=document.createElement('span');span.className=cls;span.textContent=text;b.append(span)}fresh.append(b)}updateElement(cards,fresh);page.querySelector('.battleEmpty').hidden=events.length>0;
   const chosen=events.find(e=>e.settings.id===selected),source=document.getElementById('takeSeat');rules.disabled=!chosen;join.removeAttribute('href');join.setAttribute('aria-disabled','true');join.textContent=chosen?.registered?'Open Battle Royale':'Join Now';if(chosen&&source.hasAttribute('href')&&source.getAttribute('aria-disabled')!=='true'){join.href=source.href;join.removeAttribute('aria-disabled')}else if(chosen&&chosen.phase!=='registration')join.textContent='Registration closed';
   const own=events.filter(e=>e.registered),next=tables.cloneNode(false);for(const e of own){const a=document.createElement('a');a.dataset.renderKey=e.settings.id;a.textContent=e.settings.name+' · '+e.phase;a.href='/network.html?player&from=home&view=battle&event='+encodeURIComponent(e.settings.id);next.append(a)}updateElement(tables,next);mine.hidden=!own.length;if(!own.length){tables.hidden=true;mine.setAttribute('aria-expanded','false')}
  }
- return {update,destroy(){nav.remove();page.remove();delete pane.dataset.battlePage}};
+ return {update,destroy(){highlights.destroy();nav.remove();page.remove();delete pane.dataset.battlePage}};
 }
