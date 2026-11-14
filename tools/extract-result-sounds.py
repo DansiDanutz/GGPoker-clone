@@ -1,4 +1,4 @@
-"""Recover named native tournament or Spin MP3s; private output, no playback."""
+"""Recover named native table, tournament or Spin MP3s; private output, no playback."""
 import hashlib
 import json
 from pathlib import Path
@@ -6,10 +6,11 @@ import struct
 import sys
 import zlib
 
-assert len(sys.argv) in (3,4) and (len(sys.argv)==3 or sys.argv[3] in ('--spin','--insurance'))
+assert len(sys.argv) in (3,4) and (len(sys.argv)==3 or sys.argv[3] in ('--spin','--insurance','--board'))
 source, destination = map(Path, sys.argv[1:3])
 selected=[("TournamentFallResult",443520,3),("TournamentResultFT",488448,3),("TournamentResultITM",510336,3)] if len(sys.argv)==3 else [('SpinAndGoldSpin',192384,3),('SNGWheelStuckHigh',11520,3),('SNGWheelStuckLow',6912,3),('SngFireworks',46656,2),('SNGWheelOut',126720,3),('SngBigWin',472320,3),('SngWheelFrameEffect',82944,3),('SngWheelFrameLight',66816,3),('SngWheelBaseLight',208512,3)]
 if len(sys.argv)==4 and sys.argv[3]=='--insurance':selected=[('SngInsuranceText',155520,3),('SngPrizeCheers',73728,3),('SngPrizeDaller',129024,3)]
+if len(sys.argv)==4 and sys.argv[3]=='--board':selected=[('BoardFlop',27648,3)]
 raw = source.read_bytes()
 assert raw[:3] in (b"CWS", b"FWS"), "Unsupported SWF compression"
 data = raw[:8] + zlib.decompress(raw[8:]) if raw[:3] == b"CWS" else raw

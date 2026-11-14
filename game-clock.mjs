@@ -6,6 +6,7 @@ function automaticCardPolicy(room){const seat=room.actionClock.seat,option=room.
 function useTimeCard(room){const clock=room.actionClock;room.players[clock.seat].freeTimeChipCount--;clock.cardsUsed++;room.deadline+=room.settings.freeTimeChipSecondsPerUnit*1000;clock.bankEnd=room.deadline}
 export function autoTimeCard(room,now){const clock=room.actionClock;if(!clock||clock.phase!=='cards'||!room.hand||room.hand.end||clock.seat!==room.hand.turn||now<room.deadline||!hasTimeCard(room)||!automaticCardPolicy(room))return false;useTimeCard(room);return true}
 export function startClock(room,now){
+ if(room.hand?.runoutPending){room.deadline=null;delete room.actionClock;return}
  const seconds=room.settings?.actionSeconds??90;
  room.deadline=now+seconds*1000;
  delete room.actionClock;
