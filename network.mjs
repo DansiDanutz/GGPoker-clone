@@ -50,7 +50,7 @@ function hideTournamentAnnounce(){if(!announcePlaying||announceHiding)return;ann
 tournamentAnnounceClose.onclick=event=>{event.stopPropagation();hideTournamentAnnounce()};
 function updateTournamentAnnounce(){
  const requested=!chatWindow&&!!state?.tournament?.pauseRequested;
- if(!state?.tournament){announceMotion?.cancel();announceMotion=null;clearTimeout(announceTimer);announceQueue=0;announcePlaying=false;announceHiding=false;tournamentAnnounce.hidden=true}
+ if(!state?.tournament||state.tournament.cancelRequested||state.tournament.cancelledAt){announceMotion?.cancel();announceMotion=null;clearTimeout(announceTimer);announceQueue=0;announcePlaying=false;announceHiding=false;tournamentAnnounce.hidden=true;announceRequested=false;return}
  if(requested&&!announceRequested){announceQueue++;showTournamentAnnounce()}announceRequested=requested;
 }
 matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',event=>{if(event.matches)announceMotion?.finish()});
@@ -77,7 +77,7 @@ function hideTournamentNotice(){
  clearTimeout(tournamentNoticeTimer);tournamentNoticePhase='exit';animateTournamentNotice(false,()=>{tournamentNotice.hidden=true;tournamentNoticeCurrent=null;tournamentNoticePhase='gap';tournamentNoticeTimer=setTimeout(()=>{tournamentNoticePhase='idle';showTournamentNotice()},2000)});
 }
 function updateTournamentNotice(){
- if(chatWindow||!state?.tournament||state.tournament.winner!==null){tournamentNoticeMotion?.cancel();tournamentNoticeMotion=null;clearTimeout(tournamentNoticeTimer);tournamentNoticeQueue=[];tournamentNoticeCurrent=null;tournamentNoticePhase='idle';observedTournamentPause=false;tournamentNotice.hidden=true;return}
+ if(chatWindow||!state?.tournament||state.tournament.winner!==null||state.tournament.cancelRequested||state.tournament.cancelledAt){tournamentNoticeMotion?.cancel();tournamentNoticeMotion=null;clearTimeout(tournamentNoticeTimer);tournamentNoticeQueue=[];tournamentNoticeCurrent=null;tournamentNoticePhase='idle';observedTournamentPause=false;tournamentNotice.hidden=true;return}
  const paused=state.tournament.pausedAt!=null;if(paused===observedTournamentPause)return;observedTournamentPause=paused;
  if(!paused){tournamentNoticeQueue=[];hideTournamentNotice()}
  tournamentNoticeQueue.push(paused?'paused':'resumed');
@@ -620,7 +620,8 @@ if(!keepActions){refreshBetEditor=null;for(const child of [...$('actions').child
   }
   if(g.quickFoldAllowed){let b=$('actions').querySelector('.nativeQuickFold');if(!b){b=btn('',()=>operate('quick-fold'),'F1');b.className='nativeQuickFold';b.setAttribute('aria-label','Quick fold → next table');b.title='Quick fold → next table';b.append(element('span','','Fold'))}b.title=state.paused?'Quick fold → sit out':'Quick fold → next table';b.setAttribute('aria-label',b.title);positionQuickFold()}else $('actions').querySelector('.nativeQuickFold')?.remove();
  }
- if(state&&state.me==null){$('status').textContent=g?'Watching hand '+state.number+(g.end?' · settled':' · '+state.names[g.turn]+' to act'):'Watching · waiting for players';if(t?.pausedAt!=null)$('status').textContent+=' · Tournament paused by host';else if(t?.pauseRequested)$('status').textContent+=' · Host pause after this hand';
+ if(t?.ownerCancelled){$('status').textContent='Event cancelled by local administrator.'+(state.tournamentEntryPaid?' Paid entry returned: '+(t.refunds?.[state.me]||0)+' play credits.':'');return}
+ if(state&&state.me==null){$('status').textContent=g?'Watching hand '+state.number+(g.end?' · settled':' · '+state.names[g.turn]+' to act'):'Watching · waiting for players';if(t?.pausedAt!=null)$('status').textContent+=' · Tournament paused by host';else if(t?.pauseRequested)$('status').textContent+=' · Host pause after this hand';if(t?.cancelRequested)$('status').textContent+=' · Cancellation after this hand; paid entries will be refunded';
  if(state?.leaveNextHand)$('status').textContent+=' · Leaving after this hand';if(lastCashOut!==null)$('status').textContent+=' · Practice cash-out: '+lastCashOut+' chips';return}
  if(!state){$('status').textContent=lastCashOut===null?'Take a seat to join the room.':'Practice cash-out: '+lastCashOut+' chips. Take a seat to join again.';return}
  if(t?.cancelledAt){$('status').textContent='Event cancelled: insufficient registrations for the payout structure. Entry returned: '+(t.refunds?.[state.me]||0)+' play credits.';return}
@@ -635,7 +636,7 @@ if(!keepActions){refreshBetEditor=null;for(const child of [...$('actions').child
  if(!state.ready[state.me]){const rebuy=g.dealtSeats?.includes(state.me)&&g.stacks[state.me]===0&&!state.pendingAdd,funding=topUpRequest(g,settings);if(rebuy&&funding.topUpTo)btn('Add Chips',openAddChips).disabled=!!document.querySelector('.award');const ready=btn(rebuy&&!funding.topUpTo?(advertised?'Add Chips':'Rebuy '+(settings?.stack??120)+' play chips'): 'Ready for next hand',()=>{const chosen=topUpRequest(g,settings);return rebuy&&!chosen.topUpTo?(advertised?openAddChips():operate('ready',{topUpTo:settings?.stack??120})):operate('ready',chosen)});ready.disabled=!!document.querySelector('.award');if(ready.disabled)ready.title='Waiting for payout to finish'}else $('status').textContent+=' Waiting for other players.';return}
  if(state.waitingForHand){$('status').textContent='Seated · waiting for the next hand.';if(!keepActions)btn('Cancel waiting seat',()=>operate('leave'));return}
  $('status').textContent='Hand '+state.number+' · Pot '+g.committed.reduce((a,b)=>a+b,0)+' · '+(state.me===g.turn?'Your turn':state.names[g.turn]+' to act');
- if(t?.pauseRequested)$('status').textContent+=' · Host pause after this hand';
+ if(t?.pauseRequested)$('status').textContent+=' · Host pause after this hand';if(t?.cancelRequested)$('status').textContent+=' · Cancellation after this hand; paid entries will be refunded';
  const o=g.options;if(!o||keepActions)return;
  const act=(action,target)=>operate('act',{action,target});
  if(settings?.variant==='aof'){for(const [slot,label,action,key]of [[0,'Fold','fold','F1'],[1,'All in','allin','F3']]){const b=btn('',()=>{playCues(['AofButton']);act(action)},key);b.className='nativeAofAction';b.dataset.slot=String(slot);b.append(element('span','',label))}positionQuickFold();return}

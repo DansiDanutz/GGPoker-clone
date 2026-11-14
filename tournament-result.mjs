@@ -2,7 +2,7 @@ import {prizeAmounts} from './engine/prizes.mjs';
 const timestamp=value=>Number.isSafeInteger(value)&&value>=0&&value<=8640000000000000?value:null;
 export function tournamentResult(state,room){
  const t=state?.tournament,me=state?.me,names=state?.names;
- if(!t||typeof room!=='string'||!room||!Number.isInteger(me)||!Array.isArray(names)||!names[me]||timestamp(t.startedAt)===null||t.out?.[me]==null&&t.winner!==me)return null;
+ if(!t||t.cancelledAt||typeof room!=='string'||!room||!Number.isInteger(me)||!Array.isArray(names)||!names[me]||timestamp(t.startedAt)===null||t.out?.[me]==null&&t.winner!==me)return null;
  const place=t.finishes?.[me],entries=names.filter(Boolean).length;
  if(!Number.isInteger(place)||place<1||place>entries||place===1&&t.winner!==me||!Number.isSafeInteger(t.pool)||t.pool<0)return null;
  let amounts;try{amounts=prizeAmounts(t.pool,t.prizeShares||[100])}catch{return null}
