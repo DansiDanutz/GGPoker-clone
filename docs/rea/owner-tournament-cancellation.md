@@ -25,3 +25,11 @@ Room/hand/refund wallet writes use the existing atomic room checkpoint and rollb
 - `network-browser-test.mjs --tournament-cancel`: trusted pointer confirmation/Escape/503 retry, three separate signed-in player sessions, real Fold controls, cancellation suppressing prior pause/restart notices,111 credits refunded once,300 chips, no prize overlay/new hand, two server restarts and private wallet receipts.
 
 All tests use temporary accounts, servers and muted headless browser contexts. No live owner tournament is cancelled by tests. Native private admin behavior, cancellation animations and tournament disqualification remain unverified/unimplemented.
+
+## Full backup round-trip verification
+
+The installed runtime is tested through the real HTTP backup/restore endpoints for both pending and completed cancellation checkpoints. Restoring over the active current event is rejected before a rescue snapshot is created. After the current event finishes, restoring its pending snapshot restores the original private hand and all entry ledger/balance state together: each account returns to9963, then the restored hand settles and each reaches10000 with one refund receipt in the restored timeline. This is a complete dataset rewind, not an extra refund layered over the current wallet.
+
+Restoring the completed snapshot and restarting preserves one refund and no new deal/prize. A separate fixture removes the mandatory pending-cancellation settlement marker, recomputes the archive's file byte length/SHA-256/base64 correctly, then requests restore. Integrity verification passes but semantic model validation rejects the checkpoint. Rescue recovery restores the exact previous room/wallet bytes, removes the restore journal, keeps in-memory cancelled state and10000 balances coherent, and survives another cold restart. The accepted cancellation audit remains single after the round-trips.
+
+This closes cancellation-specific backend backup/recovery coverage. It does not establish the native private admin UI or every restore interaction in the browser. No live owner files are used; all snapshots and account data are temporary fixtures.
