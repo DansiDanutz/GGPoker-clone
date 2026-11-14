@@ -50,12 +50,56 @@
       "battleroyale37",
       "battleroyale38"
     ],
-    "bulletTexture": "battleroyale44"
+    "bulletTexture": "battleroyale44",
+    "headerGeometry": {
+      "lineLeft": 0,
+      "lineRight": 320,
+      "lineWidth": 100,
+      "lineHeight": 22,
+      "titleLeft": 103,
+      "titleWidth": 200,
+      "rushTitleTop": -3
+    }
   },
   "limits": [
-    "Native decoration sprites not yet recovered",
     "Local qualification/fees/bounty policies are explicit independent rules, not inferred native server policies",
     "Physical native font and pixel comparison unverified",
     "External More link excluded from requested in-app scope"
-  ]
+  ],
+  "artwork": {
+    "files": [
+      {
+        "bytes": 933,
+        "file": "native-battle-rules-left.png",
+        "frame": "battleroyale0037",
+        "height": 22,
+        "rgbaExact": true,
+        "sha256": "a48fa40f56977c4006d0f5231651b151c69a149ba66e032b86b6d1513ee79c57",
+        "width": 160
+      },
+      {
+        "bytes": 945,
+        "file": "native-battle-rules-right.png",
+        "frame": "battleroyale0038",
+        "height": 22,
+        "rgbaExact": true,
+        "sha256": "63a9ebb30e02df76bae963e34d3d52b07ab4f00a2b5e7a83aeb40304d41a55b4",
+        "width": 160
+      },
+      {
+        "bytes": 261,
+        "file": "native-battle-rules-arrow.png",
+        "frame": "battleroyale0044",
+        "height": 9,
+        "rgbaExact": true,
+        "sha256": "153b138bdec67df2c015be8a33c5a63fe77efe73e67869b554d3f93736885e3a",
+        "width": 4
+      }
+    ],
+    "method": "StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding",
+    "sources": {
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+    }
+  }
 }
