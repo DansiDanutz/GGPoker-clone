@@ -24,7 +24,7 @@ The UI keeps the same command after a lost acknowledgement; retry credits once. 
 - Existing tournament-wallet-test.mjs andowner-monitor-test.mjs PASS after the metadata/transaction changes.
 - owner-backup-test.mjs andowner-restore-http-test.mjs PASS: backup export,cold restoration of both embedded Rush pools,active-hand guards,rescue androllback. The backup fixture was corrected to assert the current local-rush-pools metadata instead of requiring obsolete standalone Rush files. No production backup behavior changed.
 
-Tests use ephemeral servers,data andheadless muted browsers. No live operator orplayer funds were changed. Source changes have not been committed/released yet.
+Tests use ephemeral servers,data andheadless muted browsers. No live operator orplayer funds were changed. Funding changes were released in PR109, head0295d7bff246469de9f7e1236aa78faccba04a90, after exact-head candidate tests and guarded idle restart; six owner files15496bytes stayed unchanged.
 
 ## Required next stages
 
