@@ -350,3 +350,5 @@ The local list now presents five columns at these offsets. It reads actual event
 Browser fixture `node network-browser-test.mjs --battle-rules` exercises both owner configurations, unchanged catalog reads, actual pointer selection, 924x28 rows, real account entry debit25, fresh server restart, cancellation refund25 exactly once, keyboard selection and double-click without a second entry. It uses only temporary accounts/data. RED commit cc81f05 records the old eight-column mismatch.
 
 Not full parity: native tournament-lobby panels, start-time column, running alive counts, players icon/action artwork/fonts, selected background and complete pixel/hover comparison remain incomplete. The local selected-event details footer is retained for rules/access; it is not claimed native geometry. No original account was registered, no native app was foregrounded, and no sound was played.
+
+Review correction: preserve the Game Lobby gate for unregistered viewers after registration closes. Game List double-click still opens the existing local event read-only; it does not enable late entry.
