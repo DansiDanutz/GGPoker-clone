@@ -41,3 +41,8 @@
 .reportDetail textarea{left:12px;top:34px;padding:2px;border:0;background:transparent;color:#d1d1c0;font:14px Arial,sans-serif;overflow-y:auto}
 .reportDetail textarea::placeholder{color:#999;opacity:1}
 .reportDetail .reportCount{font:13px Arial,sans-serif;color:#666}
+
+.reportDetail textarea{scrollbar-width:none}.reportDetail textarea::-webkit-scrollbar{display:none}
+.reportDetailScrollbar{position:absolute;left:423px;top:30px;width:5px;height:70px;background:#000;touch-action:none;cursor:default}
+.reportDetailScrollbar[hidden]{display:none}.reportDetailScrollbar>span{position:absolute;left:0;width:5px;min-height:0;box-sizing:border-box;border:solid transparent;border-width:1px;border-image:url('/home-art/native-fairplay-scrollbar.png') 6 3 8 3 fill;border-image-width:6px 3px 8px 3px;pointer-events:none}
+.reportDetailScrollbar:focus-visible{outline:1px solid #ddd;outline-offset:1px}

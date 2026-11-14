@@ -257,5 +257,56 @@
       ],
       "scrollbar": "Native external5px scrollbar not reconstructed; textarea retains functional standard scrolling."
     }
+  },
+  "reportScrollbar": {
+    "files": [
+      {
+        "bytes": 303,
+        "file": "native-fairplay-scrollbar.png",
+        "frame": "common0275",
+        "height": 16,
+        "rgbaExact": true,
+        "sha256": "e378328d6242bbd03b307ef7e21e82d8b73f52cfbeff33e9416546344c52df58",
+        "width": 8
+      }
+    ],
+    "method": "StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding",
+    "sources": {
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+    },
+    "scripts": [
+      {
+        "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/fiarplayReport/NoteEditView.as",
+        "sha256": "e1179f5adc4f7180aad72283a46d1a5b1375fb6a649e3c690fae0b0984585ea2"
+      },
+      {
+        "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/lib/display/TextScroller.as",
+        "sha256": "c1e6d7f7c6150323bdbd0e8bcc0866e1c15d3b7bdc76130f29a271c187f64e0f"
+      }
+    ],
+    "contract": {
+      "track": [
+        423,
+        30,
+        5,
+        70
+      ],
+      "background": "#000000",
+      "thumbFrame": "common0275",
+      "thumbSource": [
+        8,
+        16
+      ],
+      "thumbSlice9": [
+        3,
+        6,
+        2,
+        2
+      ],
+      "hiddenWhen": "textHeight<=inputHeight",
+      "pointer": "center thumb under pointer; clamp; stage mouseMove until mouseUp",
+      "adapter": "DOM scrollHeight/clientHeight/scrollTop replace native line metrics; keyboard Home/End/arrows/pages are local accessibility support; Flash ceil-to-line and physical font equivalence unverified"
+    }
   }
 }
