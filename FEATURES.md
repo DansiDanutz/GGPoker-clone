@@ -1162,3 +1162,5 @@ Native event panes (unreleased): live three-column event lobby, actual Info/Stru
 Tournament pane paint (unreleased): original common81 nine-patch, native32px vector-tab geometry/colors/visible-tab widths and rounded ends; RGBA crop/source receipts and browser assertions. Physical fonts/header/player controls still incomplete.
 
 Tournament Latin typography (unreleased): actual inherited Roboto18 tabs, Condensed Bold24 unbranded title and Condensed19 entry control, using existing native fonts;28source inventory. Native autoscale/non-Latin/physical baseline/header art still incomplete.
+
+Tournament registration paint (unreleased): actual up/down/disabled/shadow sprites, native asymmetric nine-slice, constructor-specific hover multiplier, half-alpha label/equal RGB disabled matrix; pointer and rendered pixel probe tests. Physical transition timing remains unverified.

@@ -93,3 +93,15 @@ The header title uses getLabel(...,24,white,bold=true), whose useRoboto defaults
 Brand backgrounds and banners are dynamic URLs resolved through actual tournament-type metadata; no matching local type is configured here. The native no-type branch hides both and uses the unbranded title position. No arbitrary PLAYGG/GG promotional banner is invented. The local Back navigation remains a separate affordance in the header and is not claimed as native artwork.
 
 Browser checks assert18/24bold/19 sizes, title bounds and actual loaded font faces, then repeat entry/refund/Rush/focus/restart. TrueType bounds/cmap/glyph/name tests now include regular Condensed. Long-title native autoScale, non-Latin script font branches, exact physical text rasterization, remaining native header/button artwork, player fields/profile/search and sound are unfinished.
+
+## Native registration-button state graphics
+
+`ButtonColor.RED` maps common30/32/31, but GlobalButton's actual constructor passes up30, down32, null over and disabled27 into Button. Loading a local over31 variable does not pass it to the superclass. Therefore this header control's hover uses the up bitmap with1.3 RGB multiplier; it must not substitute the atlas31 texture merely because the color class lists it. Button applies a nominal0.2s multiplier tween; original default easing and physical frame delivery remain uncalibrated.
+
+The body bitmaps are20x40. applySlice9Grid on DisplayObject produces rectangle10,20,1,1, hence CSS fixed slices top20/right9/bottom19/left10. Shadow common20 is40x40 with15/15/10/10 scale9 rectangle; offsets−5,+5 and size+10,+5 give188x49 for the178x44 control. Existing Swift extraction reads back all four original crops and asserts exact RGBA; source/hash/pixel receipts are in `tourney-entry-source.json`. State images are preloaded to avoid a first-press fetch gap.
+
+GlobalButton changes label alpha to0.5 when pressed or disabled. Disabled uses the gray27 body at full whole-control opacity plus an equal-weight1/3 RGB ColorMatrix, not CSS luminance grayscale or global0.4 opacity. Local SVG applies the actual matrix, with filter bounds expanded to preserve the shadow. The text lives in a separate span so its alpha changes without dimming the entire background.
+
+The browser fixture checks normal/pressed/disabled image selection, exact slice/offset/size geometry, hover multiplier, half-alpha label and full disabled-control opacity. It presses then releases outside and verifies no wallet/registration action. A temporary red probe in the isolated headless page is sampled from an in-memory rendered capture: the disabled matrix must produce opaque RGB85/85/85, proving actual filter application rather than only a CSS property string. The probe is removed before real registration/refund/Rush/restart. No image is displayed or retained and no owner data is used.
+
+Source target states and sprite pixels are established; full physical AIR/browser resampling, transition easing and disabled-to-enabled timing still need comparison. Native long-title autoScale, remaining player controls/columns and audio remain unfinished.
