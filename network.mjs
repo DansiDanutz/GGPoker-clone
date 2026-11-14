@@ -668,6 +668,7 @@ document.addEventListener('keydown',e=>{
  // Bound keys must not activate another focused HTML control.
  e.preventDefault();e.stopImmediatePropagation();if(e.repeat)return;
  const click=button=>{if(button&&!button.disabled){e.preventDefault();button.click();return true}return false};
+ if(['runItOnce','runItTwice','runItThreeTimes'].includes(action)){click(document.querySelector('.nativeRimtPanel:not([hidden]) [data-rimt-runs="'+({runItOnce:1,runItTwice:2,runItThreeTimes:3})[action]+'"]'));return}
  if(action==='addChips'){click(nativeAddChipsButton);return}
  if(action==='lastHands'){click(document.querySelector('#tableHandHistory'));return}
  if(action==='rabbit'){click(document.querySelector('.nativeRabbitCover:not(:disabled)'));return}
