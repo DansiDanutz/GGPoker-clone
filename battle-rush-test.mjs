@@ -7,10 +7,12 @@ let event=battleRush(entries,config);const sessions=event.sessions();
 assert.equal(event.total(),1200);assert.throws(()=>event.view('player0','wrong'),/session/);
 const first=event.deal('player0',sessions.player0,1000).table;
 assert.equal(event.view('player0',sessions.player0).hand.cards.filter(Boolean).length,1);
+const beforePreview=event.snapshot(),preview=event.preview(String(first));assert.equal(preview.maxPlayers,6);assert.equal(preview.table,String(first));assert.deepEqual(preview.players.map(p=>p.name),event.view('player0',sessions.player0).names);assert.deepEqual(preview.players.map(p=>p.chips),event.view('player0',sessions.player0).hand.stacks);assert.deepEqual(preview.players.map(p=>p.position),['dealer','small-blind','big-blind',null,null,null]);assert.ok(preview.players.every(p=>Object.keys(p).sort().join(',')==='chips,name,position,seat'));preview.players[0].chips=999;assert.notEqual(event.preview(String(first)).players[0].chips,999);assert.equal(event.snapshot(),beforePreview);assert.equal(event.preview('unknown'),null);
+
 assert.equal(event.view('player0',sessions.player0).hand.deck,undefined);const privateCard=event.view('player0',sessions.player0).hand.cards[0][0];event.view('player0',sessions.player0).hand.cards[0][0]='XX';assert.equal(event.view('player0',sessions.player0).hand.cards[0][0],privateCard,'Returned views cannot mutate game state');assert.throws(()=>event.qualification(),/Finish/);
 assert.throws(()=>event.move('player0',sessions.player0,undefined,'call',undefined,1100),/table/);
 const next=event.fold('player0',sessions.player0,first,1100).table;
-assert.notEqual(next,first);assert.equal(event.total(),1200);
+assert.notEqual(next,first);assert.equal(event.total(),1200);assert.ok(!event.preview(String(first)).players.some(p=>p.name==='player0'));assert.equal(event.preview(String(next)).players.filter(p=>p.name==='player0').length,1);
 assert.throws(()=>event.move('player0',sessions.player0,first,'call',undefined,1100),/table/);
 const checkpoint=event.snapshot();event=battleRush(entries,config,checkpoint);
 assert.deepEqual(event.sessions(),sessions);assert.equal(event.view('player0',sessions.player0).table,next);

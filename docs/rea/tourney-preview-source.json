@@ -1,0 +1,297 @@
+{
+  "method": "Selected FFDec exports from installed Game/51/IronDesktop.swf; no foreground/native account interaction",
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/tourneylobby/players/TourneyLobbyPlayers.as",
+      "bytes": 15287,
+      "sha256": "27d5c547812768b3a3dac88d994215adaf6fd2ba5df1587cc24b69bae4e48396"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/tourneylobby/players/preview/TourneyTablePreview.as",
+      "bytes": 15384,
+      "sha256": "c7135fb05ef97becf65b4a3b9303d1a6b32b095e6db748f110405f61a223f761"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/tourneylobby/players/preview/position/TourneyPreviewPlayerPositionManager.as",
+      "bytes": 1935,
+      "sha256": "c74c4286d7d6caa93bcc5fc22a884f27b44904315d98cfd04d6d1314012bfb59"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/view/TourneyPreviewPlayerCell.as",
+      "bytes": 7219,
+      "sha256": "bd34ac5ab4a11f44003fcc9fd7b34afbc1440d2ffaee7921d52d52966acd9234"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/view/PreviewPlayerCell.as",
+      "bytes": 20932,
+      "sha256": "197f7337dd77c3b238f729fe54aef23092a7d34d585cb85c2905b298799a83d7"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/tourneylobby/players/preview/position/TourneyTablePreviewPositionData.as",
+      "bytes": 997,
+      "sha256": "80106958d8153cfda45e713b41d678af51266f1fffff89f4725860e623a810d2"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/tourneylobby/players/preview/position/TourneyTablePreviewTwoPositionData.as",
+      "bytes": 483,
+      "sha256": "c00a2de714617faca5ac61e7e583d0aa0c980e5fb1681f19876b7a08314b8110"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/tourneylobby/players/preview/position/TourneyTablePreviewFourPositionData.as",
+      "bytes": 557,
+      "sha256": "421aeac8213c77ba017d0d2b9fd6b6c3eccea760b7e9a50364d06a31fe843620"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/tourneylobby/players/preview/position/TourneyTablePreviewSixPositionData.as",
+      "bytes": 289,
+      "sha256": "e63b38919f833d66f8ff8fd4053d75d479ced5484e523816abd95bafd471fabc"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/view/PreviewPlayerAvatar.as",
+      "bytes": 2451,
+      "sha256": "26259946edb218565d66bd5dc2406ce13277fc28c1b467e6bf0af176a9aca5f2"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/tourneylobby/players/preview/position/TourneyTablePreviewFivePositionData.as",
+      "bytes": 593,
+      "sha256": "373a07e83b864952fc764639b0d79276f04bb60d8cb005e5960c29023de515a6"
+    }
+  ],
+  "positions": {
+    "TourneyTablePreviewPositionData": {
+      "player": [
+        [
+          178,
+          27
+        ],
+        [
+          290,
+          36
+        ],
+        [
+          290,
+          155
+        ],
+        [
+          178,
+          165
+        ],
+        [
+          66,
+          155
+        ],
+        [
+          66,
+          36
+        ]
+      ],
+      "button": [
+        [
+          165,
+          78
+        ],
+        [
+          242,
+          81
+        ],
+        [
+          248,
+          125
+        ],
+        [
+          165,
+          118
+        ],
+        [
+          84,
+          125
+        ],
+        [
+          89,
+          81
+        ]
+      ]
+    },
+    "TourneyTablePreviewTwoPositionData": {
+      "player": [
+        [
+          178,
+          27
+        ],
+        [
+          178,
+          165
+        ]
+      ],
+      "button": [
+        [
+          165,
+          78
+        ],
+        [
+          165,
+          118
+        ]
+      ]
+    },
+    "TourneyTablePreviewFourPositionData": {
+      "player": [
+        [
+          178,
+          27
+        ],
+        [
+          321,
+          101
+        ],
+        [
+          178,
+          165
+        ],
+        [
+          36,
+          101
+        ]
+      ],
+      "button": [
+        [
+          165,
+          78
+        ],
+        [
+          271,
+          90
+        ],
+        [
+          165,
+          118
+        ],
+        [
+          62,
+          90
+        ]
+      ]
+    },
+    "TourneyTablePreviewFivePositionData": {
+      "player": [
+        [
+          66,
+          36
+        ],
+        [
+          290,
+          36
+        ],
+        [
+          290,
+          150
+        ],
+        [
+          178,
+          165
+        ],
+        [
+          66,
+          150
+        ]
+      ],
+      "button": [
+        [
+          89,
+          81
+        ],
+        [
+          242,
+          81
+        ],
+        [
+          248,
+          120
+        ],
+        [
+          165,
+          118
+        ],
+        [
+          84,
+          120
+        ]
+      ]
+    }
+  },
+  "unknowns": [
+    "Original server preview update cadence",
+    "Original server dynamic HUD/country/badge data",
+    "Physical AIR font and animation timing",
+    "Preview UI implemented; tournament HUD adapter not implemented"
+  ],
+  "backgrounds": [
+    {
+      "file": "Preview_TournamentTable_BR_st1.png",
+      "bytes": 134175,
+      "sha256": "0529a5ff2b63e612812b45e06dd57dfa72684497d9e3cc07f4983f469753d2fc"
+    },
+    {
+      "file": "Preview_TournamentTable_BR_st3.png",
+      "bytes": 138688,
+      "sha256": "ee905e223bcd8e6354ff74d555afeeb7d6411ffdeab82be0ece7e61314a038d0"
+    }
+  ],
+  "atlas": {
+    "files": [
+      {
+        "bytes": 1321,
+        "file": "native-tourney-preview-dealer.png",
+        "frame": "lobby_preview0014",
+        "height": 21,
+        "rgbaExact": true,
+        "sha256": "8ad8afec38701b66a4a9c2b438f469ecf2ea902d4f86cfbebadc9248ef152fea",
+        "width": 20
+      },
+      {
+        "bytes": 1345,
+        "file": "native-tourney-preview-small-blind.png",
+        "frame": "lobby_preview0015",
+        "height": 25,
+        "rgbaExact": true,
+        "sha256": "404f728b5cc2c8a29342f364598ab7707df61f5519a06109139abbf1f9cf719d",
+        "width": 24
+      },
+      {
+        "bytes": 1320,
+        "file": "native-tourney-preview-big-blind.png",
+        "frame": "lobby_preview0016",
+        "height": 25,
+        "rgbaExact": true,
+        "sha256": "7edb6a635b065a9b509a333134485ac32049c8b9313bd638b5d4fd9469c7e082",
+        "width": 24
+      },
+      {
+        "bytes": 3073,
+        "file": "native-tourney-preview-info.png",
+        "frame": "lobby_preview0030",
+        "height": 46,
+        "rgbaExact": true,
+        "sha256": "6f1ae33f01464eb414a5e2cabd08e5165da592492d3ad970f8eb5f8060d9794a",
+        "width": 64
+      }
+    ],
+    "method": "StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding",
+    "sources": {
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+    }
+  },
+  "localBackgrounds": [
+    {
+      "file": "native-tourney-preview-rush.png",
+      "bytes": 134175,
+      "sha256": "0529a5ff2b63e612812b45e06dd57dfa72684497d9e3cc07f4983f469753d2fc"
+    },
+    {
+      "file": "native-tourney-preview-final.png",
+      "bytes": 138688,
+      "sha256": "ee905e223bcd8e6354ff74d555afeeb7d6411ffdeab82be0ece7e61314a038d0"
+    }
+  ]
+}

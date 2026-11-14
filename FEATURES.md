@@ -1164,3 +1164,9 @@ Tournament pane paint (unreleased): original common81 nine-patch, native32px vec
 Tournament Latin typography (unreleased): actual inherited Roboto18 tabs, Condensed Bold24 unbranded title and Condensed19 entry control, using existing native fonts;28source inventory. Native autoscale/non-Latin/physical baseline/header art still incomplete.
 
 Tournament registration paint (unreleased): actual up/down/disabled/shadow sprites, native asymmetric nine-slice, constructor-specific hover multiplier, half-alpha label/equal RGB disabled matrix; pointer and rendered pixel probe tests. Physical transition timing remains unverified.
+
+Tournament search release PR157/158: native-derived inline Players search and7original sprites, Enter/min3/max30/Reset/blur controls, immutable wallet/room/polling/restart and sixbrowserfinal600chips/150prizes/14bounties verified on installed runtime. Search matching is an explicit local substring policy. Selected-table preview/profile remain unfinished;9-class source/actual seat/marker contracts are recorded in docs/rea/tourney-preview-source.json and tourney-lobby.md.
+
+Tournament preview backend (unreleased): authenticated read-only actual table/seat/chips/Dealer-SB-BB/avatar projection for Rush and final, fast-fold reassignment exclusion and unchanged file bytes/restart verified. Preview graphics and lobby HUD adapter are still unimplemented.
+
+Tournament selected-table preview (unreleased): native Battle Rush/final backgrounds, actual assigned seat/avatar/chips/Dealer-SB-BB, recovered2–6seat anchors, shortened list/native footer geometry and stale-response rejection. No fabricated HUD/country/badges; View Profile adapter and physical font/logo parity remain incomplete.

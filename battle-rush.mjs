@@ -1,3 +1,4 @@
+import {previewTable} from './room-preview.mjs';
 import {randomBytes} from 'node:crypto';
 import {isDeepStrictEqual} from 'node:util';
 import {rushPool} from './engine/rush-pool.mjs';
@@ -43,6 +44,7 @@ export function battleRush(entries,config,checkpoint=null){
   const tables=[...pool.tables].filter(([,t])=>!t.settled).map(([id,t])=>{const stacks=t.ids.flatMap((name,i)=>pool.players.get(name).table===id?[t.game.stacks[i]]:[]);return {id:String(id),players:stacks.length,largestStack:Math.max(...stacks),smallestStack:Math.min(...stacks),open:false}}).filter(t=>t.players>0);
   return {players,tables};
  }
+ function preview(table){const row=[...pool.tables].find(([id,t])=>String(id)===table&&!t.settled);if(!row)return null;const [id,t]=row;return previewTable(table,t.ids,t.game,t.ids.map(name=>pool.players.get(name).table===id))}
  function snapshot(){return JSON.stringify({version:1,config,entries,closed,sessions:[...sessions],pool:pool.snapshot()})}
- return {view,deal,move,fold,tick,phase,alive,lobby,qualification,snapshot,total:pool.total,sessions:()=>Object.fromEntries(sessions)};
+ return {view,deal,move,fold,tick,phase,alive,lobby,preview,qualification,snapshot,total:pool.total,sessions:()=>Object.fromEntries(sessions)};
 }
