@@ -26,3 +26,11 @@ export function spinBlindLevel(multiplier,{startedAt,now,completedHands}){
  const index=Math.min(spinSmallBlinds.length-1,row[3]==='hands'?Math.floor(completedHands/row[4]):Math.floor(Math.max(0,now-startedAt)/(row[4]*60000)));
  return {level:index+1,smallBlind:spinSmallBlinds[index],bigBlind:spinSmallBlinds[index]*2,unit:row[3],interval:row[4]};
 }
+
+// Explicit owner practice rules only; native per-outcome configuration remains unresolved.
+export function spinPracticeConfiguration(configuration,buyIn){
+ const rows=spinPayouts(buyIn),bad=()=>{throw Object.assign(Error('Provide complete explicit local-practice Spin rules'),{status:400})};
+ if(!configuration||Object.keys(configuration).some(k=>!['mode','outcomes'].includes(k))||configuration.mode!=='local-practice'||!Array.isArray(configuration.outcomes)||configuration.outcomes.length!==rows.length)bad();
+ const outcomes=rows.map(row=>{const matches=configuration.outcomes.filter(c=>c?.multiplier===row.multiplier);if(matches.length!==1)bad();const c=matches[0];if(Object.keys(c).some(k=>!['multiplier','startingChips','timeBankCards','noDealing'].includes(k))||!Number.isInteger(c.startingChips)||c.startingChips<300||c.startingChips>1000||!Number.isInteger(c.timeBankCards)||c.timeBankCards<1||c.timeBankCards>4||typeof c.noDealing!=='boolean')bad();return {multiplier:c.multiplier,startingChips:c.startingChips,timeBankCards:c.timeBankCards,noDealing:c.noDealing}});
+ return {mode:'local-practice',outcomes};
+}
