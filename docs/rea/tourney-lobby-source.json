@@ -1,0 +1,133 @@
+{
+  "artifact": "IronDesktop.swf / Game/51",
+  "sources": [
+    {
+      "class": "com.nsus.iron.controller.OpenTourneyLobbyCommand",
+      "sha256": "011c07f6eea465a1cc7c63d6efd833116a2d1debb2e247bb1930b70dcb6346a8",
+      "bytes": 1283
+    },
+    {
+      "class": "com.nsus.iron.lobby.view.tourneylobby.BattleRoyaleStageView",
+      "sha256": "e90031b8e8725a0a0d816ce2548b9739427aa48ccc4f9287b18c26ebf4121b7d",
+      "bytes": 3083
+    },
+    {
+      "class": "com.nsus.iron.lobby.view.tourneylobby.TourneyLobby",
+      "sha256": "f8cbbdbca60b035932eef36c97fd5e0c27cf93aa45931654c07e6bc86de5e8bb",
+      "bytes": 8704
+    },
+    {
+      "class": "com.nsus.iron.lobby.view.tourneylobby.TourneyLobbyBase",
+      "sha256": "17bbeb697f5cb8c326659a3a1ed3c66809e37b27816dcec8dead27a57af5dbb3",
+      "bytes": 9375
+    },
+    {
+      "class": "com.nsus.iron.lobby.view.tourneylobby.TourneyPage",
+      "sha256": "b424b56d931a53c5b95a8b35873b78024a81290b868e0b47628422a1dff48553",
+      "bytes": 4916
+    },
+    {
+      "class": "com.nsus.iron.lobby.view.tourneylobby.TourneyTabButton",
+      "sha256": "c815ec097b1f3e182a95e5ed7a82b4624a9ce97e400bd355701d1560c7ad3405",
+      "bytes": 6120
+    },
+    {
+      "class": "com.nsus.iron.lobby.view.tourneylobby.TourneyTabType",
+      "sha256": "aeaef274e973580ff7318ce7bb647f7a97605e99c196c0e40b6e0aa76789c070",
+      "bytes": 2616
+    },
+    {
+      "class": "com.nsus.iron.lobby.view.tourneylobby.header.TourneyHeader",
+      "sha256": "cfd3621053b88f63a4842d9ae3b1d6401edfb918083b0846c9f540ddbe5e8926",
+      "bytes": 1684
+    },
+    {
+      "class": "com.nsus.iron.lobby.view.tourneylobby.header.TourneyHeaderPage",
+      "sha256": "ea5a481c69959a2730d8572d776e99c7588a12d5117112c6cb6c22d0920982c5",
+      "bytes": 49046
+    },
+    {
+      "class": "com.nsus.iron.lobby.view.tourneylobby.main.TourneyInformationPage",
+      "sha256": "36b5d35d1546ffc392be332f42acd9c37aff51b98a413ba1ffee560c0facd93b",
+      "bytes": 84434
+    },
+    {
+      "class": "com.nsus.iron.lobby.view.tourneylobby.main.TourneyLobbyMain",
+      "sha256": "0146f6a9219112e502b736fa8610373d56e2dffc1207fdadbe33795c371e14b1",
+      "bytes": 4698
+    },
+    {
+      "class": "com.nsus.iron.lobby.view.tourneylobby.main.TourneyPayoutPage",
+      "sha256": "7fcb6d96e08dfdd6945dcf45724bec355959e5a453d74f0f102dac89b306a6fc",
+      "bytes": 8558
+    },
+    {
+      "class": "com.nsus.iron.lobby.view.tourneylobby.main.TourneyStructurePage",
+      "sha256": "47826a0be1b5cd6568e5f119d40fdae49abf565f837e3348ae0766280b7c5e5e",
+      "bytes": 2440
+    },
+    {
+      "class": "com.nsus.iron.lobby.view.tourneylobby.players.TourneyLobbyPlayers",
+      "sha256": "27d5c547812768b3a3dac88d994215adaf6fd2ba5df1587cc24b69bae4e48396",
+      "bytes": 15287
+    },
+    {
+      "class": "com.nsus.iron.lobby.view.tourneylobby.staking.TourneyLobbyStaking",
+      "sha256": "3f447aadbed0fc906171e583a056f84743e6503871e1aa11f36f6f0721f9ef5e",
+      "bytes": 9036
+    },
+    {
+      "class": "com.nsus.iron.view.TourneyLobbyMediator",
+      "sha256": "c9baf4269ed88f522a44d0401052e520ece31aa76159b6169af76dba835e8534",
+      "bytes": 52489
+    }
+  ],
+  "scope": "Recovered client UI and signal wiring only; not server implementation or physical pixel/audio proof",
+  "layout": {
+    "defaultHeight": 706,
+    "horizontalSeparator": [
+      0,
+      159,
+      1200,
+      1
+    ],
+    "left": [
+      3,
+      160,
+      411,
+      530
+    ],
+    "main": [
+      417,
+      160,
+      361,
+      527
+    ],
+    "right": [
+      782,
+      160,
+      412,
+      527
+    ],
+    "tabLayer": [
+      7,
+      8
+    ],
+    "pageLayer": [
+      7,
+      44
+    ]
+  },
+  "confirmation": {
+    "source": "com.nsus.iron.view.TourneyLobbyMediator",
+    "signal": "UNREGISTER_BATTLEROYALE_TOURNEY",
+    "promptKey": "BattleRoyaleCancelRegistration",
+    "titleKey": "LobbyButtonOpenTourneyUnRegister",
+    "buttons": [
+      "OK",
+      "NO"
+    ],
+    "onOk": "UNREGISTER_BATTLE_ROYALE",
+    "scope": "Tournament lobby; global Game List mediator not yet established"
+  }
+}
