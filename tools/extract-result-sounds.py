@@ -1,4 +1,4 @@
-"""Recover only three named native tournament MP3s; private output, no playback."""
+"""Recover named native tournament or Spin MP3s; private output, no playback."""
 import hashlib
 import json
 from pathlib import Path
@@ -6,7 +6,9 @@ import struct
 import sys
 import zlib
 
-source, destination = map(Path, sys.argv[1:])
+assert len(sys.argv) in (3,4) and (len(sys.argv)==3 or sys.argv[3]=='--spin')
+source, destination = map(Path, sys.argv[1:3])
+selected=[("TournamentFallResult",443520,3),("TournamentResultFT",488448,3),("TournamentResultITM",510336,3)] if len(sys.argv)==3 else [('SpinAndGoldSpin',192384,3),('SNGWheelStuckHigh',11520,3),('SNGWheelStuckLow',6912,3),('SngFireworks',46656,2),('SNGWheelOut',126720,3),('SngBigWin',472320,3),('SngWheelFrameEffect',82944,3),('SngWheelFrameLight',66816,3),('SngWheelBaseLight',208512,3)]
 raw = source.read_bytes()
 assert raw[:3] in (b"CWS", b"FWS"), "Unsupported SWF compression"
 data = raw[:8] + zlib.decompress(raw[8:]) if raw[:3] == b"CWS" else raw
@@ -36,15 +38,16 @@ while pos < len(data):
     if kind == 0:
         break
 recovered = {}
-for name, expected in [("TournamentFallResult", 443520), ("TournamentResultFT", 488448), ("TournamentResultITM", 510336)]:
+for name, expected, expected_rate in selected:
     character = symbols["Sound" + name]
     sound = sounds[character]
-    assert sound[2] >> 4 == 2 and (sound[2] >> 2) & 3 == 3, "Expected 44.1kHz MP3"
+    rate=(sound[2] >> 2) & 3
+    assert sound[2] >> 4 == 2 and rate in (2,3) and (expected_rate is None or rate==expected_rate), "Expected native MP3 sample rate"
     samples = struct.unpack_from("<I", sound, 3)[0]
-    assert samples == expected, "Native sample count changed; review source"
+    assert samples > 0 and (expected is None or samples == expected), "Native sample count changed; review source"
     payload = sound[9:]
     assert len(payload) > 1000 and payload[0] == 255 and payload[1] & 224 == 224, "Missing MP3 sync"
-    recovered[name] = (payload, {"character": character, "samples": samples, "seekSamples": struct.unpack_from("<h", sound, 7)[0], "bytes": len(payload), "sha256": hashlib.sha256(payload).hexdigest()})
+    recovered[name] = (payload, {"character": character, "samples": samples, "sampleRate":(5512,11025,22050,44100)[rate], "seekSamples": struct.unpack_from("<h", sound, 7)[0], "bytes": len(payload), "sha256": hashlib.sha256(payload).hexdigest()})
 destination.mkdir(exist_ok=False)
 for name, (payload, _) in recovered.items():
     target = destination / (name + ".mp3")
@@ -52,4 +55,5 @@ for name, (payload, _) in recovered.items():
     assert target.read_bytes() == payload
 receipt = {"sourceSha256": hashlib.sha256(raw).hexdigest(), "sounds": {name: record for name, (_, record) in recovered.items()}}
 (destination / "receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
-print("PASS three exact native MP3 payloads, named symbol mapping, 44.1kHz/sample counts and byte readback")
+print("PASS "+str(len(selected))+" exact native MP3 payloads, named symbol mapping, native sample rates/counts and byte readback")
+print(json.dumps(receipt['sounds']))

@@ -1,3 +1,4 @@
+import {installSpinWheelScene} from './spin-wheel-scene.mjs';
 import {installTournamentResult} from './tournament-result.mjs';
 import {installCashSitOutMenu} from './cash-sitout-menu.mjs';
 import {hotkeyActions,readHotkeys,keyCodes,keyCaption,readHotkeyGroups,hotkeyGroup} from './hotkey-bindings.mjs';
@@ -234,7 +235,7 @@ function applyState(data){
 
 async function request(op,body={}){
  const headers={'Content-Type':'application/json'};if(token)headers.Authorization='Bearer '+token;
- const res=await fetch(rushMode?'/api/rush/'+rushPoolKind+'/'+op:'/api/rooms/'+room+'/'+op,{method:op==='state'?'GET':'POST',headers,body:op==='state'?undefined:JSON.stringify(body),cache:'no-store',...(op==='helmet'||op==='chat'?{signal:AbortSignal.timeout(5000)}:{})});
+ const res=await fetch(rushMode?'/api/rush/'+rushPoolKind+'/'+op:'/api/rooms/'+room+'/'+op,{method:op==='state'?'GET':'POST',headers,body:op==='state'?undefined:JSON.stringify(body),cache:'no-store',...(op==='helmet'||op==='chat'||op==='spin-ready'?{signal:AbortSignal.timeout(5000)}:{})});
  let data=await res.json();
  if(!res.ok){if(rushMode&&res.status===409&&op!=='state')await request('state');if(res.status===401||res.status===404){sessionStorage.removeItem(key);token=null;state=null;render()}throw Error(data.error)}
  if(rushMode){
@@ -503,7 +504,9 @@ function renderShowCards(g){
   const row=element('span','showCardFaces');row.style.left=(indices.length===1?112:71)+'px';for(const index of indices){const card=own[index],face=element('span','showCardFace'),rank=element('img','showRank'),suit=element('img','showSuit');rank.src='/home-art/native-show-rank-'+card[0]+'.png';suit.src='/home-art/native-show-suit-'+card[1]+'.png';rank.alt=suit.alt='';face.append(rank,suit);row.append(face)}b.append(row);
  }
 }
+const spinWheelScene=installSpinWheelScene(document.querySelector('.felt'),()=>chatWindow?null:state,()=>operate('spin-ready'),playCues);
 function render(){
+ spinWheelScene.update();
  updateTournamentAnnounce();
  updateTournamentNotice();
  updateAddChipsControl();

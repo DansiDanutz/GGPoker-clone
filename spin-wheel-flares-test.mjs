@@ -1,0 +1,4 @@
+import assert from 'node:assert/strict';import {spinWheelFlares} from './spin-wheel-flares.mjs';
+const f=spinWheelFlares(()=>0);let p=f.tick(0,false);assert.deepEqual(p,[{x:728,y:380,scale:.1,alpha:0,rotation:0}]);p=f.tick(500,false);assert.ok(Math.abs(p[0].scale-.8875)<1e-12);assert.equal(p[0].alpha,.875);p=f.tick(500,false);assert.equal(p[0].scale,1);assert.equal(p[0].alpha,1);p=f.tick(100,false);assert.equal(p[0].alpha,.875);assert.deepEqual(f.tick(100,false),[]);f.cancel();assert.deepEqual(f.tick(500),[]);assert.throws(()=>f.tick(-1));assert.throws(()=>spinWheelFlares(()=>1));console.log('PASS native flares:immediate spawn,1s cubicOut grow,200ms cubicIn fade,white alpha,spawn stop andcancel');
+
+const sequence=[.5,.5,.5,.5,.5,.5,0];let i=0;const r=spinWheelFlares(()=>sequence[i++%sequence.length]);const turned=r.tick(1500,false)[0];assert.equal(turned.rotation,-180);assert.equal(turned.scale,1.15);assert.equal(turned.alpha,1);

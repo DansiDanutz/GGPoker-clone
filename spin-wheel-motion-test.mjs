@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {readFileSync,existsSync} from 'node:fs';import {homedir} from 'node:os';import {join} from 'node:path';
+import {spinWheelMotion} from './spin-wheel-motion.mjs';
+const source={constantVelocityMotion:{0:{wd:10,ad:0,ss:0},1:{wd:40,ad:-3,ss:1}}};for(let i=1;i<=4;i++)source['reductionMotion0'+i]={0:{wd:20,ad:-2,ss:1},1:{wd:30+i,ad:0,ss:0}};
+for(const invalid of [null,{}, {...source,reductionMotion04:{1:{wd:0,ad:0,ss:0}}}])assert.throws(()=>spinWheelMotion(invalid,7,1));
+for(const index of [-1,8,0.5,NaN])assert.throws(()=>spinWheelMotion(source,index,1));for(const variant of [0,5,1.5])assert.throws(()=>spinWheelMotion(source,0,variant));
+let motion=spinWheelMotion(source,7,1);assert.equal(motion.tick(0).wheel,10);let frame=motion.tick(33);assert.equal(frame.wheel,20);assert.equal(frame.high,true);frame=motion.tick(33);assert.equal(frame.wheel,31);assert.equal(frame.done,true);assert.deepEqual(motion.tick(33),{...frame,high:false,low:false});
+motion=spinWheelMotion(source,0,2);assert.throws(()=>motion.tick(-1));assert.equal(motion.tick(10000).wheel,10);frame=motion.tick(33);assert.equal(frame.wheel,10);frame=motion.tick(10000);assert.equal(frame.wheel,347);assert.equal(frame.done,true);
+motion=spinWheelMotion(source,7,1);source.constantVelocityMotion[0].wd=999;assert.equal(motion.tick(0).wheel,10,'Motion snapshots caller data');assert.throws(()=>spinWheelMotion(source,0,1));
+const path=process.env.SPIN_MOTION_SOURCE||join(homedir(),'Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/spinandgold/spinAndGoldWheelMotion.json');
+if(existsSync(path)){const data=JSON.parse(readFileSync(path,'utf8').replace(/^\uFEFF/,''));for(let index=0;index<8;index++)for(let variant=1;variant<=4;variant++){const player=spinWheelMotion(data,index,variant);let result,steps=0;do{result=player.tick((steps++,17));assert.ok(Number.isFinite(result.wheel)&&Number.isFinite(result.arrow))}while(!result.done&&steps<1000);assert.ok(result.done);const track=data['reductionMotion0'+variant],last=track[Object.keys(track).length-1];assert.equal(result.wheel,last.wd+(7-index)*45);assert.equal(result.arrow,last.ad)}console.log('PASS native motion:all8segments/all4variants,exact terminal frame at17ms cadence')}else console.log('SKIP native motion asset: not installed');
+console.log('PASS wheel motion validation,source snapshot,phase transition,skipped-frame retention andsilent completion');

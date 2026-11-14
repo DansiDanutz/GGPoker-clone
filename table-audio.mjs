@@ -1,5 +1,6 @@
+import {spinWheelCues} from './spin-wheel-presentation.mjs';
 export const audioChannels=[{id:'table',label:'Table Sound'},{id:'effects',label:'Sound Effect'}];
-export function audioChannel(cue){return ['RabbitCard','RabbitCardDouble','Fold','DealCard','Board','GatherChips','WinPot','ShowCard','ShowDownCard','SqueezeOpen'].includes(cue)?'table':['Check','Call','Bet','Raise','AllIn','ShuffleUp','ShuffleCombine','ShuffleOther','AofButton','TournamentResultFT','TournamentResultITM','TournamentFallResult'].includes(cue)?'effects':null}
+export function audioChannel(cue){if(Object.values(spinWheelCues).includes(cue))return 'effects';return ['RabbitCard','RabbitCardDouble','Fold','DealCard','Board','GatherChips','WinPot','ShowCard','ShowDownCard','SqueezeOpen'].includes(cue)?'table':['Check','Call','Bet','Raise','AllIn','ShuffleUp','ShuffleCombine','ShuffleOther','AofButton','TournamentResultFT','TournamentResultITM','TournamentFallResult'].includes(cue)?'effects':null}
 export function audioPreviewChoices(id,previous){
  const choices=id==='table'?['Board','DealCard','ShowCard','GatherChips','WinPot','Fold','ShowDownCard','SqueezeOpen']:id==='effects'?['Bet','Call','Raise','Check','AllIn','AofButton']:[];
  return choices.filter(c=>c!==previous);
@@ -13,8 +14,9 @@ export function voluntaryReveals(before,after){
  if(!before?.hand||!after?.hand?.end||before.number!==after.number)return [];
  return (after.hand.shownIndices||[]).flatMap((indices,seat)=>(indices||[]).filter(index=>!before.hand.shownIndices?.[seat]?.includes(index)).map(index=>({seat,index,own:seat===after.me})));
 }
-// DefineSound sample counts from the installed client's embedded 44.1kHz MP3s.
-const cueSamples={TournamentFallResult:443520,TournamentResultFT:488448,TournamentResultITM:510336,RabbitCard:13824,RabbitCardDouble:27648,ShowDownCard:12672,ShuffleUp:9216,ShuffleCombine:11520,ShuffleOther:116352,ChessClock:9216,TimeBankTick:220500};
+// DefineSound sample counts; wheel fireworks use22.05kHz, other listed cues44.1kHz.
+const cueSamples={SngWheelBaseLight:208512,SngWheelFrameLight:66816,SngWheelFrameEffect:82944,SpinAndGoldSpin:192384,SNGWheelStuckHigh:11520,SNGWheelStuckLow:6912,SngFireworks:46656,SNGWheelOut:126720,SngBigWin:472320,TournamentFallResult:443520,TournamentResultFT:488448,TournamentResultITM:510336,RabbitCard:13824,RabbitCardDouble:27648,ShowDownCard:12672,ShuffleUp:9216,ShuffleCombine:11520,ShuffleOther:116352,ChessClock:9216,TimeBankTick:220500};
+export function audioCueDuration(name,decodedSeconds){return cueSamples[name]?Math.min(decodedSeconds,cueSamples[name]/(name==='SngFireworks'?22050:44100)):decodedSeconds}
 // Native default clock: sweep .4s, selected-card notifications span 2s, throw .2s, flop spread .3s.
 export function showdownPlan(before,after){
  const old=before?.hand,h=after?.hand;
@@ -74,9 +76,10 @@ export function installAudio(button){
  const play=async (names,isCurrent=()=>true)=>{
   sync();if(!enabled||!ctx)return;await resuming;sync();if(!enabled||ctx.state!=='running'||!isCurrent())return;
   const clips=await Promise.all(names.map(load));sync();if(!enabled||ctx.state!=='running'||!isCurrent())return;
-  const sources=[];let t=ctx.currentTime;for(const [i,clip]of clips.entries()){if(!clip)continue;const source=ctx.createBufferSource();source.buffer=clip;source.connect(channelTarget(audioChannel(names[i])));if(cueSamples[names[i]])source.start(t,0,Math.min(clip.duration,cueSamples[names[i]]/44100));else source.start(t);sources.push(source);t+=Math.min(.18,clip.duration)}
+  const sources=[];let t=ctx.currentTime;for(const [i,clip]of clips.entries()){if(!clip)continue;const source=ctx.createBufferSource();source.buffer=clip;source.connect(channelTarget(audioChannel(names[i])));if(cueSamples[names[i]])source.start(t,0,audioCueDuration(names[i],clip.duration));else source.start(t);sources.push(source);t+=Math.min(.18,clip.duration)}
   return ()=>{for(const source of sources)try{source.stop()}catch{}};
  };
+ play.preloadSpinWheel=async()=>ctx?(await Promise.all(Object.values(spinWheelCues).map(load))).every(Boolean):false;
  let previewGeneration=0,previewSource=null,previewGain=null,previewLevel=0,fadeTimer=null,stopTimer=null;
  play.stopPreview=()=>{
   previewGeneration++;clearTimeout(fadeTimer);clearTimeout(stopTimer);fadeTimer=stopTimer=null;
@@ -91,7 +94,7 @@ export function installAudio(button){
   await ctx.resume().catch(()=>{});const clip=await load(name);
   if(generation!==previewGeneration)return false;if(!clip||!isCurrent()||ctx.state!=='running'){play.stopPreview();return false}
   const node=ctx.createGain(),source=ctx.createBufferSource();previewGain=node;previewSource=source;node.gain.value=volume()*previewLevel/100;node.connect(ctx.destination);source.buffer=clip;source.connect(node);
-  const duration=Math.min(clip.duration,cueSamples[name]?cueSamples[name]/44100:clip.duration);source.onended=()=>{if(generation===previewGeneration)play.stopPreview()};source.start(ctx.currentTime,0,duration);
+  const duration=audioCueDuration(name,clip.duration);source.onended=()=>{if(generation===previewGeneration)play.stopPreview()};source.start(ctx.currentTime,0,duration);
   if(duration>=3.5)fadeTimer=setTimeout(()=>{if(generation===previewGeneration&&previewGain){previewGain.gain.setValueAtTime(previewGain.gain.value,ctx.currentTime);previewGain.gain.linearRampToValueAtTime(0,ctx.currentTime+.5)}},3500);
   stopTimer=setTimeout(()=>{if(generation===previewGeneration)play.stopPreview()},4000);return true;
  };

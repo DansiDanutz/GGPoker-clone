@@ -1,3 +1,4 @@
+import {spinWheelCues} from './spin-wheel-presentation.mjs';
 import {readFile} from 'node:fs/promises';
 import {recoverOwnerRestore,restoreOwnerBackup} from './owner-restore.mjs';
 import {ownerBackup} from './owner-backup.mjs';
@@ -32,7 +33,7 @@ function loadRestoredModels(){
 }
 const hostedId=id=>createHash('sha256').update('river-hosted:'+id).digest('hex').slice(0,48);
 setInterval(()=>{if(restoring||restoreBlocked)return;for(const table of tables){try{roomRequest(hostedId(table.id),'tick',undefined,{},table)}catch{console.error('Hosted table timer could not save state; prior checkpoint retained')}}try{roomRequest.tickSpin()}catch{console.error('Spin timer could not save state; prior checkpoint retained')}},500).unref();
-const files=new Set(['tournament-result.mjs','cash-sitout-menu.mjs','note-tooltip.mjs','rabbit-peel.mjs','rabbit-view.mjs','native-language.mjs','emoticon-animation-data.mjs','emoticon-animation.mjs','emoticons.mjs','emoticon-picker.mjs','helmet-ui.mjs','helmet-scope.mjs','hand-panel.mjs','hotkey-bindings.mjs','hotkey-settings.mjs','player-note-ui.mjs','card-squeeze.mjs','chip-shuffle.mjs','betting-preferences.mjs','felt.css','felt.mjs','spin-lobby.mjs','engine/spin.mjs','engine/prizes.mjs','index.html','ui.mjs','game.mjs','engine/hand.mjs','engine/pots.mjs','engine/deck.mjs','engine/table.mjs','network.html','network.mjs','table-audio.mjs','nolimit.html','nolimit.mjs','lobby.html','lobby.mjs']);
+const files=new Set(['spin-wheel-flares.mjs','spin-wheel-wait-motion.mjs','spin-wheel-wait.mjs','spin-wheel-sparkles.mjs','spin-wheel-scene.mjs','spin-wheel-light.mjs','spin-wheel-glow.mjs','spin-congratulation-rows.mjs','spin-congratulations.mjs','spin-wheel-prize-effect.mjs','spin-wheel-presentation.mjs','spin-wheel-render.mjs','spin-wheel-amount.mjs','spin-wheel-motion.mjs','tournament-result.mjs','cash-sitout-menu.mjs','note-tooltip.mjs','rabbit-peel.mjs','rabbit-view.mjs','native-language.mjs','emoticon-animation-data.mjs','emoticon-animation.mjs','emoticons.mjs','emoticon-picker.mjs','helmet-ui.mjs','helmet-scope.mjs','hand-panel.mjs','hotkey-bindings.mjs','hotkey-settings.mjs','player-note-ui.mjs','card-squeeze.mjs','chip-shuffle.mjs','betting-preferences.mjs','felt.css','felt.mjs','spin-lobby.mjs','engine/spin.mjs','engine/prizes.mjs','index.html','ui.mjs','game.mjs','engine/hand.mjs','engine/pots.mjs','engine/deck.mjs','engine/table.mjs','network.html','network.mjs','table-audio.mjs','nolimit.html','nolimit.mjs','lobby.html','lobby.mjs']);
 http.createServer(async(req,res)=>{
  const json=(code,data)=>{res.writeHead(code,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data))};
  if(restoring||restoreBlocked)return json(503,{error:restoreBlocked?'Restart recovery is required':'Local recovery in progress; retry shortly'});activeRequests++;
@@ -41,9 +42,10 @@ http.createServer(async(req,res)=>{
  const path=new URL(req.url,origin).pathname;
  // Reference recordings are private to the Mac and never served in shared-room mode.
  const localHome=process.env.POKER_REFERENCE_HOME==='1'&&host==='127.0.0.1'&&origin==='http://127.0.0.1:'+port;
- const cue=/^\/table-audio\/(Check|Call|Bet|Raise|AllIn|Fold|DealCard|ShowCard|RabbitCard|RabbitCardDouble|ShowDownCard|Board|GatherChips|WinPot|ShuffleUp|ShuffleCombine|ShuffleOther|SqueezeOpen|AofButton|ChessClock|TimeBankTick|TournamentResultFT|TournamentResultITM|TournamentFallResult)\.mp3$/.exec(path);
+ const cue=/^\/table-audio\/(Check|Call|Bet|Raise|AllIn|Fold|DealCard|ShowCard|RabbitCard|RabbitCardDouble|ShowDownCard|Board|GatherChips|WinPot|ShuffleUp|ShuffleCombine|ShuffleOther|SqueezeOpen|AofButton|ChessClock|TimeBankTick|TournamentResultFT|TournamentResultITM|TournamentFallResult|SpinAndGoldSpin|SNGWheelStuckHigh|SNGWheelStuckLow|SngFireworks|SNGWheelOut|SngBigWin|SngWheelFrameEffect|SngWheelFrameLight|SngWheelBaseLight)\.mp3$/.exec(path);
  if(localHome&&cue&&req.method==='GET'){
-  let data;try{data=await readFile(join((cue[1].startsWith('Shuffle')||cue[1].startsWith('Tournament')||['RabbitCard','RabbitCardDouble','ChessClock','TimeBankTick','ShowDownCard'].includes(cue[1]))?referenceArt:join(homedir(),'Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/sounds'),(cue[1].startsWith('Tournament')||['RabbitCard','RabbitCardDouble','AofButton','ChessClock','TimeBankTick','ShowDownCard'].includes(cue[1])?'':'Sound')+cue[1]+'.mp3'))}catch{return json(404,{error:'Local sound unavailable'})}
+  const wheelAudio=Object.values(spinWheelCues).includes(cue[1]);
+  let data;try{data=await readFile(join((wheelAudio||cue[1].startsWith('Shuffle')||cue[1].startsWith('Tournament')||['RabbitCard','RabbitCardDouble','ChessClock','TimeBankTick','ShowDownCard'].includes(cue[1]))?referenceArt:join(homedir(),'Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/sounds'),(wheelAudio||cue[1].startsWith('Tournament')||['RabbitCard','RabbitCardDouble','AofButton','ChessClock','TimeBankTick','ShowDownCard'].includes(cue[1])?'':'Sound')+cue[1]+'.mp3'))}catch{return json(404,{error:'Local sound unavailable'})}
   res.writeHead(200,{'Content-Type':'audio/mpeg','Cache-Control':'private, max-age=3600'});res.end(data);return;
  }
  const avatarImage=/^\/local\/avatar-images\/([a-f0-9]{64})\.png$/.exec(path);
@@ -92,12 +94,12 @@ http.createServer(async(req,res)=>{
   }
   try{return json(200,rushRequest(account,op,body))}catch(e){if(e.status)return json(e.status,{error:e.message});throw e}
  }
- const match=/^\/api\/rooms\/([0-9a-f]{48})\/(watch|join|state|act|ready|add-chips|leave|fill-bots|start|end-practice|chat|helmet|sit-out|sit-out-state|shuffle|time-bank|time-card-option|notes|rabbit|show-cards|waiting)$/.exec(path);
+ const match=/^\/api\/rooms\/([0-9a-f]{48})\/(watch|join|state|act|spin-ready|ready|add-chips|leave|fill-bots|start|end-practice|chat|helmet|sit-out|sit-out-state|shuffle|time-bank|time-card-option|notes|rabbit|show-cards|waiting)$/.exec(path);
  if(match){
   const [,id,op]=match;
   if(['notes','waiting'].includes(op)?!['GET','POST'].includes(req.method):req.method!==(['state','watch'].includes(op)?'GET':'POST'))return json(405,{error:'Method not allowed'});
   if(req.headers.origin&&req.headers.origin!==origin)return json(403,{error:'Origin not allowed'});
-  if(op==='waiting'&&req.method==='POST'&&req.headers.origin!==origin)return json(403,{error:'Local origin required'});
+  if(['waiting','spin-ready'].includes(op)&&req.method==='POST'&&req.headers.origin!==origin)return json(403,{error:'Local origin required'});
   let body={};
   if(req.method==='POST'){
    if(!req.headers['content-type']?.startsWith('application/json'))return json(415,{error:'Expected JSON'});
