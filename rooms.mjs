@@ -731,7 +731,7 @@ rules=spinRules(rooms.get('local-spin-rules'));rooms.delete('local-spin-rules');
   request.battlePlayerNote=(id,player,viewer,body=null)=>{
    if(viewer==null)fail(401,'Sign in locally');const actor=battleAccount(viewer),name=battleAccount(player),event=battleFind(id);if(!event.registrations.includes(name))fail(404,'Battle player unavailable');if(actor===name)fail(400,'Choose another player');
    const owner=noteSubject({account:actor}),target=noteSubject({account:name});
-   if(body!==null){if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).sort().join(',')!=='color,text,viewer')fail(400,'Choose note text and color');if(body.viewer!==actor)fail(409,'Signed-in account changed; reopen notes');notes.set(owner,target,{text:body.text,color:body.color})}
+   if(body!==null){if(!body||typeof body!=='object'||Array.isArray(body)||!['color,text,viewer','labelChanges,viewer'].includes(Object.keys(body).sort().join(',')))fail(400,'Save note text/color or label titles separately');if(body.viewer!==actor)fail(409,'Signed-in account changed; reopen notes');if(body.labelChanges!==undefined)saveNoteLabels(notes,owner,{labelChanges:body.labelChanges});else notes.set(owner,target,{text:body.text,color:body.color})}
    return {viewer:actor,name,note:notes.get(owner,target),colors:[...noteColors],labels:notes.getLabels(owner)};
   };
   request.battleEvents=account=>Object.keys(battleEvents).map(id=>request.battleEvent(id,account));
