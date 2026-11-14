@@ -1,4 +1,18 @@
 import {isDeepStrictEqual} from 'node:util';
+import {settlePots} from './engine/pots.mjs';
+import {best,compare} from './game.mjs';
+// Local knockout policy: winners of the victim's highest contested pot, ordered clockwise after the dealer.
+export function battleBountyKnockouts(g,accounts,hand){
+ if(!g?.end||!Array.isArray(accounts)||accounts.length<2||accounts.length>6||new Set(accounts).size!==accounts.length||Array.from(accounts).some(id=>typeof id!=='string'||!/^[a-z0-9][a-z0-9_-]{1,19}$/.test(id))||!Number.isSafeInteger(hand)||hand<1||!Array.isArray(g.initialStacks)||!Array.isArray(g.stacks)||g.initialStacks.length!==accounts.length||g.stacks.length!==accounts.length||g.committed?.length!==accounts.length||g.folded?.length!==accounts.length||!Array.isArray(g.hands)||g.hands.length!==accounts.length||!Array.isArray(g.board)||[...g.initialStacks,...g.stacks].some(n=>!Number.isSafeInteger(n)||n<0))throw Error('Invalid Battle bounty hand');
+ const end=settlePots(g.committed,g.folded,g.button,(a,b)=>compare(best([...g.hands[a],...g.board]),best([...g.hands[b],...g.board])));
+ if(!isDeepStrictEqual(end,g.end)||g.stacks.some((n,i)=>n!==g.initialStacks[i]-g.committed[i]+end.payouts[i]))throw Error('Invalid Battle bounty settlement');
+ const distance=seat=>(seat-g.button-1+accounts.length)%accounts.length,requests=[];
+ for(const seat of accounts.map((_,i)=>i).sort((a,b)=>distance(a)-distance(b))){
+  if(!g.initialStacks[seat]||g.stacks[seat]!==0)continue;const pot=end.pots.findLastIndex(p=>p.eligible.includes(seat));if(pot<0)throw Error('No contested bounty pot');
+  const hunters=end.pots[pot].payouts.flatMap((n,i)=>n>0?[i]:[]).sort((a,b)=>distance(a)-distance(b)).map(i=>accounts[i]);if(!hunters.length||hunters.includes(accounts[seat]))throw Error('Invalid Battle bounty hunters');requests.push({hand,pot,victim:accounts[seat],hunters});
+ }
+ return requests;
+}
 // Explicit local policy: finite inventory, no replacement, equal hunter shares with odd credits in caller-supplied order.
 export function battleBounty(items,capital,checkpoint=null){
  if(!Array.isArray(items)||items.length<1||items.length>100||Array.from(items).some(p=>!p||Object.keys(p).sort().join(',')!=='amount,frequency'||!Number.isSafeInteger(p.amount)||p.amount<1||!Number.isSafeInteger(p.frequency)||p.frequency<1||p.frequency>10000)||new Set(items.map(p=>p.amount)).size!==items.length||items.reduce((n,p)=>n+p.frequency,0)>10000||!Number.isSafeInteger(capital)||capital<1||capital>1000000000||items.reduce((n,p)=>n+p.amount*p.frequency,0)!==capital)throw Error('Invalid Battle bounty inventory or capital');
