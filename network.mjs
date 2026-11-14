@@ -83,10 +83,10 @@ function updateTournamentNotice(){
 }
 matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',event=>{if(event.matches)tournamentNoticeMotion?.finish()});
 const battleNotice=element('div','nativeTournamentNotice battleStageNotice'),battleNoticeText=element('div','nativeTournamentNoticeText'),battleNoticeTitle=element('span','battleStageNoticeTitle'),battleNoticeBody=element('span','battleStageNoticeBody');
-battleNotice.hidden=true;battleNotice.setAttribute('role','status');battleNotice.setAttribute('aria-live','polite');battleNoticeText.append(battleNoticeTitle,battleNoticeBody);battleNotice.append(battleNoticeText);document.querySelector('.felt').append(battleNotice);
+battleNoticeTitle.dataset.nativeNoticeLine='0';battleNoticeBody.dataset.nativeNoticeLine='1';battleNotice.hidden=true;battleNotice.setAttribute('role','status');battleNotice.setAttribute('aria-live','polite');battleNoticeText.append(battleNoticeTitle,battleNoticeBody);battleNotice.append(battleNoticeText);document.querySelector('.felt').append(battleNotice);
 function updateBattleStageNotice(){
  const notice=battleMode&&!chatWindow?battleStageNotice(state):null;battleNotice.hidden=!notice;if(!notice)return;
- battleNotice.dataset.nativeNoticeKey=notice.key;if(battleNoticeTitle.textContent!==notice.title)battleNoticeTitle.textContent=notice.title;if(battleNoticeBody.textContent!==notice.body)battleNoticeBody.textContent=notice.body;
+ const values=JSON.stringify([state.battleFinalSeats-1]);if(battleNotice.dataset.nativeNoticeKey!==notice.key||battleNotice.dataset.nativeNoticeValues!==values){battleNoticeTitle.textContent=notice.title;battleNoticeBody.textContent=notice.body;battleNotice.dataset.nativeNoticeFallback=JSON.stringify([notice.title,notice.body]);battleNotice.dataset.nativeNoticeValues=values;battleNotice.dataset.nativeNoticeKey=notice.key;}
 }
 const tournamentLink=new URLSearchParams(location.search).get('mode')==='tournament';
 if(new URLSearchParams(location.search).get('from')==='home'){
