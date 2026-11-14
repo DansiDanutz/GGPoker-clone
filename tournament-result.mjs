@@ -59,11 +59,14 @@ export function resultFileName(result,now=new Date()){
 }
 
 export function resultGlyphLayout(value,font){
- if(!Number.isSafeInteger(value)||value<0||font?.size!==56||!Array.isArray(font.glyphs)||font.glyphs.length>128||!Array.isArray(font.atlasSize)||font.atlasSize.length!==2||!font.atlasSize.every(n=>Number.isInteger(n)&&n>0&&n<=4096))return null;
+ if(!Number.isSafeInteger(value)||value<0)return null;return resultTextGlyphLayout(String(value),font,32);
+}
+export function resultTextGlyphLayout(text,font,size){
+ if(typeof text!=='string'||!text||text.length>64||![32,90].includes(size)||font?.size!==56||!Array.isArray(font.glyphs)||font.glyphs.length>128||!Array.isArray(font.atlasSize)||font.atlasSize.length!==2||!font.atlasSize.every(n=>Number.isInteger(n)&&n>0&&n<=4096))return null;
  const r=font.region;if(!r||!['x','y','width','height'].every(k=>Number.isInteger(r[k])&&r[k]>=0)||r.x+r.width>font.atlasSize[0]||r.y+r.height>font.atlasSize[1])return null;
  if(!font.glyphs.every(g=>g&&Number.isInteger(g.id)&&g.id>=0&&g.id<=1114111)||new Set(font.glyphs.map(g=>g.id)).size!==font.glyphs.length)return null;
- const scale=32/56,byId=new Map(font.glyphs.map(g=>[g.id,g])),glyphs=[];let width=0,height=0;
- for(const digit of String(value)){
+ const scale=size/56,byId=new Map(font.glyphs.map(g=>[g.id,g])),glyphs=[];let width=0,height=0;
+ for(const digit of text){
   const g=byId.get(digit.charCodeAt(0));if(!g||!['x','y','width','height','xoffset','yoffset','xadvance'].every(k=>Number.isInteger(g[k])&&g[k]>=0&&g[k]<=4096)||!g.width||!g.height||!g.xadvance||g.x+g.width>r.width||g.y+g.height>r.height)return null;
   glyphs.push({digit,left:(width+g.xoffset)*scale,top:g.yoffset*scale,width:g.width*scale,height:g.height*scale,x:(r.x+g.x)*scale,y:(r.y+g.y)*scale});width+=g.xadvance;height=Math.max(height,g.yoffset+g.height);
  }
