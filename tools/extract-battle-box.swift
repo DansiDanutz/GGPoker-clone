@@ -19,6 +19,11 @@ func extract(_ relative:String,_ entries:[(String,String,Int,Int)],_ prefix:Stri
  let receipt:[String:Any] = ["method":"StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding","sources":[atlas.path:hash(try Data(contentsOf:atlas)),metadata.path:hash(try Data(contentsOf:metadata))],"files":records]
  try JSONSerialization.data(withJSONObject:receipt,options:[.prettyPrinted,.sortedKeys]).write(to:out.appendingPathComponent("rea/"+receiptName+".json"))
 }
+if CommandLine.arguments.contains("--report-input") {
+ try extract("after_lobby/desktop_table_assets.png",[("table_menu0145","input",20,20)],"native-fairplay-","report-input-atlas")
+ print("PASS native report input: exact decoded RGBA")
+ exit(0)
+}
 if CommandLine.arguments.contains("--hud-more") {
  try extract("init_lobby/desktop_assets.png",[("lobby_popup0367","button",20,20),("table_popup0216","report",19,20)],"native-hud-more-","hud-more-atlas")
  print("PASS2 native HUD More/Report sprites: exact decoded RGBA")
