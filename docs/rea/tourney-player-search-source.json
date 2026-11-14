@@ -1,0 +1,30 @@
+{
+  "method": "Selected FFDec export of installed Game/51/IronDesktop.swf; no native account interaction",
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/tourneylobby/players/player/TourneyPlayersHeader.as",
+      "sha256": "2f38f25dbd6b8e78fa343d34c6f46eeabb72331e50663dc45bca430a09bd5ea0",
+      "bytes": 1618
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/content/tourneylobby/SearchInput.as",
+      "sha256": "8babd5eeda60cd8ea9c548817bad5c5cefd9dc28992b7861e8f2da98b6439f32",
+      "bytes": 12698
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/tourneylobby/players/player/TourneyPlayerList.as",
+      "sha256": "69e49d80b643f8f9ff17c1d96fde4bb2176635eff1a5388aebdc6030ce9a6b51",
+      "bytes": 13226
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/tourneylobby/players/player/TourneyPlayersPage.as",
+      "sha256": "3ecfc55df4a4170c0bde6ef37286f6ab8dffcdb33da385052a903bd55c0c0b55",
+      "bytes": 13051
+    }
+  ],
+  "limits": [
+    "Original server matching semantics unavailable",
+    "Native search background/icon sprites and physical placement not yet calibrated",
+    "Local matching explicitly case-insensitive substring against authenticated public lobby projection"
+  ]
+}
