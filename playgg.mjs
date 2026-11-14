@@ -16,7 +16,7 @@ const parts=await (await fetch('/home-art/layout.json')).json(),audit=await (awa
 const art='/home-art/',still=new URLSearchParams(location.search).has('still');let slide=6,collapsed=false,paused=false;
 let spinUI;
 const frame=$('stage'),feed=$('feed'),canvas=$('canvas');
-function size(){const cash=!!$('spinPane')&&!$('spinPane').hidden||!$('profilePane').hidden||!$('chipSettings').hidden||!$('catalog').hidden&&['holdem','plo','shortdeck','aof','rush','tournaments'].includes($('catalog').dataset.mode);const scale=cash?innerWidth/1196:Math.min(innerWidth/1196,innerHeight/929);frame.style.transform='scale('+scale+')';frame.style.setProperty('--catalog-height',innerHeight/scale+'px')}size();addEventListener('resize',size);
+function size(){const cash=!!$('spinPane')&&!$('spinPane').hidden||!$('profilePane').hidden||!$('chipSettings').hidden||!$('catalog').hidden&&['holdem','plo','shortdeck','aof','rush','tournaments','battle'].includes($('catalog').dataset.mode);const scale=cash?innerWidth/1196:Math.min(innerWidth/1196,innerHeight/929);frame.style.transform='scale('+scale+')';frame.style.setProperty('--catalog-height',innerHeight/scale+'px')}size();addEventListener('resize',size);
 function box(node,x,y,w,h){Object.assign(node.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px'})}
 const homePreferences=[['homeSound','river-muted',true],['homeHotkeys','river-hotkeys',false],['homeChips','river-chip-switch',false]];
 for(const [id,key,inverted] of homePreferences){const input=$(id);input.checked=inverted?localStorage.getItem(key)!=='1':localStorage.getItem(key)==='1';input.onchange=()=>localStorage.setItem(key,String(Number(inverted?!input.checked:input.checked)))}
@@ -197,15 +197,16 @@ function navigate(p){
  if(p.id==='spin'){spinUI.open();return}
  if(p.id==='settings'){$('homeSettings').hidden=!$('homeSettings').hidden;return}
 
- if(['holdem','plo','shortdeck','aof','rush','tournaments'].includes(p.id)){catalog(p.id);return}
+ if(['holdem','plo','shortdeck','aof','rush','tournaments','battle'].includes(p.id)){catalog(p.id);return}
  if(p.id==='poker'||p.id==='navhome'){spinUI?.close();$('catalog').hidden=true;size();feed.scrollTop=0;return}
  if(p.id==='collapse'){collapsed=!collapsed;for(const id of ['usd','pd','td','tickets'])$(id).hidden=collapsed,$(id).style.display=collapsed?'none':'';for(const id of ['collapse','cash','prop','rewards','promo'])$(id).style.transform=collapsed?'translateY(-137px)':'';return}
  if(p.id==='floatingAsk'||p.id==='ask'){ $('assistantPane').hidden=false;$('question').focus() }
 }
 for(const [i,name] of ['Tournaments','GGMillion$ Festival','PLO Series','Flip & Go Millionaire','GGMasters','WSOP Express','Spin & Gold','Mystery Battle Royale','Flip & Go'].entries()){
- const b=document.createElement('button');b.textContent=name;b.setAttribute('aria-label',name);b.disabled=i!==0&&i!==6;
+ const b=document.createElement('button');b.textContent=name;b.setAttribute('aria-label',name);b.disabled=i!==0&&i!==6&&i!==7;
  if(i===6)b.onclick=()=>spinUI.open();
- if(i===0){b.setAttribute('aria-current','page');b.onclick=()=>catalog('tournaments')}else b.title='Event format unavailable locally';$('tournamentTabs').append(b);
+ if(i===7)b.onclick=()=>catalog('battle');
+ if(i===0){b.setAttribute('aria-current','page');b.onclick=()=>catalog('tournaments')}else if(i!==6&&i!==7)b.title='Event format unavailable locally';$('tournamentTabs').append(b);
 }
 for(const p of parts){
  const input=['button','tab'].includes(p.mode);const e=document.createElement(input?'button':p.mode==='heading'?'h2':p.mode==='text'?'span':'img');
@@ -245,6 +246,8 @@ function catalog(mode){
  const tournament=mode==='tournaments',pane=$('catalog'),list=$('groups'),detailsRoot=$('details');pane.dataset.mode=mode;pane.hidden=false;size();list.replaceChildren();
  $('joinTable').hidden=true;$('takeSeat').textContent='Join table';pane.removeAttribute('data-view');$('catalogName').textContent=tournament?'Tournaments':mode==='plo'?'PLO':mode==='shortdeck'?'Short Deck · local rules':mode==='aof'?'All-In or Fold':'Hold’em';
  $('eventSearchLabel').hidden=!tournament;
+ $('eventFilter').hidden=mode==='battle';$('eventLobby').hidden=mode==='battle';
+ if(mode==='battle'){battleCatalog(request);return}
  if(mode==='rush'){rushCatalog(request);return}
  if(!tournament){cashCatalog(request,mode);return}
  const eventEntry=t=>t.accountEntryCost??t.entryCost??25,eventPool=t=>t.prizePool??(t.occupied??0)*eventEntry(t);
@@ -305,6 +308,13 @@ function catalog(mode){
    if(request!==catalogRequest||pane.hidden)return;const signature=JSON.stringify([standard,...events]);if(signature!==previous){previous=signature;show([standard,...events])}
   }catch{}if(request===catalogRequest&&!pane.hidden)setTimeout(refresh,2000)
  }refresh();
+}
+function battleCatalog(request){
+ const node=(tag,text)=>{const e=document.createElement(tag);e.textContent=text;return e};let selected=null;
+ $('catalogName').textContent='Mystery Battle Royale';for(const b of $('tournamentTabs').children){if(b.textContent==='Mystery Battle Royale')b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')}$('viewSwitch').hidden=true;$('ploFilters').replaceChildren();$('eventCategories').replaceChildren();$('preview').replaceChildren(node('p','Local Battle Royale · Rush stage'));$('details').textContent='Select a locally hosted event. Qualification, final table and bounty settlement are still being reconstructed.';
+ $('columns').replaceChildren(...['','Event','Entry','Starting chips','Players','Stage','Rush time',''].map(x=>node('span',x)));$('takeSeat').onclick=null;$('takeSeat').removeAttribute('href');$('takeSeat').setAttribute('aria-disabled','true');$('takeSeat').textContent='Select event';
+ async function refresh(){if(request!==catalogRequest||$('catalog').hidden)return;try{const response=await fetch('/api/battle',{cache:'no-store'});if(!response.ok)throw Error('Battle Royale catalog unavailable');const events=await response.json();if(request!==catalogRequest||$('catalog').hidden)return;$('groups').replaceChildren(...events.map(event=>{const row=node('button',''),e=event.settings;row.setAttribute('aria-label',e.name);row.dataset.battleEvent=e.id;row.append(...['',e.name,e.entryCost,e.stack,event.count+' / '+e.capacity,event.phase,Math.ceil(e.rushDurationMs/60000)+' min',event.registered?'Open':'Register'].map(x=>node('span',x)));row.onclick=()=>{selected=e.id;for(const b of row.parentNode.children)b.setAttribute('aria-pressed',String(b===row));$('details').textContent=e.name+' · '+e.entryCost+' local play chips entry · '+e.stack+' tournament chips · '+event.count+' / '+e.capacity+' registered · '+event.phase;const link=$('takeSeat');link.textContent=event.registered?'Open Battle Royale':'Open registration';link.href=journey?'/network.html?player&from=home&view=battle&event='+encodeURIComponent(e.id):'/launch.html';link.removeAttribute('aria-disabled');if(!event.registered&&event.phase!=='registration'){link.textContent='Registration closed';link.removeAttribute('href');link.setAttribute('aria-disabled','true')}};if(selected===e.id)row.setAttribute('aria-pressed','true');return row}));if(selected)$('groups').querySelector('[data-battle-event="'+selected+'"]')?.click();if(!events.length)$('details').textContent='No local Battle Royale events have been created.'}catch(error){if(request===catalogRequest)$('details').textContent=error.message}if(request===catalogRequest&&!$('catalog').hidden)setTimeout(refresh,2000)}
+ refresh();
 }
 function rushCatalog(request){
  const node=(tag,text)=>{const e=document.createElement(tag);e.textContent=text;return e};
@@ -398,7 +408,7 @@ function cashCatalog(request,mode){
  refreshHosted();
 }
 const rooms=['d74983a3281b02c65ce8715c9e6600356c035f54a14bb7ca', 'bc9c9277c42598faae8affefcd3e332a46b566fb9a1ba6a9', '45add5bb98852529e4eb46d22d857d554134930491462f62'];
-const entryView=new URLSearchParams(location.search).get('view');if(['holdem','plo','shortdeck','aof','rush','tournaments'].includes(entryView))catalog(entryView);
+const entryView=new URLSearchParams(location.search).get('view');if(['holdem','plo','shortdeck','aof','rush','tournaments','battle'].includes(entryView))catalog(entryView);
 
 if(journey){
  $('signOut').hidden=false;$('signOut').onclick=async()=>{try{const r=await fetch('/local/logout',{method:'POST'});if(!r.ok)throw Error('Could not sign out');for(const key of Object.keys(sessionStorage))if(key.startsWith('river-seat:'))sessionStorage.removeItem(key);location.assign('/launch.html')}catch(error){$('signOutError').textContent=error.message}};

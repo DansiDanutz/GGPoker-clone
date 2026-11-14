@@ -1,3 +1,4 @@
+import {battleTableState} from './battle-table.mjs';
 import {installRimtPanel} from './rimt-panel.mjs';
 import {installSpinWheelScene} from './spin-wheel-scene.mjs';
 import {installTournamentResult} from './tournament-result.mjs';
@@ -17,7 +18,8 @@ const chatWindow=document.documentElement.dataset.panel==='chat';
 const playCues=chatWindow?()=>{}:installAudio(document.querySelector('#sound'));
 const clockAudio=createClockAudio(playCues);
 const rushPoolKind=new URLSearchParams(location.search).get('pool')==='plo'?'plo':'holdem';
-const rushMode=new URLSearchParams(location.search).get('view')==='rush';
+const battleMode=new URLSearchParams(location.search).get('view')==='battle',battleEvent=new URLSearchParams(location.search).get('event');
+const rushMode=battleMode||new URLSearchParams(location.search).get('view')==='rush';
 const fourPositions=[{x:850,y:952,scale:1.1,bet:[856,768],dealer:[742,838]},{x:135,y:502,scale:1,bet:[316,568],dealer:[282,664]},{x:850,y:154,scale:1,bet:[856,350],dealer:[776,338]},{x:1565,y:502,scale:1,bet:[1384,568],dealer:[1418,664],right:true}];
 const threePositions=[{x:850,y:952,scale:1.1,bet:[856,768],dealer:[742,838]},{x:288,y:290,scale:1,bet:[428,440],dealer:[322,492]},{x:1412,y:290,scale:1,bet:[1272,440],dealer:[1378,492],right:true}];
 const sixPositions=[{x:850,y:952,scale:1.1,bet:[856,768],dealer:[742,838]},{x:186,y:768,scale:1,bet:[392,708],dealer:[380,804]},{x:239,y:274,scale:1,bet:[448,408],dealer:[382,406]},{x:850,y:154,scale:1,bet:[856,350],dealer:[776,338]},{x:1461,y:274,scale:1,bet:[1252,408],dealer:[1318,406],right:true},{x:1514,y:768,scale:1,bet:[1308,708],dealer:[1320,804],right:true}];
@@ -86,8 +88,9 @@ if(new URLSearchParams(location.search).get('from')==='home'){
  if(aof)back.href='/playgg.html?'+(player?'player&':'')+'view=aof';
  if(short)back.href='/playgg.html?'+(player?'player&':'')+'view=shortdeck';
  if(tournamentLink)back.href='/playgg.html?'+(player?'player&':'')+'view=tournaments';
- if(rushMode)back.href='/playgg.html?player&view=rush';
- back.textContent=rushMode?'Back to Rush & Cash lobby':aof?'Back to All-In or Fold lobby':short?'Back to Short Deck lobby':tournamentLink?'Back to tournaments':omaha?'Back to PLO lobby':'Back to Home';document.querySelector('header a').replaceWith(back)
+ if(battleMode)back.href='/playgg.html?player&view=battle';
+ else if(rushMode)back.href='/playgg.html?player&view=rush';
+ back.textContent=battleMode?'Back to tournaments':rushMode?'Back to Rush & Cash lobby':aof?'Back to All-In or Fold lobby':short?'Back to Short Deck lobby':tournamentLink?'Back to tournaments':omaha?'Back to PLO lobby':'Back to Home';document.querySelector('header a').replaceWith(back)
 }
 let playerAccount=null;
 if((new URLSearchParams(location.search).has('player')||rushMode)){
@@ -114,10 +117,10 @@ const key='river-seat:'+room;
 let token=sessionStorage.getItem(key),state,busy=false,lastCashOut=null,emoticonPicker=null;
 let reservedAction;
 const helmetModule=await fetch('/helmet-ui.mjs',{signal:AbortSignal.timeout(5000)}).then(r=>r.ok?import('./helmet-ui.mjs'):null,()=>null);
-const helmet=helmetModule?helmetModule.installHelmet(()=>({state,rabbitOpened:rabbitView.opened===true,room:rushMode?'rush:'+rushPoolKind:room,token,account:state?.observerName||playerAccount,observer:!rushMode&&state?.canObserveChat===true,primary:!chatWindow,enabled:rushMode?!!state?.registered:state?.me!=null&&!!token,unsupported:rushMode&&typeof state?.helmet!=='boolean'}),async muted=>{if(rushMode&&typeof state?.helmet!=='boolean')throw Error('Rush Helmet requires the updated server');const identity=()=>JSON.stringify(rushMode?[rushPoolKind,playerAccount]:[room,token,state?.me,playerAccount]),expected=identity();const until=Date.now()+5000;while(busy){if(Date.now()>=until)throw Error('Table is busy; retry Helmet');await new Promise(resolve=>setTimeout(resolve,25))}if(expected!==identity())throw Error('Player or table changed');if(!await operate('helmet',{muted}))throw Error($('error').textContent||'Helmet update failed')},()=>renderChat()):{refresh(){},muted(){return false},reactionAllowed(){return true}};
+const helmet=helmetModule?helmetModule.installHelmet(()=>({state,rabbitOpened:rabbitView.opened===true,room:rushMode?'rush:'+rushPoolKind:room,token,account:state?.observerName||playerAccount,observer:!rushMode&&state?.canObserveChat===true,primary:!chatWindow,enabled:rushMode?!!state?.registered&&!battleMode:state?.me!=null&&!!token,unsupported:rushMode&&typeof state?.helmet!=='boolean'}),async muted=>{if(rushMode&&typeof state?.helmet!=='boolean')throw Error('Rush Helmet requires the updated server');const identity=()=>JSON.stringify(rushMode?[rushPoolKind,playerAccount]:[room,token,state?.me,playerAccount]),expected=identity();const until=Date.now()+5000;while(busy){if(Date.now()>=until)throw Error('Table is busy; retry Helmet');await new Promise(resolve=>setTimeout(resolve,25))}if(expected!==identity())throw Error('Player or table changed');if(!await operate('helmet',{muted}))throw Error($('error').textContent||'Helmet update failed')},()=>renderChat()):{refresh(){},muted(){return false},reactionAllowed(){return true}};
 const rabbitModule=await fetch('/rabbit-view.mjs',{signal:AbortSignal.timeout(5000)}).then(r=>r.ok?import('./rabbit-view.mjs'):null,()=>null);
 const rabbitView=rabbitModule?rabbitModule.installRabbitView(document.querySelector('.boardArea'),()=>chatWindow?null:state,number=>operate('rabbit',{number}),playCues,()=>playerNotes.refresh()):{update(){}};
-const playerNotes=installPlayerNotes($('tableSettings'),()=>({state,rabbitOpened:rabbitView.opened===true,room:rushMode?'rush:'+rushPoolKind+':'+state?.noteTable:room,token,enabled:!chatWindow&&(!rushMode||!!state?.noteTable),...(rushMode?{notesPath:'/api/rush/'+rushPoolKind+'/notes',notesTable:state?.noteTable}:{} )}));
+const playerNotes=installPlayerNotes($('tableSettings'),()=>({state,rabbitOpened:rabbitView.opened===true,room:rushMode?'rush:'+rushPoolKind+':'+state?.noteTable:room,token,enabled:!chatWindow&&!battleMode&&(!rushMode||!!state?.noteTable),...(rushMode?{notesPath:'/api/rush/'+rushPoolKind+'/notes',notesTable:state?.noteTable}:{} )}));
 const tournamentResults=installTournamentResult($('tableSettings'),()=>({state:chatWindow?null:state,room,token,animating:!!pendingHand||!!document.querySelector('.award')}),()=>playerNotes.openHistory(),avatarSource,playCues,historyPng);
 // Next-blind scheduling remains unavailable until its server trigger is established.
 let cashSitOutMenu;
@@ -137,7 +140,7 @@ const sitOutStatePanel=element('div','nativeSitOutStates');sitOutStatePanel.hidd
 for(const [value,label]of [[1,'Smoking break'],[2,'Restroom break'],[4,'Drink break'],[8,'Recharge']]){const button=element('button'),icon=new Image();button.type='button';button.dataset.sitOutState=String(value);button.setAttribute('aria-label',label);button.title=label;icon.src='/home-art/native-sitout-choice-'+value+'.png';icon.alt='';button.append(icon);button.onclick=async()=>{if(sitOutStatusBusy)return;sitOutStatusBusy=true;updateCashSitOut();try{await operate('sit-out-state',{state:value})}finally{sitOutStatusBusy=false;updateCashSitOut()}};sitOutStatePanel.append(button)}
 function updateCashSitOut(){const enabled=!chatWindow&&!rushMode&&state?.sitOutSupported&&state.me!=null;cashSitOutLabel.hidden=!enabled;sitOutStatePanel.hidden=!(enabled&&state?.sitOutStateSupported&&state?.sittingOut?.[state.me]);for(const button of sitOutStatePanel.children){button.disabled=sitOutStatusBusy||sitOutStatePanel.hidden;button.setAttribute('aria-pressed',String(Number(button.dataset.sitOutState)===(state?.sitOutStates?.[state.me]||0)))}globalCashPauseButton.hidden=!(enabled&&playerAccount&&state?.globalCashPause);globalCashPauseButton.disabled=globalPauseBusy||globalCashPauseButton.hidden;globalCashLeaveButton.hidden=!(enabled&&playerAccount&&state?.globalCashLeave);globalCashLeaveButton.disabled=globalLeaveBusy||globalCashLeaveButton.hidden;globalCashLeaveButton.textContent=state?.leaveNextHand?'Cancel leaving all local cash tables':'Leave all local cash tables after this hand';cashSitOut.disabled=!enabled;cashSitOut.checked=!!state?.sitOutNextHand;dealMeIn.hidden=!(enabled&&state?.sittingOut?.[state.me]);dealMeIn.disabled=returnBusy||dealMeIn.hidden||!state?.sitOutNextHand;dealMeIn.title=dealMeIn.disabled?'Return requested for the next hand':state?.globalCashReturn&&playerAccount?'Return to your local cash tables for their next hands':'Return to this local table for the next hand';cashSitOutLabel.title=state?.sittingOut?.[state.me]?'Uncheck to return for the next hand':'Finish this hand, then pause before the next deal';cashSitOutMenu?.refresh()}
 cashSitOutMenu=installCashSitOutMenu(()=>({enabled:!chatWindow&&!rushMode&&!!state?.sitOutSupported&&state.me!=null,paused:!!state?.sitOutNextHand,allCash:!!state?.sitOutAllCash,account:!!playerAccount,canAll:!!state?.globalCashPause,busy:globalPauseBusy||returnBusy||cashSitOut.disabled}),{current:async()=>{cashSitOut.checked=!state?.sitOutNextHand;await cashSitOut.onchange()},all:()=>setAllCashPaused(!state?.sitOutAllCash)});
-const rushSitOut=document.createElement('input'),rushSitOutLabel=element('label');rushSitOut.type='checkbox';rushSitOut.id='rushSitOut';rushSitOutLabel.append(rushSitOut,' Sit out next hand');rushSitOutLabel.hidden=!rushMode;tableSettings.append(rushSitOutLabel);rushSitOut.onchange=async()=>{rushSitOut.disabled=true;await operate('sit-out',{paused:rushSitOut.checked});rushSitOut.checked=!!state?.paused;rushSitOut.disabled=!state?.registered};
+const rushSitOut=document.createElement('input'),rushSitOutLabel=element('label');rushSitOut.type='checkbox';rushSitOut.id='rushSitOut';rushSitOutLabel.append(rushSitOut,' Sit out next hand');rushSitOutLabel.hidden=!rushMode||battleMode;tableSettings.append(rushSitOutLabel);rushSitOut.onchange=async()=>{rushSitOut.disabled=true;await operate('sit-out',{paused:rushSitOut.checked});rushSitOut.checked=!!state?.paused;rushSitOut.disabled=battleMode||!state?.registered};
 const reservedPanel=element('div');reservedPanel.id='reservedActions';reservedPanel.setAttribute('role','group');reservedPanel.setAttribute('aria-label','Actions on your next turn');$('actions').before(reservedPanel);
 function fitSeatNames(){for(const label of document.querySelectorAll('.seatName')){label.style.removeProperty('font-size');const size=parseFloat(getComputedStyle(label).fontSize);if(label.clientWidth&&label.scrollWidth>label.clientWidth)label.style.fontSize=size*label.clientWidth/label.scrollWidth+'px'}}
 addEventListener('resize',fitSeatNames);
@@ -249,10 +252,13 @@ function applyState(data){
 
 async function request(op,body={}){
  const headers={'Content-Type':'application/json'};if(token)headers.Authorization='Bearer '+token;
- const res=await fetch(rushMode?'/api/rush/'+rushPoolKind+'/'+op:'/api/rooms/'+room+'/'+op,{method:op==='state'?'GET':'POST',headers,body:op==='state'?undefined:JSON.stringify(body),cache:'no-store',...(op==='helmet'||op==='chat'||op==='spin-ready'?{signal:AbortSignal.timeout(5000)}:{})});
+ let endpoint=rushMode?'/api/rush/'+rushPoolKind+'/'+op:'/api/rooms/'+room+'/'+op;
+ if(battleMode){const command=op==='join'?'register':op;if(!['state','register','cancel','deal','act','quick-fold'].includes(command))throw Error('This Battle Royale control is not available yet');endpoint='/api/battle/'+encodeURIComponent(battleEvent||'')+'/'+command;body=command==='register'?{}:command==='cancel'?{revision:body.version??state?.version}:{revision:body.version??state?.version,session:state?.battleSession,...(['act','quick-fold'].includes(command)?{table:state?.table}:{}),...(command==='act'?{action:body.action,...(body.target===undefined?{}:{target:body.target})}:{})}}
+ const res=await fetch(endpoint,{method:op==='state'?'GET':'POST',headers,body:op==='state'?undefined:JSON.stringify(body),cache:'no-store',...(op==='helmet'||op==='chat'||op==='spin-ready'?{signal:AbortSignal.timeout(5000)}:{})});
  let data=await res.json();
  if(!res.ok){if(rushMode&&res.status===409&&op!=='state')await request('state');if(res.status===401||res.status===404){sessionStorage.removeItem(key);token=null;state=null;render()}throw Error(data.error)}
- if(rushMode){
+ if(battleMode)data=battleTableState(data);
+ else if(rushMode){
   const table=data.table?data:null,result=data.result,g=table?.hand||result?.hand;
   data={...data,result:undefined,avatars:table?data.avatars:result?.avatars||[],me:table?data.me:result?.me??null,number:data.table||result?.table||0,names:table?data.names:result?.names||Array(6).fill(null),hand:g?{...g,cards:g.hands,options:table?data.legal:null}:null,settings:{name:'Rush & Cash · local '+(data.variant==='plo'?'PLO':'Hold’em')+' pool',variant:data.variant==='plo'?'plo':'rush',stack:200,blind:4},chat:[],results:[]};
  }
@@ -423,7 +429,7 @@ function drawTable(g){
   const extensions=[...existing?.querySelectorAll(':scope>.seatReaction,:scope>.seatEmoticonCaption,:scope>.seatChatBubble,:scope>.seatHelmet')||[]];for(const node of extensions)node.remove();
   const mounted=existing?updateElement(existing,seat):felt.appendChild(seat),glow=mounted.querySelector('.nativeTurnGlow');
   mounted.append(...extensions);
-  if(glow&&!glow.hidden&&i===state.me&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&!glow.getAnimations().some(a=>a.effect.getTiming().duration===400)){
+  if(glow&&!glow.hidden&&i===state.me&&Number.isFinite(g.deadline)&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&!glow.getAnimations().some(a=>a.effect.getTiming().duration===400)){
    const art='url("/home-art/native-reserved-turn-glow-urgent.png")';glow.animate([{opacity:0,borderImageSource:art,offset:0,easing:'steps(1,end)'},{opacity:1,borderImageSource:art,offset:.5},{opacity:1,borderImageSource:art,offset:1}],{duration:400,delay:Math.max(0,g.deadline-Date.now()-5000),iterations:Infinity});
   }
  }
@@ -581,9 +587,10 @@ if(!keepActions){refreshBetEditor=null;for(const child of [...$('actions').child
  const net=Array(capacity()).fill(0);for(const r of state?.results||[])r.payouts.forEach((v,i)=>net[i]+=v-r.committed[i]);
  list('standings',(state?.names||[]).map((name,i)=>({name,score:net[i],place:t?.finishes?.[i],prize:t?.prizes?.[i]||0})).filter(x=>x.name).sort((a,b)=>b.score-a.score).map(x=>x.name+': '+(x.score>0?'+':'')+x.score+(x.place?' · place '+x.place:'')+(x.prize?' · prize '+x.prize+' credits':'')));
  if(rushMode){
-  rushSitOut.checked=!!state?.paused;rushSitOut.disabled=!state?.registered;
+  rushSitOut.checked=!!state?.paused;rushSitOut.disabled=battleMode||!state?.registered;
   document.querySelectorAll('details').forEach(d=>{if(d.querySelector('#chatForm,#invite,#standings,#results'))d.hidden=true});
   if(!state){$('status').textContent='Connecting to the local Rush pool…';return}
+  if(battleMode&&!state.table){$('status').textContent=!state.registered&&state.battlePhase!=='registration'?'Battle Royale registration is closed.':state.battlePhase==='registration'?'Battle Royale registration · '+state.battleCount+' / '+state.battleCapacity:state.battlePhase==='qualification'?'Rush finished · qualification is not implemented yet.':'Battle Royale · '+state.balance+' tournament chips · waiting for a Rush table';if(!state.registered&&state.battlePhase==='registration')btn('Register for Battle Royale',()=>operate('join'));else if(state.battlePhase==='registration')btn('Cancel Battle Royale registration',()=>operate('cancel'));else if(state.battlePhase==='rush'&&state.balance>0)btn('Find next table',()=>operate('deal'));return}
   if(!state.table){
    $('status').textContent=(state.paused?'Sitting out · ':'')+(state.registered?'Waiting pool · '+state.waiting+' available of '+state.population+' players · Balance '+state.balance+' chips.':'Join the local play-money Rush pool. Six available players start a hand.')+(g?.end?' Last hand settled. '+g.end.payouts.flatMap((n,i)=>n?[state.names[i]+': '+n]:[]).join('; '):'');
    if(state.walletSupported)$('status').textContent+=' '+(state.registered?(state.walletFunded?'Funded from local wallet.':'Legacy virtual practice balance.'):'Buy-in: '+state.buyIn+' play chips.')+' Wallet: '+state.walletAvailable+' play chips.';

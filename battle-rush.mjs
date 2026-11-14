@@ -1,8 +1,8 @@
 import {randomBytes} from 'node:crypto';
 import {isDeepStrictEqual} from 'node:util';
 import {rushPool} from './engine/rush-pool.mjs';
-import {options} from './engine/table.mjs';
-import {visibleCards} from './room-view.mjs';
+import {options,canQuickFold} from './engine/table.mjs';
+import {visibleCards,collectedPots} from './room-view.mjs';
 
 // Local practice boundary: six-seat Rush only; qualification policy is handled by the event coordinator.
 export function battleRush(entries,config,checkpoint=null){
@@ -30,7 +30,7 @@ export function battleRush(entries,config,checkpoint=null){
  }
  function view(account,session){
   const p=player(account,session),table=pool.tables.get(p.table),seat=table?.ids.indexOf(account),g=table?.game,last=[...pool.tables].findLast(([,t])=>t.settled&&t.ids.includes(account));
-  const hand=(game,viewer)=>({board:[...game.board],stacks:[...game.stacks],bets:[...game.bets],committed:[...game.committed],turn:game.turn,button:game.button,cards:visibleCards(game,viewer),end:structuredClone(game.end),legal:game.turn===viewer&&!game.end?options(game):null});
+  const hand=(game,viewer)=>({...Object.fromEntries(['variant','initialStacks','allIns','stacks','blind','button','board','folded','committed','bets','actedAt','price','increment','turn','end','history','bigBlindSeat'].map(key=>[key,game[key]])),cards:visibleCards(game,viewer),pots:collectedPots(game),quickFoldAllowed:canQuickFold(game,viewer),legal:game.turn===viewer&&!game.end?options(game):null});
   return structuredClone({eventId:config.eventId,phase:phase(),table:p.table,stack:p.balance,...(g?{me:seat,names:table.ids,hand:hand(g,seat)}:{}),...(last?{result:{table:last[0],names:last[1].ids,me:last[1].ids.indexOf(account),hand:hand(last[1].game,last[1].ids.indexOf(account))}}:{})});
  }
  function deal(account,session,now){player(account,session);tick(now);if(closed)throw Error('Battle Rush stage is closed');pool.deal(account);return view(account,session)}
