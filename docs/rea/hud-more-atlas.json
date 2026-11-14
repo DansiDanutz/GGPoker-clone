@@ -153,6 +153,49 @@
         401
       ]
     ],
-    "localPolicy": "Local admin destination and existing30-hour hand-report window retained explicitly; native help says30days, server policy not established."
+    "localPolicy": "Local admin destination retained;30-hour hand limit matches recovered native client cutoff in ordinary elapsed-time periods. Native30days help is inconsistent; DST calendar-hour semantics remain unverified."
+  },
+  "desktopReport": {
+    "sources": [
+      {
+        "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/handHistory/HandHistoryView.as",
+        "sha256": "6dd18469513ebc660f537b789faadaa18461d61b3b09601a0134c66fb0748a19"
+      },
+      {
+        "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/fiarplayReport/DesktopFairplayReportView.as",
+        "sha256": "142923e84b305c2ddaaf6ed47dbdcfa2daacf9e6a0b64c510ab494aedcf12530"
+      },
+      {
+        "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/fairplayReport/FairplayReportErrorView.as",
+        "sha256": "de030d246558376d9089b5811436ed4c7a1fb10d7675b8be66701b8a8a196dae"
+      },
+      {
+        "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/fairplayReport/FairplayReportCompleteView.as",
+        "sha256": "a24bdc8a29f0f5d3877ab22ecdb30e13b43ffef12786012ef4904d8527bec74d"
+      }
+    ],
+    "eligibility": "HandHistoryView subtracts30 local calendar hours via Date.setHours; StartTime strictly greater than cutoff; visibility requires hhdata.user",
+    "nativeHelpContradiction": "ReportLastDays English says30days but client gating uses30hours",
+    "localPolicy": "30 elapsed hours, own participating hand, future timestamps rejected; DST wall-clock equivalence not established",
+    "initialViewport": [
+      460,
+      610
+    ],
+    "outcomeViewport": [
+      380,
+      300
+    ],
+    "errorClose": [
+      135,
+      108,
+      110,
+      37
+    ],
+    "successClose": [
+      135,
+      216,
+      110,
+      37
+    ]
   }
 }
