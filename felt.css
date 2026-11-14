@@ -539,4 +539,4 @@ body:has(#dealMeIn:not([hidden])) footer:has(#join[hidden]){margin-top:0}
 .felt[data-seats] #board[hidden]{display:none}
 .nativeRunoutBoards{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none}
 .nativeRunoutBoard{position:absolute;left:-21.058823529cqw;width:42.120941176cqw;height:10.939764706cqw;display:flex;justify-content:flex-start;gap:.232cqw}
-.nativeRunoutBoard .card{width:8.238588235cqw;height:10.939764706cqw;flex:0 0 auto}
+.nativeRunoutBoard .card,.nativeRunoutShared{width:8.238588235cqw;height:10.939764706cqw;flex:0 0 auto}

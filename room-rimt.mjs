@@ -29,5 +29,5 @@ export function applyRoomRimt(room,me,operation,body,now){
 }
 export function roomRimtView(room,me){
  if(!room.rimt)return undefined;const d=readRimt(room.rimt.decision),pending=d.runs===null;
- return {hand:d.hand,proposer:d.proposer,decider:d.decider,proposal:d.proposal,runs:d.runs,reason:d.reason,phase:pending?(d.proposal===null?'suggest':'decide'):'complete',deadline:pending?(d.proposal===null?d.suggestUntil:d.proposedAt+d.decisionMs):null,canSuggest:pending&&d.proposal===null&&me===d.proposer,canDecide:pending&&d.proposal!==null&&me===d.decider};
+ return {hand:d.hand,sharedCount:room.rimt.base.board.length,proposer:d.proposer,decider:d.decider,proposal:d.proposal,runs:d.runs,reason:d.reason,phase:pending?(d.proposal===null?'suggest':'decide'):'complete',deadline:pending?(d.proposal===null?d.suggestUntil:d.proposedAt+d.decisionMs):null,canSuggest:pending&&d.proposal===null&&me===d.proposer,canDecide:pending&&d.proposal!==null&&me===d.decider};
 }

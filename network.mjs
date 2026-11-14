@@ -291,7 +291,7 @@ function drawTable(g){
  const prev=lastDraw,changed=!!(g&&prev?.hand===state.number&&g!==prev.g),collected=changed&&!prev.g.end&&(g.board.length>prev.g.board.length||!!g.end);
  lastDraw=g?{hand:state.number,g}:null;
  const settling=!!(changed&&!prev.g.end&&g.end&&!matchMedia('(prefers-reduced-motion: reduce)').matches);
- const multipleRuns=(g?.runoutBoards?.length||0)>1;
+ const multipleRuns=(g?.runoutBoards?.length||0)>1,sharedCount=multipleRuns?(state.rimt?.sharedCount??0):0;
  const awardStages=g?.end?Array.from({length:multipleRuns?g.runoutBoards.length:1},(_,run)=>(g.end.pots||[{amount:g.end.payouts.reduce((n,v,i)=>n+v-g.end.returns[i],0),payouts:g.end.payouts.map((v,i)=>v-g.end.returns[i])}]).map((p,pot)=>({run,pot,...(multipleRuns?p.runs[run]:{amount:p.amount,payouts:p.payouts})}))).flat().filter(p=>p.amount>0).map((p,stage)=>({...p,stage})):[];
  const multiPot=awardStages.length>1;
  // shortcut: local ordinary Delay2s plus recovered RIMT1s; supplied native Delay remains unknown.
@@ -303,18 +303,18 @@ function drawTable(g){
  const feltFrame=document.querySelector('.felt');
  feltFrame.classList.toggle('nativeFocusPending',settling&&focusBySeat.size>0);
  if(!runoutPlan)feltFrame.querySelectorAll('.boardThrow').forEach(node=>node.remove());
- if(runoutPlan&&collected&&g.board.length>prev.g.board.length)for(const step of runoutPlan.board.filter(step=>step.cue)){
+ if(runoutPlan&&!multipleRuns&&collected&&g.board.length>prev.g.board.length)for(const step of runoutPlan.board.filter(step=>step.cue)){
   const card=cards([g.board[step.index===0?2:step.index]])[0];card.classList.add('boardThrow');card.setAttribute('aria-hidden','true');card.dataset.boardIndex=step.index;
   card.style.setProperty('--throw-x',(492+144*step.index)/17+'cqw');card.style.setProperty('--throw-delay',(step.at-200)/1000+'s');
   card.onanimationend=card.onanimationcancel=()=>card.remove();feltFrame.append(card);
  }
  feltFrame.style.setProperty('--showdown-offset',runoutPlan?runoutPlan.complete/1000+'s':'0s');
- const faces=cards(g?.board||[]);if(focusBySeat.size)for(const [i,card]of faces.entries()){card.dataset.bestFive=boardFocus.has(i)?'1':'0';card.classList.toggle('nativeFocusDim',!boardFocus.has(i))}if((runoutPlan?.board[0]?.index===0||changed&&!prev.g.board.length)&&faces.length>=3&&!matchMedia('(prefers-reduced-motion: reduce)').matches)faces.slice(0,3).forEach((c,i)=>{c.classList.add('nativeFlop');c.style.setProperty('--flop-index',i)});if(runoutPlan)for(const step of runoutPlan.board){const card=faces[step.index];card.classList.add('runoutCard');card.style.setProperty('--board-delay',step.at/1000+'s');card.dataset.boardSound=step.cue?'1':'0';card.dataset.boardIndex=step.index}const board=$('board'),nextBoard=board.cloneNode(false);nextBoard.append(...faces);updateElement(board,nextBoard);
- const runs=g?.end&&g.runoutBoards?.length>1?g.runoutBoards:null;board.hidden=!!runs;
+ const faces=cards(multipleRuns?g.board.slice(0,sharedCount):g?.board||[]);if(focusBySeat.size)for(const [i,card]of faces.entries()){card.dataset.bestFive=boardFocus.has(i)?'1':'0';card.classList.toggle('nativeFocusDim',!boardFocus.has(i))}if(!multipleRuns&&(runoutPlan?.board[0]?.index===0||changed&&!prev.g.board.length)&&faces.length>=3&&!matchMedia('(prefers-reduced-motion: reduce)').matches)faces.slice(0,3).forEach((c,i)=>{c.classList.add('nativeFlop');c.style.setProperty('--flop-index',i)});if(runoutPlan&&!multipleRuns)for(const step of runoutPlan.board){const card=faces[step.index];card.classList.add('runoutCard');card.style.setProperty('--board-delay',step.at/1000+'s');card.dataset.boardSound=step.cue?'1':'0';card.dataset.boardIndex=step.index}const board=$('board'),nextBoard=board.cloneNode(false);nextBoard.append(...faces);updateElement(board,nextBoard);
+ const runs=g?.end&&g.runoutBoards?.length>1?g.runoutBoards:null;board.hidden=!!runs&&sharedCount===0;
  let runouts=document.querySelector('.nativeRunoutBoards');
  if(runs){
   const next=element('div','nativeRunoutBoards');
-  for(const [index,row]of runs.entries()){const line=element('div','nativeRunoutBoard');line.dataset.run=String(index);line.setAttribute('aria-label','Run '+(index+1)+' of '+runs.length);line.style.top=(-93-(runs.length-1-index)*(runs.length===2?105:72))/17+'cqw';line.append(...cards(row));next.append(line)}
+  for(const [index,row]of runs.entries()){const line=element('div','nativeRunoutBoard');line.dataset.run=String(index);line.setAttribute('aria-label','Run '+(index+1)+' of '+runs.length);line.style.top=(-93-(runs.length-1-index)*(runs.length===2?105:72))/17+'cqw';for(const [cardIndex,card]of cards(row).entries()){if(cardIndex<sharedCount){const shared=element('span','nativeRunoutShared');shared.setAttribute('aria-hidden','true');line.append(shared)}else line.append(card)}next.append(line)}
   if(runouts)updateElement(runouts,next);else board.parentElement.append(next)
  }else runouts?.remove();
  const pot=$('pot').cloneNode(false);
