@@ -25,10 +25,44 @@
       "path": "/Users/davidai/Sandbox/rea-tools/battle-royale-source/scripts/com/nsus/network/protocol/types/tagBattleRoyaleTypeInfo.as",
       "bytes": 724,
       "sha256": "8b0e98c6dd454dedc4bb7df03c506294fd1b4ad9c6ce8d0aea8e6c6698b96737"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/battle-royale-source/scripts/com/nsus/iron/model/battleRoyale/BattleRoyaleInformation.as",
+      "bytes": 8052,
+      "sha256": "c536bef0541d11e19316dcbcc3915a26a2102e1f1593ce8882f2760f508755ec"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/battle-royale-source/scripts/com/nsus/iron/table/controller/BattleRoyaleStageChangedCommand.as",
+      "bytes": 6703,
+      "sha256": "10cca7c483d33e8f62921ef3495ba05a95d4161475c97ae8d9d6529d317f29e1"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/battle-royale-source/scripts/com/nsus/iron/services/callback/OnBattleRoyaleStageChanged.as",
+      "bytes": 3116,
+      "sha256": "cc8c3d0a693348413e52014015727ba9f1b4ee71da6f2984df47d742cbd8d698"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/vo/NoticeType.as",
+      "bytes": 21589,
+      "sha256": "b2d943b26314d713eed2fbacc8d060cdea1c6c0e5c0d6c2a7072187c38d70730"
     }
   ],
   "limits": [
     "Actual server preset values were not captured",
     "Protocol declarations do not prove server validation, scheduling or settlement policies"
-  ]
+  ],
+  "localization": {
+    "path": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/languages/string_table.json",
+    "sha256": "c0ce0735b46095e36594f9be9f81fac6d9be1136a1dd23e60defc71fd9f7b665",
+    "keys": [
+      "BBAverageStack",
+      "RushStageToTopValue",
+      "RushStageEndType11",
+      "RushStageEndType22",
+      "FinalStageStartNotiValue"
+    ],
+    "localesReviewed": [
+      "en"
+    ]
+  }
 }
