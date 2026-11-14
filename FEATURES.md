@@ -1196,3 +1196,5 @@ Battle shootout notice localization: existing27 parameterized native translation
 Battle stage audio evidence: exact embedded ReadyCount/RoundEnd MP3s recovered and metadata-probed (267331bytes private output; full decoding held by disk preflight). Runtime playback remains unwired pending native Ready/catch-up/once-only dispatch integration; no audible parity claim.
 
 Battle Smart HUD movement: source-backed outer-header drag, local accessible arrow-key movement, viewport edge/resize clamping and cleanup on close/auth change. Notes/label editor guards retained; native detached-window/multi-monitor/frame persistence and physical visuals remain open.
+
+REA HUD More contract: docs/rea/hud-more-menu.md records hidden nickname history, SnapCam/report capability gates, menu geometry and distinct location2 player-report flow. Existing hand-report backend must not receive fabricated hand evidence; player-profile reports remain unimplemented. Both embedded Battle stage MP3s now fully decoded to null after disk preflight allowed the recheck; speaker/native timing still unverified.
