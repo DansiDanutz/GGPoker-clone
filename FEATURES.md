@@ -13,7 +13,7 @@ Target: reproduce player-visible workflows using independent code and an owner-c
 | Turn clock | Optional finite owner-local GameClock plus manual/automatic free TimeBankCard policies,inventory/action caps, persistent spending/hot fallback, source graphics, actor-bound controls, alerts and restart-tested local journeys | Native operator defaults/refills, paid TimeChip/disconnection modes, native frame/speaker timing |
 | Omaha | Six-seat PLO, PLO-5 and PLO-6; pot limits, exact two-hole-card showdown, independent browser payouts and restart recovery | Native occupied-table comparison and full lobby parity |
 | Short Deck | Local 36-card/button-blind engine and hosted fixtures; native ATS-off/3-bet-on HUD branch; independent payout checks | Native forced-bet runtime validation, complete lobby/table comparison and remaining options |
-| Tournaments | Hold’em/PLO three-, four- and six-seat freezeouts, scheduled starts, computers, configurable/free local entry costs, registration, levels, places, persisted prize and owner pause/resume with source-backed notices | Multi-table events and native branded formats |
+| Tournaments | Hold’em/PLO three-, four- and six-seat freezeouts, scheduled starts, computers, configurable/free local entry costs, registration, levels, places, persisted prize, eliminated-player watch/reconnect and personal final results, and owner pause/resume with source-backed notices | Multi-table events and native branded formats |
 | Rush | Separate Hold’em/PLO pools, quick-fold transfers and source Fold/bet widgets, isolated human sessions or eleven computers, server timer, queues, sit-out-next-hand/return, recorded HUD/history, timeouts, atomic account wallet funding/rebuy/cash-out and recovery | Multiple stake levels, Cash Drops, native layout/timing and queue fairness |
 | Spin & Gold | Live information-only lobby, Info/Blind Structure/Payout and insurance help; native 3-Max captures and tested rule model | Multiplier-dependent starting stack/time bank, native wheel, matching and gameplay |
 | Battle Royale | Reference label observed | Game rules and format |
@@ -1055,3 +1055,7 @@ Seven native action-panel classes establish the source button textures, geometry
 ### Owner monitor and eliminated tournament previews
 
 The owner can monitor authoritative chips, commitments,actor,phase,levels,eliminations,finishing places and settled prizes. Polling preserves rows/text/focus, stops on hidden/closed contexts and rejects late responses after owner-key changes. A shared balance fix keeps eliminated tournament seats at zero on later-hand lobby previews. See `docs/rea/owner-table-monitor.md`; native private admin equivalence and disqualification remain unclaimed.
+
+### Eliminated tournament player journey
+
+Recorded eliminations no longer become future-hand waiting seats or expose invalid waiting-seat cancellation/betting controls. The player retains their place through a later deal/cold restart; final settlement displays each player’s actual place and prize. Controlled three-browser unequal-all-in/side-pot fixtures cover the journey. Six native reward/callback classes document the distinct lifecycle and guarded post-animation popup; complete native result graphics/actions remain open. See `docs/rea/tournament-elimination.md`.
