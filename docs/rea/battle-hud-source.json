@@ -80,6 +80,16 @@
       "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/popup/smarthud/HudAverageView.as",
       "bytes": 14624,
       "sha256": "ef8d12f87cf79b1b7fc1d9ed29807b89e1e7149ecca2bc4237f8bb051a994de1"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/popup/smarthud/PlayerNotePreviewView.as",
+      "bytes": 15235,
+      "sha256": "d1e1fd6a3770855da682d976e7a292efc6ac601051a1d42ae4dd4938b47ad803"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/popup/smarthud/note/PlayerNoteEditView.as",
+      "bytes": 14976,
+      "sha256": "d2fcafb5b197a5b3f785cdcd314e99b434e343b03509eac19d29ce34ac5979e4"
     }
   ],
   "protocol": {
