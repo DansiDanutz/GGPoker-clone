@@ -1,5 +1,12 @@
 # Spin wheel presentation — source reconstruction in progress
 
+## Current release — PR119
+
+Released on14November2026 via[PR119](https://github.com/DansiDanutz/GGPoker-clone/pull/119),tested headd0c1d09e3ff839234ef6b238004a7544164fcfa8. The wheel scene is now active in the installed local practice table,including waiting motion/lights/flares,winning segment/glow/sparkles,sounds and congratulations. All three seated completions precede the first hand and action clock.41commit-bound checks passed on the installed runtime/art,including public lobby-to-winner and failure/restart journeys. Six owner files were unchanged by rollout.
+
+Native effective settings/operator packet order,insurance,6-Max/NoDealing,absent-player policy and physical native pixel/frame/speaker parity remain unresolved. The sections below are chronological source/implementation checkpoints; their earlier “not hooked/not released/pending” statements record that stage and are superseded by this current status and later checkpoints.
+
+
 `spin-wheel-motion.mjs` implements the frame progression in the retained REA export of `SpinAndGoldWheel.onEnterFrameHandler`. It is not yet imported by the table UI, and no working rendered wheel is claimed.
 
 The selected segment and animation variant are separate inputs. The segment must come from a persisted server result and verified display mapping; the animation must never draw or alter a prize. This module accepts an explicit wheel index rather than guessing that the native operator's multiplier-list order matches the local payout-array order. The native multiplier-list permutation `[6,2,4,0,1,5,3,7]` alone does not establish that order.

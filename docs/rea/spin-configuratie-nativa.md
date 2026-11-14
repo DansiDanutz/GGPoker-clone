@@ -1,5 +1,7 @@
 > Ediție publică a fișei funcționale. `native-source` este un prefix logic pentru exporturile AS3 păstrate local. Fișierele de dovezi JSON menționate sunt private; nu sunt incluse aici. Secțiunile istorice se citesc împreună cu actualizările finale.
 
+Current release: PR119 includes the playable local queue,table and native-source wheel with persistent predeal completion. See [current Spin presentation status](spin-wheel-presentation.md#current-release--pr119). Earlier informational-only/disabled/not-rendered statements below are historical checkpoints. Native effective configuration,insurance and physical runtime parity remain open.
+
 # Spin & Gold — configurație și limitele reconstrucției
 
 ## Ce există local

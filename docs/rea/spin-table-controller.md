@@ -1,5 +1,7 @@
 # Spin de practică — masă Hold’em și decontare din motor
 
+Current release: PR119 includes the playable local queue,table and native-source wheel with persistent predeal completion. See [current Spin presentation status](spin-wheel-presentation.md#current-release--pr119). Earlier informational-only/disabled/not-rendered statements below are historical checkpoints. Native effective configuration,insurance and physical runtime parity remain open.
+
 ## Stadiu și proveniență
 
 Implementarea sursă conectează înscrierile finanțate și rezultatul Spin la o masă cu3locuri. Folosește motorul Hold’em,side-poturile,eliminările și rendererul3-Max existente. Pozițiile recuperate prin REA/FFDec sunt descrise în three-max-layout.md; regulile observate ale premiilor/blindurilor sunt în spin-configuratie-nativa.md. Nu s-a măsurat o comparație fizică AIR cu această masă în aceeași mână.
