@@ -6,7 +6,7 @@ export function installBattleLobby(pane,select){
  const logo=new Image();logo.src='/home-art/native-battle-lobby-logo.png';logo.alt='Mystery Battle Royale';logo.className='battleLobbyLogo';nav.append(logo);
  const page=document.createElement('section');page.id='battleLobbyPage';page.setAttribute('aria-label','Game Lobby');page.innerHTML='<div id="battleCards" aria-label="Local Battle events"></div><p class="battleEmpty">No local Battle Royale events have been created.</p><a id="battleJoin" aria-disabled="true">Join Now</a><button id="battleLobbyRules" type="button" disabled>Mystery Battle Royale details…</button><button id="battleMyTables" type="button" hidden aria-expanded="false">My Tables</button><div id="battleMyTableList" hidden></div>';
  for(const [id,label]of [['lobby','Game Lobby'],['list','Game List']]){const b=document.createElement('button');b.type='button';b.dataset.page=id;b.textContent=label;b.onclick=()=>{pane.dataset.battlePage=id;for(const t of nav.querySelectorAll('button'))t.setAttribute('aria-current',t===b?'page':'false')};nav.append(b)}
- pane.append(nav,page);nav.querySelector('button').click();
+ pane.append(nav,page);nav.querySelector(new URLSearchParams(location.search).get('battlePage')==='list'?'[data-page=list]':'[data-page=lobby]').click();
  const cards=page.querySelector('#battleCards'),join=page.querySelector('#battleJoin'),mine=page.querySelector('#battleMyTables'),tables=page.querySelector('#battleMyTableList');const rules=page.querySelector('#battleLobbyRules');rules.onclick=()=>document.getElementById('battleRules').click();mine.onclick=()=>{tables.hidden=!tables.hidden;mine.setAttribute('aria-expanded',String(!tables.hidden))};
  function update(events,selected){
   highlights.update(events);

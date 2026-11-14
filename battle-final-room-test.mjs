@@ -11,6 +11,7 @@ try{
  const result=rooms.startBattleFinal(settings.id),qualified=v.qualification.qualified;assert.match(result.room,/^[a-f0-9]{48}$/);
  const saved=readFileSync(file);assert.deepEqual(rooms.startBattleFinal(settings.id),result);assert.deepEqual(readFileSync(file),saved);
  rooms=openRooms(file,()=>0,true);assert.deepEqual(rooms.startBattleFinal(settings.id),result);
+ const watchBefore=readFileSync(file);assert.throws(()=>rooms(result.room,'watch'),/Sign in/);const observer=rooms(result.room,'watch',undefined,{},undefined,'localviewer');assert.equal(observer.me,null);assert.ok(observer.hand.cards.every(h=>h===null));assert.equal(observer.issued,undefined);assert.deepEqual(readFileSync(file),watchBefore);
  const tokens=[];let firstVersion;for(const p of qualified){const own=rooms(result.room,'join',undefined,{name:p.id},undefined,p.id);tokens.push(own.issued);firstVersion??=own.version;assert.equal(own.me,tokens.length-1);assert.deepEqual(own.hand.stacks.map((n,i)=>n+own.hand.committed[i]),qualified.map(p=>p.stack))}
  assert.throws(()=>rooms(result.room,'join',undefined,{name:'Player11'},undefined,'outsider'),/qualified/i);
  assert.throws(()=>rooms(result.room,'fill-bots',tokens[0],{},undefined,qualified[0].id),/fixed/i);
