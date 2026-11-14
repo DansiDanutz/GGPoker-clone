@@ -39,6 +39,9 @@ function tournamentHand(r,now,avatarFor,startingStacks){
   startClock(r,now);r.version++;
   if(r.hand.end)record(r);
 }
+function cancelTournament(room,now){
+ const t=room.tournament;t.cancelledAt=now;t.ownerCancelled=true;t.refunds=room.players.map(p=>p?t.entry:0);t.pool=0;t.prizes=null;t.nextDealAt=null;delete t.cancelRequested;if(t.walletSettled===false)delete t.walletSettled;delete t.pauseRequested;delete t.pausedAt;delete t.pauseDelayMs;
+}
 function record(room){
   const g=room.hand;if(!g.end)return;if(cashSitOut(room)){g.settledAt=Date.now();if(room.players.some(p=>p?.leaveNextHand))room.cashLeaveAt=g.settledAt+3000;}
   const result={number:room.number,board:[...g.board],history:[...g.history],committed:[...g.committed],payouts:[...g.end.payouts],returns:[...g.end.returns],stacks:[...g.stacks],...(g.end.pots?{pots:g.end.pots}:{}),...(g.runoutBoards?{runoutBoards:structuredClone(g.runoutBoards),runoutDecision:structuredClone(g.runoutDecision)}:{})};
@@ -52,7 +55,7 @@ function record(room){
   }
   room.results.push(result);if(room.results.length>20)room.results.shift();
   room.ready=room.players.map((p,i)=>!!p?.bot||!!(p&&cashSitOut(room)&&g.sittingOut?.[i]&&hasHandBalance(room,i)&&!p.sitOutNextHand));
-  const t=room.tournament;if(!t)return;
+  const t=room.tournament;if(!t)return;if(t.cancelRequested){cancelTournament(room,Date.now());return}
   t.finishes??=Array(g.stacks.length).fill(null);
   if(g.initialStacks)for(const {seat,place} of eliminationPlaces(g.initialStacks,g.stacks,g.button))t.finishes[seat]=place;
   for(let i=0;i<g.stacks.length;i++)if(room.players[i]&&!g.stacks[i]&&!t.out[i]){t.out[i]=room.number;t.eliminatedAt??=Array(g.stacks.length).fill(null);t.eliminatedAt[i]=Date.now()}
@@ -218,10 +221,18 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
   }
   if(op==='owner-tournament'||op==='tournament-control'){
     const t=r?.tournament;
-    const status=()=>({version:r?.version??0,canControl:!!(t&&t.startedAt!==null&&t.winner===null&&!t.cancelledAt),paused:t?.pausedAt!=null,pauseRequested:!!t?.pauseRequested});
+    const status=()=>({version:r?.version??0,canControl:!!(t&&t.startedAt!==null&&t.winner===null&&!t.cancelledAt&&!t.cancelRequested),paused:t?.pausedAt!=null,pauseRequested:!!t?.pauseRequested,cancelRequested:!!t?.cancelRequested,cancelled:!!t?.cancelledAt});
     if(op==='owner-tournament')return status();
-    if(!table||!status().canControl)fail(409,'Choose a running tournament');
-    if(Object.keys(body).some(k=>!['tableId','action','version'].includes(k))||!['pause','resume'].includes(body.action)||!Number.isSafeInteger(body.version))fail(400,'Choose pause or resume with a current version');
+    if(!table||!t||t.startedAt===null||t.winner!==null)fail(409,'Choose a running tournament');
+    if(Object.keys(body).some(k=>!['tableId','action','version'].includes(k))||!['pause','resume','cancel'].includes(body.action)||!Number.isSafeInteger(body.version))fail(400,'Choose pause or resume, or cancel with a current version');
+    if(body.action==='cancel'&&(t.cancelRequested||t.ownerCancelled))return {...status(),changed:false};
+    if(t.cancelRequested||t.cancelledAt)fail(409,'Tournament cancellation is pending or complete');
+    if(body.action==='cancel'){
+      if(body.version!==r.version)fail(409,'Tournament changed; reload controls');
+      // Older runtimes reject false instead of ignoring a pending cancellation on rollback.
+      if(r.hand&&!r.hand.end){t.cancelRequested=true;t.walletSettled=false;delete t.pauseRequested}else cancelTournament(r,now);
+      r.version++;return {...status(),changed:true};
+    }
     const wantsPause=body.action==='pause',isPaused=t.pausedAt!=null||!!t.pauseRequested;
     if(wantsPause===isPaused)return {...status(),changed:false};
     if(body.version!==r.version)fail(409,'Tournament changed; reload controls');
@@ -572,6 +583,7 @@ rules=spinRules(rooms.get('local-spin-rules'));rooms.delete('local-spin-rules');
     const validTime=v=>Number.isSafeInteger(v)&&v>=0&&v<=8640000000000000;
     if(t.actualStartedAt!==undefined&&(!validTime(t.actualStartedAt)||t.startedAt===null)||t.finishedAt!==undefined&&(!validTime(t.finishedAt)||t.winner===null||t.actualStartedAt!==undefined&&t.finishedAt<t.actualStartedAt)||t.eliminatedAt!==undefined&&(!Array.isArray(t.eliminatedAt)||t.eliminatedAt.length!==r.players.length||t.eliminatedAt.some((v,i)=>v!==null&&(!validTime(v)||t.out[i]==null||t.actualStartedAt!==undefined&&v<t.actualStartedAt))))throw Error('Invalid tournament result time');
    }
+   if(t&&(t.cancelRequested!==undefined&&(t.cancelRequested!==true||t.walletSettled!==false||t.startedAt===null||t.winner!==null||t.cancelledAt||!r.hand||r.hand.end||t.pauseRequested||t.pausedAt!==undefined)||t.ownerCancelled!==undefined&&(t.ownerCancelled!==true||!Number.isSafeInteger(t.cancelledAt)||t.cancelledAt<0||t.winner!==null||t.nextDealAt!==null||t.prizes!==null||t.pool!==0||JSON.stringify(t.refunds)!==JSON.stringify(r.players.map(p=>p?t.entry:0)))||(t.cancelRequested||t.ownerCancelled)&&(r.spinMatch||r.battleEvent)))throw Error('Invalid tournament cancellation');
    if(t&&(t.pauseRequested!==undefined&&t.pauseRequested!==true||t.pausedAt!==undefined&&(!Number.isSafeInteger(t.pausedAt)||t.pausedAt<0||!r.hand?.end||t.nextDealAt!==null||!Number.isSafeInteger(t.pauseDelayMs)||t.pauseDelayMs<0||t.pauseDelayMs>3000)||t.pauseDelayMs!==undefined&&t.pausedAt===undefined||(t.pauseRequested||t.pausedAt!==undefined)&&(t.startedAt===null||t.winner!==null||t.cancelledAt)||t.pauseRequested&&t.pausedAt!==undefined))throw Error('Invalid tournament pause');
    for(const p of r.players)if(p?.entryFunded!==undefined&&(p.entryFunded!==true||!r.settings||!t||p.bot||typeof p.account!=='string'||!Object.hasOwn(wallet.state.accounts,p.account.toLowerCase())))throw Error('Invalid funded tournament seat');
    if(r.players.some(p=>p?.entryFunded)){
@@ -579,7 +591,7 @@ rules=spinRules(rooms.get('local-spin-rules'));rooms.delete('local-spin-rules');
     if(t.cancelledAt){if(!Array.isArray(t.refunds)||JSON.stringify(t.refunds)!==JSON.stringify(r.players.map(p=>p?t.entry:0)))throw Error('Invalid funded tournament refunds')}
     else if(t.winner!==null){const amounts=prizeAmounts(t.pool,t.prizeShares||[100]);if(!Number.isInteger(t.winner)||!r.players[t.winner]||!Array.isArray(t.finishes)||t.finishes.length!==r.players.length||t.finishes[t.winner]!==1||t.finishes.some((place,i)=>r.players[i]? !Number.isInteger(place)||place<1||place>r.players.length:place!==null)||!Array.isArray(t.prizes)||JSON.stringify(t.prizes)!==JSON.stringify(t.finishes.map(place=>amounts[place-1]||0))||t.prizes.reduce((sum,n)=>sum+n,0)!==t.pool)throw Error('Invalid funded tournament prizes')}
    }
-   if(t?.walletSettled!==undefined&&(t.walletSettled!==true||!r.players.some(p=>p?.entryFunded)||!(t.cancelledAt||t.winner!==null&&Array.isArray(t.prizes))))throw Error('Invalid tournament wallet settlement');
+   if(t?.walletSettled!==undefined&&!(t.walletSettled===false&&t.cancelRequested===true)&& (t.walletSettled!==true||!r.players.some(p=>p?.entryFunded)||!(t.cancelledAt||t.winner!==null&&Array.isArray(t.prizes))))throw Error('Invalid tournament wallet settlement');
   }
   for(const r of rooms.values())if(r.hand?.rabbitShown!==undefined&&(!cashSitOut(r)||!r.hand.end||![0,3,4].includes(r.hand.board.length)||!Array.isArray(r.hand.rabbitShown)||r.hand.rabbitShown.length!==r.players.length||r.hand.rabbitShown.some((v,i)=>typeof v!=='boolean'||v&&!r.hand.hands[i]?.length)))throw Error('Invalid Rabbit reveal state');
   const notes=openNotes(file+'.notes.json');
@@ -587,7 +599,7 @@ rules=spinRules(rooms.get('local-spin-rules'));rooms.delete('local-spin-rules');
   let migrated=false;for(const r of rooms.values())for(const p of r.players)if(p?.bot&&!p.noteId){p.noteId=randomBytes(16).toString('hex');migrated=true}
   if(migrated){writeFileSync(file+'.tmp',JSON.stringify(packed()),{mode:0o600});renameSync(file+'.tmp',file)}
   const request=(id,op,token,body,table,account)=>{
-    const old=rooms.get(id),version=old?.version,oldClock=old?.actionClock,clockId=oldClock?.id,cardUses=oldClock?.cardsUsed,walletBefore=JSON.stringify(wallet.state),snapshot=(old?.rimt||old?.hand?.runoutHand!==undefined||walletsEnabled&&(old?.spinMatch||old?.battleEvent||['join','ready','leave','end-practice','add-chips','sit-out','remove-seat'].includes(op)||old?.tournament&&!old.tournament.walletSettled&&old.players.some(p=>p?.entryFunded)))?JSON.stringify(packed()):null;let failed=false;
+    const old=rooms.get(id),version=old?.version,controlFrame=op==='tournament-control'?JSON.stringify([old?.number,old?.hand]):null,oldClock=old?.actionClock,clockId=oldClock?.id,cardUses=oldClock?.cardsUsed,walletBefore=JSON.stringify(wallet.state),snapshot=(old?.rimt||old?.hand?.runoutHand!==undefined||walletsEnabled&&(old?.spinMatch||old?.battleEvent||['join','ready','leave','end-practice','add-chips','sit-out','remove-seat'].includes(op)||old?.tournament&&!old.tournament.walletSettled&&old.players.some(p=>p?.entryFunded)))?JSON.stringify(packed()):null;let failed=false;
     if(!walletsEnabled&&Object.keys(wallet.state.accounts).length&&['join','ready','leave','end-practice','add-chips','sit-out','remove-seat'].includes(op))fail(503,'Cash wallet mode is required for funded rooms');
     if(!walletsEnabled&&old?.tournament&&!old.tournament.walletSettled&&old.players.some(p=>p?.entryFunded))fail(503,'Wallet mode is required for funded tournaments');
     try{const result=handle(rooms,id,op,token,body,table,account,avatarFor,notes,walletsEnabled?wallet:null);const active=rooms.get(id);if(active?.battleEvent){settleBattleBounties(active,op==='show-cards');settleBattleFinal(active);validateBattleFinals();if(result&&typeof result==='object'){if(battleEvents[active.battleEvent].bounty)result.battleBounty=battleBountyLedger(battleEvents[active.battleEvent]).summary();if(result.version!==undefined)result.version=active.version}}if(active?.rimt||active?.hand?.runoutPending)validateRoomRimt(active);if(active?.spinMatch){if(active.tournament.winner!==null){const order=spinFinishingOrder(active);if(!order)fail(409,'Spin finishing places are incomplete');settleSpinLedger(active.spinMatch,order)}validateSpinEntries()}if(settleTournamentWallet(rooms.get(id),walletsEnabled?wallet:null,id)&&result?.version!==undefined)result.version=rooms.get(id).version;return result}catch(error){if(snapshot){unpack(JSON.parse(snapshot));failed=true}throw error}finally{
@@ -595,7 +607,7 @@ rules=spinRules(rooms.get('local-spin-rules'));rooms.delete('local-spin-rules');
     advanceWaiting(rooms.get(id),table,Date.now());
     if(rooms.get(id)?.version!==version||JSON.stringify(wallet.state)!==walletBefore){
       // Clock-only card updates preserve queued bets while the same action remains active.
-      const changed=rooms.get(id),cardMetadata=typeof clockId==='string'&&oldClock?.phase==='cards'&&changed?.actionClock?.id===clockId&&(op==='time-card-option'||changed.actionClock.cardsUsed>cardUses);if(changed&&changed.version!==version){if(op==='chat'&&changed.version===(version??0)+1||cardMetadata||op==='join'&&changed.battleEvent)changed.actionVersion??=version??0;else changed.actionVersion=changed.version}
+      const changed=rooms.get(id),cardMetadata=typeof clockId==='string'&&oldClock?.phase==='cards'&&changed?.actionClock?.id===clockId&&(op==='time-card-option'||changed.actionClock.cardsUsed>cardUses);if(changed&&changed.version!==version){if(op==='chat'&&changed.version===(version??0)+1||cardMetadata||op==='join'&&changed.battleEvent||op==='tournament-control'&&controlFrame===JSON.stringify([changed.number,changed.hand]))changed.actionVersion??=version??0;else changed.actionVersion=changed.version}
       try{
         writeFileSync(file+'.tmp',JSON.stringify(packed()),{mode:0o600});
         renameSync(file+'.tmp',file);
