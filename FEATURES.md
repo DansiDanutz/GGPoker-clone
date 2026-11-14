@@ -20,7 +20,7 @@ Target: reproduce player-visible workflows using independent code and an owner-c
 | Leaderboard | Private room standings (net chips over last 20 hands), durable hand results | Cross-room rankings and account identity |
 | Player notes | Private1000-char notes, native opponent HUD editor/frames, ten private20-char label titles, account persistence, auth/backup/restart, shared Hold’em/PLO Rush notes and isolated-browser tests | Advanced own HUD metrics/full native window/skin/global statistics, offline list entry point (unconfirmed), physical comparison of the300ms opponent-note hover tooltip, advanced/global Rush metrics and native Rush HUD comparison |
 | Owner console | Local owner key, table management, private audit, bounded local snapshots, verified private downloads, confirmed transactional restore with rescue/recovery, exact-ID archive deletion, integrity checks and per-table chat moderation; confirmed between-hand cash-seat removal with atomic cash-out/refund and stale-seat protection; running tournament pause/resume and prestart registration withdrawal with atomic entry refund; owner-only live seat/actor/pot/standings/prize monitor with stable DOM and reconnect | Tournament disqualification, mid-hand policy, multi-user permissions and complete recovery/import workflows |
-| Cashier | Account-bound local cash wallet; atomic buy-in/top-up/cash-out and pending increments; private balance/receipt; Home Cashier opens the authenticated local wallet with guest login and keyboard return | Native remote Cashier UI, table entry, light animation and physical text/sidebar parity; no real funds |
+| Cashier | Account-bound local cash wallet; atomic buy-in/top-up/cash-out and pending increments; private balance/receipt; Home Cashier opens the authenticated local wallet with guest login and keyboard return | Native remote Cashier UI, table entry and physical text/sidebar/light timing parity; no real funds |
 | Visual and platform fidelity | Native artwork layers, local browser implementation, verified nonsynced code/art installations and same-size captures | Screen-by-screen comparison, accessibility and native packaging |
 
 The operator’s private admin system was not observed. Admin workflows here must be specified and tested independently.
@@ -1079,3 +1079,7 @@ The captured Cashier button now opens the existing authenticated My Wallet witho
 ### Cashier native pointer states
 
 The Home Cashier uses original108×65up/over/down sprites,RobotoBold16px localized label,native horizontal gradient,pressed0.5opacity and-1→1label shift. True pointer hover/press/drag-away tests verify state changes andcancelled activation before running the full local wallet journey. Static source/decoded sprite equality support this reconstruction; physical AIR text bounds,auto-scale,dynamic sidebar andlight timing remain open. See docs/rea/cashier-local-wallet.md.
+
+### Cashier light source clock
+
+Authenticated Home Cashier now has the original70×64light,source30/10anchor and7.5second loop:5second pause,2second cubic-out appearance,0.5second cubic-in disappearance. Browser animation-clock samples,guest/reduced-motion suppression andbright-light pointer passthrough are verified. Physical native timing/account-refresh cadence remain open; no fake escrow counter is shown. See docs/rea/cashier-local-wallet.md.

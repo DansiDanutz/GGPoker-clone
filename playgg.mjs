@@ -214,7 +214,7 @@ for(const p of parts){
  box(e,p.x-(inf?5:0),p.y-(inf?150:0),p.w,p.h);
  if(input){e.type='button';e.setAttribute('aria-label',p.label);e.onclick=()=>navigate(p);
  if(!['cash','spin','holdem','plo','shortdeck','aof','rush','tournaments','navhome','poker','collapse','floatingAsk','ask','settings'].includes(p.id)){e.disabled=true;e.title=(audit[p.id]?.note||'Destination unverified')+' · Unavailable locally'}}
- if(p.mode==='button'){const img=new Image();img.src=art+(p.id==='cash'?'native-cashier-up':p.id)+'.png';img.alt='';e.append(img);if(p.id==='cash'){e.style.width='108px';e.style.height='65px';const label=document.createElement('span'),text=document.createElement('span');label.className='cashierLabel';text.textContent=p.label;text.dataset.nativeLabel='ButtonCashier';label.append(text);e.append(label)}}
+ if(p.mode==='button'){const img=new Image();img.src=art+(p.id==='cash'?'native-cashier-up':p.id)+'.png';img.alt='';e.append(img);if(p.id==='cash'){e.style.width='108px';e.style.height='65px';const label=document.createElement('span'),text=document.createElement('span');label.className='cashierLabel';text.textContent=p.label;text.dataset.nativeLabel='ButtonCashier';label.append(text);e.append(label);const light=document.createElement('span'),sprite=document.createElement('span');light.className='cashierLight';sprite.className='cashierLightSprite';light.setAttribute('aria-hidden','true');light.append(sprite);e.append(light);e.classList.toggle('cashierMotion',journey)}}
  else if(p.mode==='art'){e.src=art+(p.id==='logo'?'dangg-logo-512-transparent.png':p.id+'.png');e.alt=p.id==='logo'?'DanGG':p.label;if(p.id==='logo')e.style.objectFit='contain'}
  else e.textContent=p.label;
 }
