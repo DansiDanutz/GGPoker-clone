@@ -1170,3 +1170,9 @@ Tournament search release PR157/158: native-derived inline Players search and7or
 Tournament preview backend (unreleased): authenticated read-only actual table/seat/chips/Dealer-SB-BB/avatar projection for Rush and final, fast-fold reassignment exclusion and unchanged file bytes/restart verified. Preview graphics and lobby HUD adapter are still unimplemented.
 
 Tournament selected-table preview (unreleased): native Battle Rush/final backgrounds, actual assigned seat/avatar/chips/Dealer-SB-BB, recovered2–6seat anchors, shortened list/native footer geometry and stale-response rejection. No fabricated HUD/country/badges; View Profile adapter and physical font/logo parity remain incomplete.
+
+Battle HUD evidence:13 hashed native classes now distinguish actual Battle6metric card from existing cash VPIP/PFR HUD; lobby1555/table3169 payloads, failure state, own/opponent geometry, int-truncated Rush rate and fixed9 final denominator recovered in docs/rea/battle-hud.md. View Profile remains unimplemented; fixed9 display denominator versus variable local2–6 requires actual configuration evidence.
+
+Battle HUD backend (unreleased): authenticated actual-event member career summary, explicit completed-local-events scope, actual prize+bounty shares, qualification rate and actual final-place/table-size data; unavailable shared-kill count staysnull. Real all-in/prize/bounty/rollback/restart/privacy/no-write tests pass. View Profile dialog remains to be implemented.
+
+Battle View Profile UI (unreleased): Players footer/double-click open Battle6metric card with actual local summary, explicit scope/unavailable values, before/after viewer check, close/Escape/stale401 clearing; winner exact payout and1/3 after actual tournament/restart verified. Full own-average/private-note/game-type regions and physical native frame parity remain incomplete.

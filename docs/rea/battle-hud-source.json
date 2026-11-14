@@ -1,0 +1,100 @@
+{
+  "method": "Selected FFDec export of installed Game/51/IronDesktop.swf; no native account/server interaction",
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/smarthud/DesktopSmartHudView.as",
+      "bytes": 6509,
+      "sha256": "2f15e4eae2db40e038b29aeb94a2c46658aea6ef44dffcc7183b8c4c4819c9f3"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/smarthud/SmartHudWindowMediator.as",
+      "bytes": 13384,
+      "sha256": "052beb3bf5a65cbd3522c6e1723a6d47df95b7bc45e36456be2964c0bf36e763"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/table/view/popup/smarthud/BattleRoyaleHudView.as",
+      "bytes": 6427,
+      "sha256": "b29b7392747b943e8517f22996b693be5edc551a6edfa162bce923e7fbe44455"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/table/view/popup/smarthud/TourneyHudView.as",
+      "bytes": 2088,
+      "sha256": "4a8deeee040cbe5c79f61402ebdbeb813033f3a45286cb6e343446878103cc81"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/table/view/popup/smarthud/SmartHudView.as",
+      "bytes": 26220,
+      "sha256": "17d7e4c692d82bda1e9010f0c27f96eb16c23f5ab1060186237340b153ef95ac"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/table/view/popup/smarthud/HudBaseView.as",
+      "bytes": 1162,
+      "sha256": "6fc52c0644787e8496e31dd7e2b2c45d4ebacec4f8e43e40ad58d37df645127c"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/model/dynamichud/BattleRoyaleHudInfo.as",
+      "bytes": 665,
+      "sha256": "59883d283dc72773a8e53c59db659bd2ce7b75a448257a631ec382db80c6d6d0"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/table/controller/GetUserDynamicHudInfoCommand.as",
+      "bytes": 2530,
+      "sha256": "e2430478797e914b16479ea9119dbcd8083b9e81eb1a56090b9c45ef8e587d56"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/data/SmartHudPlayerData.as",
+      "bytes": 42118,
+      "sha256": "48d684e9cabdc214a499d5498574d8d7d3ddab8f9337e4de8d0e54e5606c6817"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/services/request/GetDynamicHudBattleRoyale.as",
+      "bytes": 4846,
+      "sha256": "1b176dee0f288ef20ab008c2cd57b597c5f234020d1e13c06f2b68a4cf9e0a77"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/table/services/request/GetDynamicHudBattleRoyale.as",
+      "bytes": 3389,
+      "sha256": "a822ba019ccac4e54c61502f9993edf1a2dc02c46114ae435639de56ed4d9d86"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/network/protocol/TourneyLobby/GetDynamicHudBattleRoyaleRequest.as",
+      "bytes": 1047,
+      "sha256": "a4f1b188e7dded6e3a46916b1163ec6f7d51ad9c7938b5cd9d49de27ff76748a"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/network/protocol/TourneyLobby/GetDynamicHudBattleRoyaleResponse.as",
+      "bytes": 2963,
+      "sha256": "fc851f3f8cb85c7cb74ec7e41f1057d595740bd92128e9c5fd4ae6723f9e6dce"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/table/view/popup/smarthud/TotalAmountPanel.as",
+      "bytes": 2199,
+      "sha256": "56303a6dca7a209798b28147fea4516c7671505d7713bd4ab261cd95de297dd1"
+    }
+  ],
+  "protocol": {
+    "lobbyRequest": 1555,
+    "tableRequest": 3169
+  },
+  "card": {
+    "width": 368,
+    "height": 204,
+    "fill": "#212121",
+    "cornerDiameter": 16
+  },
+  "metrics": [
+    "totalWinnings",
+    "passStage1Rate",
+    "finalRankAverage",
+    "totalBounty",
+    "totalKills",
+    "totalGameCount"
+  ],
+  "unverified": [
+    "Original server aggregation window/formulas/rounding and split-kill attribution",
+    "Currency/internal monetary scaling beyond typed protocol",
+    "Complete title/user/info/note subcomponent artwork and own HUD average/frame; metric card and TotalAmountPanel geometry recovered",
+    "Physical AIR font/audio/animation timing",
+    "Local Battle final supports2\u20136; native HUD finalRankAverage label fixes denominator9"
+  ]
+}
