@@ -1,8 +1,9 @@
+import {installBattleReport} from './battle-report.mjs';
 import {installBattlePlayerNote} from './battle-player-note.mjs';
 import {element,avatarSource,hudColor} from './felt.mjs';
 export function installBattleHud(event){
- let dialog=null,target=null,viewer=null,epoch=0,loading=false,editor=null,resize=null,cancelDrag=null;
- function clear(){cancelDrag?.();cancelDrag=null;if(resize){removeEventListener('resize',resize);resize=null}editor?.dispose();editor=null;epoch++;loading=false;target=viewer=null;if(dialog){const old=dialog;dialog=null;old.close();old.remove()}}
+ let dialog=null,target=null,viewer=null,epoch=0,loading=false,editor=null,resize=null,cancelDrag=null,reportControl=null;
+ function clear(){reportControl?.dispose();reportControl=null;cancelDrag?.();cancelDrag=null;if(resize){removeEventListener('resize',resize);resize=null}editor?.dispose();editor=null;epoch++;loading=false;target=viewer=null;if(dialog){const old=dialog;dialog=null;old.close();old.remove()}}
  async function read(path){const response=await fetch(path,{cache:'no-store'}),data=await response.json();if(!response.ok){const error=Error(data.error||'HUD unavailable');error.status=response.status;throw error}return data}
  async function refresh(){
   if(!dialog||loading)return;loading=true;const stamp=epoch,pane=dialog,name=target;pane.querySelector('.battleHudMessage').textContent='';
@@ -17,6 +18,7 @@ export function installBattleHud(event){
    const values={totalWinnings:data.totalWinnings,passStage1Rate:data.passStage1Rate===null?'—':data.passStage1Rate+'%',finalRankAverage:data.finalRankAverage===null?'—':data.finalRankAverage.toLocaleString('en-US',{maximumFractionDigits:2})+(data.finalTableSizes.length===1?' / '+data.finalTableSizes[0]:''),totalBounty:data.totalBounty,totalKills:data.totalKills??'—',games:data.games};
    for(const [key,value]of Object.entries(values))pane.querySelector('[data-metric='+key+']').textContent=String(value);
    pane.querySelector('[data-metric=totalWinnings]').classList.toggle('zero',data.totalWinnings===0);
+   if(name!==viewer.toLowerCase()&&!reportControl)reportControl=installBattleReport(pane,event,name,viewer.toLowerCase(),close,clear);
    if(name!==viewer.toLowerCase()&&!editor){const owner=viewer.toLowerCase();editor=installBattlePlayerNote(pane,event,name,owner,()=>stamp===epoch&&dialog===pane,clear,clear);void editor.load()}
   }catch(error){if(stamp===epoch){if([401,403].includes(error.status)||error.status===404&&!editor?.dirty()){clear();return}if(error.status===404)editor?.fail(error);for(const output of pane.querySelectorAll('[data-metric],[data-own-metric]')){output.textContent='—';if(output.hasAttribute('data-own-metric')){output.parentElement.dataset.known='false';output.style.left='';output.style.right='';output.parentElement.querySelector('.battleHudAverageFill').style.width='0px'}}pane.querySelector('.battleHudMessage').textContent=error.message}}
   finally{if(stamp===epoch)loading=false}

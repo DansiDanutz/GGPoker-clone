@@ -19,6 +19,11 @@ func extract(_ relative:String,_ entries:[(String,String,Int,Int)],_ prefix:Stri
  let receipt:[String:Any] = ["method":"StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding","sources":[atlas.path:hash(try Data(contentsOf:atlas)),metadata.path:hash(try Data(contentsOf:metadata))],"files":records]
  try JSONSerialization.data(withJSONObject:receipt,options:[.prettyPrinted,.sortedKeys]).write(to:out.appendingPathComponent("rea/"+receiptName+".json"))
 }
+if CommandLine.arguments.contains("--hud-more") {
+ try extract("init_lobby/desktop_assets.png",[("lobby_popup0367","button",20,20),("table_popup0216","report",19,20)],"native-hud-more-","hud-more-atlas")
+ print("PASS2 native HUD More/Report sprites: exact decoded RGBA")
+ exit(0)
+}
 try extract("after_lobby/desktop_table_assets.png",[("table0385","winner",297,77),("table0386","remaining",181,121)],"native-battle-box-","battle-box-atlas")
 try extract("init_lobby/desktop_assets.png",[("battleroyale0037","left",160,22),("battleroyale0038","right",160,22),("battleroyale0044","arrow",4,9)],"native-battle-rules-","battle-rules-atlas")
 print("PASS native bounty panels and Battle rules lines160x22/arrow4x9; exact RGBA readback")

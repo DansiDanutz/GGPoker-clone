@@ -1,0 +1,27 @@
+{
+  "files": [
+    {
+      "bytes": 354,
+      "file": "native-hud-more-button.png",
+      "frame": "lobby_popup0367",
+      "height": 20,
+      "rgbaExact": true,
+      "sha256": "0913679e93736911397a9de9859991c8261c880c7f7bade4206a20b2c2750b2a",
+      "width": 20
+    },
+    {
+      "bytes": 652,
+      "file": "native-hud-more-report.png",
+      "frame": "table_popup0216",
+      "height": 20,
+      "rgbaExact": true,
+      "sha256": "8c6386de8b5fc0d2bb6af5f1f0d3b009e90ed3bb069cbc90e95e29e413c33bc2",
+      "width": 19
+    }
+  ],
+  "method": "StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding",
+  "sources": {
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+  }
+}
