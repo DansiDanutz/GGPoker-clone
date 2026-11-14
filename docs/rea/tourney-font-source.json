@@ -1,0 +1,49 @@
+{
+  "sources": {
+    "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/components/display/button/LabelButton.as": "5e9cc08b2489e890d5684b9edb2b9b11e452d1ffdb991850f1edc0f83cade197",
+    "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/components/display/text/UniqueLabel.as": "ebf2dfc4abce2a7de077b31af397d056ceb526f52b132cc09610b9c1fc1e5803",
+    "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/components/display/button/TourneyRegistrationButton.as": "d78cec056ff5e17d60632544bcf8458ba06d7303a35873d09d795aa0b0e7f6ed",
+    "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/Setting.as": "7711ac87c7729456e36920529ca5adc88529d50409c095833da862de50c8c854",
+    "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/tourneylobby/header/TourneyHeaderPage.as": "ea5a481c69959a2730d8572d776e99c7588a12d5117112c6cb6c22d0920982c5",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/asset/StageAssets.as": "e993e9ebfc32e1214162109e9af1eb3eef98e2cf6cbf6d7fb0ce1be4e3f0b0a3",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/tasks/InitFont.as": "d3831e2c3816f4adf93ed7d1bec21a55f47661bbe138da2eb66a471866df9465",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/GlobalButton.as": "eb82ad01852703c14d475d837cb3ffe1785c7f1e624afb81b00caa980762f329"
+  },
+  "fonts": {
+    "native-history-roboto.ttf": "3d9e65fbf2459f595bba0e01adb16a5502d66c938970bdef1bc5024ac180e809",
+    "native-action-roboto-condensed.ttf": "18d0126c5b6279862627fce250efd93c9c0256d6c78aaea0f21b0352b138aa48",
+    "native-show-roboto-condensed-bold.ttf": "b8d17e376e93dab4a6c101d28f9613a189d8255fa80b1a8ecfde573b49e7d3f2"
+  },
+  "latinStyle": {
+    "tabs": {
+      "family": "Roboto",
+      "size": 18,
+      "bold": false,
+      "labelX": 2,
+      "labelY": 1,
+      "labelWidth": "button.width-4"
+    },
+    "title": {
+      "family": "Roboto Condensed Bold",
+      "size": 24,
+      "positionWithoutBrand": [
+        14,
+        10
+      ],
+      "width": 500,
+      "height": 33,
+      "autoScale": "native true; local long-title autoscale remains incomplete"
+    },
+    "entry": {
+      "family": "Roboto Condensed",
+      "size": 19,
+      "position": [
+        596,
+        12
+      ],
+      "width": 178,
+      "height": 44
+    }
+  },
+  "brandArt": "Dynamic URLs from actual tournament type. hasType false hides background/banner; no generic substitute is established."
+}

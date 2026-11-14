@@ -1160,3 +1160,5 @@ Battle native-pane data (unreleased): authenticated read-only player/table proje
 Native event panes (unreleased): live three-column event lobby, actual Info/Structure/Payout/Players/Tables data, existing entry/refund/qualified-seat actions, Rush Open disabled and separate final observer without entry. Native art/column/profile/search parity remains incomplete.
 
 Tournament pane paint (unreleased): original common81 nine-patch, native32px vector-tab geometry/colors/visible-tab widths and rounded ends; RGBA crop/source receipts and browser assertions. Physical fonts/header/player controls still incomplete.
+
+Tournament Latin typography (unreleased): actual inherited Roboto18 tabs, Condensed Bold24 unbranded title and Condensed19 entry control, using existing native fonts;28source inventory. Native autoscale/non-Latin/physical baseline/header art still incomplete.
