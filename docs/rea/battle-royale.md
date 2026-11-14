@@ -85,3 +85,34 @@ No gate above is currently passed for local Battle Royale. Existing ordinary Rus
 - com/nsus/iron/vo/battleroyale/BattleRoyaleStageInfo.as: `bed63aa4b0e0c76524def977977cb8320e6469177a70002a3a66c15ab246fa14`
 - com/nsus/iron/vo/battleroyale/BattleRoyaleType.as: `d4cd082a440418a6fdffb4fa45018ea3c6a1fffdcf4e7e669e179dcf213b87c3`
 - com/nsus/network/protocol/types/tagBattleRoyalePreset.as: `3363a1222b2afe69ebd16a28991ef49ef8556b1db6fc5cd3415e3d02af09bddf`
+
+## Session, cancellation and engine integration follow-up
+
+A further eight classes were recovered (17 total). BattleRoyaleInformation maps stage id2 to Shootout,3 to FinalTable and other ids to Rush. Ready/Started/Finished are separate server statuses. Its remaining-time display subtracts the synchronized TimeManager clock from the authoritative stage end and clamps at zero. Rush and Shootout have different stored deadline sources. Final-table participant count reads stage3.MaximumPlayers. The starting-blind label combines the configured level's actual small/big blind with the stage's StartBlindBBMultiplier; this is presentation evidence, not proof of the algorithm that computes rollback/forward blinds.
+
+Player records carry UserId, TableId, Sequence, Place, Chips, KoPlayersCount, Bounty and IsDroppedOut alongside nickname/account metadata. Sequence and Place exist as server values; neither field alone establishes a ranking tie-break rule. Stage protocol fields additionally include UseChessClock, BettingDuration, SandGlassDuration, UseChessClockFromPreviousRound, TimeChipCount and ChessClockBlindUpHandCount. These must not be silently replaced by ordinary cash-table time-bank defaults.
+
+GetRushTourneySession is request1556 and sends both SitAndGoId and RushSessionId. On success it requires a known tournament, an existing userRushSession and exact returned session-id equality before syncing; an ended session is cleared. Wrong/stale session responses do not re-seat the player. RushTourneyNewHand request3170 sends RushSessionId and has no local response behavior in its wrapper. OnUpdateRushTourneySessionStatus callback2552 looks up the event's own Rush session, records the new status and broadcasts CHECK_RUSH_STATUS; Idle→Waiting carries a special boolean. This does not yet identify the actual relocation-table callback or the complete session sync structure.
+
+UnregisterBattleRoyale request1554 sends SitAndGoId. The response wrapper treats ErrorTourneyUnregisterNotAllowed specially; other results can clear registration/UI state and send LEAVE_TABLE, even beyond the explicit Success branch. This is an observed client cleanup path, not evidence that funds are refundable on every such response. The local ledger must refund only a proven, authorized cancellation exactly once and preserve funding on unavailable/stale/failed requests.
+
+RegisterBattleRoyaleTableCommand supplies the existing event/window id, type, prior tournament-dollar preference and ticket ids for Play Again, setting isCurrentWindow=true and hiding the multi-table-count picker. A successful new registration must remain a distinct event/session; reusing the visible window must not reuse its old seat authority.
+
+### Current local reuse limits
+
+The inspected engine/rush-pool.mjs can preserve chips, detach folded players and rematch across concurrent six-seat tables; it validates checkpoint totals and assignment ownership. However it requires exactly six players per dealt table, initial stacks at least4big blinds, and a fixed pool blind. These constraints cannot represent arbitrary native StageList.TableSize, late-stage low stacks or stage-specific blind changes without deliberate adaptation and tests.
+
+The higher-level rush.mjs currently creates200-chip cash entries, debits/cashes out the cash wallet and reconstructs a fixed4-chip-blind pool. It is not a tournament registration/stack-transfer service. Battle Royale must separate a one-time entry-cost ledger from tournament chips and must not debit the player's cash wallet every rematch or credit tournament stacks on stage migration. Existing cash behavior must remain covered by its wallet/restart tests.
+
+Next implementation boundary: first trace Rush-session relocation, tournament hand completion and bounty callbacks; then define an event-owned pool coordinator using the existing hand evaluator, strict per-event account/session authority and atomic persisted transitions. Counts/durations/blind policy must be owner-explicit local practice rules until native server values are actually observed. No native server fixture or inferred rule is a completed local feature.
+
+### Additional source hashes
+
+- com/nsus/iron/model/battleRoyale/BattleRoyaleInformation.as: `c536bef0541d11e19316dcbcc3915a26a2102e1f1593ce8882f2760f508755ec`
+- com/nsus/iron/services/callback/OnUpdateRushTourneySessionStatus.as: `feaee16b68fdaebbcbbda9679b0d6ea53f72a200293e2e2b525d8e1621a6bb5f`
+- com/nsus/iron/services/request/GetRushTourneySession.as: `711be9d2ccb4b7e70bee1b0d694475018e17cf54d4ce825a16f5569212c118f2`
+- com/nsus/iron/services/request/UnregisterBattleRoyale.as: `f72ca320cfc66a3d5952dfa2143d321993ee70049228b44ff09f12d17e93aba9`
+- com/nsus/iron/table/controller/RegisterBattleRoyaleTableCommand.as: `d188ca7a67b89491f5da843a6feb66ea150f9fc5b4f66b59838fae3f2d25f5c5`
+- com/nsus/iron/table/services/request/RushTourneyNewHand.as: `b0dbcf678aacdac2fd71bb192a10057de668b629c1cba1b371394c9e212c52e8`
+- com/nsus/network/protocol/types/tagBattleRoyalePlayer.as: `7046b7bb8f5cb18f01bdeda312340ffa2fda8bb248c19a4e4a8efa96891e169a`
+- com/nsus/network/protocol/types/tagBattleRoyaleStage.as: `753a94e9ce10f7dcb24293ab19daf46f9c969a89cdf6c468e839384b1a194b98`
