@@ -1,3 +1,4 @@
+import {installRimtPanel} from './rimt-panel.mjs';
 import {installSpinWheelScene} from './spin-wheel-scene.mjs';
 import {installTournamentResult} from './tournament-result.mjs';
 import {installCashSitOutMenu} from './cash-sitout-menu.mjs';
@@ -505,7 +506,9 @@ function renderShowCards(g){
  }
 }
 const spinWheelScene=installSpinWheelScene(document.querySelector('.felt'),()=>chatWindow?null:state,()=>operate('spin-ready'),playCues,seat=>{const pos=seatPosition(seat),p=threePositions[pos];return {x:p.x,y:p.y+(pos===0?-50:60)*p.scale,scale:p.scale}},room);
+const rimtPanel=installRimtPanel(document.querySelector('.felt'),()=>chatWindow?null:state,(op,body)=>operate(op,body));
 function render(){
+ rimtPanel.update();
  spinWheelScene.update();
  updateTournamentAnnounce();
  updateTournamentNotice();

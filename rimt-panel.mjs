@@ -1,0 +1,46 @@
+const css=`
+.nativeRimtPanel{margin:0;padding:0;border:0;border-radius:0;min-height:0;box-sizing:border-box;background:transparent;position:absolute;right:.1764705882cqw;top:50.4705882353cqw;width:37.6470588235cqw;height:20cqw;z-index:12;color:#fff;font-family:Arial,sans-serif}
+.nativeRimtPanel[hidden]{display:none}.nativeRimtPanel *{box-sizing:border-box}
+.nativeRimtTitle{position:absolute;left:0;top:0;width:23.1764705882cqw;height:3.0588235294cqw;border-style:solid;border-width:.0588235294cqw 3.5882352941cqw .0588235294cqw .1764705882cqw;border-image:url('/home-art/native-rimt-title.png') 1 61 1 3 fill stretch}
+.nativeRimtTitle span{position:absolute;left:.5882352941cqw;top:.2352941176cqw;width:15.8823529412cqw;height:2.5882352941cqw;color:#faa700;font-size:1.7647058824cqw;white-space:nowrap}
+.nativeRimtBody{position:absolute;top:2.6470588235cqw;width:100%;height:17.3529411765cqw;border-style:solid;border-width:1.1764705882cqw 1.1176470588cqw 1.1176470588cqw 1.1764705882cqw;border-image:url('/home-art/native-rimt-body.png') 20 19 19 20 fill stretch}
+.nativeRimtContent{position:absolute;inset:2.6470588235cqw 0 0}
+.nativeRimtPanel button{position:absolute;display:block;margin:0;padding:0;border-style:solid;border-radius:0;background:transparent;box-shadow:none;filter:none;color:#fff;cursor:pointer;font:2.2352941176cqw Arial,sans-serif}
+.nativeRimtPanel button:focus-visible{outline:2px solid #faa700;outline-offset:2px}.nativeRimtPanel button:disabled{cursor:default;opacity:.5}
+.nativeRimtSuggest{top:1.2352941176cqw;width:10.8235294118cqw;height:10cqw;border-width:5cqw 1.1176470588cqw 4.9411764706cqw 1.1764705882cqw;border-image:url('/home-art/native-rimt-green170-up.png') 85 19 84 20 fill stretch}
+.nativeRimtSuggest:hover:not(:disabled){border-image-source:url('/home-art/native-rimt-green170-over.png')}.nativeRimtSuggest:active:not(:disabled){border-image-source:url('/home-art/native-rimt-green170-down.png')}
+.nativeRimtSuggest span{position:absolute;left:-.3529411765cqw;top:-4.6470588235cqw;width:6.5882352941cqw;text-align:left;line-height:1.15;white-space:pre-line}.nativeRimtSuggest b{position:absolute;left:5.5294117647cqw;top:-2.4117647059cqw;width:3.8235294118cqw;font-size:6.5882352941cqw;color:#000;opacity:.5}
+.nativeRimtDecide{top:7.2941176471cqw;width:12.9411764706cqw;height:3.7647058824cqw;border-width:1.8823529412cqw 1.1176470588cqw 1.8235294118cqw 1.1764705882cqw;border-image:url('/home-art/native-rimt-green64-up.png') 32 19 31 20 fill stretch}.nativeRimtDecide span{position:absolute;left:-1.1764705882cqw;top:-1.4705882353cqw;width:12.9411764706cqw;text-align:center}
+.nativeRimtDecide:hover:not(:disabled){border-image-source:url('/home-art/native-rimt-green64-over.png')}.nativeRimtDecide:active:not(:disabled){border-image-source:url('/home-art/native-rimt-green64-down.png')}
+.nativeRimtDecide[data-rimt-agreed=false]{border-image-source:url('/home-art/native-rimt-gray64-up.png')}.nativeRimtDecide[data-rimt-agreed=false]:hover:not(:disabled){border-image-source:url('/home-art/native-rimt-gray64-over.png')}.nativeRimtDecide[data-rimt-agreed=false]:active:not(:disabled){border-image-source:url('/home-art/native-rimt-gray64-down.png')}
+.nativeRimtProposal{position:absolute;top:1.9411764706cqw;left:0;width:100%;font-size:1.7647058824cqw;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.nativeRimtQuestion{position:absolute;left:9.0588235294cqw;top:4.0588235294cqw;width:19.2941176471cqw;text-align:center;font-size:1.7647058824cqw;color:#b2b2b2}
+.nativeRimtInfo{position:absolute;left:2.2941176471cqw;top:12.4117647059cqw;width:32.9411764706cqw;height:4.7647058824cqw;color:#999;font-size:1.6470588235cqw}.nativeRimtInfo img{position:absolute;left:1.6470588235cqw;top:1.4705882353cqw;width:2.5294117647cqw;height:2.5294117647cqw}.nativeRimtInfo span{position:absolute;left:5cqw;top:1.0588235294cqw;width:26.9411764706cqw;height:3.5294117647cqw}
+`;
+// shortcut: native progress-bar artwork and exact text shaping remain unverified; retain functional source-derived controls.
+export function installRimtPanel(root,getState,send){
+ const doc=root.ownerDocument,style=doc.createElement('style');style.textContent=css;root.append(style);
+ const panel=doc.createElement('section');panel.className='nativeRimtPanel';panel.hidden=true;panel.setAttribute('aria-label','Run it multiple times');
+ const title=doc.createElement('div');title.className='nativeRimtTitle';const heading=doc.createElement('span');heading.dataset.nativeLabel='MobileDealChoice';title.append(heading);
+ const body=doc.createElement('div');body.className='nativeRimtBody';const content=doc.createElement('div');content.className='nativeRimtContent';panel.append(title,body,content);root.append(panel);
+ let key='',pending=false,motion,deadlineTimer=0,destroyed=false;
+ const text=(cls,value)=>{const n=doc.createElement('div');n.className=cls;n.textContent=value;content.append(n);return n};
+ async function choose(op,choice){
+  const s=getState(),d=s?.rimt;if(pending||panel.hidden||!d||Date.now()>=d.deadline||op==='rimt-suggest'&&!d.canSuggest||op==='rimt-decide'&&!d.canDecide)return;
+  pending=true;update();try{await send(op,{number:d.hand,...choice})}finally{pending=false;update()}
+ }
+ function button(cls,label,left,choice){const b=doc.createElement('button');b.type='button';b.className=cls;b.style.left=left/17+'cqw';const span=doc.createElement('span');span.textContent=label;span.dataset.nativeLabel='runs'in choice?['MobileRunItOnceTwo','MobileRunItTwiceTwo','MobileRittActionBubble'][choice.runs-1]:choice.agreed?'ButtonYes':'ButtonNo';b.append(span);b.setAttribute('aria-label',label);if('runs'in choice){b.dataset.rimtRuns=choice.runs;const n=doc.createElement('b');n.textContent=choice.runs;n.setAttribute('aria-hidden','true');b.append(n)}else b.dataset.rimtAgreed=String(choice.agreed);b.onclick=()=>choose('runs'in choice?'rimt-suggest':'rimt-decide',choice).catch(()=>{});content.append(b)}
+ function update(){
+  if(destroyed)return;const s=getState(),d=s?.rimt,visible=!!(d&&s.me!=null&&d.hand===s.number&&(d.phase==='suggest'&&d.canSuggest||d.phase==='decide'&&d.canDecide));
+  if(!visible){panel.hidden=true;key='';motion?.cancel();clearTimeout(deadlineTimer);deadlineTimer=0;return}
+  const next=JSON.stringify([s.me,d.hand,d.phase,d.proposal,s.names?.[d.proposer],d.deadline]);
+  if(next!==key){key=next;content.replaceChildren();heading.textContent='Deal Choice';
+   if(d.phase==='suggest')for(let runs=1;runs<=3;runs++)button('nativeRimtSuggest',['Run It\nOnce','Run It\nTwice','Run It\n Three\n Times'][runs-1],33+(runs-1)*198,{runs});
+   else{text('nativeRimtProposal',(s.names?.[d.proposer]||'Player')+' wants to '+(d.proposal===2?'Run it twice.':'Run it three times.'));text('nativeRimtQuestion','Do you agree?').dataset.nativeLabel='MobileAimDoYouAgree';button('nativeRimtDecide','Yes',84,{agreed:true});button('nativeRimtDecide','No',338,{agreed:false})}
+   const info=text('nativeRimtInfo',''),icon=doc.createElement('img'),label=doc.createElement('span');icon.src='/home-art/native-rimt-info.png';icon.alt='';label.textContent='No extra rake. Give it a try!';label.dataset.nativeLabel='MobileAIMDescription';info.append(icon,label);
+   panel.hidden=false;motion?.cancel();if(!matchMedia('(prefers-reduced-motion: reduce)').matches)motion=panel.animate([{opacity:0,transform:'translateY(29.4117647059cqw)'},{opacity:1,transform:'translateY(0)'}],{duration:400,easing:'cubic-bezier(.3333333333,1,.6666666667,1)'});
+  }
+  for(const b of panel.querySelectorAll('button'))b.disabled=pending||Date.now()>=d.deadline;
+  clearTimeout(deadlineTimer);deadlineTimer=Date.now()<d.deadline?setTimeout(update,Math.min(2147483647,d.deadline-Date.now()+1)):0;
+ }
+ return {update,destroy(){destroyed=true;motion?.cancel();clearTimeout(deadlineTimer);panel.remove();style.remove()}};
+}
