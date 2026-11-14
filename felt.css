@@ -540,3 +540,14 @@ body:has(#dealMeIn:not([hidden])) footer:has(#join[hidden]){margin-top:0}
 .nativeBattleBounty::backdrop{background:transparent}
 
 .battleStageNoticeTitle{color:#999;font-size:1.8823529412cqw}.battleStageNoticeBody{margin-top:1.6470588235cqw;color:#fff;font-size:1.6470588235cqw}
+
+/* Native ActionButton uses the smaller Battle Royale skin and label offsets. */
+html[data-battle-actions=true] body #actions button.nativeMainAction[data-key]{width:208px;min-width:208px;height:122px;background-image:url('/home-art/native-reserved-battle-action-up.png')}
+html[data-battle-actions=true] body #actions button.nativeMainAction[data-key]:hover{background-image:url('/home-art/native-reserved-battle-action-over.png')}
+html[data-battle-actions=true] body #actions button.nativeMainAction[data-key]:active{background-image:url('/home-art/native-reserved-battle-action-down.png')}
+html[data-battle-actions=true] #actions button.nativeMainAction>span{left:25px;top:27px}
+html[data-battle-actions=true] #actions button.nativeMainAction.hasAmount>.actionLabel{top:7px}
+html[data-battle-actions=true] #actions button.nativeMainAction.hasAmount>.actionAmount{top:50px}
+html[data-battle-actions=true] body #actions button.nativeMainAction[data-key]:active>span{top:41px}
+html[data-battle-actions=true] body #actions button.nativeMainAction.hasAmount[data-key]:active>.actionLabel{top:21px}
+html[data-battle-actions=true] body #actions button.nativeMainAction.hasAmount[data-key]:active>.actionAmount{top:64px}
