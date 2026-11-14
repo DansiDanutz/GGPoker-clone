@@ -242,7 +242,7 @@ function applyState(data){
  bountyScene.observe(chatWindow?null:data,room+':'+token+':'+data.me);
  const sameSeats=state&&state.me===data.me&&JSON.stringify(state.names)===JSON.stringify(data.names);
  // Native OnWinners resumes the event processor only after all payout callbacks.
- if(!chatWindow&&!rushMode&&state&&state.me===data.me&&state.names[state.me]===data.names?.[data.me]&&state.hand?.end&&(data.hand&&data.number>state.number||!data.hand&&data.number===state.number)&&(document.querySelector('.award')||bountyScene.blocking(state.number))){if(!pendingHand||data.version>=pendingHand.version)pendingHand=data;return}
+ if(!chatWindow&&!rushMode&&state&&state.me===data.me&&state.names[state.me]===data.names?.[data.me]&&state.hand?.end&&(data.hand&&data.number>state.number||!data.hand&&data.number===state.number)&&(document.querySelector('.award')||bountyScene.blocking(state.number))){if(!pendingHand||data.version>=pendingHand.version)pendingHand=data;bountyScene.refresh();return}
  if(pendingHand&&sameSeats&&data.number===state.number&&data.version<=pendingHand.version)return;
  pendingHand=null;if(state&&!sameSeats)clearPayout();
  pendingVoluntary=voluntaryReveals(state,data);
