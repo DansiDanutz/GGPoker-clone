@@ -1,0 +1,2 @@
+import assert from 'node:assert/strict';import {spinCongratulationFrameIndex} from './spin-congratulations.mjs';
+assert.deepEqual([0,50,3999,4000,8000,8700].map(spinCongratulationFrameIndex),[0,3,239,0,0,42]);for(const value of [-1,Infinity,NaN,'100'])assert.throws(()=>spinCongratulationFrameIndex(value));console.log('PASS native congratulations240-frame/60fps timeline boundaries andinput bounds');
