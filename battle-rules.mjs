@@ -16,6 +16,6 @@ export function installBattleRules(parent){
  for(const row of dialog.querySelectorAll('h3,.duration,.bounty,.prizes')){const image=new Image();image.src='/home-art/native-battle-rules-arrow.png';image.alt='';image.className='rulesArrow';const text=document.createElement('span');text.textContent=row.textContent;row.replaceChildren(image,text);row.classList.add('rulesBullet')}
  let current=null;
  function select(event){current=event?battleRules(event):null;button.disabled=!current;if(!current){if(dialog.open)dialog.close();return}dialog.querySelector('.rulesEvent').textContent=current.name+' · '+current.entry;dialog.querySelector('.rulesRush h3 span').textContent=current.rush;for(const key of ['duration','bounty','prizes'])dialog.querySelector('.'+key+' span').textContent=current[key];dialog.querySelector('.qualification').textContent=current.qualification}
- button.onclick=()=>{if(current&&!dialog.open)dialog.showModal()};dialog.querySelector('button').onclick=()=>dialog.close();dialog.onclose=()=>{if(button.isConnected)button.focus()};
- return {select,destroy(){dialog.onclose=null;if(dialog.open)dialog.close();dialog.remove();button.remove()}};
+ button.onclick=()=>{if(current&&!dialog.open)dialog.showModal()};dialog.querySelector('button').onclick=()=>dialog.close();
+ return {select,destroy(){if(dialog.open)dialog.close();dialog.remove();button.remove()}};
 }
