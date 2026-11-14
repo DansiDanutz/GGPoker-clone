@@ -1067,3 +1067,7 @@ Eliminated/winning players receive their actual place and projected/settled loca
 ### Tournament result PNG — local Save policy
 
 Save exports the players actual result to a356×535PNG using the native UTC/title/place filename convention. Real download, native-background pixel samples, late decode cancellation, immediate private DOM cleanup, error/retry and shared32-hand history export are browser-tested. Local Save/Close replaces external sharing by explicit local policy; native PLAYGG.RO Save/Share configuration is unknown. The common PNG renderer resets all cloned insets so offscreen capture cannot become transparent. See docs/rea/tournament-result.md. Full image/native brand/font parity remains open.
+
+### Tournament prize bitmap digits
+
+The native newspinandgold lobby atlas supplies the32px prize digits with original advances/offsets and43-glyph metadata. The table/history variants are distinct and are not substituted. The local play-credit unit stays readable separately. Browser checks cover actual digit sprites,exported glyph-ink comparison with source atlas,Save lifecycle andreadable fallback for missing/malformed font data. Metrics reject null/duplicate/zero-size/out-of-bounds records. Physical AIR baseline/smoothing andwhole-image parity remain open. See docs/rea/tournament-result-font.md.

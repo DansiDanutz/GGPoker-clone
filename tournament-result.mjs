@@ -16,7 +16,7 @@ export function tournamentResult(state,room){
 export function installTournamentResult(settings,context,openHistory,avatarSource,play,exportPng){
  const make=(tag,className='',text)=>{const node=document.createElement(tag);node.className=className;if(text!==undefined)node.textContent=text;return node};
  const reopen=make('button','tournamentResultReopen','Tournament result');reopen.type='button';reopen.hidden=true;settings.append(reopen);
- let dialog=null,identity='',dismissed='',paint='',shown='',generation=0,stopSound=null,exportFrame=null;
+ let dialog=null,identity='',dismissed='',paint='',shown='',generation=0,stopSound=null,exportFrame=null,font=null;
  const close=()=>{generation++;exportFrame?.remove();exportFrame=null;stopSound?.();stopSound=null;if(dialog){dialog.close();dialog.remove();dialog=null}paint='';shown=''};
  function refresh(manual=false){
   const c=context(),result=tournamentResult(c.state,c.room),scope=JSON.stringify([c.room,c.token,c.state?.me]);
@@ -44,8 +44,10 @@ export function installTournamentResult(settings,context,openHistory,avatarSourc
   const avatar=dialog.querySelector('.resultAvatar'),src=avatarSource(result.avatar);if(avatar.getAttribute('src')!==src)avatar.setAttribute('src',src);
   set('.resultPlayer',result.name);set('.resultTitle',result.title);set('.resultDate',result.startedAt===null?'Start time unavailable':new Date(result.startedAt).toLocaleString());set('.resultRank',result.place+' / '+result.entries);
   set('.resultMessage',result.won?'Congratulations!\nYou have won the tournament.':result.prize===0?'That was very unfortunate.\nSee you next time!':'Tournament complete for your seat.');
-  set('.resultPrize',result.prize+' play credits');set('.resultStatus',result.walletCredited?'Credited to your local wallet.':result.settled?'Practice result; no wallet transfer.':'Award pending tournament completion.');
+  const prize=dialog.querySelector('.resultPrize'),layout=resultGlyphLayout(result.prize,font);
+  if(layout){const digits=make('span','nativeResultDigits');digits.style.width=layout.width+'px';digits.style.height=layout.height+'px';for(const g of layout.glyphs){const node=make('span','nativeResultGlyph',g.digit);Object.assign(node.style,{left:g.left+'px',top:g.top+'px',width:g.width+'px',height:g.height+'px',backgroundPosition:-g.x+'px '+-g.y+'px',backgroundSize:layout.atlasWidth+'px '+layout.atlasHeight+'px'});digits.append(node)}prize.replaceChildren(digits,make('span','resultCreditUnit',' play credits'))}else prize.textContent=result.prize+' play credits';set('.resultStatus',result.walletCredited?'Credited to your local wallet.':result.settled?'Practice result; no wallet transfer.':'Award pending tournament completion.');
  }
+ fetch('/home-art/native-result-font.json').then(r=>{if(!r.ok)throw Error();return r.json()}).then(async data=>{if(!resultGlyphLayout(0,data))throw Error();const image=new Image();image.src='/home-art/native-result-font.png';await image.decode();if(image.naturalWidth!==data.atlasSize[0]||image.naturalHeight!==data.atlasSize[1])throw Error();font=data;paint='';refresh()}).catch(()=>{});
  reopen.onclick=()=>refresh(true);document.addEventListener('visibilitychange',()=>refresh());
  return {refresh};
 }
@@ -54,4 +56,16 @@ export function resultFileName(result,now=new Date()){
  if(!Number.isFinite(now.getTime())||!Number.isInteger(result.place)||result.place<1)throw Error('Invalid result export');
  const pad=n=>String(n).padStart(2,'0'),hour=now.getUTCHours(),title=String(result.title||'Tournament').replace(/[\\/:*?"<>|\x00-\x1f]/g,'_').slice(0,120);
  return now.getUTCFullYear()+'-'+pad(now.getUTCMonth()+1)+'-'+pad(now.getUTCDate())+'_ '+pad(hour%12||12)+'-'+pad(now.getUTCMinutes())+'_'+(hour>=12?'PM':'AM')+'_'+title+'_'+result.place+'.png';
+}
+
+export function resultGlyphLayout(value,font){
+ if(!Number.isSafeInteger(value)||value<0||font?.size!==56||!Array.isArray(font.glyphs)||font.glyphs.length>128||!Array.isArray(font.atlasSize)||font.atlasSize.length!==2||!font.atlasSize.every(n=>Number.isInteger(n)&&n>0&&n<=4096))return null;
+ const r=font.region;if(!r||!['x','y','width','height'].every(k=>Number.isInteger(r[k])&&r[k]>=0)||r.x+r.width>font.atlasSize[0]||r.y+r.height>font.atlasSize[1])return null;
+ if(!font.glyphs.every(g=>g&&Number.isInteger(g.id)&&g.id>=0&&g.id<=1114111)||new Set(font.glyphs.map(g=>g.id)).size!==font.glyphs.length)return null;
+ const scale=32/56,byId=new Map(font.glyphs.map(g=>[g.id,g])),glyphs=[];let width=0,height=0;
+ for(const digit of String(value)){
+  const g=byId.get(digit.charCodeAt(0));if(!g||!['x','y','width','height','xoffset','yoffset','xadvance'].every(k=>Number.isInteger(g[k])&&g[k]>=0&&g[k]<=4096)||!g.width||!g.height||!g.xadvance||g.x+g.width>r.width||g.y+g.height>r.height)return null;
+  glyphs.push({digit,left:(width+g.xoffset)*scale,top:g.yoffset*scale,width:g.width*scale,height:g.height*scale,x:(r.x+g.x)*scale,y:(r.y+g.y)*scale});width+=g.xadvance;height=Math.max(height,g.yoffset+g.height);
+ }
+ return {width:width*scale,height:height*scale,atlasWidth:font.atlasSize[0]*scale,atlasHeight:font.atlasSize[1]*scale,glyphs};
 }
