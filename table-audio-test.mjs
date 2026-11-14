@@ -11,3 +11,5 @@ assert.deepEqual(tableCues(s,snap({history:['Seat 1: fold'],end:{}})),['Fold','W
 assert.deepEqual(tableCues(s,snap({history:['Seat 1: raise to 100'],committed:[100,4]})),['AllIn']);
 // A spectator poll can span multiple betting rounds for one seat.
 assert.deepEqual(tableCues(s,snap({history:['Seat 1: call 2','Seat 2: check','Seat 1: raise to 96'],committed:[100,4],board:['2c','3d','4s']})),['Call','Check','AllIn','Board']);
+
+const {audioCueDuration,audioChannel}=await import('./table-audio.mjs');assert.equal(audioChannel('BnRRoundEnd'),'effects');assert.equal(audioCueDuration('BnRRoundEnd',3),72576/44100);assert.equal(audioCueDuration('BnRRoundEnd',1),1);

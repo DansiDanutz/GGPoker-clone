@@ -1,5 +1,5 @@
 import {installBattleBountyScene} from './battle-bounty-scene.mjs';
-import {battleTableState,battleStageNotice} from './battle-table.mjs';
+import {battleTableState,battleStageNotice,battleStageAudio} from './battle-table.mjs';
 import {installRimtPanel} from './rimt-panel.mjs';
 import {installSpinWheelScene} from './spin-wheel-scene.mjs';
 import {installTournamentResult} from './tournament-result.mjs';
@@ -20,6 +20,8 @@ const playCues=chatWindow?()=>{}:installAudio(document.querySelector('#sound'));
 const clockAudio=createClockAudio(playCues);
 const rushPoolKind=new URLSearchParams(location.search).get('pool')==='plo'?'plo':'holdem';
 const battleMode=new URLSearchParams(location.search).get('view')==='battle',battleEvent=new URLSearchParams(location.search).get('event');
+const stageAudio=battleStageAudio();
+addEventListener('offline',()=>stageAudio.interrupt());addEventListener('visibilitychange',()=>{if(document.hidden)stageAudio.interrupt()});
 const battleObserver=new URLSearchParams(location.search).get('observe')==='1'&&/^[a-z0-9-]{1,40}$/.test(new URLSearchParams(location.search).get('battleFinal')||'');
 const rushMode=battleMode||new URLSearchParams(location.search).get('view')==='rush';
 const fourPositions=[{x:850,y:952,scale:1.1,bet:[856,768],dealer:[742,838]},{x:135,y:502,scale:1,bet:[316,568],dealer:[282,664]},{x:850,y:154,scale:1,bet:[856,350],dealer:[776,338]},{x:1565,y:502,scale:1,bet:[1384,568],dealer:[1418,664],right:true}];
@@ -268,7 +270,7 @@ async function request(op,body={}){
  let data=await res.json();
  if(!res.ok){if(rushMode&&res.status===409&&op!=='state')await request('state');if(res.status===401||res.status===404){sessionStorage.removeItem(key);token=null;state=null;render()}throw Error(data.error)}
  if(battleMode&&op==='final-room'){if(!/^[a-f0-9]{48}$/.test(data.room)||!/^[a-f0-9]{64}$/.test(data.issued))throw Error('Invalid final table session');sessionStorage.setItem('river-seat:'+data.room,data.issued);location.assign('/network.html?player&mode=tournament&from=home&battleFinal='+encodeURIComponent(battleEvent)+'#'+data.room);return}
- if(battleMode)data=battleTableState(data);
+ if(battleMode){data=battleTableState(data);const stageCues=stageAudio.observe(data,document.hidden||chatWindow);if(stageCues.length){const current=stageAudio.lease();void playCues(stageCues,()=>current()&&!document.hidden)}}
  else if(rushMode){
   const table=data.table?data:null,result=data.result,g=table?.hand||result?.hand;
   data={...data,result:undefined,avatars:table?data.avatars:result?.avatars||[],me:table?data.me:result?.me??null,number:data.table||result?.table||0,names:table?data.names:result?.names||Array(6).fill(null),hand:g?{...g,cards:g.hands,options:table?data.legal:null}:null,settings:{name:'Rush & Cash · local '+(data.variant==='plo'?'PLO':'Hold’em')+' pool',variant:data.variant==='plo'?'plo':'rush',stack:200,blind:4},chat:[],results:[]};
@@ -278,7 +280,7 @@ async function request(op,body={}){
  if(!rushMode&&data.me!=null){waitingState=null;walletAvailable=null}
  if(state?.me!==data.me||state?.version!==data.version||state?.hand?.clock?.canDisableLimit!==data.hand?.clock?.canDisableLimit||state?.hand?.clock?.canUseTimeCard!==data.hand?.clock?.canUseTimeCard||JSON.stringify(state?.avatars)!==JSON.stringify(data.avatars)){applyState(data)}
 }
-async function operate(op,body){if(!['state','chat','helmet'].includes(op)&&bountyScene.blocking(state?.number))return false;if(op==='ready'&&document.querySelector('.award'))return false;if(chatWindow&&!['state','chat','helmet'].includes(op))return;if(rushMode&&['join','deal','fill-bots','cancel-queue','sit-out','final-room'].includes(op)&&!busy){try{await request('state')}catch(error){$('error').textContent=error.message;return false}}if(op==='state'&&busy)return;const version=state?.version,number=state?.number,boundHandVersion=state?.handVersion,actionFrame=op==='act'?JSON.stringify(state?.hand):null;while(busy)await new Promise(resolve=>setTimeout(resolve,25));busy=true;try{await request(op,{...body,version:op==='act'&&number===state?.number&&actionFrame===JSON.stringify(state?.hand)?state.version:version,...(['ready','show-cards'].includes(op)?{number}:{}),...(rushMode?{handVersion:op==='quick-fold'||op==='act'&&!(number===state?.number&&actionFrame===JSON.stringify(state?.hand))?boundHandVersion:state?.handVersion}:{})});$('error').textContent='';return true}catch(e){$('error').textContent=e.message;return false}finally{busy=false}}
+async function operate(op,body){if(!['state','chat','helmet'].includes(op)&&bountyScene.blocking(state?.number))return false;if(op==='ready'&&document.querySelector('.award'))return false;if(chatWindow&&!['state','chat','helmet'].includes(op))return;if(rushMode&&['join','deal','fill-bots','cancel-queue','sit-out','final-room'].includes(op)&&!busy){try{await request('state')}catch(error){stageAudio.interrupt();$('error').textContent=error.message;return false}}if(op==='state'&&busy)return;const version=state?.version,number=state?.number,boundHandVersion=state?.handVersion,actionFrame=op==='act'?JSON.stringify(state?.hand):null;while(busy)await new Promise(resolve=>setTimeout(resolve,25));busy=true;try{await request(op,{...body,version:op==='act'&&number===state?.number&&actionFrame===JSON.stringify(state?.hand)?state.version:version,...(['ready','show-cards'].includes(op)?{number}:{}),...(rushMode?{handVersion:op==='quick-fold'||op==='act'&&!(number===state?.number&&actionFrame===JSON.stringify(state?.hand))?boundHandVersion:state?.handVersion}:{})});$('error').textContent='';return true}catch(e){stageAudio.interrupt();$('error').textContent=e.message;return false}finally{busy=false}}
 function topUpRequest(g,settings){
  if(!settings)return {};const nativeTarget=savedAddChips(settings)*settings.blind;if(nativeTarget){const stack=(g.dealtSeats&&!g.dealtSeats.includes(state.me)?state.seatBalances?.[state.me]??state.buyIns?.[state.me]??settings.stack:g.stacks[state.me])+(state.pendingAdd?.amount||0);return stack<nativeTarget?{topUpTo:nativeTarget}:{}}
  if(localStorage.getItem('river-auto-topup')!=='1'||!settings)return {};
