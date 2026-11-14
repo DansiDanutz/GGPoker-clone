@@ -25,7 +25,7 @@ function paint(){
 }
 $('eventPlayerSearch').onsubmit=e=>{e.preventDefault();const query=$('eventPlayerQuery');if(query.value.length<3)return;searchWord=query.value.slice(0,30);query.blur();paintRows()};
 $('eventPlayerSearchClose').onclick=()=>{searchOpen=false;searchWord='';$('eventPlayerQuery').value='';paintRows();$('eventPlayerSearchToggle')?.focus()};
-$('eventPlayerQuery').onblur=()=>{if(!$('eventPlayerQuery').value){searchWord='';paintRows()}};
+$('eventPlayerQuery').onblur=e=>{if(e.relatedTarget===$('eventPlayerSearchClose'))return;if(!$('eventPlayerQuery').value){searchWord='';paintRows()}};
 $('eventEntry').onclick=()=>{if(!current||busy||!healthy)return;if(current.phase==='registration'){if(!current.registered)command('register',{});else{$('eventCancelText').textContent='Cancel registration? '+current.settings.entryCost+' play credits will be returned.';$('eventCancel').returnValue='no';$('eventCancel').showModal()}}else if(current.finalEligible)command('final-room',{revision:current.revision,session:current.session});else if(current.registered&&current.phase==='rush')location.href='/network.html?player&from=home&view=battle&event='+encodeURIComponent(id)};
 $('eventCancel').onclose=()=>{if($('eventCancel').returnValue==='ok'&&current?.registered&&current.phase==='registration')command('cancel',{revision:current.revision})};$('eventOpen').onclick=openTable;
 for(const button of document.querySelectorAll('[data-main]'))button.onclick=()=>{main=button.dataset.main;for(const b of document.querySelectorAll('[data-main]'))b.setAttribute('aria-pressed',String(b===button));paint()};
