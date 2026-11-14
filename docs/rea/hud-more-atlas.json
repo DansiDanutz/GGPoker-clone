@@ -23,5 +23,86 @@
   "sources": {
     "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
     "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+  },
+  "reportButtons": {
+    "sources": [
+      {
+        "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/fairplayReport/FairplayReportView.as",
+        "sha256": "12c28173c915a372a474ed02b9d02e00e02e188b9bbab8481f5cdf84466b7ecb"
+      },
+      {
+        "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/GlobalButton.as",
+        "sha256": "eb82ad01852703c14d475d837cb3ffe1785c7f1e624afb81b00caa980762f329"
+      },
+      {
+        "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/ButtonColor.as",
+        "sha256": "6102ebf3300a6933f077b5d5b2e7c061a5f11054139cea95417f9353daf0db7c"
+      },
+      {
+        "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/utils/applySlice9Grid.as",
+        "sha256": "4d030b550dd3ecce8e8886962ea1dc83fa0c3a9d0322dac080559484b3f34d1c"
+      },
+      {
+        "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/lib/components/Button.as",
+        "sha256": "005aff16f04b263bfd0550ea73d919275afba37703e4ae36a55dcdbcae62b107"
+      }
+    ],
+    "report": {
+      "color": "GREEN",
+      "x": 100,
+      "y": 518,
+      "width": 110,
+      "height": 37
+    },
+    "close": {
+      "color": "DARK_GRAY",
+      "x": 230,
+      "y": 518,
+      "width": 110,
+      "height": 37
+    },
+    "fontSize": 19,
+    "hover": "up skin with RGB multiplier1.3 and nominal0.2s tween; native easing unverified",
+    "downLabelAlpha": 0.5,
+    "disabled": "common27 and equal-RGB-average color matrix; label alpha0.5",
+    "shadow": {
+      "x": -5,
+      "y": 5,
+      "extraWidth": 10,
+      "extraHeight": 5,
+      "slice": [
+        15,
+        15,
+        10,
+        10
+      ]
+    },
+    "reusedArt": [
+      {
+        "file": "native-note-button-green-up.png",
+        "sha256": "fd677822bcff53570ffbce04e0d7bca7043cacb552cf9c6c5409ae0bc291fc14"
+      },
+      {
+        "file": "native-note-button-green-down.png",
+        "sha256": "50a7075d722bf895368ae939dd86e46168a423011c40ffe18e59b5a675f65761"
+      },
+      {
+        "file": "native-note-button-gray-up.png",
+        "sha256": "da79636d9aa131b795158c827955a6c689319b70be33c7fdb3393e5c9eea3d16"
+      },
+      {
+        "file": "native-note-button-gray-down.png",
+        "sha256": "02b605bdb7fff01bd56ad5ab5c6432beddad815134b873407ab5c1620bd23617"
+      },
+      {
+        "file": "native-note-button-gray-disabled.png",
+        "sha256": "ef61570f3fb1e795303371157641ccb934240279b2e8262240efff6ff3310879"
+      },
+      {
+        "file": "native-note-button-shadow.png",
+        "sha256": "13d746777729dd3f7fca15e2aaebc22a59bfb2137c322cf28f2d0cf47c4bbbea"
+      }
+    ],
+    "font": "default useRoboto=false; NativeActionRoboto/RobotoCondensed from inherited LabelButton font contract"
   }
 }
