@@ -96,3 +96,5 @@ Save inheritance correction: PlayerColorPopup calls GlobalButton(SAVE,GREEN,140)
 ### Native label popup button paint
 
 The source inventory now binds24classes. Save reuses existing desktop common21/23, disabled27 equal-RGB tint and common20 shadow; actual constructor passes no over bitmap, so hover brightens up by1.3. Source37px height compresses the40px nine-slice edge into18px top/19px bottom; shadow150x42 at−5,+5. Pressed/disabled label alpha0.5. PopupBase positions the default24x24 WindowCloseButton at291,3; its16x16 glyph is centered4,4, common6/7/8 with nominal0.3s−180degree hover rotation. No setMacSkin call is made by PlayerColorPopup/PopupBase. Existing sprites are reused; no atlas duplication. Native physical resampling, tween easing, window placement/font AA and sound remain uncalibrated. Browser test first failed the missing native Save face before implementation.
+
+Selected ColorItem text uses native0xfefefe rather than default0xcccccc. Browser RED observed gray204,204,204; selected background already measured27px from the existing override. Only the missing selected text color was changed.

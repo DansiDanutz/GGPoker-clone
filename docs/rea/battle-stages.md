@@ -36,3 +36,13 @@ The getter fallback for missing MaximumPlayers/TableSize/durations is0; a missin
 4. Add independent tests for stage boundaries, active-hand completion, clock carry-over, qualification, chip conservation and exactly-once prizes after restart before claiming parity.
 
 Current local configuration and settlements remain unchanged. Physical native layout, animation and sound timing also remain unverified.
+
+## Stage-change callbacks and presentation
+
+The source inventory now binds9classes plus the installed localization table. `OnBattleRoyaleStageChanged` updates current StageId, type and status from the service callback. A Shootout deadline is kept separately; other deadlines update the corresponding stage. Rush Finished additionally supplies AlivePlayers, ShootOutPlayers and IsFinishedByTimeout. A nonempty alive list marks all Rush tables finished. The client does not compute those service-provided lists in this callback, so their ranking/tie policy remains unproved.
+
+`BattleRoyaleStageChangedCommand` distinguishes Rush Ready, Rush Finished, Shootout Ready and FinalTable Ready. Rush Ready plays its ready-count sound once using an information flag, shows the top(finalStageMaxPlayers) notice with stage1 duration and marks pending stage start. Rush Finished suppresses end notices during catch-up and while the current hand is still playing; timeout copy receives stage3MaximumPlayers−1. End sound is separately guarded by round-one-complete and in-hand sound-enabled flags. Shootout Ready marks pending stage start. FinalTable Ready resets Battle mode and shows the bounty/prize notice only for a player not dropped out. Background and table menu refresh after the branch. NoticeType identifies these stage notices as infinite-duration, not a guessed timed toast. Original foreground activation is intentionally not reproduced by background automation.
+
+English keys `RushStageToTopValue`, `RushStageEndType11`, `RushStageEndType22`, `FinalStageStartNotiValue` preserve placeholder-driven top count, duration, cutoff, paid places and highest bounty. Some other translations contain literal counts; that does not establish the actual preset. Local bounty-disabled/prize-unconfigured events must not display native claims of guaranteed awards.
+
+`getStageStartingBlinds(stage)` reads StartBlindLevel, retrieves that blind-structure row and formats its small/big blinds. It passes StartBlindBBMultiplier separately into `BBAverageStack` (English explanatory average-stack text). This method does not recalculate blinds from stacks. Actual server blind computation remains unknown; do not implement a multiplication formula from the field name alone.
