@@ -1,0 +1,96 @@
+{
+  "files": [
+    {
+      "bytes": 1297,
+      "file": "native-tourney-entry-up.png",
+      "frame": "common0030",
+      "height": 40,
+      "rgbaExact": true,
+      "sha256": "7e38e700b90363fb3f804a3b6699925f4cf5dc0a861f6c87a05397d8d2511ae8",
+      "width": 20
+    },
+    {
+      "bytes": 1240,
+      "file": "native-tourney-entry-down.png",
+      "frame": "common0032",
+      "height": 40,
+      "rgbaExact": true,
+      "sha256": "c1bc80211ec329afd8510b4efe397b8be4fa11c603a9c7c55749501d41e98fac",
+      "width": 20
+    },
+    {
+      "bytes": 1257,
+      "file": "native-tourney-entry-disabled.png",
+      "frame": "common0027",
+      "height": 40,
+      "rgbaExact": true,
+      "sha256": "030304f3237ef9007022ab7e150b9dff8a7dbf4f52a2c59978958d62c2f3cac3",
+      "width": 20
+    },
+    {
+      "bytes": 1176,
+      "file": "native-tourney-entry-shadow.png",
+      "frame": "common0020",
+      "height": 40,
+      "rgbaExact": true,
+      "sha256": "c6ed7b7adc42d6fce9f37531dde954eef4a23cec0725d6b2c029a1124ac0395b",
+      "width": 40
+    }
+  ],
+  "method": "StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding",
+  "sources": {
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+  },
+  "scripts": {
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/ButtonColor.as": "6102ebf3300a6933f077b5d5b2e7c061a5f11054139cea95417f9353daf0db7c",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/GlobalButton.as": "eb82ad01852703c14d475d837cb3ffe1785c7f1e624afb81b00caa980762f329",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/lib/components/Button.as": "005aff16f04b263bfd0550ea73d919275afba37703e4ae36a55dcdbcae62b107",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/utils/applySlice9Grid.as": "4d030b550dd3ecce8e8886962ea1dc83fa0c3a9d0322dac080559484b3f34d1c",
+    "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/components/display/button/TourneyRegistrationButton.as": "d78cec056ff5e17d60632544bcf8458ba06d7303a35873d09d795aa0b0e7f6ed",
+    "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/tourneylobby/header/TourneyHeaderPage.as": "ea5a481c69959a2730d8572d776e99c7588a12d5117112c6cb6c22d0920982c5"
+  },
+  "stateContract": {
+    "up": 30,
+    "down": 32,
+    "disabled": 27,
+    "hover": "constructor passes null over texture; fallback up30 with RGB multiplier1.3",
+    "nominalHoverTweenSeconds": 0.2,
+    "downLabelAlpha": 0.5,
+    "disabledLabelAlpha": 0.5,
+    "disabledRgbRows": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+    ],
+    "disabledWholeOpacity": 1,
+    "bodyScale9": [
+      10,
+      20,
+      1,
+      1
+    ],
+    "bodyBorderSlices": [
+      20,
+      9,
+      19,
+      10
+    ],
+    "shadowAtlasIndex": 20,
+    "shadowScale9": [
+      15,
+      15,
+      10,
+      10
+    ],
+    "shadowPosition": [
+      -5,
+      5
+    ],
+    "shadowSizeDelta": [
+      10,
+      5
+    ],
+    "overAtlas31": "available but unused by this constructor; setter semantics not substituted"
+  }
+}
