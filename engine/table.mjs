@@ -1,7 +1,8 @@
 import {shuffleDeck} from './deck.mjs';
 import {best,compare} from '../game.mjs';
 import {bestShortDeck} from './hand.mjs';
-import {settlePots} from './pots.mjs';
+import {settlePots,settleRunouts} from './pots.mjs';
+import {readRimt} from './rimt.mjs';
 
 export function nextDealer(stacks,previous){
   function next(after){for(let j=1;j<=stacks.length;j++){const i=(after+j)%stacks.length;if(stacks[i]>0)return i}}
@@ -17,7 +18,8 @@ export function omahaRank(hole,board){
     }
   return high;
 }
-export function startHand(stacks,blind=4,button=0,variant='holdem',ante=0,sittingOut=[]){
+export function startHand(stacks,blind=4,button=0,variant='holdem',ante=0,sittingOut=[],runoutHand=null){
+  if(runoutHand!==null&&(!Number.isSafeInteger(runoutHand)||runoutHand<1))throw Error('Invalid runout hand identity');
   if(!['holdem','plo','plo5','plo6','shortdeck','aof','rush'].includes(variant))throw Error('Unknown game');
   if(!Number.isSafeInteger(ante)||ante<0||ante>0&&!['holdem','plo','plo5','plo6'].includes(variant))throw Error('Invalid ante');
   if(!Array.isArray(stacks)||stacks.length<2||stacks.length>9||![...stacks].every(n=>Number.isSafeInteger(n)&&n>=0)||stacks.filter(n=>n>0).length<2||!Number.isSafeInteger(stacks.reduce((a,b)=>a+b,0))) throw Error('Invalid stacks');
@@ -30,7 +32,7 @@ export function startHand(stacks,blind=4,button=0,variant='holdem',ante=0,sittin
   const count=({holdem:2,plo:4,plo5:5,plo6:6,shortdeck:2,aof:2,rush:2})[variant];
   if(liveStacks.filter(Boolean).length*count+8>52)throw Error('Too many players for one deck');
   const deck=shuffleDeck(variant==='shortdeck'?'shortdeck':'holdem'), n=stacks.length;
-  const g={variant,...(sittingOut.some(Boolean)?{sittingOut:[...sittingOut]}:{}),initialStacks:[...stacks],allIns:stacks.map(()=>false),vpip:stacks.map(()=>false),stacks:[...stacks],blind,button,deck,hands:stacks.map(()=>[]),board:[],folded:liveStacks.map(s=>s===0),committed:stacks.map(()=>0),bets:stacks.map(()=>0),actedAt:stacks.map(()=>null),price:blind,increment:blind,turn:null,end:null,history:[]};
+  const g={variant,...(runoutHand===null?{}:{runoutHand}),...(sittingOut.some(Boolean)?{sittingOut:[...sittingOut]}:{}),initialStacks:[...stacks],allIns:stacks.map(()=>false),vpip:stacks.map(()=>false),stacks:[...stacks],blind,button,deck,hands:stacks.map(()=>[]),board:[],folded:liveStacks.map(s=>s===0),committed:stacks.map(()=>0),bets:stacks.map(()=>0),actedAt:stacks.map(()=>null),price:blind,increment:blind,turn:null,end:null,history:[]};
   const live=stacks.map((_,j)=>(button+j+1)%n).filter(i=>liveStacks[i]>0);
   for(let round=0;round<count;round++)for(const i of live)g.hands[i].push(deck.pop());
   if(ante){g.ante=ante;for(const i of live)pay(g,i,ante);g.bets.fill(0)}
@@ -63,13 +65,40 @@ function advance(g,last){
   if(seats.length>1&&active.length>1&&g.board.length<5){
     street(g);g.bets.fill(0);g.actedAt.fill(null);g.price=0;g.increment=g.blind;advance(g,g.button);return;
   }
+  if(g.runoutHand!==undefined&&seats.length===2&&active.length<=1&&g.board.length<5){g.runoutPending=true;g.turn=null;return}
   if(seats.length>1)while(g.board.length<5)street(g);
-  const ranks=g.hands.map((h,i)=>seats.length>1&&!g.folded[i]?(g.variant==='shortdeck'?bestShortDeck([...h,...g.board]):g.variant?.startsWith('plo')?omahaRank(h,g.board):best([...h,...g.board])):null);
+  const ranks=seats.length>1?ranksForBoard(g,g.board):null;
   g.end=settlePots(g.committed,g.folded,g.button,(a,b)=>compare(ranks[a],ranks[b]));
   g.end.payouts.forEach((v,i)=>g.stacks[i]+=v);g.turn=null;
 }
+function ranksForBoard(g,board){return g.hands.map((h,i)=>g.folded[i]?null:g.variant==='shortdeck'?bestShortDeck([...h,...board]):g.variant?.startsWith('plo')?omahaRank(h,board):best([...h,...board]))}
+
+export function finishRunout(g,decision,allocations){
+  const d=readRimt(decision);
+  if(!g||!Number.isSafeInteger(g.runoutHand)||d.hand!==g.runoutHand||d.runs===null)throw Error('Runout decision does not match this hand');
+  if(g.end){
+    if(g.runoutDecision&&Object.keys(d).every(k=>d[k]===g.runoutDecision[k])&&JSON.stringify(allocations)===JSON.stringify(g.end.pots.map(p=>p.runs?.map(r=>r.amount))))return g;
+    throw Error('Runout was already settled differently');
+  }
+  if(g.runoutPending!==true||g.turn!==null||!Array.isArray(g.stacks)||g.stacks.length<2||g.stacks.length>9||!Array.isArray(g.folded)||g.folded.length!==g.stacks.length||!g.folded.every(v=>typeof v==='boolean')||!Array.isArray(g.bets)||g.bets.length!==g.stacks.length||!Array.isArray(g.committed)||g.committed.length!==g.stacks.length||!Array.isArray(g.initialStacks)||g.initialStacks.length!==g.stacks.length||!Array.isArray(g.hands)||g.hands.length!==g.stacks.length||!g.hands.every(Array.isArray)||![...g.stacks,...g.bets,...g.committed,...g.initialStacks,g.price].every(n=>Number.isSafeInteger(n)&&n>=0)||g.bets.some((n,i)=>n>g.committed[i]))throw Error('No valid pending runout');
+  const total=g.initialStacks.reduce((a,b)=>a+b,0),holeCount=({holdem:2,plo:4,plo5:5,plo6:6,shortdeck:2,aof:2,rush:2})[g.variant];
+  if(!holeCount||g.hands.some((h,i)=>h.length!==holeCount&&(!g.folded[i]||h.length!==0))||!Number.isSafeInteger(total)||g.stacks.reduce((a,b)=>a+b,0)+g.committed.reduce((a,b)=>a+b,0)!==total)throw Error('Invalid pending runout bankroll or hands');
+  const seats=g.folded.flatMap((folded,i)=>folded?[]:[i]),active=seats.filter(i=>g.stacks[i]>0);
+  if(seats.length!==2||active.length>1||!seats.includes(d.proposer)||!seats.includes(d.decider)||active.some(i=>g.bets[i]<g.price))throw Error('Runout betting or participants changed');
+  if(!Array.isArray(g.board)||![0,3,4].includes(g.board.length)||!Array.isArray(g.deck))throw Error('Invalid pending board');
+  const cards=[...g.hands.flat(),...g.board,...g.deck],ranks=g.variant==='shortdeck'?'6789TJQKA':'23456789TJQKA';
+  if(cards.some(c=>typeof c!=='string'||c.length!==2||!ranks.includes(c[0])||!'cdhs'.includes(c[1]))||new Set(cards).size!==cards.length)throw Error('Invalid runout cards');
+  const needed=(g.board.length===0?8:g.board.length===3?4:2)*d.runs;if(g.deck.length<needed)throw Error('Insufficient runout deck');
+  // Explicit local dealing policy: reuse street burns, complete each board in sequence; native multi-run burn order remains unverified.
+  const deck=[...g.deck],boards=[];
+  for(let run=0;run<d.runs;run++){const copy={deck,board:[...g.board]};while(copy.board.length<5)street(copy);boards.push(copy.board)}
+  const scores=boards.map(board=>ranksForBoard(g,board)),end=settleRunouts(g.committed,g.folded,g.button,scores.map(ranks=>(a,b)=>compare(ranks[a],ranks[b])),allocations),stacks=g.stacks.map((chips,i)=>chips+end.payouts[i]);
+  if(stacks.some(n=>!Number.isSafeInteger(n)||n<0)||stacks.reduce((a,b)=>a+b,0)!==total)throw Error('Invalid runout stack total');
+  g.deck=deck;g.board=boards[0];g.runoutBoards=boards;g.runoutDecision=d;g.end=end;g.stacks=stacks;g.turn=null;delete g.runoutPending;return g;
+}
+
 export function options(g){
-  if(g.end)return null;
+  if(g.end||g.runoutPending)return null;
   const i=g.turn,due=g.price-g.bets[i],stackTotal=g.bets[i]+g.stacks[i];
   const plo=g.variant?.startsWith('plo');let pot=g.committed.reduce((a,b)=>a+b,0);
   if(plo&&!g.board.length){
@@ -105,7 +134,7 @@ export function act(g,action,target){
 
 export function canQuickFold(g,seat){
  // Native Rush permits the unacted preflop big blind; other free actions use Check/Fold.
- return !!g&&(g.variant==='rush'||g.rush===true)&&!g.end&&Number.isInteger(seat)&&seat>=0&&seat<g.stacks.length&&!g.folded[seat]&&g.stacks[seat]>0&&(g.price>g.bets[seat]||!g.board.length&&seat===g.bigBlindSeat&&g.actedAt[seat]===null);
+ return !!g&&!g.runoutPending&&(g.variant==='rush'||g.rush===true)&&!g.end&&Number.isInteger(seat)&&seat>=0&&seat<g.stacks.length&&!g.folded[seat]&&g.stacks[seat]>0&&(g.price>g.bets[seat]||!g.board.length&&seat===g.bigBlindSeat&&g.actedAt[seat]===null);
 }
 export function quickFold(g,seat){
  if(!canQuickFold(g,seat))throw Error('Cannot quick fold');
