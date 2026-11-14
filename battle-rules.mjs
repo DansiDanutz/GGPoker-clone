@@ -1,0 +1,19 @@
+export function battleRules(event){
+ const e=event?.settings,b=event?.bounty;
+ if(!e||typeof e.name!=='string'||!e.name.trim()||e.name.length>60||!Number.isInteger(e.capacity)||e.capacity<6||e.capacity>100||!Number.isInteger(e.finalSeats)||e.finalSeats<2||e.finalSeats>6||e.finalSeats>=e.capacity||!Number.isSafeInteger(e.stack)||e.stack<e.blind*4||e.stack>1000000||!Number.isSafeInteger(e.blind)||e.blind<2||e.blind%2||!Number.isSafeInteger(e.entryCost)||e.entryCost<0||e.entryCost>1000000||!Number.isSafeInteger(e.rushDurationMs)||e.rushDurationMs<1||e.rushDurationMs>86400000||e.prizeShares!==undefined&&(!Array.isArray(e.prizeShares)||!e.prizeShares.length||e.prizeShares.length>e.finalSeats||e.prizeShares.some((n,i)=>!Number.isInteger(n)||n<1||n>100||i>0&&n>e.prizeShares[i-1])||e.prizeShares.reduce((n,p)=>n+p,0)!==100)||b!=null&&(![b.capital,b.remaining,b.paid].every(n=>Number.isSafeInteger(n)&&n>=0)||b.capital>1000000000||b.capital!==b.remaining+b.paid))throw Error('Invalid Battle rules');
+ const duration=e.rushDurationMs%60000===0?e.rushDurationMs/60000+' minutes':e.rushDurationMs/1000+' seconds';
+ return {name:e.name,entry:e.capacity+' players · '+e.entryCost+' play credits entry · '+e.stack+' starting chips · blinds '+e.blind/2+'/'+e.blind,
+ rush:'Up to '+e.finalSeats+' players advance to the final table.',duration:'Rush stage: '+duration+', or earlier when '+e.finalSeats+' players remain. Active hands finish before qualification.',
+ qualification:'If more survive, the top '+(e.finalSeats-1)+' stacks qualify directly; remaining players enter all-in shootouts for the last seat. Equal stacks use registration order. Surviving stacks carry forward.',
+ prizes:e.prizeShares?'Top '+e.prizeShares.length+' places receive '+e.prizeShares.map(n=>n+'%').join(' / ')+' of entry credits. A sole survivor receives the entire prize pool.':'Prizes not configured; entry credits remain held.',
+ bounty:b?'Operator-funded bounty credits: '+b.remaining+' remaining · '+b.paid+' paid. One finite draw per final-table knockout; shared hunters split the award. Unused credits stay in the event.':'Bounties not configured.'};
+}
+// Native RulesPopup supplies geometry; statements below describe the actual local event policy.
+export function installBattleRules(parent){
+ const button=document.createElement('button');button.type='button';button.id='battleRules';button.textContent='Rules';button.disabled=true;parent.append(button);
+ const dialog=document.createElement('dialog');dialog.id='battleRulesDialog';dialog.setAttribute('aria-label','Battle Royale rules');dialog.innerHTML='<button type="button" class="closeRules" aria-label="Close rules">×</button><p class="rulesEvent"></p><section class="rulesRush"><h2>Rush Stage</h2><h3></h3><p class="duration"></p><p class="qualification"></p></section><section class="rulesFinal"><h2>Final Table Stage</h2><p class="bounty"></p><p class="prizes"></p></section><small>Local play-money event</small>';document.body.append(dialog);
+ let current=null;
+ function select(event){current=event?battleRules(event):null;button.disabled=!current;if(!current){if(dialog.open)dialog.close();return}dialog.querySelector('.rulesEvent').textContent=current.name+' · '+current.entry;dialog.querySelector('.rulesRush h3').textContent=current.rush;for(const key of ['duration','qualification','bounty','prizes'])dialog.querySelector('.'+key).textContent=current[key]}
+ button.onclick=()=>{if(current&&!dialog.open)dialog.showModal()};dialog.querySelector('button').onclick=()=>dialog.close();dialog.onclose=()=>{if(button.isConnected)button.focus()};
+ return {select,destroy(){dialog.onclose=null;if(dialog.open)dialog.close();dialog.remove();button.remove()}};
+}

@@ -1,0 +1,61 @@
+{
+  "authority": "shipped SWF51 decompilation via existing FFDec26.4",
+  "method": "bounded selected-class export; static observations only",
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/battle-royale-source/scripts/com/nsus/iron/popup/BattleRoyaleRulesPopup.as",
+      "sha256": "3f5297692c495da59418cb72adb695d49c54311b42e7bf5d68e5b5c29647be2d",
+      "bytes": 9293
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/battle-rules-source/scripts/com/nsus/iron/lobby/view/tourneylobby/BattleRoyaleDiscriptItemView.as",
+      "sha256": "bdecab70b3c45165424b23ddf146bf1c893617b84148847018f86d13b817b808",
+      "bytes": 3077
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/battle-rules-source/scripts/com/nsus/iron/lobby/view/tourneylobby/BattleRoyaleStageView.as",
+      "sha256": "e90031b8e8725a0a0d816ce2548b9739427aa48ccc4f9287b18c26ebf4121b7d",
+      "bytes": 3083
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/battle-rules-source/scripts/com/nsus/iron/lobby/view/battleroyale/StageDescriptionType.as",
+      "sha256": "3b24010251a7b76b3e203202a6bc9d5fa65c762ed18c2803cc6be2cb4d180263",
+      "bytes": 1108
+    }
+  ],
+  "observations": {
+    "popup": [
+      500,
+      482
+    ],
+    "rush": [
+      40,
+      51
+    ],
+    "finalWithoutPromotion": [
+      40,
+      251
+    ],
+    "finalWithPromotion": [
+      40,
+      307
+    ],
+    "sectionWidth": 412,
+    "headingFont": {
+      "size": 20,
+      "useRoboto": true
+    },
+    "bodySize": 14,
+    "stageDecorationTextures": [
+      "battleroyale37",
+      "battleroyale38"
+    ],
+    "bulletTexture": "battleroyale44"
+  },
+  "limits": [
+    "Native decoration sprites not yet recovered",
+    "Local qualification/fees/bounty policies are explicit independent rules, not inferred native server policies",
+    "Physical native font and pixel comparison unverified",
+    "External More link excluded from requested in-app scope"
+  ]
+}
