@@ -13,11 +13,11 @@ export function tournamentResult(state,room){
  return {key:JSON.stringify([room,t.actualStartedAt??'legacy',me,names[me],t.out?.[me]??'winner']),name:names[me],title:state.settings?.name||'Tournament',avatar:state.avatars?.[me]??0,place,entries,won:place===1,prize,settled,walletCredited:settled&&state.tournamentEntryPaid===true&&t.walletSettled===true,startedAt,completedAt,elapsedSeconds:startedAt!==null&&completedAt!==null&&completedAt>=startedAt?Math.floor((completedAt-startedAt)/1000):null,lastHand:t.out?.[me]??state.number};
 }
 
-export function installTournamentResult(settings,context,openHistory,avatarSource,play){
- const make=(tag,className,text)=>{const node=document.createElement(tag);node.className=className;if(text!==undefined)node.textContent=text;return node};
+export function installTournamentResult(settings,context,openHistory,avatarSource,play,exportPng){
+ const make=(tag,className='',text)=>{const node=document.createElement(tag);node.className=className;if(text!==undefined)node.textContent=text;return node};
  const reopen=make('button','tournamentResultReopen','Tournament result');reopen.type='button';reopen.hidden=true;settings.append(reopen);
- let dialog=null,identity='',dismissed='',paint='',shown='',generation=0,stopSound=null;
- const close=()=>{generation++;stopSound?.();stopSound=null;if(dialog){dialog.close();dialog.remove();dialog=null}paint='';shown=''};
+ let dialog=null,identity='',dismissed='',paint='',shown='',generation=0,stopSound=null,exportFrame=null;
+ const close=()=>{generation++;exportFrame?.remove();exportFrame=null;stopSound?.();stopSound=null;if(dialog){dialog.close();dialog.remove();dialog=null}paint='';shown=''};
  function refresh(manual=false){
   const c=context(),result=tournamentResult(c.state,c.room),scope=JSON.stringify([c.room,c.token,c.state?.me]);
   if(scope!==identity){close();identity=scope;dismissed=''}
@@ -29,9 +29,13 @@ export function installTournamentResult(settings,context,openHistory,avatarSourc
   if(!dialog&&!manual&&dismissed===result.key)return;
   if(!dialog){
    shown=result.key;dialog=make('dialog','tournamentResult');dialog.setAttribute('aria-label','Tournament result');
-   const heading=make('h2','resultHeading','Tournament result'),summary=make('section','resultSummary'),avatar=make('img','resultAvatar'),name=make('p','resultPlayer'),title=make('p','resultTitle'),date=make('p','resultDate'),rank=make('p','resultRank'),message=make('p','resultMessage'),label=make('p','resultPrizeLabel','Total Prize'),prize=make('output','resultPrize'),status=make('p','resultStatus'),actions=make('div','resultActions'),last=make('button','resultLastHand','Last Hand'),done=make('button','resultClose','Close');
-   last.type=done.type='button';last.onclick=()=>{close();dismissed=result.key;openHistory()};done.onclick=()=>{dismissed=result.key;close()};dialog.oncancel=event=>{event.preventDefault();dismissed=result.key;close()};
-   avatar.alt='';summary.append(avatar,name,title,date,rank);actions.append(last,done);dialog.append(heading,summary,message,label,prize,status,actions);document.body.append(dialog);dialog.showModal();
+   const heading=make('h2','resultHeading','Tournament result'),summary=make('section','resultSummary'),avatar=make('img','resultAvatar'),name=make('p','resultPlayer'),title=make('p','resultTitle'),date=make('p','resultDate'),rank=make('p','resultRank'),message=make('p','resultMessage'),label=make('p','resultPrizeLabel','Total Prize'),prize=make('output','resultPrize'),status=make('p','resultStatus'),actions=make('div','resultActions'),last=make('button','resultLastHand','Last Hand'),save=make('button','resultSave','Save'),done=make('button','resultClose','Close');
+   status.setAttribute('role','status');last.type=save.type=done.type='button';last.onclick=()=>{close();dismissed=result.key;openHistory()};done.onclick=()=>{dismissed=result.key;close()};dialog.oncancel=event=>{event.preventDefault();dismissed=result.key;close()};
+   avatar.alt='';summary.append(make('span','resultInfo'),make('span','resultRibbon'),avatar,name,title,date,rank);actions.append(save,done);dialog.append(heading,summary,message,label,prize,status,last,actions);
+   save.onclick=async()=>{
+    if(save.disabled)return;save.disabled=true;const expected=generation,view=dialog,frame=make('section','resultExport'),copy=view.cloneNode(true);frame.setAttribute('aria-hidden','true');exportFrame=frame;copy.style.cssText='position:absolute;display:block;left:-2px;top:-30px;margin:0;max-width:none;max-height:none;content-visibility:visible';copy.querySelector('.resultActions').remove();copy.querySelector('.resultLastHand').remove();frame.append(copy);document.body.append(frame);
+    try{const raw=await exportPng(frame);if(expected!==generation||dialog!==view)return;const image=await createImageBitmap(raw),canvas=document.createElement('canvas');canvas.width=356;canvas.height=535;try{canvas.getContext('2d').drawImage(image,0,0)}finally{image.close()}const blob=await new Promise((resolve,reject)=>canvas.toBlob(value=>value?resolve(value):reject(Error('PNG encoding failed')),'image/png'));if(expected!==generation||dialog!==view)return;const url=URL.createObjectURL(blob),link=make('a');link.href=url;link.download=resultFileName(result);try{document.body.append(link);link.click()}finally{link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}}catch(error){if(expected===generation&&dialog===view)status.textContent='Could not save result: '+error.message}finally{frame.remove();if(exportFrame===frame)exportFrame=null;save.disabled=false}
+   };document.body.append(dialog);dialog.showModal();
    const current=++generation;Promise.resolve(play([result.won?'TournamentResultFT':result.prize>0?'TournamentResultITM':'TournamentFallResult'],()=>current===generation&&!!dialog)).then(stop=>{if(!stop)return;if(current!==generation)stop();else stopSound=stop}).catch(()=>{});
   }
   const signature=JSON.stringify(result);if(signature===paint)return;paint=signature;
@@ -44,4 +48,10 @@ export function installTournamentResult(settings,context,openHistory,avatarSourc
  }
  reopen.onclick=()=>refresh(true);document.addEventListener('visibilitychange',()=>refresh());
  return {refresh};
+}
+
+export function resultFileName(result,now=new Date()){
+ if(!Number.isFinite(now.getTime())||!Number.isInteger(result.place)||result.place<1)throw Error('Invalid result export');
+ const pad=n=>String(n).padStart(2,'0'),hour=now.getUTCHours(),title=String(result.title||'Tournament').replace(/[\\/:*?"<>|\x00-\x1f]/g,'_').slice(0,120);
+ return now.getUTCFullYear()+'-'+pad(now.getUTCMonth()+1)+'-'+pad(now.getUTCDate())+'_ '+pad(hour%12||12)+'-'+pad(now.getUTCMinutes())+'_'+(hour>=12?'PM':'AM')+'_'+title+'_'+result.place+'.png';
 }
