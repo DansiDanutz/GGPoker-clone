@@ -157,3 +157,11 @@ SpinAndGoldWheel969–1040/1336–1352defines independent3–4second base and1�
 spin-wheel-wait.mjs models these callback cycles and the once-only base sound2seconds into its sweep. Native SoundSngWheelBaseLight is character136,208512samples at44100Hz,151429bytes,SHA256a644b27fdac74d4605c15efbf2d173ac415ce2fb7542e3954a6f351e6cb71d84. Nine Spin clips are now pinned by the private extractor and use shared effects controls.
 
 The seated scene loads while waiting for the other registered players,then switches into spin when all seats are present. This waiting-for-three trigger is explicit local policy; native packet/absent-player lifecycle remains unproven. Source focus/deactivation nuances,wait wobble andflare particles are still pending. No dependency or native app activation was used.
+
+## Waiting rotation and activation
+
+Source367–506specifies a60-second linear revolution and renders wheel/arrow on every second tween update. The arrow deflects across the3-degree trailing/8-degree leading contact ranges and recovers by10degrees per rendered update,including the source's possible positive overshoot. spin-wheel-wait-motion.mjs preserves these update-count semantics instead of replacing them with a smooth time-only CSS animation.
+
+Loss of activation advances another5degrees with1-second cubicOut deceleration; the source extends target by1degree and duration200ms while the target remainder lies strictly between3and8degrees. Reactivation advances5degrees with1-second cubicIn,then resumes linear rotation. Waiting light delays are suppressed while inactive; already-running sweeps finish and reactivation schedules fresh waits. Browser focus/blur events adapt this native window behavior. Browser hidden-tab throttling still differs from AIR's physical frame scheduling and is not claimed identical.
+
+Unit tests pass rotation/alternate update/arrow recovery,safe stopping wedge,reactivation,cancellation and paused light scheduling. The actual seated browser test waits7seconds,observes changing native canvas without first deal,dispatches blur and proves stable stopped rotation,dispatches focus and proves rotation resumes,then joins the remaining players and completes the independently verified tournament,payout and restarts. No native app or user foreground window was activated. Flare particles remain pending.

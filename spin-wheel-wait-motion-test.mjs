@@ -1,0 +1,4 @@
+import assert from 'node:assert/strict';import {spinWheelWaitMotion} from './spin-wheel-wait-motion.mjs';
+let m=spinWheelWaitMotion();assert.deepEqual(m.tick(500),{wheel:0,arrow:0});assert.deepEqual(m.tick(500),{wheel:6,arrow:-59});m.tick(500);assert.deepEqual(m.tick(500),{wheel:12,arrow:-49});m.cancel();assert.equal(m.tick(1000),null);assert.throws(()=>m.tick(-1));
+m=spinWheelWaitMotion();m.activate(false);m.tick(800);let p=m.tick(800);assert.equal(p.wheel,8);m.tick(5000);assert.equal(m.tick(5000).wheel,8);m.activate(true);m.tick(500);p=m.tick(500);assert.equal(p.wheel,13);m.tick(500);assert.equal(m.tick(500).wheel,19);assert.throws(()=>m.activate('yes'));
+console.log('PASS native waiting motion:60s revolution,every-other-update arrow recovery,deactivation safe wedge,1s cubic reactivation,cancel');
