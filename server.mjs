@@ -31,7 +31,7 @@ function loadRestoredModels(){
  return {playerProfile:nextProfile,roomRequest:nextRooms,rushRequests:nextRush,tables:nextTables};
 }
 const hostedId=id=>createHash('sha256').update('river-hosted:'+id).digest('hex').slice(0,48);
-setInterval(()=>{if(restoring||restoreBlocked)return;for(const table of tables){try{roomRequest(hostedId(table.id),'tick',undefined,{},table)}catch{console.error('Hosted table timer could not save state; prior checkpoint retained')}}},500).unref();
+setInterval(()=>{if(restoring||restoreBlocked)return;for(const table of tables){try{roomRequest(hostedId(table.id),'tick',undefined,{},table)}catch{console.error('Hosted table timer could not save state; prior checkpoint retained')}}try{roomRequest.tickSpin()}catch{console.error('Spin timer could not save state; prior checkpoint retained')}},500).unref();
 const files=new Set(['tournament-result.mjs','cash-sitout-menu.mjs','note-tooltip.mjs','rabbit-peel.mjs','rabbit-view.mjs','native-language.mjs','emoticon-animation-data.mjs','emoticon-animation.mjs','emoticons.mjs','emoticon-picker.mjs','helmet-ui.mjs','helmet-scope.mjs','hand-panel.mjs','hotkey-bindings.mjs','hotkey-settings.mjs','player-note-ui.mjs','card-squeeze.mjs','chip-shuffle.mjs','betting-preferences.mjs','felt.css','felt.mjs','spin-lobby.mjs','engine/spin.mjs','engine/prizes.mjs','index.html','ui.mjs','game.mjs','engine/hand.mjs','engine/pots.mjs','engine/deck.mjs','engine/table.mjs','network.html','network.mjs','table-audio.mjs','nolimit.html','nolimit.mjs','lobby.html','lobby.mjs']);
 http.createServer(async(req,res)=>{
  const json=(code,data)=>{res.writeHead(code,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data))};
