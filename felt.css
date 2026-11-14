@@ -534,3 +534,9 @@ body:has(#dealMeIn:not([hidden])) footer:has(#join[hidden]){margin-top:0}
 .nativeResultDigits{position:relative;display:inline-block;vertical-align:middle}
 .nativeResultGlyph{position:absolute;display:block;color:transparent;background-image:url('/home-art/native-result-font.png');background-repeat:no-repeat;font-size:0}
 .resultCreditUnit{font-size:16px;vertical-align:middle}
+
+/* CommunityCardPosition: RIT105/RITT72 vertical steps, same card layer pivot358/93. */
+.felt[data-seats] #board[hidden]{display:none}
+.nativeRunoutBoards{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none}
+.nativeRunoutBoard{position:absolute;left:-21.058823529cqw;width:42.120941176cqw;height:10.939764706cqw;display:flex;justify-content:flex-start;gap:.232cqw}
+.nativeRunoutBoard .card{width:8.238588235cqw;height:10.939764706cqw;flex:0 0 auto}

@@ -295,7 +295,7 @@ function drawTable(g){
  // shortcut: keep the local 2s notification budget until native ordinary Delay is recovered.
  const potDuration=multiPot ? 0.8+Math.max(2/g.end.pots.length-0.8,0.1) : 2;
  const focusBySeat=new Map(),boardFocus=new Set(),primaryPayouts=g?.end?.pots?.[0]?.payouts;
- if(primaryPayouts&&g.board.length===5)for(const [i,payout]of primaryPayouts.entries())if(payout&&g.cards[i]?.every(Boolean)&&!g.folded[i]){
+ if(primaryPayouts&&!(g.runoutBoards?.length>1)&&g.board.length===5)for(const [i,payout]of primaryPayouts.entries())if(payout&&g.cards[i]?.every(Boolean)&&!g.folded[i]){
   const focus=bestFiveFocus(g.cards[i],g.board,state.settings?.variant==='shortdeck');focusBySeat.set(i,focus);for(const index of focus.board)boardFocus.add(index);
  }
  const feltFrame=document.querySelector('.felt');
@@ -307,7 +307,15 @@ function drawTable(g){
   card.onanimationend=card.onanimationcancel=()=>card.remove();feltFrame.append(card);
  }
  feltFrame.style.setProperty('--showdown-offset',runoutPlan?runoutPlan.complete/1000+'s':'0s');
- const faces=cards(g?.board||[]);if(focusBySeat.size)for(const [i,card]of faces.entries()){card.dataset.bestFive=boardFocus.has(i)?'1':'0';card.classList.toggle('nativeFocusDim',!boardFocus.has(i))}if((runoutPlan?.board[0]?.index===0||changed&&!prev.g.board.length)&&faces.length>=3&&!matchMedia('(prefers-reduced-motion: reduce)').matches)faces.slice(0,3).forEach((c,i)=>{c.classList.add('nativeFlop');c.style.setProperty('--flop-index',i)});if(runoutPlan)for(const step of runoutPlan.board){const card=faces[step.index];card.classList.add('runoutCard');card.style.setProperty('--board-delay',step.at/1000+'s');card.dataset.boardSound=step.cue?'1':'0';card.dataset.boardIndex=step.index}const board=$('board'),nextBoard=board.cloneNode(false);nextBoard.append(...faces);updateElement(board,nextBoard);const pot=$('pot').cloneNode(false);
+ const faces=cards(g?.board||[]);if(focusBySeat.size)for(const [i,card]of faces.entries()){card.dataset.bestFive=boardFocus.has(i)?'1':'0';card.classList.toggle('nativeFocusDim',!boardFocus.has(i))}if((runoutPlan?.board[0]?.index===0||changed&&!prev.g.board.length)&&faces.length>=3&&!matchMedia('(prefers-reduced-motion: reduce)').matches)faces.slice(0,3).forEach((c,i)=>{c.classList.add('nativeFlop');c.style.setProperty('--flop-index',i)});if(runoutPlan)for(const step of runoutPlan.board){const card=faces[step.index];card.classList.add('runoutCard');card.style.setProperty('--board-delay',step.at/1000+'s');card.dataset.boardSound=step.cue?'1':'0';card.dataset.boardIndex=step.index}const board=$('board'),nextBoard=board.cloneNode(false);nextBoard.append(...faces);updateElement(board,nextBoard);
+ const runs=g?.end&&g.runoutBoards?.length>1?g.runoutBoards:null;board.hidden=!!runs;
+ let runouts=document.querySelector('.nativeRunoutBoards');
+ if(runs){
+  const next=element('div','nativeRunoutBoards');
+  for(const [index,row]of runs.entries()){const line=element('div','nativeRunoutBoard');line.dataset.run=String(index);line.setAttribute('aria-label','Run '+(index+1)+' of '+runs.length);line.style.top=(-93-(runs.length-1-index)*(runs.length===2?105:72))/17+'cqw';line.append(...cards(row));next.append(line)}
+  if(runouts)updateElement(runouts,next);else board.parentElement.append(next)
+ }else runouts?.remove();
+ const pot=$('pot').cloneNode(false);
  if(g)pot.replaceChildren('Total pot · ',amount(element('span',''),g.committed.reduce((sum,n,i)=>sum+n-(g.end?.returns[i]||0),0)));else pot.textContent=count+' seats · play money';updateElement($('pot'),pot);
  const bank=settling?g.committed.reduce((sum,n,i)=>sum+n-g.end.returns[i],0):g&&!g.end?g.committed.reduce((sum,n,i)=>sum+n-g.bets[i],0):0;
  $('collected').classList.toggle('settlingPot',settling);$('collected').hidden=!bank;amount($('collected').lastElementChild,bank);$('collected').setAttribute('aria-label','Collected pot: '+bank);
