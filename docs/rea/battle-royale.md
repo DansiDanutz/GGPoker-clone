@@ -352,3 +352,11 @@ Browser fixture `node network-browser-test.mjs --battle-rules` exercises both ow
 Not full parity: native tournament-lobby panels, start-time column, running alive counts, players icon/action artwork/fonts, selected background and complete pixel/hover comparison remain incomplete. The local selected-event details footer is retained for rules/access; it is not claimed native geometry. No original account was registered, no native app was foregrounded, and no sound was played.
 
 Review correction: preserve the Game Lobby gate for unregistered viewers after registration closes. Game List double-click still opens the existing local event read-only; it does not enable late entry.
+
+## Game List — real start time and surviving players
+
+The public catalog now distinguishes `count` (registration count) from `alive` (surviving competitors), with persisted `startedAt` or null before start. Rush reuses the engine early-close predicate: waiting players with chips plus players assigned to unresolved hands count as alive. A zero-stack all-in is not eliminated until the hand settles. Qualification counts direct qualifiers and remaining shootout contenders. The final uses the authoritative elimination record, and a settled winner reports one, while the original registration count stays unchanged. No session, private cards or checkpoint is added to public reads. Reads do not tick or write.
+
+The list displays registered/capacity before start, actual remaining players while running and the actual winner at completion. Running/completed rows show the actual start instant at native x786/width142. The HTML time element retains exact ISO datetime; visible month/day/hour/minute uses the local browser timezone. This is an explicit local formatting policy: native `getDateString` localization/timezone equivalence has not been established. No synthetic scheduled time is introduced.
+
+RED b18dcac / `node battle-list-state-test.mjs`: the model lacked an alive query. GREEN tests real Rush all-ins, settled elimination counts, qualification, final play through winner,1200chips/300credits, original start1000 and read-only restore. Browser suites verify the running public row without a session and completed winner/time after full six-player final/restart. Complete native tournament lobby, icon/action art, exact date localization, fonts/pixels/audio remain open.

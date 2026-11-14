@@ -41,8 +41,16 @@
   },
   "limitations": [
     "Native complete tournament lobby is not reconstructed by the network registration page.",
-    "Local selected-event details footer is retained; native fonts/action art/players icon/start date and full pixel match remain incomplete.",
-    "Local entry count is not claimed as the native running alive-player count.",
+    "Local selected-event details footer is retained; native fonts/action art/players icon/exact date localization and full pixel match remain incomplete.",
     "Highest amount comes from actual configured operator inventory; native global preset/matchmaking remains unverified."
-  ]
+  ],
+  "localState": {
+    "startedAt": "Actual persisted event start; null during registration",
+    "alive": "Unresolved Rush participants/waiting chip holders, then direct plus shootout contenders, then final elimination record; one at settled winner",
+    "dateLabel": "Exact ISO datetime with browser-local MM/DD/hour/minute display; native localization unverified",
+    "startLabel": [
+      786,
+      142
+    ]
+  }
 }
