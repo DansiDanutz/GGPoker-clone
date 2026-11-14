@@ -81,6 +81,16 @@ http.createServer(async(req,res)=>{
   let data;try{data=await readFile(file.startsWith('home-art/')?join(referenceArt,file.slice(9)):new URL(file,import.meta.url))}catch{return json(404,{error:'Reference asset unavailable'})}
   res.writeHead(200,{'Content-Type':file.endsWith('.ttf')?'font/ttf':file.endsWith('.webp')?'image/webp':file.endsWith('.png')?'image/png':file.endsWith('.json')?'application/json':file.endsWith('.mjs')?'text/javascript':'text/html; charset=utf-8','Cache-Control':'private, no-store','Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff'});res.end(data);return;
  }
+ const battle=/^\/api\/battle\/([a-z0-9-]{1,40})\/(state|register|cancel)$/.exec(path);
+ if(localHome&&(battle||path==='/api/battle')){
+  if(path==='/api/battle'){if(req.method!=='GET')return json(405,{error:'Method not allowed'});return json(200,roomRequest.battleEvents(playerProfile.identity(req)))}
+  const [,id,op]=battle;if(req.method!==(op==='state'?'GET':'POST'))return json(405,{error:'Method not allowed'});
+  if(req.headers.origin&&req.headers.origin!==origin||req.method==='POST'&&req.headers.origin!==origin)return json(403,{error:'Local origin required'});
+  const account=playerProfile.identity(req);if(!account)return json(401,{error:'Sign in locally'});let body={};
+  if(req.method==='POST'){if(!req.headers['content-type']?.startsWith('application/json'))return json(415,{error:'Expected JSON'});let raw='';for await(const chunk of req){raw+=chunk;if(Buffer.byteLength(raw)>2048)return json(413,{error:'Request too large'})}try{body=JSON.parse(raw);if(!body||typeof body!=='object'||Array.isArray(body))throw Error()}catch{return json(400,{error:'Invalid JSON'})}}
+  if(Object.keys(body).some(k=>op!=='cancel'||k!=='revision'))return json(400,{error:'Unexpected Battle Royale field'});
+  try{if(op==='state')return json(200,roomRequest.battleEvent(id,account));if(op==='cancel'){const current=roomRequest.battleEvent(id,account);if(!Number.isSafeInteger(body.revision)||body.revision!==current.revision)return json(409,{error:'Refresh Battle Royale registration'});return json(200,roomRequest.cancelBattleEvent(id,account))}return json(200,roomRequest.registerBattleEvent(id,account))}catch(error){if(error.status)return json(error.status,{error:error.message});throw error}
+ }
  const rush=/^\/api\/rush\/(?:(holdem|plo)\/)?(state|join|deal|act|quick-fold|fill-bots|cancel-queue|notes|sit-out|helmet|leave)$/.exec(path);
  if(rush&&localHome){
   const op=rush[2],rushRequest=rushRequests[rush[1]||'holdem'];
@@ -117,11 +127,16 @@ http.createServer(async(req,res)=>{
  if(path==='/api/hosted'&&req.method==='GET'){res.setHeader('X-Playgg-Time-Cards','1');res.setHeader('X-Playgg-Tournament-Entries','1');res.setHeader('X-Playgg-Time-Card-Options','1');return json(200,tables.map(t=>({...t,room:hostedId(t.id),...roomRequest(hostedId(t.id),'summary',undefined,{},t)})))}
  if(path==='/api/tables'&&req.method==='GET')return json(200,tables);
  const backup=/^\/api\/owner-backups(?:\/([a-f0-9]{24})(\/restore)?)?$/.exec(path);
- if((['/api/owner-spin-rules','/api/owner-spin-bank','/api/owner-chat','/api/owner-reports','/api/owner-wallets','/api/owner-seats','/api/owner-tournaments'].includes(path)&&['GET','POST'].includes(req.method))||(path==='/api/tables'&&req.method==='POST')||(path==='/api/owner-audit'&&req.method==='GET')||(backup&&(['GET','POST','DELETE'].includes(req.method)))){
+ if((['/api/owner-battle','/api/owner-spin-rules','/api/owner-spin-bank','/api/owner-chat','/api/owner-reports','/api/owner-wallets','/api/owner-seats','/api/owner-tournaments'].includes(path)&&['GET','POST'].includes(req.method))||(path==='/api/tables'&&req.method==='POST')||(path==='/api/owner-audit'&&req.method==='GET')||(backup&&(['GET','POST','DELETE'].includes(req.method)))){
   if(origin!=='http://127.0.0.1:'+port||host!=='127.0.0.1')return json(403,{error:'Owner changes require local-only mode'});
   const token=Buffer.from((req.headers.authorization||'').replace(/^Bearer /,''));const expected=Buffer.from(key);
   if(req.headers.origin&&req.headers.origin!==origin)return json(403,{error:'Local origin required'});
   if(token.length!==expected.length||!timingSafeEqual(token,expected))return json(401,{error:'Owner key required'});
+  if(path==='/api/owner-battle'){
+   if(!cashWalletsEnabled)return json(503,{error:'Local practice mode is disabled'});if(req.method==='GET')return json(200,roomRequest.battleEvents(null));
+   if(req.headers.origin!==origin)return json(403,{error:'Local origin required'});if(!req.headers['content-type']?.startsWith('application/json'))return json(415,{error:'Expected JSON'});let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>2048)return json(413,{error:'Request too large'});chunks.push(chunk)}
+   try{const settings=JSON.parse(Buffer.concat(chunks)),result=roomRequest.createBattleEvent(settings);let auditSaved=true;try{appendFileSync(join(directory,'owner-audit.jsonl'),JSON.stringify({at:new Date().toISOString(),action:'create-battle-event',before:null,after:settings})+'\n',{mode:0o600})}catch{auditSaved=false}return json(200,{...result,auditSaved})}catch(error){return json(error instanceof SyntaxError?400:error.status||500,{error:error instanceof SyntaxError?'Invalid JSON':error.status?error.message:'Could not save Battle Royale event'})}
+  }
   if(path==='/api/owner-spin-rules'){
    if(!cashWalletsEnabled)return json(503,{error:'Local practice mode is disabled'});if(req.method==='GET')return json(200,roomRequest.spinRules());
    if(req.headers.origin!==origin)return json(403,{error:'Local origin required'});if(!req.headers['content-type']?.startsWith('application/json'))return json(415,{error:'Expected JSON'});let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>16000)return json(413,{error:'Request too large'});chunks.push(chunk)}
