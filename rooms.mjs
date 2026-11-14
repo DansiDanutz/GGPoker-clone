@@ -21,7 +21,7 @@ import {best} from './game.mjs';
 import {blindLevel} from './blind-level.mjs';
 import {startClock,finishClock,reserveClock,clockView,autoTimeCard} from './game-clock.mjs';
 import {visibleCards,collectedPots} from './room-view.mjs';
-import {openNotes,noteColors,saveNoteLabels,reportTypes,saveHandReport} from './player-notes.mjs';
+import {openNotes,noteColors,saveNoteLabels,reportTypes,saveHandReport,savePlayerReport} from './player-notes.mjs';
 const buyIns=[30,70,100,100], hour=3600000;
 const turnMs=room=>(room.settings?.actionSeconds??90)*1000;
 const fail=(status,message)=>{throw Object.assign(Error(message),{status})};
@@ -733,6 +733,12 @@ rules=spinRules(rooms.get('local-spin-rules'));rooms.delete('local-spin-rules');
    const owner=noteSubject({account:actor}),target=noteSubject({account:name});
    if(body!==null){if(!body||typeof body!=='object'||Array.isArray(body)||!['color,text,viewer','labelChanges,viewer'].includes(Object.keys(body).sort().join(',')))fail(400,'Save note text/color or label titles separately');if(body.viewer!==actor)fail(409,'Signed-in account changed; reopen notes');if(body.labelChanges!==undefined)saveNoteLabels(notes,owner,{labelChanges:body.labelChanges});else notes.set(owner,target,{text:body.text,color:body.color})}
    return {viewer:actor,name,note:notes.get(owner,target),colors:[...noteColors],labels:notes.getLabels(owner)};
+  };
+  request.battlePlayerReport=(id,player,viewer,body=null)=>{
+   if(viewer==null)fail(401,'Sign in locally');const actor=battleAccount(viewer),name=battleAccount(player),event=battleFind(id);if(!event.registrations.includes(name))fail(404,'Battle player unavailable');if(actor===name)fail(400,'Choose another player');
+   if(body===null)return {viewer:actor,name,categories:Object.fromEntries(Object.entries(reportTypes).filter(([n])=>n!=='6'))};
+   if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).sort().join(',')!=='category,detail,viewer')fail(400,'Choose category and report details');if(body.viewer!==actor)fail(409,'Signed-in account changed; reopen reporting');
+   const reportReceipt=savePlayerReport(notes,noteSubject({account:actor}),event.settings,actor,name,body,Date.now());return {viewer:actor,name,reportReceipt};
   };
   request.battleEvents=account=>Object.keys(battleEvents).map(id=>request.battleEvent(id,account));
   request.battleEvent=(id,account)=>{const e=battleFind(id),name=account==null?null:battleAccount(account),registered=e.registrations.includes(name),model=e.checkpoint===null?null:battleModel(e),qualification=e.qualification===undefined?null:battleQualifier(e).view(),bounty=e.bounty?battleBountyLedger(e).summary():null,final=e.finalRoom?rooms.get(e.finalRoom):null,alive=e.payouts?1:final?final.tournament.out.filter(n=>n===null).length:qualification?qualification.direct.length+qualification.contenders.length:model?model.alive():null;return {...(bounty?{bounty,bountyHighest:Math.max(...e.bounty.items.map(p=>p.amount)),bountyHighlights:bounty.awards.map(a=>{const h=e.bounty.hands?.find(h=>h.number===a.hand)??rooms.get(e.finalRoom)?.hudHistory?.find(h=>h.number===a.hand);return {hand:a.hand,pot:a.pot,victim:a.victim,amount:a.amount,hunters:a.hunters,at:h?.at??null,avatars:a.hunters.map(p=>h?.avatars?.[h.names.indexOf(p.account)]??0)}})}:{}),settings:structuredClone(e.settings),revision:e.revision,startedAt:e.startedAt,alive,count:e.registrations.length,registered,finalEligible:!!(registered&&qualification?.qualified?.length>1&&qualification.qualified.some(p=>p.id===name)),...(e.finalRoom?{finalRoom:e.finalRoom}:{}),...(e.payouts?{payouts:structuredClone(e.payouts)}:{}),phase:e.payouts?'finished':e.finalRoom?'final-table':qualification?qualification.phase:model?model.phase():'registration',...(qualification?{qualification}:{}),...(registered&&model?{session:model.sessions()[name],stage:model.view(name,model.sessions()[name])}:{})}};

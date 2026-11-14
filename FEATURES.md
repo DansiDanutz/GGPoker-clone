@@ -1198,3 +1198,5 @@ Battle stage audio evidence: exact embedded ReadyCount/RoundEnd MP3s recovered a
 Battle Smart HUD movement: source-backed outer-header drag, local accessible arrow-key movement, viewport edge/resize clamping and cleanup on close/auth change. Notes/label editor guards retained; native detached-window/multi-monitor/frame persistence and physical visuals remain open.
 
 REA HUD More contract: docs/rea/hud-more-menu.md records hidden nickname history, SnapCam/report capability gates, menu geometry and distinct location2 player-report flow. Existing hand-report backend must not receive fabricated hand evidence; player-profile reports remain unimplemented. Both embedded Battle stage MP3s now fully decoded to null after disk preflight allowed the recheck; speaker/native timing still unverified.
+
+Battle profile-report backend: strict no-hand record, authenticated observer/actual target/expected-viewer guards, local reason/detail validation, atomic idempotent persistence mixed with existing hand reports and notes; owner-only review UI works after restart and backup restore. Native HUD More trigger and player-facing submission form remain pending.

@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import {mkdtempSync,readFileSync,mkdirSync,rmdirSync,rmSync} from 'node:fs';import {tmpdir} from 'node:os';import {join} from 'node:path';
+import {openRooms,noteSubject} from './rooms.mjs';
+const dir=mkdtempSync(join(tmpdir(),'battle-player-report-')),file=join(dir,'rooms.json'),config={id:'report-event',name:'Report Event',capacity:6,stack:100,blind:4,finalSeats:3,rushDurationMs:60000,entryCost:0};
+try{
+ let rooms=openRooms(file,()=>0,true);rooms.createBattleEvent(config);rooms.registerBattleEvent(config.id,'Reporter');rooms.registerBattleEvent(config.id,'Target');const game=readFileSync(file),owner=noteSubject({account:'reporter'});
+ rooms.notes.set(owner,owner,{text:'private',color:1});rooms.notes.setLabels(owner,Array(10).fill('Custom'));
+ const legacy={id:'b'.repeat(64),owner,room:'c'.repeat(48),number:1,startedAt:1000,at:2000,reporter:'Reporter',seats:[1],category:5,detail:'Legacy hand',status:'open',reviewNote:'',hand:{number:1,names:['Reporter','Target'],cards:[['As','Kh'],null]}};rooms.notes.saveReport(legacy);
+ const read=viewer=>rooms.battlePlayerReport(config.id,'target',viewer),send=(body,viewer='Reporter')=>rooms.battlePlayerReport(config.id,'target',viewer,body),body={viewer:'reporter',category:1,detail:'Literal <script>text</script>\r\nNext'};
+ assert.throws(()=>read(null),e=>e.status===401);assert.equal(read('Outsider').viewer,'outsider');assert.throws(()=>read('Target'),e=>e.status===400);assert.throws(()=>rooms.battlePlayerReport(config.id,'absent','Reporter'),e=>e.status===404);
+ assert.deepEqual(Object.keys(read('Reporter')).sort(),['categories','name','viewer']);assert.equal(read('Reporter').categories[6],undefined);assert.equal(read('Reporter').name,'target');
+ for(const invalid of [{...body,category:6},{...body,category:99},{...body,detail:'x'.repeat(1001)},{...body,owner:'spoof'},{...body,hand:{}}])assert.throws(()=>send(invalid),e=>e.status===400);
+ assert.throws(()=>send({...body,viewer:'target'}),e=>e.status===409);
+ const receipt=send(body).reportReceipt;assert.match(receipt.id,/^[a-f0-9]{64}$/);let rows=rooms.notes.getReports();assert.equal(rows.length,2);const profile=rows.find(r=>r.kind==='profile');assert.equal(profile.reporter,'reporter');assert.equal(profile.reported,'target');assert.equal(profile.event,config.id);assert.equal(profile.detail,'Literal <script>text</script>\nNext');assert.equal('hand'in profile,false);assert.equal('room'in profile,false);assert.equal('number'in profile,false);
+ const bytes=readFileSync(file+'.notes.json');assert.deepEqual(send(body).reportReceipt,receipt);assert.deepEqual(readFileSync(file+'.notes.json'),bytes);
+ mkdirSync(file+'.notes.json.tmp');assert.throws(()=>send({...body,detail:'Blocked new report'}));rmdirSync(file+'.notes.json.tmp');assert.deepEqual(readFileSync(file+'.notes.json'),bytes);assert.equal(rooms.notes.getReports().length,2);
+ rooms.notes.reviewReport(receipt.id,{status:'reviewed',note:'Owner checked'});rooms.notes.set(owner,owner,{text:'private updated',color:2});rooms.notes.setLabels(owner,Array(10).fill('Updated'));rooms=openRooms(file,()=>0,true);rows=rooms.notes.getReports();assert.equal(rows.find(r=>r.id===receipt.id).reviewNote,'Owner checked');assert.deepEqual(rows.find(r=>r.id===legacy.id).hand,legacy.hand);assert.equal(send(body).reportReceipt.status,'reviewed');assert.equal(rooms.notes.get(owner,owner).text,'private updated');assert.deepEqual(rooms.notes.getLabels(owner),Array(10).fill('Updated'));assert.deepEqual(readFileSync(file),game);
+ assert.throws(()=>rooms.notes.saveReport({...profile,hand:{}}),e=>e.status===400);const copied=rooms.notes.getReports();copied.find(r=>r.kind==='profile').reported='changed';assert.equal(rooms.notes.getReports().find(r=>r.kind==='profile').reported,'target');
+ console.log('PASS Battle profile reports: target membership/authenticated observer/self/expected-viewer guards, separate no-hand record, strict validation, atomic/idempotent save, legacy reports/notes preserved, owner review/restart and unchanged game');
+}finally{rmSync(dir,{recursive:true,force:true})}
