@@ -1,3 +1,4 @@
+import {installSpinWheelScene} from './spin-wheel-scene.mjs';
 import {installTournamentResult} from './tournament-result.mjs';
 import {installCashSitOutMenu} from './cash-sitout-menu.mjs';
 import {hotkeyActions,readHotkeys,keyCodes,keyCaption,readHotkeyGroups,hotkeyGroup} from './hotkey-bindings.mjs';
@@ -503,7 +504,9 @@ function renderShowCards(g){
   const row=element('span','showCardFaces');row.style.left=(indices.length===1?112:71)+'px';for(const index of indices){const card=own[index],face=element('span','showCardFace'),rank=element('img','showRank'),suit=element('img','showSuit');rank.src='/home-art/native-show-rank-'+card[0]+'.png';suit.src='/home-art/native-show-suit-'+card[1]+'.png';rank.alt=suit.alt='';face.append(rank,suit);row.append(face)}b.append(row);
  }
 }
+const spinWheelScene=installSpinWheelScene(document.querySelector('.felt'),()=>chatWindow?null:state,()=>operate('spin-ready'),playCues);
 function render(){
+ spinWheelScene.update();
  updateTournamentAnnounce();
  updateTournamentNotice();
  updateAddChipsControl();
