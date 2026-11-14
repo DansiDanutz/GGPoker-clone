@@ -1,8 +1,8 @@
 import {installBattlePlayerNote} from './battle-player-note.mjs';
 import {element,avatarSource,hudColor} from './felt.mjs';
 export function installBattleHud(event){
- let dialog=null,target=null,viewer=null,epoch=0,loading=false,editor=null;
- function clear(){editor?.dispose();editor=null;epoch++;loading=false;target=viewer=null;if(dialog){const old=dialog;dialog=null;old.close();old.remove()}}
+ let dialog=null,target=null,viewer=null,epoch=0,loading=false,editor=null,resize=null,cancelDrag=null;
+ function clear(){cancelDrag?.();cancelDrag=null;if(resize){removeEventListener('resize',resize);resize=null}editor?.dispose();editor=null;epoch++;loading=false;target=viewer=null;if(dialog){const old=dialog;dialog=null;old.close();old.remove()}}
  async function read(path){const response=await fetch(path,{cache:'no-store'}),data=await response.json();if(!response.ok){const error=Error(data.error||'HUD unavailable');error.status=response.status;throw error}return data}
  async function refresh(){
   if(!dialog||loading)return;loading=true;const stamp=epoch,pane=dialog,name=target;pane.querySelector('.battleHudMessage').textContent='';
@@ -25,6 +25,10 @@ export function installBattleHud(event){
  async function open(name){
   if(dialog&&target===name){dialog.focus();return}if(!await close())return;target=name;const pane=element('dialog','battleHud');dialog=pane;pane.id='battleHud';pane.setAttribute('aria-label','Battle Royale HUD for '+name);pane.tabIndex=-1;
   const title=element('h2','','Smart HUD'),identity=element('strong','battleHudName',name),avatar=element('img','battleHudAvatar'),scope=element('p','battleHudScope','Completed local events · play credits'),dismiss=element('button','battleHudClose'),card=element('section','battleHudCard'),message=element('p','battleHudMessage');dismiss.type='button';dismiss.setAttribute('aria-label','Close Battle HUD');dismiss.onclick=()=>void close();avatar.alt='';message.setAttribute('role','status');
+  let drag=null;const move=(x,y)=>{pane.style.margin='0';pane.style.left=Math.max(0,Math.min(innerWidth-pane.offsetWidth,x))+'px';pane.style.top=Math.max(0,Math.min(innerHeight-pane.offsetHeight,y))+'px';pane.style.right=pane.style.bottom='auto'};
+  const stop=e=>{if(drag&&e?.pointerId!==undefined&&e.pointerId!==drag.id)return;drag=null;removeEventListener('pointermove',track);removeEventListener('pointerup',stop);removeEventListener('pointercancel',stop);removeEventListener('blur',stop)},track=e=>{if(drag&&e.pointerId===drag.id)move(drag.left+e.clientX-drag.x,drag.top+e.clientY-drag.y)};cancelDrag=stop;
+  title.tabIndex=0;title.setAttribute('aria-label','Move Battle HUD with arrow keys');title.onpointerdown=e=>{if(e.button!==0||!e.isPrimary)return;stop();const r=pane.getBoundingClientRect();drag={id:e.pointerId,x:e.clientX,y:e.clientY,left:r.left,top:r.top};addEventListener('pointermove',track);addEventListener('pointerup',stop);addEventListener('pointercancel',stop);addEventListener('blur',stop);title.setPointerCapture(e.pointerId);e.preventDefault()};title.onkeydown=e=>{const step={ArrowLeft:[-10,0],ArrowRight:[10,0],ArrowUp:[0,-10],ArrowDown:[0,10]}[e.key];if(step){e.preventDefault();const r=pane.getBoundingClientRect();move(r.left+step[0],r.top+step[1])}};
+  resize=()=>{if(pane.style.left){const r=pane.getBoundingClientRect();move(r.left,r.top)}};addEventListener('resize',resize);
   for(const [key,label]of [['totalWinnings','Total Winnings'],['passStage1Rate','Rush Stage Clear'],['finalRankAverage','Final Avg Finish'],['totalBounty','Total Bounty'],['totalKills','Total Kills'],['games','Games']]){const item=element('div','battleHudMetric '+key),caption=element('span','',label),output=element('output','','—');output.dataset.metric=key;if(key==='totalKills')item.title='Shared-elimination attribution is not established for this local summary';item.append(caption,output);card.append(item)}
   pane.append(title,dismiss,avatar,identity,scope,card,message);pane.oncancel=e=>{e.preventDefault();close()};pane.onkeydown=e=>{if(e.key==='Escape'){e.preventDefault();close()}};document.body.append(pane);pane.show();dismiss.focus();void refresh();
  }
