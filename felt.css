@@ -548,3 +548,5 @@ body:has(#dealMeIn:not([hidden])) footer:has(#join[hidden]){margin-top:0}
 .nativeRunoutBoard .runoutCard{animation:showRunoutCard .000001s var(--board-delay) steps(1,end) both}
 .nativeRunoutBoard .nativeFlop.runoutCard{animation:spreadFlop .3s cubic-bezier(.3333333333,1,.6666666667,1) var(--board-delay) both,showRunoutCard .000001s var(--board-delay) steps(1,end) both}
 @media(prefers-reduced-motion:reduce){.nativeRunoutBoard.runoutRow,.nativeRunoutBoard .runoutCard,.nativeRunoutBoard .nativeFlop.runoutCard{animation:none;visibility:visible}}
+
+.nativeBattleBounty::backdrop{background:transparent}

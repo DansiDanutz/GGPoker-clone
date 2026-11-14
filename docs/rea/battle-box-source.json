@@ -1,0 +1,61 @@
+{
+  "scope": "Static native source/art reconstruction; not a live native frame/audio comparison",
+  "exporter": "FFDec26.4.0",
+  "sourceRoot": "/Users/davidai/Sandbox/rea-tools/battle-royale-source/scripts",
+  "sources": [
+    {
+      "file": "com/nsus/iron/table/stage/component/mysteryjackpotbounty/MysteryJackpotBountyBoxAnimationView.as",
+      "sha256": "ffbf75605e675fc87de2fa6ef5598fe0c2ee67cc54894258cf3e4eca91a0766a",
+      "bytes": 18293
+    },
+    {
+      "file": "com/nsus/iron/table/stage/component/mysteryjackpotbounty/MysteryJackpotBountyBoxMovieClip.as",
+      "sha256": "d88618dcf85a356f76affd3c9cad23c02961a007388613addd432a1f47f1f978",
+      "bytes": 6060
+    },
+    {
+      "file": "com/nsus/iron/table/stage/component/mysterybounty/MovieClipBase.as",
+      "sha256": "31ae8ba447bac8f14aa0cd8d88d435353cac1edfe93247ceba9dc54b2eee80b0",
+      "bytes": 9339
+    },
+    {
+      "file": "com/nsus/iron/table/stage/component/mysteryjackpotbounty/MysteryBountyBoxAnimationVo.as",
+      "sha256": "8fea2e7a08cd43fdf1375118a85c97f146197512cfcf18f306dbd09369a1af87",
+      "bytes": 2619
+    },
+    {
+      "file": "com/nsus/iron/table/stage/component/mysterybounty/MysteryBountyEarnAmount.as",
+      "sha256": "99ad5e16393b4f48776612b19b5f61f824f1dacc4488387f7a170fb474785d10",
+      "bytes": 4007
+    },
+    {
+      "file": "com/nsus/iron/sound/SoundItem.as",
+      "sha256": "5a978cd4d00a4c10c9e87e407327081123cc9cfd224566bf280e1d7e2f080ef9",
+      "bytes": 75541
+    }
+  ],
+  "animation": {
+    "swf": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/after_lobby/mystery_jackpot_bounty_box_motion.swf",
+    "swfSha256": "44f1dc3259b64861cf5b424c881333b3077df1164d722a918e8b3a9160d37a45",
+    "packedBytes": 16240574,
+    "rawBytes": 229010687,
+    "uniqueDefinitions": 2365,
+    "uniqueBitmaps": 407,
+    "sha256": "896eb48aa231c0ebe7f90d55958f6b8f6c0a787654265ea7e7242beea537278e"
+  },
+  "frameCount": 285,
+  "frameMs": 33,
+  "sounds": {
+    "types1And2": "SoundMjbBnrNormalOne",
+    "type3": "SoundMjbBnrNormalTwo",
+    "type4": "SoundMjbBnRGold",
+    "installedGameCacheFilesFound": false
+  },
+  "remaining": [
+    "live award queue integration",
+    "native grade metadata for local awards",
+    "winner/amount/remaining-box composition",
+    "exact audio resources",
+    "physical native pixel/frame/audio comparison"
+  ]
+}
