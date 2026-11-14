@@ -1,0 +1,26 @@
+import assert from 'node:assert/strict';
+import {battleRush} from './battle-rush.mjs';
+import {openRooms} from './rooms.mjs';
+import {mkdtempSync,readFileSync,rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+const entries=Array.from({length:12},(_,i)=>({id:'player'+i,stack:100})),config={eventId:'list-rush',blind:4,finalSeats:3,startedAt:1000,rushEndsAt:2000};
+let rush=battleRush(entries,config),sessions=rush.sessions();assert.equal(rush.alive(),12);rush.deal('player0',sessions.player0,1000);assert.equal(rush.alive(),12);
+let hand;for(let step=0;step<30;step++){for(const p of entries){const v=rush.view(p.id,sessions[p.id]);if(v.hand?.legal){const o=v.hand.legal;rush.move(p.id,sessions[p.id],v.table,o.raise?'raise':o.due?'call':'check',o.raise?o.max:undefined,1000)}}hand=rush.view('player0',sessions.player0).result?.hand;if(hand?.end)break;assert.equal(rush.alive(),12,'Unsettled all-ins remain alive until their actual result')}
+assert.ok(hand?.end);assert.equal(rush.alive(),6+hand.stacks.filter(n=>n>0).length);const savedRush=rush.snapshot();rush=battleRush(entries,config,savedRush);assert.equal(rush.alive(),6+hand.stacks.filter(n=>n>0).length);assert.equal(rush.snapshot(),savedRush);
+const dir=mkdtempSync(join(tmpdir(),'battle-list-state-')),file=join(dir,'rooms.json'),realNow=Date.now;let now=1000;Date.now=()=>now;
+try{
+ const settings={id:'list-event',name:'List Event',capacity:12,stack:100,blind:4,finalSeats:3,rushDurationMs:1,entryCost:25,prizeShares:[70,30]};let rooms=openRooms(file,()=>0,true);rooms.createBattleEvent(settings);
+ assert.equal(rooms.battleEvent(settings.id).startedAt,null);assert.equal(rooms.battleEvent(settings.id).alive,null);
+ for(const p of entries)rooms.registerBattleEvent(settings.id,p.id);let event=rooms.battleEvent(settings.id);assert.equal(event.startedAt,1000);assert.equal(event.alive,12);assert.equal(event.session,undefined);assert.equal(event.stage,undefined);now++;
+ for(let step=0;step<200;step++){rooms.tickBattle();event=rooms.battleEvent(settings.id);assert.equal(event.alive,event.qualification.direct.length+event.qualification.contenders.length);if(event.phase==='final-ready')break}assert.equal(event.phase,'final-ready');assert.equal(event.alive,event.qualification.qualified.length);
+ const q=event.qualification.qualified,{room}=rooms.startBattleFinal(settings.id),tokens=q.map(p=>rooms(room,'join',undefined,{name:p.id},undefined,p.id).issued),view=()=>rooms(room,'state',tokens[0],{},undefined,q[0].id);let state=view(),restarts=0;
+ for(let step=0;state.tournament.winner===null&&step<200;step++){
+  event=rooms.battleEvent(settings.id);assert.equal(event.alive,state.tournament.out.filter(n=>n===null).length);assert.equal(event.startedAt,1000);
+  if(state.hand.end){const before=readFileSync(file);rooms=openRooms(file,()=>0,true);assert.deepEqual(rooms.battleEvent(settings.id),event);assert.deepEqual(readFileSync(file),before);restarts++;now+=3000;rooms.tickBattleFinals()}
+  else{const seat=state.hand.turn,own=rooms(room,'state',tokens[seat],{},undefined,q[seat].id),o=own.hand.options;rooms(room,'act',tokens[seat],{version:own.version,action:o.raise?'raise':o.due?'call':'check',...(o.raise?{target:o.max}:{})},undefined,q[seat].id)}state=view();
+ }
+ assert.notEqual(state.tournament.winner,null);assert.equal(rooms.battleEvent(settings.id).alive,1);assert.equal(rooms.battleEvent(settings.id).count,12);assert.equal(rooms.battleEvent(settings.id).startedAt,1000);assert.equal(state.hand.stacks.reduce((a,b)=>a+b),1200);assert.equal(rooms.battleEvent(settings.id).payouts.reduce((n,p)=>n+p.amount,0),300);
+ const before=readFileSync(file),finished=rooms.battleEvent(settings.id);rooms=openRooms(file,()=>0,true);assert.deepEqual(rooms.battleEvent(settings.id),finished);assert.deepEqual(readFileSync(file),before);
+ console.log('PASS Battle list state: real Rush all-ins counted before settlement, actual eliminations, qualification/final/winner counts distinct from12 registrations, start1000 retained, public no session,1200chips/300prizes and read-only restart recovery');
+}finally{Date.now=realNow;rmSync(dir,{recursive:true,force:true})}
