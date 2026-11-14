@@ -211,7 +211,7 @@ matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',event=>
  if(!state)return;
  if(!event.matches){lastFeltFrame=null;render();return}
  const pending=payoutSoundHand===state.number&&state.hand?.end?[...new Set([...document.querySelectorAll('.award')].map(n=>Number(n.dataset.stage)))].flatMap(i=>soundedPots.has(i)?[]:['WinPot']):[];
- hideWin();runoutPlan=null;boardSounds.clear();payoutSoundHand=null;soundedPots.clear();lastFeltFrame=null;
+ clearRimtFocus();hideWin();runoutPlan=null;boardSounds.clear();payoutSoundHand=null;soundedPots.clear();lastFeltFrame=null;
  for(const award of [...document.querySelectorAll('.award')]){for(const animation of award.getAnimations())animation.cancel();award.onanimationcancel?.();award.remove()}
  document.querySelectorAll('.nativeTurnGlow').forEach(node=>node.getAnimations().forEach(animation=>animation.cancel()));
  document.querySelectorAll('.sweep,.boardThrow').forEach(node=>node.remove());render();playCues(pending)
@@ -219,7 +219,20 @@ matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',event=>
 let pendingHand=null,winHand=null,pendingCashDeparture=null;
 function finishCashDeparture(data){pendingCashDeparture=null;waitingState=null;walletAvailable=null;lastCashOut=data.cashOut??null;sessionStorage.removeItem(key);token=null;state=null;render()}
 function hideWin(){winHand=null;document.querySelectorAll('.winMark').forEach(node=>node.remove())}
-function clearPayout(){pendingCashDeparture=null;hideWin();for(const award of document.querySelectorAll('.award')){award.onanimationend=award.onanimationcancel=null;award.remove()}}
+let rimtFocus=null;
+function clearRimtFocus(){if(rimtFocus)for(const motion of rimtFocus.motions)motion.cancel();rimtFocus=null}
+function focusRimtRun(run){
+ const rows=[...document.querySelectorAll('.nativeRunoutBoard')],width=document.querySelector('.felt').getBoundingClientRect().width,k=width/1700;
+ const offsets=rows.map(row=>{const transform=getComputedStyle(row).transform;return transform==='none'?0:new DOMMatrix(transform).m42/k});clearRimtFocus();rimtFocus={hand:state.number,run,motions:[]};
+ for(const [index,row]of rows.entries()){
+  row.style.filter=index===run?'brightness(1)':'brightness(.6)';
+  const from=offsets[index],to=index===run&&run!==rows.length-1?-30:0,pose=n=>'translateY('+n/17+'cqw)';
+  const frames=index===run?[{transform:pose(from),offset:0,easing:'cubic-bezier(.3333333333,0,.6666666667,0)'},{transform:pose((from+to)/2),offset:200/2800,easing:'cubic-bezier(.3333333333,1,.6666666667,1)'},{transform:pose(to),offset:400/2800},{transform:pose(to),offset:2400/2800,easing:'cubic-bezier(.3333333333,1,.6666666667,1)'},{transform:pose(0),offset:1}]:[{transform:pose(from)},{transform:pose(0)}];
+  const motion=row.animate(frames,{duration:index===run?2800:400,...(index!==run?{easing:'cubic-bezier(.3333333333,1,.6666666667,1)'}:{})});motion.id=index===run?'rimtFocus':'rimtFocusReturn';rimtFocus.motions.push(motion);
+ }
+}
+
+function clearPayout(){pendingCashDeparture=null;clearRimtFocus();hideWin();for(const award of document.querySelectorAll('.award')){award.onanimationend=award.onanimationcancel=null;award.remove()}}
 function applyState(data){
  const sameSeats=state&&state.me===data.me&&JSON.stringify(state.names)===JSON.stringify(data.names);
  // Native OnWinners resumes the event processor only after all payout callbacks.
@@ -319,7 +332,7 @@ function drawTable(g){
  if(runs){
   const next=element('div','nativeRunoutBoards');
   for(const [index,row]of runs.entries()){
-   const line=element('div','nativeRunoutBoard'),plan=runoutPlan?.runouts?.[index];line.dataset.run=String(index);line.setAttribute('aria-label','Run '+(index+1)+' of '+runs.length);line.style.top=(-93-(runs.length-1-index)*(runs.length===2?105:72))/17+'cqw';
+   const line=element('div','nativeRunoutBoard'),plan=runoutPlan?.runouts?.[index];line.dataset.run=String(index);line.setAttribute('aria-label','Run '+(index+1)+' of '+runs.length);line.style.top=(-93-(runs.length-1-index)*(runs.length===2?105:72))/17+'cqw';const focused=rimtFocus?.hand===state.number?rimtFocus.run:!runoutPlan?g.end.pots?.[0]?.runs?.findLastIndex(part=>part.payouts.some(n=>n>0)):null;if(focused!=null&&focused>=0)line.style.filter=index===focused?'brightness(1)':'brightness(.6)';
    if(plan){line.classList.add('runoutRow');line.style.setProperty('--run-rest-y',line.style.top);line.style.setProperty('--run-start',plan.showAt/1000+'s');line.style.setProperty('--run-move',plan.moveAt/1000+'s')}
    for(const [cardIndex,card]of cards(row).entries()){
     if(cardIndex<sharedCount){const shared=element('span','nativeRunoutShared');shared.setAttribute('aria-hidden','true');line.append(shared)}else{
@@ -390,7 +403,7 @@ function drawTable(g){
      award.style.setProperty('--pot-x',origin[0]/17+'cqw');award.style.setProperty('--pot-y',origin[1]/17+'cqw');
      if(positions){nativeChipPosition(award,positions[pos],origin);award.classList.add('nativeChipMotion');award.append(chipPile([part.amount],true,'center'),amount(element('span',''),part.amount))}
      let finished=false;const finish=e=>{if(finished||e?.type==='animationend'&&multiPot&&e.animationName!=='aofPotFinish')return;finished=true;credited+=part.amount;if(state?.number===handNumber&&state.hand?.end){const live=felt.querySelector('.seat[data-seat="'+i+'"] .stackSwitch');if(live)amount(live,credited,' chips')}award.remove();if(state?.number===handNumber&&state.hand?.end){if(!felt.querySelector('.award[data-stage="'+part.stage+'"]')){hideWin();for(const waiting of felt.querySelectorAll('.award[data-stage="'+(part.stage+1)+'"]'))waiting.classList.remove('payoutWaiting')}if(!felt.querySelector('.award')){if(pendingCashDeparture){finishCashDeparture(pendingCashDeparture);return}const next=pendingHand;pendingHand=null;if(next)applyState(next);else render()}}};
-     award.onanimationstart=e=>{if(e.target!==award||!['payout','aofPayout','aofPotMove'].includes(e.animationName))return;award.dataset.started='true';felt.querySelector('.nativePot[data-pot="'+part.pot+'"]')?.remove();if(multipleRuns&&part.pot===0&&!soundedPots.has(part.stage)){
+     award.onanimationstart=e=>{if(!award.isConnected||e.target!==award||!['payout','aofPayout','aofPotMove'].includes(e.animationName))return;award.dataset.started='true';felt.querySelector('.nativePot[data-pot="'+part.pot+'"]')?.remove();if(multipleRuns&&part.pot===0&&!soundedPots.has(part.stage)){focusRimtRun(part.run);
       for(const mark of felt.querySelectorAll('.winMark'))mark.remove();
       for(const seat of awardStages[part.stage].payouts.flatMap((amount,seat)=>amount?[seat]:[])){const portrait=felt.querySelector('.seat[data-seat="'+seat+'"] .portrait');if(portrait){const win=element('b','winMark','WIN'),image=new Image();image.className='nativeWin';image.alt='';image.src='/home-art/native-win-effect.png?hand='+handNumber+'&run='+part.run+'&seat='+seat;win.append(image);portrait.append(win)}}
      }if(state?.number===handNumber&&state.hand?.end&&payoutSoundHand===handNumber&&!soundedPots.has(part.stage)){soundedPots.add(part.stage);playCues(['WinPot'])}};
