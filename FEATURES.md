@@ -1194,3 +1194,5 @@ Battle table stage notice: source RushStageEndType22 during current local shooto
 Battle shootout notice localization: existing27 parameterized native translations; Romanian live language switch preserves structured title/body and current cutoff across polling. Polish literal-cutoff source falls back to correct English. HTML remains data, malformed templates fall back; native fade/audio/other stage notices remain open.
 
 Battle stage audio evidence: exact embedded ReadyCount/RoundEnd MP3s recovered and metadata-probed (267331bytes private output; full decoding held by disk preflight). Runtime playback remains unwired pending native Ready/catch-up/once-only dispatch integration; no audible parity claim.
+
+Battle Smart HUD movement: source-backed outer-header drag, local accessible arrow-key movement, viewport edge/resize clamping and cleanup on close/auth change. Notes/label editor guards retained; native detached-window/multi-monitor/frame persistence and physical visuals remain open.
