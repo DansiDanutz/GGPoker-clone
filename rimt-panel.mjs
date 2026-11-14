@@ -1,3 +1,4 @@
+// Native initial bar bounds are451 wide; RimtInformation sets its horizontal width to560.
 const css=`
 .nativeRimtPanel{margin:0;padding:0;border:0;border-radius:0;min-height:0;box-sizing:border-box;background:transparent;position:absolute;right:.1764705882cqw;top:50.4705882353cqw;width:37.6470588235cqw;height:20cqw;z-index:12;color:#fff;font-family:Arial,sans-serif}
 .nativeRimtPanel[hidden]{display:none}.nativeRimtPanel *{box-sizing:border-box}
@@ -14,15 +15,16 @@ const css=`
 .nativeRimtDecide:hover:not(:disabled){border-image-source:url('/home-art/native-rimt-green64-over.png')}.nativeRimtDecide:active:not(:disabled){border-image-source:url('/home-art/native-rimt-green64-down.png')}
 .nativeRimtDecide[data-rimt-agreed=false]{border-image-source:url('/home-art/native-rimt-gray64-up.png')}.nativeRimtDecide[data-rimt-agreed=false]:hover:not(:disabled){border-image-source:url('/home-art/native-rimt-gray64-over.png')}.nativeRimtDecide[data-rimt-agreed=false]:active:not(:disabled){border-image-source:url('/home-art/native-rimt-gray64-down.png')}
 .nativeRimtProposal{position:absolute;top:1.9411764706cqw;left:0;width:100%;height:2.3529411765cqw;font-size:1.7647058824cqw;display:flex;align-items:center;justify-content:center;gap:.2941176471cqw;white-space:nowrap;overflow:hidden}.nativeRimtProposal span{flex-shrink:0}.nativeRimtProposal .nativeRimtNickname{flex-shrink:1;min-width:0;overflow:hidden;text-overflow:ellipsis}.nativeRimtWants{color:#b2b2b2}.nativeRimtType{color:#faa700}.nativeRimtQuestion{position:absolute;left:9.0588235294cqw;top:4.0588235294cqw;width:19.2941176471cqw;text-align:center;font-size:1.7647058824cqw;color:#b2b2b2}
-.nativeRimtInfo{position:absolute;left:2.2941176471cqw;top:12.4117647059cqw;width:32.9411764706cqw;height:4.7647058824cqw;color:#999;font-size:1.6470588235cqw}.nativeRimtInfo img{position:absolute;left:1.6470588235cqw;top:1.4705882353cqw;width:2.5294117647cqw;height:2.5294117647cqw}.nativeRimtInfo span{position:absolute;left:5cqw;top:1.0588235294cqw;width:26.9411764706cqw;height:3.5294117647cqw}
+.nativeRimtInfo{position:absolute;left:2.2941176471cqw;top:12.4117647059cqw;width:32.9411764706cqw;height:4.7647058824cqw;color:#999;font-size:1.6470588235cqw}.nativeRimtProgress{position:absolute;left:0;top:.0588235294cqw;width:26.4705882353cqw;height:.7058823529cqw;transform:scaleX(1.2416851441);transform-origin:left;border-style:solid;border-width:.3529411765cqw .5294117647cqw .2941176471cqw .5882352941cqw;border-image:url('/home-art/native-rimt-progress-back.png') 6 9 5 10 fill stretch}.nativeRimtProgressFill{position:absolute;left:-.5294117647cqw;top:-.2941176471cqw;width:26.3529411765cqw;height:.5882352941cqw;background:url('/home-art/native-rimt-progress-green.png') center/100% 100%;transform-origin:left}
+.nativeRimtInfo img{position:absolute;left:1.6470588235cqw;top:1.4705882353cqw;width:2.5294117647cqw;height:2.5294117647cqw}.nativeRimtInfo span{position:absolute;left:5cqw;top:1.0588235294cqw;width:26.9411764706cqw;height:3.5294117647cqw}
 `;
-// shortcut: native progress-bar artwork and exact text shaping remain unverified; retain functional source-derived controls.
+// shortcut: exact native text shaping remains unverified; retain source-derived controls.
 export function installRimtPanel(root,getState,send){
  const doc=root.ownerDocument,style=doc.createElement('style');style.textContent=css;root.append(style);
  const panel=doc.createElement('section');panel.className='nativeRimtPanel';panel.hidden=true;panel.setAttribute('aria-label','Run it multiple times');
  const title=doc.createElement('div');title.className='nativeRimtTitle';const heading=doc.createElement('span');heading.dataset.nativeLabel='MobileDealChoice';title.append(heading);
  const body=doc.createElement('div');body.className='nativeRimtBody';const content=doc.createElement('div');content.className='nativeRimtContent';panel.append(title,body,content);root.append(panel);
- let key='',pending=false,motion,deadlineTimer=0,destroyed=false;
+ let key='',pending=false,motion,progressMotion,deadlineTimer=0,destroyed=false;
  const text=(cls,value)=>{const n=doc.createElement('div');n.className=cls;n.textContent=value;content.append(n);return n};
  async function choose(op,choice){
   const s=getState(),d=s?.rimt;if(pending||panel.hidden||!d||Date.now()>=d.deadline||op==='rimt-suggest'&&!d.canSuggest||op==='rimt-decide'&&!d.canDecide)return;
@@ -31,16 +33,18 @@ export function installRimtPanel(root,getState,send){
  function button(cls,label,left,choice){const b=doc.createElement('button');b.type='button';b.className=cls;b.style.left=left/17+'cqw';const span=doc.createElement('span');span.textContent=label;span.dataset.nativeLabel='runs'in choice?['MobileRunItOnceTwo','MobileRunItTwiceTwo','MobileRittActionBubble'][choice.runs-1]:choice.agreed?'ButtonYes':'ButtonNo';b.append(span);b.setAttribute('aria-label',label);if('runs'in choice){b.dataset.rimtRuns=choice.runs;const n=doc.createElement('b');n.textContent=choice.runs;n.setAttribute('aria-hidden','true');b.append(n)}else b.dataset.rimtAgreed=String(choice.agreed);b.onclick=()=>choose('runs'in choice?'rimt-suggest':'rimt-decide',choice).catch(()=>{});content.append(b)}
  function update(){
   if(destroyed)return;const s=getState(),d=s?.rimt,visible=!!(d&&s.me!=null&&d.hand===s.number&&(d.phase==='suggest'&&d.canSuggest||d.phase==='decide'&&d.canDecide));
-  if(!visible){panel.hidden=true;key='';motion?.cancel();clearTimeout(deadlineTimer);deadlineTimer=0;return}
+  if(!visible){panel.hidden=true;key='';motion?.cancel();progressMotion?.cancel();progressMotion=null;clearTimeout(deadlineTimer);deadlineTimer=0;return}
   const next=JSON.stringify([s.me,d.hand,d.phase,d.proposal,s.names?.[d.proposer],d.deadline]);
   if(next!==key){key=next;content.replaceChildren();heading.textContent='Deal Choice';
    if(d.phase==='suggest')for(let runs=1;runs<=3;runs++)button('nativeRimtSuggest',['Run It\nOnce','Run It\nTwice','Run It\n Three\n Times'][runs-1],33+(runs-1)*198,{runs});
    else{const proposal=text('nativeRimtProposal','');for(const [cls,value,label]of [['nativeRimtNickname',s.names?.[d.proposer]||'Player',null],['nativeRimtWants',' wants to ','MobileAimWantsTo'],['nativeRimtType',d.proposal===2?'Run it twice.':'Run it three times.',null]]){const span=doc.createElement('span');span.className=cls;span.textContent=value;if(label)span.dataset.nativeLabel=label;proposal.append(span)}text('nativeRimtQuestion','Do you agree?').dataset.nativeLabel='MobileAimDoYouAgree';button('nativeRimtDecide','Yes',84,{agreed:true});button('nativeRimtDecide','No',338,{agreed:false})}
-   const info=text('nativeRimtInfo',''),icon=doc.createElement('img'),label=doc.createElement('span');icon.src='/home-art/native-rimt-info.png';icon.alt='';label.textContent='No extra rake. Give it a try!';label.dataset.nativeLabel='MobileAIMDescription';info.append(icon,label);
+   const info=text('nativeRimtInfo',''),icon=doc.createElement('img'),label=doc.createElement('span');icon.src='/home-art/native-rimt-info.png';icon.alt='';label.textContent='No extra rake. Give it a try!';label.dataset.nativeLabel='MobileAIMDescription';const progress=doc.createElement('div'),fill=doc.createElement('div');progress.className='nativeRimtProgress';progress.setAttribute('role','progressbar');progress.setAttribute('aria-label','Time remaining to choose');progress.setAttribute('aria-valuemin','0');progress.setAttribute('aria-valuemax','100');fill.className='nativeRimtProgressFill';progress.append(fill);info.append(progress,icon,label);progressMotion?.cancel();progressMotion=null;
    panel.hidden=false;motion?.cancel();if(!matchMedia('(prefers-reduced-motion: reduce)').matches)motion=panel.animate([{opacity:0,transform:'translateY(29.4117647059cqw)'},{opacity:1,transform:'translateY(0)'}],{duration:400,easing:'cubic-bezier(.3333333333,1,.6666666667,1)'});
   }
+  const duration=d.deadline-d.startedAt,elapsed=Date.now()-d.startedAt,progress=panel.querySelector('.nativeRimtProgress'),fill=panel.querySelector('.nativeRimtProgressFill');
+  if(Number.isFinite(duration)&&duration>0){if(!progressMotion)progressMotion=fill.animate([{transform:'scaleX(1)'},{transform:'scaleX(0)'}],{duration,easing:'linear',fill:'forwards'});progressMotion.currentTime=Math.max(0,Math.min(duration,elapsed));progress.setAttribute('aria-valuenow',String(Math.round(100*Math.max(0,Math.min(1,1-elapsed/duration)))))}else{fill.style.transform='scaleX(0)';progress.setAttribute('aria-valuenow','0')}
   for(const b of panel.querySelectorAll('button'))b.disabled=pending||Date.now()>=d.deadline;
   clearTimeout(deadlineTimer);deadlineTimer=Date.now()<d.deadline?setTimeout(update,Math.min(2147483647,d.deadline-Date.now()+1)):0;
  }
- return {update,destroy(){destroyed=true;motion?.cancel();clearTimeout(deadlineTimer);panel.remove();style.remove()}};
+ return {update,destroy(){destroyed=true;motion?.cancel();progressMotion?.cancel();progressMotion=null;clearTimeout(deadlineTimer);panel.remove();style.remove()}};
 }
