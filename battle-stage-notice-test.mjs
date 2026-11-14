@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {battleTableState,battleStageNotice} from './battle-table.mjs';
+const input={revision:2,phase:'shootout',registered:true,settings:{capacity:6,finalSeats:3,name:'Local',entryCost:25,stack:100,blind:4},stage:{stack:100,result:{table:1,me:0,names:['a','b'],hand:{end:{},history:[],legal:null}}}};
+const state=battleTableState(input),before=JSON.stringify(state);
+assert.equal(state.battleFinalSeats,3);
+assert.deepEqual(battleStageNotice(state),{key:'RushStageEndType22',title:'Rush Stage has ended',body:'Players that fail to make it to top 2 will go for an All-in shootout to decide who goes to Final Table Stage.'});
+assert.equal(JSON.stringify(state),before);
+for(const phase of ['registration','rush','draining','qualification','final-ready','final-table','finished'])assert.equal(battleStageNotice({...state,battlePhase:phase}),null);
+assert.equal(battleStageNotice({...state,registered:false}),null);
+assert.equal(battleStageNotice({...state,hand:{end:null}}),null);
+for(const n of [null,0,1,7,3.5])assert.equal(battleStageNotice({...state,battleFinalSeats:n}),null);
+assert.equal(battleStageNotice({...state,battleFinalSeats:6,hand:null}).body.includes('top 5'),true);
+assert.deepEqual(battleStageNotice(structuredClone(state)),battleStageNotice(state));
+console.log('PASS Battle stage notice: actual configured cutoff, current shootout only, registered actor, active-hand suppression, immutable repeated/recovered state');
