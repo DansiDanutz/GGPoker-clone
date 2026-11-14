@@ -99,3 +99,9 @@ Glow renderer integration: existing exact atlas9(134×134)and10(150×150)are now
 ## Winning-segment masked light
 
 Native atlas5(130×113)provides the light texture and atlas6(122×159)the alpha mask. The source sizes the light to122×80,starts at x−61/y−239,delays500–800ms,then moves y→0over2000ms cubic easeIn at alpha0.5. The container rotates by360−45(target+1)+22.5degrees inside the rotating base,above amounts and below the winning pulse. spin-wheel-light.mjs implements one explicitly timed source cycle; the renderer reuses a122×159offscreen alpha-mask layer. The random repeat scheduler and SNG_WHEEL_FRAME_LIGHT cue are not yet connected. No random delay or sound was silently substituted. Browser tests compare the hidden/start and visible sweep and redraw the starting pose to detect cached-mask trails.
+
+## Frame-light repetition and sound
+
+The presentation controller now starts the source frame-light loop for type1/2 prize phases,retains it through wheel exit,and removes the pose on completion/cancellation. Each cycle samples500–800ms once,then runs the2-second sweep. A start flag emits one cue per sweep; zero-delta polls do not repeat it. Callback completion starts the next delay without replaying missed historical cycles. The renderer consumes these poses directly.
+
+SoundItem binds SNG_WHEEL_FRAME_LIGHT to SoundSngWheelFrameLight. Named SymbolClass/DefineSound extraction identifies character139,66816samples at44100Hz,60680MP3bytes,SHA25678fd1813e0a8dc76c06130f4533fe4cc6267597d2c6d7031b94c8d67b3ef3da6. The extractor now pins eight Spin cues; existing effects controls,preload and duration capping apply. Native assets remain private. No speaker playback or physical native timing comparison was performed.

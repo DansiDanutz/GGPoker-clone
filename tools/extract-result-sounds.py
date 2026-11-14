@@ -8,7 +8,7 @@ import zlib
 
 assert len(sys.argv) in (3,4) and (len(sys.argv)==3 or sys.argv[3]=='--spin')
 source, destination = map(Path, sys.argv[1:3])
-selected=[("TournamentFallResult",443520,3),("TournamentResultFT",488448,3),("TournamentResultITM",510336,3)] if len(sys.argv)==3 else [('SpinAndGoldSpin',192384,3),('SNGWheelStuckHigh',11520,3),('SNGWheelStuckLow',6912,3),('SngFireworks',46656,2),('SNGWheelOut',126720,3),('SngBigWin',472320,3),('SngWheelFrameEffect',82944,3)]
+selected=[("TournamentFallResult",443520,3),("TournamentResultFT",488448,3),("TournamentResultITM",510336,3)] if len(sys.argv)==3 else [('SpinAndGoldSpin',192384,3),('SNGWheelStuckHigh',11520,3),('SNGWheelStuckLow',6912,3),('SngFireworks',46656,2),('SNGWheelOut',126720,3),('SngBigWin',472320,3),('SngWheelFrameEffect',82944,3),('SngWheelFrameLight',66816,3)]
 raw = source.read_bytes()
 assert raw[:3] in (b"CWS", b"FWS"), "Unsupported SWF compression"
 data = raw[:8] + zlib.decompress(raw[8:]) if raw[:3] == b"CWS" else raw
