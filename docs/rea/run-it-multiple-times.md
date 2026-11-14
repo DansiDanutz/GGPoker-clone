@@ -1,6 +1,6 @@
 # Run It Multiple Times — recovered native contract
 
-Status: source investigation only. The local app still settles one board. No RIMT button, negotiation or multi-board payout is represented as implemented. Fifteen selected classes were recovered with the installed FFDec; source bytes and hashes remain private in Sandbox and Git QA metadata. No native account action, bet or GUI activation was performed.
+Status: native negotiation is source-investigated; the explicit-allocation multi-board pot helper is implemented and unit-tested but not connected to gameplay. The local app still settles one board. No RIMT button, negotiation or multi-board payout is represented as implemented. Fifteen selected classes were recovered with the installed FFDec; source bytes and hashes remain private in Sandbox and Git QA metadata. No native account action, bet or GUI activation was performed.
 
 ## Roles and state transitions
 
@@ -46,3 +46,14 @@ The local engine already has contribution/fold-based side-pot splitting, uncalle
 - Compare the recovered native controls at the same viewport and keep all unverified source/runtime gaps visible in the feature tracker.
 
 This investigation is the next implementation boundary; it does not complete the full GGPoker reconstruction.
+
+
+## Official rule cross-check and explicit allocation foundation
+
+The [official GGPoker help article](https://help.ggpoker.com/es/article/RIMT-Correrlo-M%C3%BAltiples-Veces-1717475512643), read through indexed help text, confirms two active all-in players, mutual agreement, one-board play if either declines, and separate pot portions for the board outcomes. It states that multiple runs add no extra rake. The direct English help page returned an empty readable body in this environment; no extra unseen English content is claimed. This resolves those general player rules, not format/stake eligibility, timeout behavior or odd-chip/deck policies.
+
+`settleRunouts` in engine/pots.mjs now splits contributions/folds once with the existing validated splitPots routine. Unmatched contributions enter returns once, independently of the number of boards. The caller supplies an explicit nonnegative whole-chip allocation for each contested pot across one, two or three boards; every row must sum exactly to that pot. There is no default inter-board odd-chip rule. Each board uses its own comparator, and per-run/per-pot payouts are recorded along with the aggregate. The within-board tie/odd-chip winner allocation reuses the same private award helper as ordinary settlePots, preserving the existing local clockwise policy rather than copying a second implementation.
+
+Tests independently verify unequal contributions 50/120/200/120 with the fourth player folded: contested pots 200 and 210, an 80-chip unmatched return once, and final explicit three-run payouts 67/206/217/0, totaling 490. Other cases cover two runs, tied odd amounts, a zero-valued run, no contested pot, frozen inputs, sparse/malformed arrays, nonfinite comparisons, unsafe totals and exact one-board compatibility. Real Hold'em evaluators check a shared flop where aces win one run, kings make a set on another and a board straight ties the third; explicit thirds of a 201-chip pot yield 100/101/0 with the folded contribution retained.
+
+Existing pot, live-pot/privacy/restart, inactive-seat, PLO/PLO-5/PLO-6, Short Deck, AoF, tournament and insured Spin wallet regressions pass after extracting the shared award helper. No negotiation, new board dealing, endpoint, UI control, timeout fallback or wallet transfer is enabled by this function. Source implementation is not deployed. Server role/deadline negotiation and an evidenced dealing/allocation policy are required next before exposing RIMT in the app.
