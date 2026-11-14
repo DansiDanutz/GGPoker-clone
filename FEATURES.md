@@ -1152,3 +1152,5 @@ Battle Game List update (unreleased): native five-column geometry and separate s
 Battle Game List metadata (unreleased): persisted actual start timestamp and survivor count distinct from registrations, including unresolved all-ins, shootouts and final eliminations; rendered running count/completed winner/time with explicit local date-format policy.
 
 Tournament lobby REA (unreleased):16 native classes recovered with hashes/conditional tab and callback inventory in docs/rea/tourney-lobby.md. Native Battle withdrawal OK/NO boundary added to local event page; full three-pane lobby remains incomplete.
+
+Tournament lobby evidence expansion (unreleased):24 hashed classes now resolve Players/Tables columns, actual selected table-ID Open payload and explicit Battle Rush Open prohibition; How to Play delegates to a distinct Battle information page. No new working lobby/pixel parity claim.
