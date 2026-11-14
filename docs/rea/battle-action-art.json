@@ -47,6 +47,70 @@
         "w": 208,
         "h": 122
       }
+    },
+    {
+      "file": "native-reserved-battle-preset-up.png",
+      "bytes": 8654,
+      "sha256": "e395c628e7d333a5cdb84494959794d5909b0dfee2d5e36b584ee9578315cccc",
+      "size": [
+        78,
+        60
+      ],
+      "frame": "table0235",
+      "rectangle": {
+        "x": 1695,
+        "y": 3090,
+        "w": 78,
+        "h": 60
+      }
+    },
+    {
+      "file": "native-reserved-battle-preset-over.png",
+      "bytes": 6008,
+      "sha256": "4f2f5b886df188b256697f42f3ab77b6ff4a99dcdc675772577f4248255bee49",
+      "size": [
+        78,
+        60
+      ],
+      "frame": "table0236",
+      "rectangle": {
+        "x": 1471,
+        "y": 3098,
+        "w": 78,
+        "h": 60
+      }
+    },
+    {
+      "file": "native-reserved-battle-preset-down.png",
+      "bytes": 5545,
+      "sha256": "948ba8a74b06397b5a8e004e160a4e31360b76648221b6f570c5680f1c3d627d",
+      "size": [
+        78,
+        60
+      ],
+      "frame": "table0237",
+      "rectangle": {
+        "x": 666,
+        "y": 3105,
+        "w": 78,
+        "h": 60
+      }
+    },
+    {
+      "file": "native-reserved-battle-bet-thumb.png",
+      "bytes": 9850,
+      "sha256": "792ce5f45295a0364e9b10cd7cb990ee355dd360edce99bfb4efa24278aa8416",
+      "size": [
+        67,
+        80
+      ],
+      "frame": "table0238",
+      "rectangle": {
+        "x": 2939,
+        "y": 2028,
+        "w": 67,
+        "h": 80
+      }
     }
   ],
   "method": "Exact desktop table0239/0240/0241 frame crops; Swift decoded RGBA equality asserted.",
@@ -57,6 +121,12 @@
   "sourceHashes": {
     "ActionView.as": "a7ffdf42072ac5f097cf5d3a0d5922d4049a132a1ac11f08d4f28f5b3da8b605",
     "MainActionUI.as": "e3f28da9baa39465e5c612de1bae3cbfc1601af9a1d9c7febf86f82020d0d526",
-    "button/ActionButton.as": "d33865fae3f02fbf1185fb0876cb2f74c436577a5c1fc768f918a11e2c28fa0b"
+    "button/ActionButton.as": "d33865fae3f02fbf1185fb0876cb2f74c436577a5c1fc768f918a11e2c28fa0b",
+    "stage/component/action/button/BettingUI.as": "169694503f9e4441c631ee91453a73ce8f18ef97f272fc6d4a5257a7fbc95a29",
+    "stage/component/action/button/BettingRateButton.as": "8923c75d2e8280c4175b7cbc0e1665bb7220f049b53e2b680bb9379d3894be37",
+    "stage/component/action/button/QuickFoldButton.as": "5a4e057db41070300e6e91edbdd0b4efefe50668c5427b4df5267bd65b8d3a22",
+    "stage/component/action/ReserveActionUI.as": "5cefc7fe37978ec8a0c719c4a054e5faac6a4b1a0703f4854de71f1b07f8a06b",
+    "stage/component/action/FoldButton.as": "daf95c91f905f7e6526e5f04d1beddbf4d3022fb5f3c8fd5d51657a6cd955b6a",
+    "view/popup/component/ValueSlider.as": "8392afe32e2c739b8fbff2ad124d902880ee45d30f5116c9e2ff6c3e17de884d"
   }
 }
