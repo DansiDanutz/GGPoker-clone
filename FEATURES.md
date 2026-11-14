@@ -1192,3 +1192,5 @@ Native Battle stage contract audit: see docs/rea/battle-stages.md and five sourc
 Battle table stage notice: source RushStageEndType22 during current local shootout, actual finalSeats−1 cutoff, registered-only/unfinished-hand suppression, native existing background and no wagering interception. Native ready/final notices, fade queue/audio and physical layout remain open; controlled-response browser evidence is separate from live qualification engine coverage.
 
 Battle shootout notice localization: existing27 parameterized native translations; Romanian live language switch preserves structured title/body and current cutoff across polling. Polish literal-cutoff source falls back to correct English. HTML remains data, malformed templates fall back; native fade/audio/other stage notices remain open.
+
+Battle stage audio evidence: exact embedded ReadyCount/RoundEnd MP3s recovered and metadata-probed (267331bytes private output; full decoding held by disk preflight). Runtime playback remains unwired pending native Ready/catch-up/once-only dispatch integration; no audible parity claim.

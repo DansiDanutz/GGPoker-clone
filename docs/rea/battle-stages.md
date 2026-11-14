@@ -62,3 +62,16 @@ The notice root uses data-native-notice-key as provenance, not the text-only loc
 The table localization adapter now reads the existing native catalog for this notice without assigning HTML. It accepts exactly two plain `<font>` text blocks, substitutes the current configured cutoff, and updates the two existing title/body spans. No font attributes are executed or inserted. Malformed/nested markup and templates missing a required indexed value fall back to the supplied English current-event text. The installed Polish string has a literal cutoff instead of `{0}`, so English is used for that branch to avoid reporting the wrong local rule. The other27 installed language templates retain the current cutoff.
 
 The network renderer updates provenance/values/fallback only when the notice identity or cutoff changes. Repeated polling therefore does not reset a translated notice to English or replace its DOM. Unit tests check all28 installed catalog identities,27 parsed templates, Polish fallback and malformed markup. Browser testing switches the controlled current-stage notice to Romanian, checks the two retained spans/current cutoff and zero text-node mutations during subsequent polls, then verifies Polish safe fallback and return to English. Other native stage introductions, animation queues and sounds remain incomplete.
+
+## Embedded stage sounds
+
+SoundItem binds READY_COUNT to SoundBnRReadyCount and ROUND_END to SoundBnRRoundEnd. These are embedded DefineSound payloads in the installed IronDesktop.swf, rather than external files in assets/sounds. The existing bounded extractor now accepts --battle, resolving exact SymbolClass characters81/82 and pinning MP3 format,44.1kHz and native sample counts before writing private output outside the synced checkout.
+
+| Clip | Native samples | Nominal sample duration | MP3 bytes |
+|---|---:|---:|---:|
+| BnRReadyCount |331776|7.523265306s|240872|
+| BnRRoundEnd |72576|1.645714286s|26459|
+
+Both seek offsets are0. Total extracted payload267331bytes. Source, payload and extraction receipt hashes are recorded in battle-stage-source.json. Read-only ffprobe confirms both streams are stereo MP3 at44.1kHz (container durations7.527250s and1.653687s, including encoding padding). Full ffmpeg null-sink decoding was blocked by the disk preflight at14.23GiB free, below25GiB reserve; it did not run. No speaker playback occurred. Files remain private under Sandbox/rea-tools/battle-stage-sounds-20261114 and have not been copied into the live runtime.
+
+The native ready sound is gated by Rush Ready plus isMatchSoundPlayed. Round-end dispatch is inside !isCatchUp and guarded by battleRoyaleRoundOnePlayingComplete and inTheHandSoundEnable. An existing source banner or a generic state refresh alone is insufficient authority to replay either sound. The local engine does not yet expose the native predeal Ready interval, and long reconnection/catch-up must be distinguished from a newly observed phase transition before wiring auto playback. This extraction establishes exact clip identity and readable MP3 metadata only; full decodability, audible parity and timing remain unverified.

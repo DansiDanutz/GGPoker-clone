@@ -55,6 +55,11 @@
       "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/vo/Notice.as",
       "bytes": 2165,
       "sha256": "9fba70ea4cea0dc4c7a35af330b875b098c8528cbb2e6313d38052d4b6e2dbca"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/sound/SoundItem.as",
+      "bytes": 75541,
+      "sha256": "5a978cd4d00a4c10c9e87e407327081123cc9cfd224566bf280e1d7e2f080ef9"
     }
   ],
   "limits": [
@@ -79,5 +84,42 @@
     "path": "/Users/davidai/.local/share/playgg-art/preview-cf527f8/native-tournament-notice.png",
     "sha256": "a5525b44e7bb74cdcbfdaf22f09fca20a3619b64604b5d07f373f05c1a735c60",
     "method": "Reuse existing installed native tournament notice background"
+  },
+  "stageSoundExtraction": {
+    "receipt": "/Users/davidai/Sandbox/rea-tools/battle-stage-sounds-20261114/receipt.json",
+    "receiptSha256": "ae2dd549deca1665bf2a2d5930608cb99def1aa40253da2f1769a466d67e8e84",
+    "sourceSha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
+    "sounds": {
+      "BnRReadyCount": {
+        "character": 81,
+        "samples": 331776,
+        "sampleRate": 44100,
+        "seekSamples": 0,
+        "bytes": 240872,
+        "sha256": "16de8cef2fb4464d72260fc6725627a187471090315659eb613e9a8ed7fe4690"
+      },
+      "BnRRoundEnd": {
+        "character": 82,
+        "samples": 72576,
+        "sampleRate": 44100,
+        "seekSamples": 0,
+        "bytes": 26459,
+        "sha256": "11b76ca028bd1c00fe3eb48d8145ab12959d37b11858e91319f7e6fc5300e1d7"
+      }
+    },
+    "playbackTested": false,
+    "runtimeInstalled": false,
+    "fullDecodeTested": false,
+    "metadataProbe": {
+      "tool": "ffprobe",
+      "codec": "mp3",
+      "sampleRate": 44100,
+      "channels": 2,
+      "durations": [
+        7.52725,
+        1.653687
+      ]
+    },
+    "decodeLimit": "ffmpeg null-sink command held by disk preflight at14.23GiB free; no bypass"
   }
 }
