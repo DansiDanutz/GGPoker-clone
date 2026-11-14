@@ -71,7 +71,7 @@ http.createServer(async(req,res)=>{
   let body;try{body=JSON.parse(raw);if(!body||Array.isArray(body)||typeof body!=='object')throw Error()}catch{return json(400,{error:'Invalid JSON'})}
   if(body.account!==account)return json(401,{error:'Signed-in account changed'});delete body.account;
   if(path.endsWith('/cancel')){if(Object.keys(body).length!==1||typeof body.id!=='string'||!(/^[a-f0-9]{48}$/).test(body.id))return json(400,{error:'Expected a Spin registration identity'});try{return json(200,roomRequest.cancelSpinRegistration(body.id,account))}catch(error){return json(error.status||500,{error:error.status?error.message:'Local operation failed'})}}
-  try{return json(200,roomRequest.queueSpin(account,body))}catch(error){return json(error.status||500,{error:error.status?error.message:'Local operation failed'})}
+  try{return json(200,roomRequest.queueSpin(account,body))}catch(error){return json(error.status||500,{error:error.status?error.message:'Local operation failed',...(error.status===409&&error.code==='spin_rules_changed'?{code:error.code}:{})})}
  }
  if(localHome&&path==='/local/wallet'&&req.method==='GET'){const account=playerProfile.identity(req);return account?json(200,{account,...roomRequest.wallet(account)}):json(401,{error:'Sign in locally'})}
  if(localHome&&['/local/me','/local/login','/local/create','/local/logout','/local/avatar'].includes(path))return await playerProfile.handle(req,res,path,json);

@@ -1,6 +1,6 @@
 # Spin insurance — recovered contract and implementation boundary
 
-Current source status: optional practice terms,capital policies,atomic insured registration/refund/award and private wallet receipts are implemented and tested. Owner insurance fields,the insured Play Now button and native award presentation remain incomplete. Insurance remains disabled in the installedPR119release. The sections below separate recovered native evidence from successive local backend stages.
+Current source status: optional practice terms,capital policies,atomic insured registration/refund/award and private wallet receipts are implemented and tested. Owner insurance fields and insured Play Now are implemented in the source branch; native award presentation remains incomplete. Insurance remains disabled in the installedPR119release. The sections below separate recovered native evidence from successive local backend stages.
 
 This is static evidence from the installed IronDesktop SWF and selected FFDec exports under the REA workflow. It does not claim an observed native purchase,operator configuration or a local insurance implementation. Source paths and SHA256 digests are retained privately in `.git/danslab-qa/spin-insurance-source.json`. No native account action or real payment was performed.
 
@@ -57,3 +57,14 @@ Wallets retain separate insurance spent/refunded/award counters and premium/refu
 The isolated engine test covers mixed buyers,cancelled buyers,choice conflicts,failed third-registration writes,insufficient player balance/capital,award-overflow rollback,tampered wallet totals,zero/nonzero insurance awards,two complete900-chip tournaments,total bank/wallet conservation and cold restart. HTTP tests cover authentication/origin/types,no client amounts,once-only retry and saved award recovery. The actual browser wallet test observes−2000premium,+2000refund once,+10000payout once and3000→10000→13000balances across three cold restarts.
 
 The insured Play Now button and owner insurance fields have not yet been connected to these terms. Insurance is not enabled in the livePR119installation. Native payout graphics/delay and exact operator configuration remain unverified; the server currently commits the explicit practice award at draw independently of later optional presentation. Full insured browser registration-to-winner acceptance and release QA are still required.
+
+
+## Owner and player controls — source branch, not released
+
+The owner form enables optional insurance separately per stake, with blank premium/payout fields and no inferred tariff. Saved terms restore after restart; disabling the checkbox removes them from subsequent revisions. The player sees the explicit extra premium, x2 payout and total per-game entry price before choosing insured Play Now. Pending batches preserve their insurance choice, stake, revision and operation IDs across reloads; the opposite purchase mode stays disabled until recovery finishes. Account changes isolate saved requests, and malformed storage disables registration rather than submitting guessed requests.
+
+The three-browser insured journey exercises cancellation, lost-reply retry, account switching, malformed-storage recovery, one-to-four registration, actual table opening/seating, wheel, tournament winner, independent payouts and restart. It verifies six premium charges and five refunds for the batch fixture, plus conserved operator/player funds. Owner browser coverage checks blank defaults, per-stake separation, save/restart and disable.
+
+A structured server rejection `spin_rules_changed` distinguishes an uncommitted stale operation from an uncertain network failure. Prior committed operation lookup runs first, so retrying an already paid entry remains idempotent. On this rejection the client clears only its unchanged saved batch, refreshes terms and requires another explicit purchase. Changed storage is preserved for review; this guard is not an atomic cross-tab lock. HTTP and normal stale-term browser tests verify no charge, no registration, a fresh operation after review and one refund.
+
+These source changes are not enabled in the live PR119 installation. Native award graphics/delay, full physical comparison and commit-bound installed-release QA remain pending. Historical stage sections above describe their respective earlier implementation boundaries.
