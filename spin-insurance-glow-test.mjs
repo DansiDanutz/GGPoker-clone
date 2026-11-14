@@ -1,0 +1,4 @@
+import assert from 'node:assert/strict';import {spinInsuranceGlowFrameIndex} from './spin-insurance-glow.mjs';
+assert.equal(spinInsuranceGlowFrameIndex(0),0);assert.equal(spinInsuranceGlowFrameIndex(1000),60);assert.equal(spinInsuranceGlowFrameIndex(2000),120);assert.equal(spinInsuranceGlowFrameIndex(4000),240);assert.equal(spinInsuranceGlowFrameIndex(4482),268);assert.equal(spinInsuranceGlowFrameIndex(4484),null);assert.equal(spinInsuranceGlowFrameIndex(4500),null);assert.equal(spinInsuranceGlowFrameIndex(5199),null);assert.equal(spinInsuranceGlowFrameIndex(5200),null);for(const t of [-1,NaN,Infinity])assert.throws(()=>spinInsuranceGlowFrameIndex(t));console.log('PASS native insurance nominal60Hz stage mapping,one-based progression,terminal guard andinvalid inputs');
+
+for(let tick=0;tick<269;tick++)assert.equal(spinInsuranceGlowFrameIndex((tick+.25)*1000/60),tick);
