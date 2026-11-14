@@ -1,3 +1,5 @@
+import {holdemEquity} from './engine/rimt-equity.mjs';
+import {splitPots} from './engine/pots.mjs';
 import {createRimt,readRimt,applyRimt} from './engine/rimt.mjs';
 import {finishRunout} from './engine/table.mjs';
 const fail=(status,message)=>{throw Object.assign(Error(message),{status})};
@@ -30,4 +32,13 @@ export function applyRoomRimt(room,me,operation,body,now){
 export function roomRimtView(room,me){
  if(!room.rimt)return undefined;const d=readRimt(room.rimt.decision),pending=d.runs===null;
  return {hand:d.hand,sharedCount:room.rimt.base.board.length,proposer:d.proposer,decider:d.decider,proposal:d.proposal,runs:d.runs,reason:d.reason,phase:pending?(d.proposal===null?'suggest':'decide'):'complete',deadline:pending?(d.proposal===null?d.suggestUntil:d.proposedAt+d.decisionMs):null,canSuggest:pending&&d.proposal===null&&me===d.proposer,canDecide:pending&&d.proposal!==null&&me===d.decider};
+}
+
+// Local practice policy: exact visible-card equity, clockwise ties,15s choices and first-run odd chips.
+export function prepareRoomRimt(room,now){
+ if(!room.hand?.runoutPending)return;if(room.settings?.rimt!==true)fail(409,'RIMT practice policy is not enabled');
+ const g=room.hand,seats=g.folded.flatMap((folded,seat)=>folded?[]:[seat]),equity=holdemEquity(g.hands[seats[0]],g.hands[seats[1]],g.board);
+ const proposer=equity.wins[0]===equity.wins[1]?[...seats].sort((a,b)=>(a-g.button-1+g.hands.length)%g.hands.length-(b-g.button-1+g.hands.length)%g.hands.length)[0]:seats[equity.wins[0]<equity.wins[1]?0:1],decider=seats.find(seat=>seat!==proposer),pots=splitPots(g.committed,g.folded).pots;
+ const allocations=[1,2,3].map(count=>pots.map(p=>Array.from({length:count},(_,run)=>Math.floor(p.amount/count)+(run===0?p.amount%count:0))));
+ beginRoomRimt(room,{proposer,decider,suggestUntil:now+15000,decisionMs:15000,allocations},now);
 }
