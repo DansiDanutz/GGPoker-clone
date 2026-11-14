@@ -582,6 +582,6 @@ export function openRooms(file,avatarFor=()=>0,walletsEnabled=false){
   }:null;
   request.wallet=name=>wallet.summary(name);
   request.notes=notes;
-  request.hasActivePlay=()=>[...rooms.values()].some(r=>r.hand&&!r.hand.end||r.tournament?.startedAt!=null&&r.tournament.winner==null&&!r.tournament.cancelledAt)||Object.values(rushStates).some(saved=>saved.pool&&JSON.parse(saved.pool).tables.some(([,t])=>!t.settled));
+  request.hasActivePlay=()=>bank.summary().reserved>0||[...rooms.values()].some(r=>r.hand&&!r.hand.end||r.tournament?.startedAt!=null&&r.tournament.winner==null&&!r.tournament.cancelledAt)||Object.values(rushStates).some(saved=>saved.pool&&JSON.parse(saved.pool).tables.some(([,t])=>!t.settled));
   return request;
 }
