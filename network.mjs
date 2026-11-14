@@ -1,3 +1,4 @@
+import {installBattleBountyScene} from './battle-bounty-scene.mjs';
 import {battleTableState} from './battle-table.mjs';
 import {installRimtPanel} from './rimt-panel.mjs';
 import {installSpinWheelScene} from './spin-wheel-scene.mjs';
@@ -121,7 +122,8 @@ const helmet=helmetModule?helmetModule.installHelmet(()=>({state,rabbitOpened:ra
 const rabbitModule=await fetch('/rabbit-view.mjs',{signal:AbortSignal.timeout(5000)}).then(r=>r.ok?import('./rabbit-view.mjs'):null,()=>null);
 const rabbitView=rabbitModule?rabbitModule.installRabbitView(document.querySelector('.boardArea'),()=>chatWindow?null:state,number=>operate('rabbit',{number}),playCues,()=>playerNotes.refresh()):{update(){}};
 const playerNotes=installPlayerNotes($('tableSettings'),()=>({state,rabbitOpened:rabbitView.opened===true,room:rushMode?'rush:'+rushPoolKind+':'+state?.noteTable:room,token,enabled:!chatWindow&&!battleMode&&(!rushMode||!!state?.noteTable),...(rushMode?{notesPath:'/api/rush/'+rushPoolKind+'/notes',notesTable:state?.noteTable}:{} )}));
-const tournamentResults=installTournamentResult($('tableSettings'),()=>({state:chatWindow?null:state,room,token,animating:!!pendingHand||!!document.querySelector('.award')}),()=>playerNotes.openHistory(),avatarSource,playCues,historyPng);
+const bountyScene=installBattleBountyScene(document.querySelector('.felt'),()=>({state}),()=>{const next=pendingHand;pendingHand=null;if(next)applyState(next);else render()},avatarSource,error=>{$('error').textContent=error.message});
+const tournamentResults=installTournamentResult($('tableSettings'),()=>({state:chatWindow?null:state,room,token,animating:!!pendingHand||!!document.querySelector('.award')||bountyScene.blocking(state?.number)}),()=>playerNotes.openHistory(),avatarSource,playCues,historyPng);
 // Next-blind scheduling remains unavailable until its server trigger is established.
 let cashSitOutMenu;
 const cashSitOut=document.createElement('input'),cashSitOutLabel=element('label');cashSitOut.type='checkbox';cashSitOut.id='cashSitOut';const cashSitOutCaption=element('span','',' Sit out next hand');cashSitOutCaption.dataset.nativeLabel='MobileSitOut';cashSitOutLabel.append(cashSitOut,cashSitOutCaption);cashSitOutLabel.hidden=true;tableSettings.append(cashSitOutLabel);cashSitOut.onchange=async()=>{if(!cashSitOut.checked&&state?.returnFundingRequired){updateCashSitOut();openAddChips();return}cashSitOut.disabled=true;await operate('sit-out',{paused:cashSitOut.checked});updateCashSitOut()};
@@ -237,9 +239,10 @@ function focusRimtRun(run){
 
 function clearPayout(){pendingCashDeparture=null;clearRimtFocus();hideWin();for(const award of document.querySelectorAll('.award')){award.onanimationend=award.onanimationcancel=null;award.remove()}}
 function applyState(data){
+ bountyScene.observe(chatWindow?null:data,room+':'+token+':'+data.me);
  const sameSeats=state&&state.me===data.me&&JSON.stringify(state.names)===JSON.stringify(data.names);
  // Native OnWinners resumes the event processor only after all payout callbacks.
- if(!chatWindow&&!rushMode&&state&&state.me===data.me&&state.names[state.me]===data.names?.[data.me]&&state.hand?.end&&(data.hand&&data.number>state.number||!data.hand&&data.number===state.number)&&document.querySelector('.award')){if(!pendingHand||data.version>=pendingHand.version)pendingHand=data;return}
+ if(!chatWindow&&!rushMode&&state&&state.me===data.me&&state.names[state.me]===data.names?.[data.me]&&state.hand?.end&&(data.hand&&data.number>state.number||!data.hand&&data.number===state.number)&&(document.querySelector('.award')||bountyScene.blocking(state.number))){if(!pendingHand||data.version>=pendingHand.version)pendingHand=data;return}
  if(pendingHand&&sameSeats&&data.number===state.number&&data.version<=pendingHand.version)return;
  pendingHand=null;if(state&&!sameSeats)clearPayout();
  pendingVoluntary=voluntaryReveals(state,data);
@@ -268,7 +271,7 @@ async function request(op,body={}){
  if(!rushMode&&data.me!=null){waitingState=null;walletAvailable=null}
  if(state?.me!==data.me||state?.version!==data.version||state?.hand?.clock?.canDisableLimit!==data.hand?.clock?.canDisableLimit||state?.hand?.clock?.canUseTimeCard!==data.hand?.clock?.canUseTimeCard||JSON.stringify(state?.avatars)!==JSON.stringify(data.avatars)){applyState(data)}
 }
-async function operate(op,body){if(op==='ready'&&document.querySelector('.award'))return false;if(chatWindow&&!['state','chat','helmet'].includes(op))return;if(rushMode&&['join','deal','fill-bots','cancel-queue','sit-out','final-room'].includes(op)&&!busy){try{await request('state')}catch(error){$('error').textContent=error.message;return false}}if(op==='state'&&busy)return;const version=state?.version,number=state?.number,boundHandVersion=state?.handVersion,actionFrame=op==='act'?JSON.stringify(state?.hand):null;while(busy)await new Promise(resolve=>setTimeout(resolve,25));busy=true;try{await request(op,{...body,version:op==='act'&&number===state?.number&&actionFrame===JSON.stringify(state?.hand)?state.version:version,...(['ready','show-cards'].includes(op)?{number}:{}),...(rushMode?{handVersion:op==='quick-fold'||op==='act'&&!(number===state?.number&&actionFrame===JSON.stringify(state?.hand))?boundHandVersion:state?.handVersion}:{})});$('error').textContent='';return true}catch(e){$('error').textContent=e.message;return false}finally{busy=false}}
+async function operate(op,body){if(!['state','chat','helmet'].includes(op)&&bountyScene.blocking(state?.number))return false;if(op==='ready'&&document.querySelector('.award'))return false;if(chatWindow&&!['state','chat','helmet'].includes(op))return;if(rushMode&&['join','deal','fill-bots','cancel-queue','sit-out','final-room'].includes(op)&&!busy){try{await request('state')}catch(error){$('error').textContent=error.message;return false}}if(op==='state'&&busy)return;const version=state?.version,number=state?.number,boundHandVersion=state?.handVersion,actionFrame=op==='act'?JSON.stringify(state?.hand):null;while(busy)await new Promise(resolve=>setTimeout(resolve,25));busy=true;try{await request(op,{...body,version:op==='act'&&number===state?.number&&actionFrame===JSON.stringify(state?.hand)?state.version:version,...(['ready','show-cards'].includes(op)?{number}:{}),...(rushMode?{handVersion:op==='quick-fold'||op==='act'&&!(number===state?.number&&actionFrame===JSON.stringify(state?.hand))?boundHandVersion:state?.handVersion}:{})});$('error').textContent='';return true}catch(e){$('error').textContent=e.message;return false}finally{busy=false}}
 function topUpRequest(g,settings){
  if(!settings)return {};const nativeTarget=savedAddChips(settings)*settings.blind;if(nativeTarget){const stack=(g.dealtSeats&&!g.dealtSeats.includes(state.me)?state.seatBalances?.[state.me]??state.buyIns?.[state.me]??settings.stack:g.stacks[state.me])+(state.pendingAdd?.amount||0);return stack<nativeTarget?{topUpTo:nativeTarget}:{}}
  if(localStorage.getItem('river-auto-topup')!=='1'||!settings)return {};
@@ -558,7 +561,7 @@ function render(){
  updateTournamentAnnounce();
  updateTournamentNotice();
  updateAddChipsControl();
- if(!state){pendingHand=null;clearPayout();reservedAction=null;reservedPanel.hidden=true;runoutPlan=null;boardSounds.clear();payoutSoundHand=null;soundedPots.clear()}
+ if(!state){bountyScene.clear();pendingHand=null;clearPayout();reservedAction=null;reservedPanel.hidden=true;runoutPlan=null;boardSounds.clear();payoutSoundHand=null;soundedPots.clear()}
  if(!state?.hand?.quickFoldAllowed)$('actions').querySelector('.nativeQuickFold')?.remove();
  const oldBet=$('actions').querySelector('input[type=number]'),draft=oldBet?{key:oldBet.dataset.handKey,value:oldBet.dataset.betChips??oldBet.value,focused:document.activeElement===oldBet}:null;
  $('join').hidden=rushMode||state?.me!=null;
@@ -583,7 +586,7 @@ if(!keepActions){refreshBetEditor=null;for(const child of [...$('actions').child
  const nextLevel=t&&g&&t.winner==null&&t.level<(state?.spin?26:7)?state?.spin?.unit==='hands'?' · Every '+state.spin.interval+' completed hands (new hands only)':' · Next level scheduled '+new Date(t.startedAt+t.level*(state?.spin?state.spin.interval*60000:t.intervalMs)).toLocaleTimeString()+' (new hands only)':'';
  $('level').textContent=t&&g?'Level '+t.level+' · Blinds '+g.blind/2+' / '+g.blind+(g.ante?' · Ante '+g.ante+' per player':'')+nextLevel:'';
 
- drawTable(g);rabbitView.update();renderShuffles();playerNotes.refresh();updateCashSitOut();tournamentResults.refresh();
+ drawTable(g);bountyScene.refresh();rabbitView.update();renderShuffles();playerNotes.refresh();updateCashSitOut();tournamentResults.refresh();
  renderChat();
  list('history',g?.history||[]);list('results',(state?.results||[]).map(r=>'Hand '+r.number+' · Board: '+(r.board?.join(' ')||'no board')+' · Final stacks: '+r.stacks.join(', ')+(r.pots||[]).map((p,i)=>' · '+(i?'Side pot '+i:'Main pot')+': '+p.amount+' → '+p.payouts.flatMap((n,seat)=>n?['Seat '+(seat+1)+' '+n]:[]).join(', ')).join('')+' · '+(r.history||[]).join('; ') ).concat((state?.battleBounty?.awards||[]).map(a=>'Local bounty · hand '+a.hand+' · pot '+(a.pot+1)+' · '+a.victim+' eliminated · '+a.hunters.map(p=>p.account+': '+p.amount+' play credits').join(', '))));
  const net=Array(capacity()).fill(0);for(const r of state?.results||[])r.payouts.forEach((v,i)=>net[i]+=v-r.committed[i]);
