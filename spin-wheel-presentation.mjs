@@ -1,7 +1,7 @@
 import {spinWheelSparkles} from './spin-wheel-sparkles.mjs';
 import {spinWheelFrameLightLoop} from './spin-wheel-light.mjs';
 import {spinWheelMotion} from './spin-wheel-motion.mjs';
-export const spinWheelCues=Object.freeze({start:'SpinAndGoldSpin',high:'SNGWheelStuckHigh',low:'SNGWheelStuckLow',fireworks:'SngFireworks',out:'SNGWheelOut',bigWin:'SngBigWin',frameEffect:'SngWheelFrameEffect',frameLight:'SngWheelFrameLight'});
+export const spinWheelCues=Object.freeze({start:'SpinAndGoldSpin',high:'SNGWheelStuckHigh',low:'SNGWheelStuckLow',fireworks:'SngFireworks',out:'SNGWheelOut',bigWin:'SngBigWin',frameEffect:'SngWheelFrameEffect',frameLight:'SngWheelFrameLight',waitBase:'SngWheelBaseLight'});
 // SpinAndGoldWheelData.motionType: normal cash-award 3-Max, not ticket/WSOP or 6-Max rules.
 export function spinWheelMotionType(multiplier){if(!Number.isSafeInteger(multiplier)||multiplier<1)throw Error('Invalid Spin multiplier');return multiplier<=5?0:multiplier<=25?1:2}
 export function spinWheelPresentation(data,wheelIndex,variant,multiplier){

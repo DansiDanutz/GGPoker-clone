@@ -149,3 +149,11 @@ SpinAndGoldWheel825–839spawns immediately,then schedules a new particle after5
 spin-wheel-sparkles.mjs reconstructs those poses with injected deterministic randomness for tests. The type2 controller suppresses new particles on exit and clears them on cancellation. The renderer tints exact atlas10 through a reused alpha-preserving canvas and draws particles after the wheel in source root coordinates. Input validation precedes canvas mutation. Unit tests cover source angle semantics,immediate/delayed spawn,entry/fade,spawn suppression and cancel. Headless checks verify actual red-tinted pixels,exact original redraw without trails,invalid alpha rejection and preserved transforms.
 
 The Glitter class emits PLAY_SOUND synchronously before SpinAndGoldWheel attaches its signal listener; no extra bomb sound was inferred from that unreachable initial listener path. Physical native animation/sound parity still needs direct runtime evidence. Waiting-state base/ring sweeps and flares remain unimplemented.
+
+## Waiting base and ring lights
+
+SpinAndGoldWheel969–1040/1336–1352defines independent3–4second base and1–1.5second ring delays,then6-second cubicIn sweeps. Base position180/−74→577/322at alpha0.2uses a360px circular vector clip; ring180/−74→540/287at alpha0.4uses exact atlas1(181×180)scaled2to362×360. Both textures rotate135degrees and sit in13.5/13.5containers; base draws before symbol/stone,ring after stone. Source geometry and cached-mask alpha are retained.
+
+spin-wheel-wait.mjs models these callback cycles and the once-only base sound2seconds into its sweep. Native SoundSngWheelBaseLight is character136,208512samples at44100Hz,151429bytes,SHA256a644b27fdac74d4605c15efbf2d173ac415ce2fb7542e3954a6f351e6cb71d84. Nine Spin clips are now pinned by the private extractor and use shared effects controls.
+
+The seated scene loads while waiting for the other registered players,then switches into spin when all seats are present. This waiting-for-three trigger is explicit local policy; native packet/absent-player lifecycle remains unproven. Source focus/deactivation nuances,wait wobble andflare particles are still pending. No dependency or native app activation was used.

@@ -15,7 +15,7 @@ export function voluntaryReveals(before,after){
  return (after.hand.shownIndices||[]).flatMap((indices,seat)=>(indices||[]).filter(index=>!before.hand.shownIndices?.[seat]?.includes(index)).map(index=>({seat,index,own:seat===after.me})));
 }
 // DefineSound sample counts; wheel fireworks use22.05kHz, other listed cues44.1kHz.
-const cueSamples={SngWheelFrameLight:66816,SngWheelFrameEffect:82944,SpinAndGoldSpin:192384,SNGWheelStuckHigh:11520,SNGWheelStuckLow:6912,SngFireworks:46656,SNGWheelOut:126720,SngBigWin:472320,TournamentFallResult:443520,TournamentResultFT:488448,TournamentResultITM:510336,RabbitCard:13824,RabbitCardDouble:27648,ShowDownCard:12672,ShuffleUp:9216,ShuffleCombine:11520,ShuffleOther:116352,ChessClock:9216,TimeBankTick:220500};
+const cueSamples={SngWheelBaseLight:208512,SngWheelFrameLight:66816,SngWheelFrameEffect:82944,SpinAndGoldSpin:192384,SNGWheelStuckHigh:11520,SNGWheelStuckLow:6912,SngFireworks:46656,SNGWheelOut:126720,SngBigWin:472320,TournamentFallResult:443520,TournamentResultFT:488448,TournamentResultITM:510336,RabbitCard:13824,RabbitCardDouble:27648,ShowDownCard:12672,ShuffleUp:9216,ShuffleCombine:11520,ShuffleOther:116352,ChessClock:9216,TimeBankTick:220500};
 export function audioCueDuration(name,decodedSeconds){return cueSamples[name]?Math.min(decodedSeconds,cueSamples[name]/(name==='SngFireworks'?22050:44100)):decodedSeconds}
 // Native default clock: sweep .4s, selected-card notifications span 2s, throw .2s, flop spread .3s.
 export function showdownPlan(before,after){
