@@ -17,3 +17,9 @@ console.log('PASS history report flags: four incomplete combinations fail before
 for(const [flag,message]of [['--observer-chat',/Observer chat fixture requires/],['--rush-helmet',/Rush Helmet requires/],['--helmet-rush',/Mixed Helmet requires/],['--chat-bubble',/Text bubble fixture requires/],['--native-emoticon',/Native emoticon fixture requires/]]){const r=spawnSync(process.execPath,['network-browser-test.mjs',flag,'--payout-oracle-only'],{cwd:new URL('.',import.meta.url),encoding:'utf8',timeout:10000});assert.notEqual(r.status,0);assert.match(r.stderr,message)}
 
 console.log('PASS Helmet browser flags: Rush and mixed fixtures require their base journeys before setup');
+
+const restoreArgs=['network-browser-test.mjs','--tournament-cancel','--cancel-restore','--payout-oracle-only'],restoreEnv={...process.env};delete restoreEnv.POKER_RUNTIME_DIR;
+const missing=spawnSync(process.execPath,['network-browser-test.mjs','--cancel-restore','--payout-oracle-only'],{cwd:new URL('.',import.meta.url),encoding:'utf8',timeout:10000});assert.notEqual(missing.status,0);assert.match(missing.stderr,/Cancellation restore requires/);
+const restricted=spawnSync(process.execPath,restoreArgs,{cwd:new URL('.',import.meta.url),encoding:'utf8',timeout:10000,env:{...process.env,POKER_RUNTIME_DIR:'/fixture/installed'}});assert.notEqual(restricted.status,0);assert.match(restricted.stderr,/restricted installed harness disables fsync/);
+const durable=spawnSync(process.execPath,restoreArgs,{cwd:new URL('.',import.meta.url),encoding:'utf8',timeout:10000,env:restoreEnv});assert.equal(durable.status,0,durable.stderr);assert.match(durable.stdout,/PASS payout oracle/);
+console.log('PASS cancellation restore flags: base journey and target-matching source mode required before any fixtures; restricted harness unchanged');
