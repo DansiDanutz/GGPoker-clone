@@ -1,6 +1,9 @@
 export function spinInsuranceGlowFrameIndex(elapsedMs){
  if(!Number.isFinite(elapsedMs)||elapsedMs<0)throw Error('Invalid insurance glow time');
- return elapsedMs>=5200?null:Math.floor(elapsedMs*30/1000);
+ // StageMovieClip advances by one per enterFrame; the root SWF declares60Hz, not the asset's30Hz.
+ const updates=Math.floor(elapsedMs*60/1000);if(updates>=270)return null;const frame=(1+updates)%270;
+ // shortcut: suppress the ambiguous terminal gotoAndStop(0); verify AIR boundary behavior before terminal-parity claims.
+ return frame===0?null:frame-1;
 }
 export async function loadSpinInsuranceGlow(){
  const response=await fetch('/home-art/native-spin-insurance-glow.json',{signal:AbortSignal.timeout(5000)});if(!response.ok)throw Error('Native insurance glow unavailable');const pack=await response.json();
