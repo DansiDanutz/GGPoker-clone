@@ -1156,3 +1156,5 @@ Tournament lobby REA (unreleased):16 native classes recovered with hashes/condit
 Tournament lobby evidence expansion (unreleased):24 hashed classes now resolve Players/Tables columns, actual selected table-ID Open payload and explicit Battle Rush Open prohibition; How to Play delegates to a distinct Battle information page. No new working lobby/pixel parity claim.
 
 Battle native-pane data (unreleased): authenticated read-only player/table projection from real registration/Rush/qualification/final states, private fields excluded, Rush Open false and truthful chip/finish policy; HTTP/model restart tests added. Three-pane UI still pending.
+
+Native event panes (unreleased): live three-column event lobby, actual Info/Structure/Payout/Players/Tables data, existing entry/refund/qualified-seat actions, Rush Open disabled and separate final observer without entry. Native art/column/profile/search parity remains incomplete.

@@ -269,7 +269,7 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
   }
   advanceWaiting(r,table,now);
   if(op==='watch'){
-    if(!table&&!r?.spinMatch)fail(404,'Unknown hosted table');
+    if(!table&&!r?.spinMatch&&!r?.battleEvent)fail(404,'Unknown hosted table');if(r?.battleEvent&&typeof account!=='string')fail(401,'Sign in locally');
     if(!r)return {me:null,version:0,names:Array(capacity).fill(null),settings:table,hand:null,results:[],...(account?{canObserveChat:!!table.open,observerName:account}:{})};
     return view(r,null,avatarFor,account);
   }
