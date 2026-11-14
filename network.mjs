@@ -161,7 +161,7 @@ function positionReserved(){if(reservedPanel.hidden)return;for(const button of r
 function positionQuickFold(){fitTimeCardLabels();
  document.documentElement.dataset.battleActions=String(battleMode||!!state?.battleFinal);
  const b=$('actions').querySelector('.nativeQuickFold'),main=$('actions').querySelectorAll('.nativeMainAction'),aof=$('actions').querySelectorAll('.nativeAofAction'),sizes=$('actions').querySelector('.nativeRushBetStrip');if(!b&&!sizes&&!main.length&&!aof.length)return;const r=document.querySelector('.felt').getBoundingClientRect(),scale=r.width/1700;
- if(b){b.style.left=r.left+1022*scale+'px';b.style.top=r.top+1050*scale+'px';b.style.setProperty('--quick-fold-scale',String(scale))}
+ if(b){b.style.left=r.left+1022*scale+'px';b.style.top=r.top+(battleMode||state?.battleFinal?1058:1050)*scale+'px';b.style.setProperty('--quick-fold-scale',String(scale))}
  for(const button of main){for(const label of button.querySelectorAll('span')){label.style.fontSize='34px';if(label.scrollWidth>162)label.style.fontSize=34*162/label.scrollWidth+'px'}button.style.left=r.left+(1022+217*Number(button.dataset.slot))*scale+'px';button.style.top=r.top+1050*scale+'px';button.style.setProperty('--quick-fold-scale',String(scale))}
  for(const button of aof){button.style.left=r.left+(1084+304*Number(button.dataset.slot))*scale+'px';button.style.top=r.top+1032*scale+'px';button.style.setProperty('--aof-scale',String(scale))}
  if(sizes){sizes.style.left=r.left+1022*scale+'px';sizes.style.top=r.top+976*scale+'px';sizes.style.setProperty('--bet-scale',String(scale))}
@@ -170,6 +170,7 @@ function positionQuickFold(){fitTimeCardLabels();
 document.fonts.load('700 34px NativeShowRoboto').then(positionQuickFold).catch(()=>{});
 document.fonts.load('400 28px NativeActionRoboto').then(()=>{positionReserved();fitSeatNames()}).catch(()=>{});
 addEventListener('resize',positionQuickFold);addEventListener('scroll',positionQuickFold,{passive:true});
+addEventListener('blur',()=>document.querySelector('#actions .nativeRushBetStrip input[type=range]')?.blur());
 addEventListener('resize',positionReserved);addEventListener('scroll',positionReserved,{passive:true});
 for(const [kind,label]of [['fold','Fold'],['check-fold','Check/Fold'],['check','Check'],['call','Call'],['allin','All-In']]){const b=element('button'),text=element('span','reserveText'),caption=element('span','reserveCaption',label);caption.dataset.nativeLabel=reserveLanguageKeys[kind];text.append(caption);if(kind==='call')text.append(document.createTextNode(' '),element('span','reserveAmount'));b.append(text);b.type='button';b.dataset.reserve=kind;b.onclick=()=>{if(!state?.hand?.preAction||state.hand.turn===state.me)return;reservedAction=reservedAction?.kind===kind?null:{kind,call:state.hand.preAction.call,number:state.number,seat:state.me};if(state.hand.preAction.aof)playCues(['AofButton']);renderReserved()};reservedPanel.append(b)}
 function renderReserved(){
@@ -660,6 +661,13 @@ slider.setAttribute('aria-label','Adjust bet total');
   for(const [index,[text,v]] of presets.entries()){const b=element('button','',text);b.replaceChildren(element('span','',text));b.dataset.key='Ctrl+'+(index+1);hotkeyHint(b);b.dataset.preset=String(index);b.dataset.target=String(v);b.onclick=()=>set(Number(b.dataset.target));sizes.append(b)}
   const increment=()=>betIncrement(g.blind,readBettingPreferences(localStorage.getItem('river-bet-presets')).unit,settings?.variant);
   n.onfocus=()=>n.select();
+  // Native slider drags from the thumb; a track press changes one increment.
+  let betDrag=null;
+  const betPointer=e=>{const r=slider.getBoundingClientRect(),half=battleMode||state?.battleFinal?33.5:29.5;return {x:(e.clientX-r.left)*(108+half*2)/r.width,half}};
+  const stopBetDrag=()=>{if(betDrag&&slider.hasPointerCapture(betDrag.id))slider.releasePointerCapture(betDrag.id);betDrag=null};
+  slider.onpointerdown=e=>{if(e.button!==0)return;e.preventDefault();slider.focus();const {x,half}=betPointer(e),center=half+108*(Number(slider.value)-o.min)/(o.max-o.min||1);if(Math.abs(x-center)<half){betDrag={id:e.pointerId,offset:center-x};slider.setPointerCapture(e.pointerId)}else set(Number(slider.value)+Math.sign(x-center)*increment())};
+  slider.onpointermove=e=>{if(betDrag?.id!==e.pointerId)return;const {x,half}=betPointer(e);set(snapBetAmount(o.min+(o.max-o.min)*(x+betDrag.offset-half)/108,o.min,o.max,increment()))};
+  slider.onpointerup=slider.onpointercancel=slider.onblur=stopBetDrag;slider.onlostpointercapture=()=>{betDrag=null};
   n.setAttribute('aria-label','Bet total');slider.oninput=()=>set(snapBetAmount(slider.valueAsNumber,o.min,o.max,increment()));
   slider.onkeydown=e=>{const direction=({ArrowRight:1,ArrowUp:1,ArrowLeft:-1,ArrowDown:-1})[e.key];if(direction||['Home','End'].includes(e.key)){e.preventDefault();set(e.key==='Home'?o.min:e.key==='End'?o.max:wheelBetAmount(Number(slider.value),direction,o.min,o.max,increment()))}};n.oninput=()=>{readTotal(true);paintProgress()};n.onblur=()=>{if(readTotal()!==null){writeEditor();paintProgress()}};refreshBetEditor=()=>{if(document.activeElement!==n&&readTotal()!==null)writeEditor();paintProgress()};
   sizes.onwheel=e=>{if(!e.deltaY)return;e.preventDefault();set(wheelBetAmount(readTotal()??o.min,-Math.sign(e.deltaY)*(localStorage.getItem('river-wheel-increase')==='0'?-1:1),o.min,o.max,increment()))};

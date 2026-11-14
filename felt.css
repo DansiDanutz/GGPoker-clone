@@ -542,12 +542,22 @@ body:has(#dealMeIn:not([hidden])) footer:has(#join[hidden]){margin-top:0}
 .battleStageNoticeTitle{color:#999;font-size:1.8823529412cqw}.battleStageNoticeBody{margin-top:1.6470588235cqw;color:#fff;font-size:1.6470588235cqw}
 
 /* Native ActionButton uses the smaller Battle Royale skin and label offsets. */
-html[data-battle-actions=true] body #actions button.nativeMainAction[data-key]{width:208px;min-width:208px;height:122px;background-image:url('/home-art/native-reserved-battle-action-up.png')}
-html[data-battle-actions=true] body #actions button.nativeMainAction[data-key]:hover{background-image:url('/home-art/native-reserved-battle-action-over.png')}
-html[data-battle-actions=true] body #actions button.nativeMainAction[data-key]:active{background-image:url('/home-art/native-reserved-battle-action-down.png')}
-html[data-battle-actions=true] #actions button.nativeMainAction>span{left:25px;top:27px}
-html[data-battle-actions=true] #actions button.nativeMainAction.hasAmount>.actionLabel{top:7px}
-html[data-battle-actions=true] #actions button.nativeMainAction.hasAmount>.actionAmount{top:50px}
-html[data-battle-actions=true] body #actions button.nativeMainAction[data-key]:active>span{top:41px}
-html[data-battle-actions=true] body #actions button.nativeMainAction.hasAmount[data-key]:active>.actionLabel{top:21px}
-html[data-battle-actions=true] body #actions button.nativeMainAction.hasAmount[data-key]:active>.actionAmount{top:64px}
+html[data-battle-actions=true] body #actions button:is(.nativeMainAction,.nativeQuickFold)[data-key]{width:208px;min-width:208px;height:122px;background-image:url('/home-art/native-reserved-battle-action-up.png')}
+html[data-battle-actions=true] body #actions button:is(.nativeMainAction,.nativeQuickFold)[data-key]:hover{background-image:url('/home-art/native-reserved-battle-action-over.png')}
+html[data-battle-actions=true] body #actions button:is(.nativeMainAction,.nativeQuickFold)[data-key]:active{background-image:url('/home-art/native-reserved-battle-action-down.png')}
+html[data-battle-actions=true] #actions button:is(.nativeMainAction,.nativeQuickFold)>span{left:25px;top:27px}
+html[data-battle-actions=true] #actions button:is(.nativeMainAction,.nativeQuickFold).hasAmount>.actionLabel{top:7px}
+html[data-battle-actions=true] #actions button:is(.nativeMainAction,.nativeQuickFold).hasAmount>.actionAmount{top:50px}
+html[data-battle-actions=true] body #actions button:is(.nativeMainAction,.nativeQuickFold)[data-key]:active>span{top:41px}
+html[data-battle-actions=true] body #actions button:is(.nativeMainAction,.nativeQuickFold).hasAmount[data-key]:active>.actionLabel{top:21px}
+html[data-battle-actions=true] body #actions button:is(.nativeMainAction,.nativeQuickFold).hasAmount[data-key]:active>.actionAmount{top:64px}
+
+html[data-battle-actions=true] body #actions .nativeRushBetStrip button[data-preset]{border:0;border-image:none;background:transparent url('/home-art/native-reserved-battle-preset-up.png') center/100% 100%}
+html[data-battle-actions=true] body #actions .nativeRushBetStrip button[data-preset]>span{left:5px;top:10px}
+html[data-battle-actions=true] body #actions .nativeRushBetStrip button[data-preset]:hover{background-image:url('/home-art/native-reserved-battle-preset-over.png')}
+html[data-battle-actions=true] body #actions .nativeRushBetStrip button[data-preset]:active{background-image:url('/home-art/native-reserved-battle-preset-down.png')}
+html[data-battle-actions=true] #actions .nativeRushBetStrip input[type=range]{left:481px;top:-2px;width:175px;height:80px}
+html[data-battle-actions=true] #actions .nativeRushBetStrip input[type=range]::-webkit-slider-runnable-track{background-position:calc(50% + .5px) top,calc(50% + .5px) center}
+html[data-battle-actions=true] #actions .nativeRushBetStrip input[type=range]::-webkit-slider-thumb{width:67px;height:80px;margin-top:-34.5px;background-image:url('/home-art/native-reserved-battle-bet-thumb.png')}
+
+#actions .nativeRushBetStrip input[type=range]{touch-action:none}
