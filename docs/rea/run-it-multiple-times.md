@@ -243,7 +243,7 @@ The room public projection now exposes only the current phase startedAt (created
 
 ## Observer announcement reconstruction — 14 November 2026
 
-Status: recovered and traced; local observer announcement is not implemented yet. The existing actor-choice panel is not a replacement for this component.
+Status at source recovery: recovered and traced, with observer UI initially absent. The implementation checkpoint below supersedes that implementation status; actor choice controls remain separate from the announcement.
 
 TableMediator calls AllinMomentsAnnounceView.update on each RIMT callback, passing PlayInfo.userIsDeciding. That getter is the local player's isDeciding, which includes ASKING_FOR_RIMT_SUGGEST, ASKING_FOR_RIMT and ASKING_FOR_AII. The announcement removes the active player's own cell and fades out globally while the viewer is deciding. Observers, folded participants and the other pending participant otherwise receive the announcement; this does not expose private cards.
 
@@ -265,3 +265,5 @@ AllinMomentsAnnounceView.align adds2 units after each attached cell. With only t
 Recovered sources: AllinMomentsAnnounceView SHA256 2bce67f9f9f5c3729903a557006949a64af9e5f84ea2506187adc5d66820fedb; SAllinPlayerState SHA256 67069ac335343ebf4d27ab8eddd7d977f2f6150d5c9c159a55c06dd29063abdc. Private files are under Sandbox/rea-tools/rimt-observer-source; source bytes are not committed. Atlas metadata confirms common0145 at578/3895,30×30,not rotated in init_lobby/desktop_assets. No real-account action, GUI activation or speaker playback was used.
 
 Implementation acceptance: every viewer role and phase; native frame/colors/geometry; no actor-choice controls in observer panel; same durable countdown without reset; correct once/agreed/declined identity; no invented timeout refusal; hide/reset on new hand; reconnect without new sound/reaction; full hosted payout/restart regression. Dynamic emoji reactions are a separate source-backed gap and must retain mute/skip-render/filter rules.
+
+Observer implementation checkpoint: local observer/folded/nonactor viewers now receive the separate source-backed500×200 pending or500×140 final panel, exact common145 atlas frame, native translation keys, actor identity and durable countdown. Active actors retain only their choice panel. Once/agreed/declined messages use the named proposer/decider, timeout stays unlabeled as human refusal, and old-hand/reset/destroy removes the announcement and its animations. No audio, emoji or game mutation is introduced by the announcement. Standalone browser tests cover geometry, role privacy, native labels, stable countdown, final reasons, timeout and hand reset; hosted multiplayer regression exercises ordinary betting/keyboard proposal/payout/restart. Intermediate callback-only suggested state and dynamic emoji reactions remain open.
