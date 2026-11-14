@@ -1150,3 +1150,5 @@ RIMT keyboard integration: three native Options actions remain unassigned by def
 Battle Game List update (unreleased): native five-column geometry and separate selection/open/register/cancel semantics; source hashes and explicit parity gaps in docs/rea/battle-game-list-source.json and battle-royale.md. Real local entry/refund/restart browser coverage added.
 
 Battle Game List metadata (unreleased): persisted actual start timestamp and survivor count distinct from registrations, including unresolved all-ins, shootouts and final eliminations; rendered running count/completed winner/time with explicit local date-format policy.
+
+Tournament lobby REA (unreleased):16 native classes recovered with hashes/conditional tab and callback inventory in docs/rea/tourney-lobby.md. Native Battle withdrawal OK/NO boundary added to local event page; full three-pane lobby remains incomplete.
