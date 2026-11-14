@@ -9,11 +9,11 @@ export async function loadSpinWheelArt(){
  try{for(const [key,[w,h]]of Object.entries(dimensions))if(art[key].width!==w||art[key].height!==h)throw Error('Native wheel image dimensions changed');spinWheelAmount(art.font,'1')}catch(error){close();throw error}return art;
 }
 export function drawSpinWheel(ctx,art,labels,pose){
- if(!Array.isArray(labels)||labels.length!==8||!Number.isFinite(pose?.wheel)||!Number.isFinite(pose?.arrow))throw Error('Provide eight explicit wheel labels and a valid pose');
+ if(!Array.isArray(labels)||labels.length!==8||!Number.isFinite(pose?.wheel)||!Number.isFinite(pose?.arrow)||pose.wheelAlpha!==undefined&&(!Number.isFinite(pose.wheelAlpha)||pose.wheelAlpha<0||pose.wheelAlpha>1)||pose.wheelOffsetY!==undefined&&!Number.isFinite(pose.wheelOffsetY))throw Error('Provide eight explicit wheel labels and a valid pose');
  const amounts=labels.map(label=>spinWheelAmount(art.font,label));for(const [key,[w,h]]of Object.entries(dimensions))if(art[key]?.width!==w||art[key]?.height!==h)throw Error('Native wheel image dimensions changed');
  ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);ctx.save();
  try{
-  ctx.translate(ctx.canvas.width/2-404,176);ctx.scale(2.1,2.1);ctx.save();ctx.translate(193.5,193.5);ctx.rotate(pose.wheel*Math.PI/180);ctx.drawImage(art.base,-180,-180);
+  ctx.globalAlpha*=pose.wheelAlpha??1;ctx.translate(ctx.canvas.width/2-404,176+(pose.wheelOffsetY??0));ctx.scale(2.1,2.1);ctx.save();ctx.translate(193.5,193.5);ctx.rotate(pose.wheel*Math.PI/180);ctx.drawImage(art.base,-180,-180);
   ctx.save();ctx.scale(.5,.5);
   for(const [slot,tokens]of amounts.entries()){
    ctx.save();ctx.rotate((45*slot-67.5)*Math.PI/180);ctx.translate(300,0);ctx.rotate(Math.PI/2);ctx.scale(32/56,32/56);
