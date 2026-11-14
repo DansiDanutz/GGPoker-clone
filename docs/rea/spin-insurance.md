@@ -1,5 +1,7 @@
 # Spin insurance — recovered contract and implementation boundary
 
+Current source status: optional practice terms,capital policies,atomic insured registration/refund/award and private wallet receipts are implemented and tested. Owner insurance fields,the insured Play Now button and native award presentation remain incomplete. Insurance remains disabled in the installedPR119release. The sections below separate recovered native evidence from successive local backend stages.
+
 This is static evidence from the installed IronDesktop SWF and selected FFDec exports under the REA workflow. It does not claim an observed native purchase,operator configuration or a local insurance implementation. Source paths and SHA256 digests are retained privately in `.git/danslab-qa/spin-insurance-source.json`. No native account action or real payment was performed.
 
 ## Selection and visible quote
@@ -45,3 +47,13 @@ The bank model now supports version4insurance policies alongside the existing ja
 The draw is locked even when no policies were bought,so a post-draw purchase cannot exploit an empty policy list. Up to three active account-bound policies are accepted per match. Funding audit arithmetic reconstructs premium/cancellation/award effects at their funding sequence,including retained100-event history. Reads clone records; changed identities,conflicting draws,malformed checkpoints,insufficient capital and unsafe total balances are rejected. Reservation lookup/grouping avoids nested per-policy history scans.
 
 Tests exercise both stakes/all eight outcomes,mixed premiums/payouts,full refund coverage,capital shortage,repeat actions,draw locking with zero buyers,interleaved funding,cold reconstruction,retained audits,three-seat limits,corruption and safe-integer overflow. Existing jackpot reserve/settlement,real Hold’em payout and owner bank HTTP/backup regressions pass. These bank-side primitives are not yet connected to player wallet debit/credit or the registration API; no live financial changes occurred.
+
+## Atomic registration and wallet integration — backend stage
+
+The authenticated queue now accepts an optional boolean insurance choice,with false/omitted preserving existing uninsured requests. Premium and payout come only from the owner's snapshotted terms; client-supplied amounts are rejected. Operation identity binds the choice as well as account/stake/revision,so changing it on retry fails. Registration debits the buy-in and premium and reserves capital in the same rooms checkpoint. Pending cancellation refunds both once and releases the policy hold. The third entry commits its registration,one draw,insurance award credits and private table together. The server returns the insured account's own insurancePayout receipt. A retry returns committed state without another transfer.
+
+Wallets retain separate insurance spent/refunded/award counters and premium/refund/payout receipts. Loader validation reconciles every insured entry with its bank policy,matching draw and wallet totals,and rejects orphan policies or credits without an award. Policy lookup uses an ID/account map rather than nested history scans. Premium receipts display negative amounts; refunds and payouts display positive amounts in the existing private transaction history.
+
+The isolated engine test covers mixed buyers,cancelled buyers,choice conflicts,failed third-registration writes,insufficient player balance/capital,award-overflow rollback,tampered wallet totals,zero/nonzero insurance awards,two complete900-chip tournaments,total bank/wallet conservation and cold restart. HTTP tests cover authentication/origin/types,no client amounts,once-only retry and saved award recovery. The actual browser wallet test observes−2000premium,+2000refund once,+10000payout once and3000→10000→13000balances across three cold restarts.
+
+The insured Play Now button and owner insurance fields have not yet been connected to these terms. Insurance is not enabled in the livePR119installation. Native payout graphics/delay and exact operator configuration remain unverified; the server currently commits the explicit practice award at draw independently of later optional presentation. Full insured browser registration-to-winner acceptance and release QA are still required.
