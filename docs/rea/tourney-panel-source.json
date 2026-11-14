@@ -1,0 +1,49 @@
+{
+  "files": [
+    {
+      "bytes": 251,
+      "file": "native-tourney-panel.png",
+      "frame": "common0081",
+      "height": 24,
+      "rgbaExact": true,
+      "sha256": "5f28d8c2d6ac9468af4a8a549e5d12a726234604e89d88713f91569f42cd954f",
+      "width": 24
+    }
+  ],
+  "method": "StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding",
+  "sources": {
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+  },
+  "scripts": {
+    "TourneyLobbyBase.as": "17bbeb697f5cb8c326659a3a1ed3c66809e37b27816dcec8dead27a57af5dbb3",
+    "TourneyTabButton.as": "c815ec097b1f3e182a95e5ed7a82b4624a9ce97e400bd355701d1560c7ad3405"
+  },
+  "nativeTab": {
+    "height": 32,
+    "radius": 4,
+    "normalFill": "#3c3c3c",
+    "selectedFill": "#a48954",
+    "normalLabel": "#b3b3b3",
+    "selectedLabel": "#ffffff",
+    "layer": [
+      7,
+      8
+    ],
+    "groupWidth": "viewport.width - 11",
+    "distribution": "equal widths among visible tabs",
+    "selectedMouseEnabled": false
+  },
+  "panel": {
+    "atlas": "common",
+    "index": 81,
+    "scale9Grid": [
+      8,
+      8,
+      8,
+      8
+    ],
+    "outerWidth": "viewport.width + 4",
+    "innerContentUnaffected": true
+  }
+}
