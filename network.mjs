@@ -1,3 +1,4 @@
+import {installTournamentResult} from './tournament-result.mjs';
 import {installCashSitOutMenu} from './cash-sitout-menu.mjs';
 import {hotkeyActions,readHotkeys,keyCodes,keyCaption,readHotkeyGroups,hotkeyGroup} from './hotkey-bindings.mjs';
 import {installPlayerNotes} from './player-note-ui.mjs';
@@ -115,6 +116,7 @@ const helmet=helmetModule?helmetModule.installHelmet(()=>({state,rabbitOpened:ra
 const rabbitModule=await fetch('/rabbit-view.mjs',{signal:AbortSignal.timeout(5000)}).then(r=>r.ok?import('./rabbit-view.mjs'):null,()=>null);
 const rabbitView=rabbitModule?rabbitModule.installRabbitView(document.querySelector('.boardArea'),()=>chatWindow?null:state,number=>operate('rabbit',{number}),playCues,()=>playerNotes.refresh()):{update(){}};
 const playerNotes=installPlayerNotes($('tableSettings'),()=>({state,rabbitOpened:rabbitView.opened===true,room:rushMode?'rush:'+rushPoolKind+':'+state?.noteTable:room,token,enabled:!chatWindow&&(!rushMode||!!state?.noteTable),...(rushMode?{notesPath:'/api/rush/'+rushPoolKind+'/notes',notesTable:state?.noteTable}:{} )}));
+const tournamentResults=installTournamentResult($('tableSettings'),()=>({state:chatWindow?null:state,room,token,animating:!!pendingHand||!!document.querySelector('.award')}),()=>playerNotes.openHistory(),avatarSource,playCues);
 // Next-blind scheduling remains unavailable until its server trigger is established.
 let cashSitOutMenu;
 const cashSitOut=document.createElement('input'),cashSitOutLabel=element('label');cashSitOut.type='checkbox';cashSitOut.id='cashSitOut';const cashSitOutCaption=element('span','',' Sit out next hand');cashSitOutCaption.dataset.nativeLabel='MobileSitOut';cashSitOutLabel.append(cashSitOut,cashSitOutCaption);cashSitOutLabel.hidden=true;tableSettings.append(cashSitOutLabel);cashSitOut.onchange=async()=>{if(!cashSitOut.checked&&state?.returnFundingRequired){updateCashSitOut();openAddChips();return}cashSitOut.disabled=true;await operate('sit-out',{paused:cashSitOut.checked});updateCashSitOut()};
@@ -527,7 +529,7 @@ if(!keepActions){refreshBetEditor=null;for(const child of [...$('actions').child
  $('join').querySelector('button').textContent=tournament?'Register':'Take a seat';
  $('level').textContent=t&&g?'Level '+t.level+' · Blinds '+g.blind/2+' / '+g.blind+(g.ante?' · Ante '+g.ante+' per player':'')+(t.winner==null&&t.level<7?' · Next level scheduled '+new Date(t.startedAt+t.level*t.intervalMs).toLocaleTimeString()+' (new hands only)':''):'';
 
- drawTable(g);rabbitView.update();renderShuffles();playerNotes.refresh();updateCashSitOut();
+ drawTable(g);rabbitView.update();renderShuffles();playerNotes.refresh();updateCashSitOut();tournamentResults.refresh();
  renderChat();
  list('history',g?.history||[]);list('results',(state?.results||[]).map(r=>'Hand '+r.number+' · Board: '+(r.board?.join(' ')||'no board')+' · Final stacks: '+r.stacks.join(', ')+(r.pots||[]).map((p,i)=>' · '+(i?'Side pot '+i:'Main pot')+': '+p.amount+' → '+p.payouts.flatMap((n,seat)=>n?['Seat '+(seat+1)+' '+n]:[]).join(', ')).join('')+' · '+(r.history||[]).join('; ')));
  const net=Array(capacity()).fill(0);for(const r of state?.results||[])r.payouts.forEach((v,i)=>net[i]+=v-r.committed[i]);

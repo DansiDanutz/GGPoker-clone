@@ -21,6 +21,7 @@ if(!Number.isSafeInteger(intervalMs)||intervalMs<1000)throw Error('POKER_LEVEL_M
 function tournamentHand(r,now,avatarFor){
   if(r.tournament.pausedAt!=null)return;
   const t=r.tournament,stacks=r.hand?.stacks||r.players.map(p=>p?(r.settings?.stack||initialStack):0);
+  if(!r.hand&&r.number===0)t.actualStartedAt=now;
   const button=r.hand?nextDealer(stacks,r.hand):r.players.findIndex(Boolean);
   const level=blindLevel(t.startedAt,now,t.intervalMs,r.settings?.blind||4);
   t.level=level.level;t.nextDealAt=null;r.number++;r.hand=startHand(stacks,level.bigBlind,button,r.settings?.variant,(r.settings?.ante||0)*(level.bigBlind/(r.settings?.blind||4)));
@@ -44,9 +45,10 @@ function record(room){
   const t=room.tournament;if(!t)return;
   t.finishes??=Array(g.stacks.length).fill(null);
   if(g.initialStacks)for(const {seat,place} of eliminationPlaces(g.initialStacks,g.stacks,g.button))t.finishes[seat]=place;
-  for(let i=0;i<g.stacks.length;i++)if(room.players[i]&&!g.stacks[i]&&!t.out[i])t.out[i]=room.number;
+  for(let i=0;i<g.stacks.length;i++)if(room.players[i]&&!g.stacks[i]&&!t.out[i]){t.out[i]=room.number;t.eliminatedAt??=Array(g.stacks.length).fill(null);t.eliminatedAt[i]=Date.now()}
   const remaining=g.stacks.flatMap((s,i)=>s?[i]:[]);
   if(remaining.length===1){
+    if(t.winner===null)t.finishedAt=Date.now();
     t.winner=remaining[0];t.finishes[t.winner]=1;const amounts=prizeAmounts(t.pool,t.prizeShares||[100]);t.prizes=t.finishes.map(place=>amounts[place-1]||0);
     t.nextDealAt=null;delete t.pauseRequested;delete t.pausedAt;delete t.pauseDelayMs;
   }else if(t.pauseRequested){t.pausedAt=Date.now();t.pauseDelayMs=3000;t.nextDealAt=null;delete t.pauseRequested}
@@ -495,6 +497,10 @@ export function openRooms(file,avatarFor=()=>0,walletsEnabled=false){
   for(const r of rooms.values()){
    const t=r.tournament;
    if(t&&(!Number.isSafeInteger(t.entry)||t.entry<0||t.entry>1000000||r.settings?.entryCost!==undefined&&t.entry!==r.settings.entryCost))throw Error('Invalid tournament entry cost');
+   if(t){
+    const validTime=v=>Number.isSafeInteger(v)&&v>=0&&v<=8640000000000000;
+    if(t.actualStartedAt!==undefined&&(!validTime(t.actualStartedAt)||t.startedAt===null)||t.finishedAt!==undefined&&(!validTime(t.finishedAt)||t.winner===null||t.actualStartedAt!==undefined&&t.finishedAt<t.actualStartedAt)||t.eliminatedAt!==undefined&&(!Array.isArray(t.eliminatedAt)||t.eliminatedAt.length!==r.players.length||t.eliminatedAt.some((v,i)=>v!==null&&(!validTime(v)||t.out[i]==null||t.actualStartedAt!==undefined&&v<t.actualStartedAt))))throw Error('Invalid tournament result time');
+   }
    if(t&&(t.pauseRequested!==undefined&&t.pauseRequested!==true||t.pausedAt!==undefined&&(!Number.isSafeInteger(t.pausedAt)||t.pausedAt<0||!r.hand?.end||t.nextDealAt!==null||!Number.isSafeInteger(t.pauseDelayMs)||t.pauseDelayMs<0||t.pauseDelayMs>3000)||t.pauseDelayMs!==undefined&&t.pausedAt===undefined||(t.pauseRequested||t.pausedAt!==undefined)&&(t.startedAt===null||t.winner!==null||t.cancelledAt)||t.pauseRequested&&t.pausedAt!==undefined))throw Error('Invalid tournament pause');
    for(const p of r.players)if(p?.entryFunded!==undefined&&(p.entryFunded!==true||!r.settings||!t||p.bot||typeof p.account!=='string'||!Object.hasOwn(wallet.state.accounts,p.account.toLowerCase())))throw Error('Invalid funded tournament seat');
    if(r.players.some(p=>p?.entryFunded)){

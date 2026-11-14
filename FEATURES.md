@@ -1059,3 +1059,7 @@ The owner can monitor authoritative chips, commitments,actor,phase,levels,elimin
 ### Eliminated tournament player journey
 
 Recorded eliminations no longer become future-hand waiting seats or expose invalid waiting-seat cancellation/betting controls. The player retains their place through a later deal/cold restart; final settlement displays each player’s actual place and prize. Controlled three-browser unequal-all-in/side-pot fixtures cover the journey. Six native reward/callback classes document the distinct lifecycle and guarded post-animation popup; complete native result graphics/actions remain open. See `docs/rea/tournament-elimination.md`.
+
+### Tournament result window — local state and native fallback audio
+
+Eliminated/winning players receive their actual place and projected/settled local award after chip motion. The360×611window uses native finalist/winner/info/ribbon crops, existing player avatars, Close/reopen and authenticated own Last Hand. Actual start/elimination/finish times survive restart and do not confuse pause-adjusted blind schedules with wall time; legacy times stay unknown. Native embedded win/ITM/fall audio respects local effects/master controls and window cancellation. Three-session browser checks cover places/prizes,original crop dimensions,48pxavatars,payout gate,poll stability,Last Hand and restart. Full brand/font/flag/Save/Share/Best Hand/Bad Beat parity,country winnerBGM and physical native timing remain open. See docs/rea/tournament-result.md.
