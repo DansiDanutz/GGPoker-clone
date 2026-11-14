@@ -1,0 +1,62 @@
+{
+  "files": [
+    {
+      "file": "native-reserved-battle-action-up.png",
+      "bytes": 32376,
+      "sha256": "242aeb65d8516ebf8127095f49f7ac49d3ed798676bf2d6571d45d141027bccf",
+      "size": [
+        208,
+        122
+      ],
+      "frame": "table0239",
+      "rectangle": {
+        "x": 1945,
+        "y": 1906,
+        "w": 208,
+        "h": 122
+      }
+    },
+    {
+      "file": "native-reserved-battle-action-over.png",
+      "bytes": 33397,
+      "sha256": "b7f7756027a53ce1d24e937143ad685ceae3b1096ec0a1137fe6ede581200ac0",
+      "size": [
+        208,
+        122
+      ],
+      "frame": "table0240",
+      "rectangle": {
+        "x": 2155,
+        "y": 1906,
+        "w": 208,
+        "h": 122
+      }
+    },
+    {
+      "file": "native-reserved-battle-action-down.png",
+      "bytes": 30860,
+      "sha256": "4ac7345f8edd703316d200d655acbbe28a48de0046924d00f52c5b16fb3eb7e8",
+      "size": [
+        208,
+        122
+      ],
+      "frame": "table0241",
+      "rectangle": {
+        "x": 2,
+        "y": 1909,
+        "w": 208,
+        "h": 122
+      }
+    }
+  ],
+  "method": "Exact desktop table0239/0240/0241 frame crops; Swift decoded RGBA equality asserted.",
+  "atlasHashes": {
+    ".json": "9e00ce78028f67e6b0ad7c770c0c65519bde01943c209f860f8dd58e930d5c29",
+    ".png": "6bf5b733a31f0de22cbe9d578c93a9c081e314fc97840838dc72145d07d26b65"
+  },
+  "sourceHashes": {
+    "ActionView.as": "a7ffdf42072ac5f097cf5d3a0d5922d4049a132a1ac11f08d4f28f5b3da8b605",
+    "MainActionUI.as": "e3f28da9baa39465e5c612de1bae3cbfc1601af9a1d9c7febf86f82020d0d526",
+    "button/ActionButton.as": "d33865fae3f02fbf1185fb0876cb2f74c436577a5c1fc768f918a11e2c28fa0b"
+  }
+}
