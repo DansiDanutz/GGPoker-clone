@@ -45,3 +45,5 @@ const {resultGlyphLayout}=await import('./tournament-result.mjs'),font={size:56,
 assert.equal(resultGlyphLayout(1000000,font).width,(34+6*54)*(32/56));assert.equal(resultGlyphLayout(0.5,font),null);assert.equal(resultGlyphLayout(Number.MAX_SAFE_INTEGER+1,font),null);
 
 assert.equal(resultGlyphLayout(0,{...font,glyphs:[null]}),null);assert.equal(resultGlyphLayout(0,{...font,glyphs:[font.glyphs[0],font.glyphs[0]]}),null);assert.equal(resultGlyphLayout(0,{...font,glyphs:[{...font.glyphs[0],width:0}]}),null);
+
+const {resultTextGlyphLayout}=await import("./tournament-result.mjs");const topDigits=resultTextGlyphLayout("10",font,38);assert.equal(topDigits.width,88*(38/56));assert.equal(topDigits.glyphs[1].left,34*(38/56));assert.equal(topDigits.glyphs[0].top,25*(38/56));console.log("PASS native bounty amount38px atlas scale, advances and offsets");

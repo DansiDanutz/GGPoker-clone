@@ -1,0 +1,151 @@
+{
+  "authority": "shipped SWF51 static source/installed atlas pixels; controlled local replay for behavior",
+  "source": {
+    "path": "/Users/davidai/Sandbox/rea-tools/battle-lobby-source/scripts/com/nsus/iron/lobby/view/battleroyale/BattleRoyaleHighestBountyView.as",
+    "sha256": "ae244281b4f4f1577e04800898e56df3c9ea91873d74b9b46760a30148166997"
+  },
+  "atlas": {
+    "files": [
+      {
+        "bytes": 2284,
+        "file": "native-battle-highlights-title.png",
+        "frame": "battleroyale0006",
+        "height": 30,
+        "rgbaExact": true,
+        "sha256": "49a31b6dc1b6cdc59f71713a6051c4eb8c6413e6a7178d3a6dacf621bafa51c4",
+        "width": 308
+      },
+      {
+        "bytes": 31381,
+        "file": "native-battle-highlights-top.png",
+        "frame": "battleroyale0007",
+        "height": 128,
+        "rgbaExact": true,
+        "sha256": "27aa3e9a8aa6d3167d755c28f9cdab5c1c5b7ea8f89b2a7113561b082981eeb3",
+        "width": 308
+      },
+      {
+        "bytes": 3615,
+        "file": "native-battle-highlights-row.png",
+        "frame": "battleroyale0008",
+        "height": 60,
+        "rgbaExact": true,
+        "sha256": "475a5d7b88c35187c664f495e7b873670267c3842bbc8dca4097e322d4e7457a",
+        "width": 308
+      },
+      {
+        "bytes": 29006,
+        "file": "native-battle-highlights-empty.png",
+        "frame": "battleroyale0021",
+        "height": 116,
+        "rgbaExact": true,
+        "sha256": "34b22d5c62ede4006fc80e436362b2c79998108d939105dd14b81e9c70a3f917",
+        "width": 154
+      },
+      {
+        "bytes": 2771,
+        "file": "native-battle-highlights-avatar-frame.png",
+        "frame": "battleroyale0063",
+        "height": 48,
+        "rgbaExact": true,
+        "sha256": "3df59a6d7ba097cb834d46ee79605e55e870f180d5522427439146e1b15f301c",
+        "width": 48
+      },
+      {
+        "bytes": 344,
+        "file": "native-battle-highlights-avatar-mask.png",
+        "frame": "battleroyale0064",
+        "height": 48,
+        "rgbaExact": true,
+        "sha256": "1ae3d1a1cb2a872cdff9a565293e0e6db402fa6399f19f135e7925cea4a5cc63",
+        "width": 48
+      },
+      {
+        "bytes": 1606,
+        "file": "native-battle-highlights-new.png",
+        "frame": "lobby0351",
+        "height": 25,
+        "rgbaExact": true,
+        "sha256": "4f395cced5c12522d5d1f1890d87969c060a4707cbae3a41576f39472179e9bd",
+        "width": 25
+      }
+    ],
+    "method": "StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding",
+    "sources": {
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+    }
+  },
+  "boxAtlas": {
+    "files": [
+      {
+        "bytes": 18126,
+        "file": "native-battle-highlights-empty-box.png",
+        "frame": "table0387",
+        "height": 92,
+        "rgbaExact": true,
+        "sha256": "51909dd4bdc4b85fb2d3ab5ea517aa627abc1cf467c09e3654db3b44b232cb21",
+        "width": 92
+      }
+    ],
+    "method": "StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding",
+    "sources": {
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/after_lobby/desktop_table_assets.json": "9e00ce78028f67e6b0ad7c770c0c65519bde01943c209f860f8dd58e930d5c29",
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/after_lobby/desktop_table_assets.png": "6bf5b733a31f0de22cbe9d578c93a9c081e314fc97840838dc72145d07d26b65"
+    }
+  },
+  "geometry": {
+    "viewportWidth": 314,
+    "title": [
+      308,
+      30
+    ],
+    "listTop": 34,
+    "topCell": [
+      308,
+      128
+    ],
+    "regularCell": [
+      308,
+      60
+    ],
+    "gap": 4,
+    "emptyTop": 126,
+    "emptySize": [
+      308,
+      232
+    ],
+    "emptyBox": [
+      108,
+      28,
+      92,
+      92
+    ],
+    "topFont": "NEW_SPINANDGOLD_FONT38",
+    "regularFont": "AUTO_CHANGE28",
+    "avatarSizes": [
+      47,
+      39
+    ],
+    "newBadge": [
+      0,
+      -2,
+      25,
+      25
+    ]
+  },
+  "interaction": "Click with handHistoryId dispatches OPEN_HAND_HISTORY_MYSTERY_JACKPOT_BOUNTY with jackpotHandId/isJackpotHistory=true",
+  "localPolicy": [
+    "Maximum recorded local draw, then20 newest remaining awards by actual retained hand timestamp",
+    "All funded local awards are included; native Epic eligibility/window/top record policy not established",
+    "Any signed-in local account may read only already disclosed showdown information for a recorded bounty hand",
+    "Guest401, cross-origin403, wrong method405, malformed/duplicate query400, unretained/non-award hand404",
+    "History currently shares existing30-hand retention; expired history is reported explicitly"
+  ],
+  "limits": [
+    "Native global winner protocol/date format/native eligibility/recency semantics unverified",
+    "Physical font rasterization/baselines and complete native history chrome unverified",
+    "No private hole cards/historyTrace/token/ticket are exposed",
+    "No native sound/presentation timing claim"
+  ]
+}

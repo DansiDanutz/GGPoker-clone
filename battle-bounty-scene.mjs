@@ -37,8 +37,9 @@ export function installBattleBountyScene(parent,context,completed,avatarSource,o
     if(pose.amountVisible){const t=reduced?1:Math.max(0,Math.min(1,(elapsed-3993)/500)),u=t-1,e=t===0?0:u*u*(2.70158*u+1.70158)+1,scale=.1+.9*e,k=80/56;ctx.save();ctx.translate(850,400);ctx.scale(scale,scale);ctx.globalAlpha=t;for(const g of layout.glyphs)ctx.drawImage(assets.glyphs,Math.round(g.x/k),Math.round(g.y/k),Math.round(g.width/k),Math.round(g.height/k),g.left-layout.width/2,g.top-layout.height/2,g.width,g.height);ctx.restore()}
     const remaining=queue.size()-1;if(remaining>0){ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(0,1000,1700,200);for(let i=0;i<remaining;i++)ctx.drawImage(assets.remaining,50+i*230,1040)}dialog.dataset.frame=String(decoded+1);dialog.dataset.amountVisible=String(pose.amountVisible);dialog.dataset.remaining=String(remaining);
    }
+   // A RAF timestamp can precede asynchronous scene setup within the same frame.
    function tick(now){
-    if(lease!==generation||active!==item)return;const elapsed=now-started,pose=battleBoxPose(reduced?5577:elapsed,1);if(reduced?elapsed>=1000:pose.complete){finish();return}
+    if(lease!==generation||active!==item)return;const elapsed=Math.max(0,now-started),pose=battleBoxPose(reduced?5577:elapsed,1);if(reduced?elapsed>=1000:pose.complete){finish();return}
     if(!reduced&&decoded!==pose.frame&&!decoding){decoding=true;assets.box.frame(pose.frame,1).then(next=>{if(lease===generation&&active===item){frame=next;decoded=pose.frame}}).catch(error=>{if(lease===generation)finish(error)}).finally(()=>{decoding=false})}
     draw(pose,elapsed);raf=requestAnimationFrame(tick);
    }

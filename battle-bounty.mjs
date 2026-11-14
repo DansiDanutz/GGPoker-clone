@@ -35,3 +35,10 @@ export function battleBounty(items,capital,checkpoint=null){
  function summary(){const balance=remaining.reduce((n,f,i)=>n+f*items[i].amount,0);return {capital,remainingCount:count(),remaining:balance,paid:capital-balance,awards:structuredClone(awards)}}
  const snapshot=()=>JSON.stringify({version:1,items,capital,awards});return {draw,summary,snapshot};
 }
+
+// Public jackpot history uses only already disclosed cards, never the participant-private projection.
+export function battleBountyPublicHand(room,awards,number){
+ if(!Number.isSafeInteger(number)||number<1)throw Error('Invalid bounty hand number');
+ const matching=awards.filter(a=>a.hand===number),h=room?.hudHistory?.find(h=>h.number===number),r=h?.result;if(!matching.length||!r||r.number!==number)return null;
+ return structuredClone({number,at:h.at,variant:h.variant||'holdem',blind:h.blind,button:h.button,names:h.names,avatars:h.avatars||[],cards:h.cards,board:r.board,committed:r.committed,payouts:r.payouts,returns:r.returns,stacks:r.stacks,history:r.history,awards:matching.map(a=>({pot:a.pot,victim:a.victim,amount:a.amount,hunters:a.hunters}))});
+}
