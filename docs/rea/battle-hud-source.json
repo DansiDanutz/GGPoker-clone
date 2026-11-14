@@ -90,6 +90,16 @@
       "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/popup/smarthud/note/PlayerNoteEditView.as",
       "bytes": 14976,
       "sha256": "d2fcafb5b197a5b3f785cdcd314e99b434e343b03509eac19d29ce34ac5979e4"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/popup/PlayerColorPopup.as",
+      "bytes": 18250,
+      "sha256": "e21581de46bae1f2cf8d35c085450c9bb7e10e67744cc62e98527cc8ccd0ce29"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/services/request/PlayerNoteLabelUpdateCommand.as",
+      "bytes": 1944,
+      "sha256": "e72888e20da4b20e310d0d8456b206f3d9a0bd68ada925b46531de9689ae5867"
     }
   ],
   "protocol": {

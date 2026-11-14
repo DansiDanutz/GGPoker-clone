@@ -1,6 +1,6 @@
 # Battle Royale Smart HUD — recovered contract
 
-This inventory binds18 selected installed-client classes in battle-hud-source.json. It establishes client rendering and request/response boundaries. It does not recover the original server’s career calculations or implement a working local HUD.
+This inventory binds20 selected installed-client classes in battle-hud-source.json. It establishes client rendering and request/response boundaries. It does not recover the original server’s career calculations or implement a working local HUD.
 
 ## Entry and identity
 
@@ -76,3 +76,17 @@ Text uses the recovered nominal1second debounce; palette changes use0.3seconds. 
 Browser tests type/save/reopen a real note, inject POST500 and lobby503, verify failed close/tab preserves text, retry, select a color, explicitly discard a later failed draft without overwriting the saved note, suppress a delayed private read, and restart/reopen the original saved text/color with unchanged room bytes. Existing public HUD own/opponent identity/geometry and full tournament payout/restart regressions remain covered. Native scrollbar/font rasterization, label-title popup, complete nested header/menu and physical save/animation timing remain unverified.
 
 Account-switch regression during lobby failure: a focused browser test first holds public lobby reads at503, then changes the authenticated identity response. The private HUD must still clear. RED kept the editor open; GREEN continues the HUD identity refresh independently of successful lobby paints while preserving a same-viewer draft through temporary errors. This does not treat an outage as proof of authentication.
+
+## Private label-title popup
+
+Recovered PlayerColorPopup is320x324 with panel#242424/border#333 and4px corner radius. Nickname16px at y24. Grid origin24,64; two132x28 items per row with8px gaps, five rows. COLOR_ORDER is red/cyan/orange/blue/yellow/brown/lime/purple/green/pink, corresponding to local indices6,3,7,1,9,4,5,2,0,8. Each color block is28px, input x36/y5/88x24 and maxChars20. Selected input background#171717 uses the color outline and height27; unselected#333 with a6percent white outline. Save140x40 at90,260. Native getChanageLabel returns only changed labelId/title pairs; Save dispatches SEND_PLAYERNOTES_LABEL only for a nonempty change list, then closes. Ordinary popup close dispatches CLOSE without saving.
+
+Local Label is now an actual button opening this geometry. Save sends only changed color/title pairs through the existing private endpoint, with expected canonical viewer; note text/color and label-title updates must be separate. The adapter reuses saveNoteLabels and owner-bound openNotes, so disjoint title edits preserve other fields and share table label titles. Validation preserves ten single-line titles, each max20, rejects duplicate/out-of-range colors and mixed note/title payloads. It never accepts a client-supplied owner. Returned viewer/target must still match before updating the caption/palette tooltips.
+
+The modal keeps a failed draft for retry, disables duplicate save while in flight and leaves Cancel/close as an explicit unsaved-draft discard. Popup dirtiness participates in the HUD unload/close guard. Authentication clear disposes both popup and private editor; a late reply cannot attach it elsewhere. Note autosave continues independently but label responses update titles only, never the textarea. Full Save-button/close artwork, physical font fitting and same-field concurrent edit conflicts remain unverified; procedural Save/close paint is provisional.
+
+Model/HTTP tests cover separate owners, table-store label sharing, disjoint patches,20/newline/duplicate/schema limits, expected-viewer409, atomic failure with unchanged memory/file, unchanged note/room data and restart. Browser covers320x324/grid bounds, ten maxlength20 inputs, changing the selected label, POST500 preserving text, retry, updated caption/reopen and Cancel without saving. Native geometry/behavior is established from source; this is not a full physical pixel comparison.
+
+Recovered PlayerNoteLabelUpdateCommand confirms that only alias and changed list are consumed; the popup color field is not forwarded as a note-color update. It calls updatePlayerNoteLabels(list), maps200/201 into setLabelTitle plus change/receive-data notifications, and otherwise shows MobileFailedToSavePlayerNote. Native securityMode returns before sending. Local label editing therefore intentionally leaves note text/color untouched. Its inline error with retained editable draft is a local robustness behavior; original popup close/alert cadence is not claimed identical.
+
+Popup placement uses DesktopSmartHudView’s400px parent calculation x200−320/2=40 and y300−324/2−30=108. Its popup layer y−40 cancels the local desktop title translation+40. The local popup is positioned40,108 from the HUD content origin, clamped to the local viewport and recalculated on resize. The browser fixture measures these relative offsets. Native host-window borders and cross-window modal behavior still need physical calibration.

@@ -1182,3 +1182,5 @@ Own Battle HUD (unreleased): canonical authenticated self detection fixes mixed-
 Battle private-note adapter (unreleased): authenticated owner-bound GET/POST for actual other event members, shared table note store, expected-viewer409, Unicode1000/atomic/restart/isolation tests; no room writes. Native1s text/0.3s color timing and1000max recovered. Editor UI remains unwired.
 
 Opponent Battle note UI (unreleased): native-position textarea/counter/palette, shared private store,1s text/0.3s color nominal autosave, close/Escape/row/tab flush, retained drafts and Retry/explicit Discard on failure, transient-lobby-error preservation, stale private-read suppression and restart text/color verification. Own HUD has no note editor; label-title popup/scrollbar/font/physical timing remain incomplete.
+
+Battle private label-title popup (unreleased): native320x324/two-column20char grid and color order, changed-field-only private patch using shared table labels; Save/retry retains failed text, Cancel leaves saved titles, caption/tooltip refresh. Owner isolation/disjoint updates/atomic/restart/HTTP tests. Save/close artwork and physical typography remain provisional.
