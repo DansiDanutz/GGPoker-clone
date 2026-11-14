@@ -1,4 +1,4 @@
-import {battleBounty} from './battle-bounty.mjs';
+import {battleBounty,readBattleBountyArchive} from './battle-bounty.mjs';
 import {battleQualification} from './battle-qualification.mjs';
 import {battleRush} from './battle-rush.mjs';
 export function battleSettings(value){
@@ -22,7 +22,8 @@ export function readBattleEvent(value){
    else if(value.payouts.length<2)throw Error();
   }
   if(value.bounty!==undefined){
-   const b=value.bounty;if(!b||Object.keys(b).sort().join(',')!=='capital,checkpoint,items,reason'||typeof b.reason!=='string'||!b.reason.trim()||b.reason.length>200||typeof b.checkpoint!=='string')throw Error();const ledger=battleBounty(b.items,b.capital,b.checkpoint).summary();if(b.items.reduce((n,p)=>n+p.frequency,0)<settings.finalSeats-1)throw Error();
+   const b=value.bounty;if(!b||Object.keys(b).filter(k=>k!=='hands').sort().join(',')!=='capital,checkpoint,items,reason'||typeof b.reason!=='string'||!b.reason.trim()||b.reason.length>200||typeof b.checkpoint!=='string')throw Error();const ledger=battleBounty(b.items,b.capital,b.checkpoint).summary();if(b.items.reduce((n,p)=>n+p.frequency,0)<settings.finalSeats-1)throw Error();
+   if(b.hands!==undefined)readBattleBountyArchive(b.hands,ledger.awards,ledger.awards.length?battleQualifier(value).view().qualified.map(p=>p.id):[],settings.capacity*settings.stack);
    if(ledger.awards.length){if(value.finalRoom===undefined)throw Error();const accounts=battleQualifier(value).view().qualified.map(p=>p.id);if(ledger.awards.some(a=>!accounts.includes(a.victim)||a.hunters.some(p=>!accounts.includes(p.account))))throw Error()}
   }
   return structuredClone(value);

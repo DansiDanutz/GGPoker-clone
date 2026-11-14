@@ -42,3 +42,15 @@ export function battleBountyPublicHand(room,awards,number){
  const matching=awards.filter(a=>a.hand===number),h=room?.hudHistory?.find(h=>h.number===number),r=h?.result;if(!matching.length||!r||r.number!==number)return null;
  return structuredClone({number,at:h.at,variant:h.variant||'holdem',blind:h.blind,button:h.button,names:h.names,avatars:h.avatars||[],cards:h.cards,board:r.board,committed:r.committed,payouts:r.payouts,returns:r.returns,stacks:r.stacks,history:r.history,awards:matching.map(a=>({pot:a.pot,victim:a.victim,amount:a.amount,hunters:a.hunters}))});
 }
+
+export function readBattleBountyArchive(hands,awards,accounts,total){
+ try{
+  if(!Array.isArray(hands)||hands.length>new Set(awards.map(a=>a.hand)).size||new Set(hands.map(h=>h?.number)).size!==hands.length)throw Error();
+  for(const h of hands){
+   const n=accounts.length,money=v=>Array.isArray(v)&&v.length===n&&v.every(x=>Number.isSafeInteger(x)&&x>=0&&x<=total),card=c=>typeof c==='string'&&/^[2-9TJQKA][cdhs]$/.test(c);
+   if(!h||!Number.isSafeInteger(h.number)||h.number<1||h.variant!=='holdem'||!Number.isSafeInteger(h.at)||h.at<0||h.at>8640000000000000||!Number.isSafeInteger(h.blind)||h.blind<2||h.blind%2||!Number.isInteger(h.button)||h.button<0||h.button>=n||!isDeepStrictEqual(h.names,accounts)||!Array.isArray(h.avatars)||![0,n].includes(h.avatars.length)||h.avatars.some(a=>!(Number.isInteger(a)&&a>=0&&a<=6)&&!(typeof a==='string'&&/^\/local\/avatar-images\/[a-f0-9]{64}\.png$/.test(a)))||!Array.isArray(h.board)||h.board.length>5||h.board.some(c=>!card(c))||!Array.isArray(h.cards)||h.cards.length!==n||h.cards.some(v=>v!==null&&(!Array.isArray(v)||![0,2].includes(v.length)||v.some(c=>c!==null&&!card(c))))||!money(h.committed)||!money(h.payouts)||!money(h.returns)||!money(h.stacks)||h.returns.some((v,i)=>v>h.payouts[i])||h.stacks.reduce((a,b)=>a+b,0)!==total||h.committed.reduce((a,b)=>a+b,0)!==h.payouts.reduce((a,b)=>a+b,0)||!Array.isArray(h.history)||h.history.some(v=>typeof v!=='string'))throw Error();
+   const cards=[...h.board,...h.cards.flatMap(v=>v||[])].filter(Boolean);if(new Set(cards).size!==cards.length||!isDeepStrictEqual(h,battleBountyPublicHand({hudHistory:[{...h,result:h}]},awards,h.number)))throw Error();
+  }
+  return structuredClone(hands);
+ }catch{throw Error('Invalid public bounty archive')}
+}
