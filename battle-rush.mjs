@@ -38,6 +38,11 @@ export function battleRush(entries,config,checkpoint=null){
  function move(account,session,table,action,target,now){player(account,session,table);tick(now);pool.move(account,action,target);tick(now);return view(account,session)}
  function fold(account,session,table,now){player(account,session,table);tick(now);pool.fold(account,null,!closed);tick(now);return view(account,session)}
  function qualification(){if(phase()!=='qualification')throw Error('Finish all Battle Rush hands before qualification');return [...pool.players].map(([id,p])=>({id,stack:p.balance}))}
+ function lobby(){
+  const players=[...pool.players].map(([name,p])=>{const t=pool.tables.get(p.table),seat=t?.ids.indexOf(name);return {name,chips:p.balance+(t?t.game.stacks[seat]:0),table:p.table===null?null:String(p.table),alive:p.balance>0||p.table!==null,place:null}});
+  const tables=[...pool.tables].filter(([,t])=>!t.settled).map(([id,t])=>{const stacks=t.ids.flatMap((name,i)=>pool.players.get(name).table===id?[t.game.stacks[i]]:[]);return {id:String(id),players:stacks.length,largestStack:Math.max(...stacks),smallestStack:Math.min(...stacks),open:false}}).filter(t=>t.players>0);
+  return {players,tables};
+ }
  function snapshot(){return JSON.stringify({version:1,config,entries,closed,sessions:[...sessions],pool:pool.snapshot()})}
- return {view,deal,move,fold,tick,phase,alive,qualification,snapshot,total:pool.total,sessions:()=>Object.fromEntries(sessions)};
+ return {view,deal,move,fold,tick,phase,alive,lobby,qualification,snapshot,total:pool.total,sessions:()=>Object.fromEntries(sessions)};
 }
