@@ -20,11 +20,93 @@
       "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/tourneylobby/players/player/TourneyPlayersPage.as",
       "sha256": "3ecfc55df4a4170c0bde6ef37286f6ab8dffcdb33da385052a903bd55c0c0b55",
       "bytes": 13051
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/content/tourneylobby/filter/TourneySearchButton.as",
+      "sha256": "6f81e1a6355e8200a94f906ed74d203fc45110d25842cdbe82faa0064184f427",
+      "bytes": 610
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/content/tourneylobby/ResetButton.as",
+      "sha256": "9b9fd8f61711b29fefd95154c294efc8ad9bf5304603bb488283754a15bcd8dc",
+      "bytes": 1289
     }
   ],
   "limits": [
     "Original server matching semantics unavailable",
-    "Native search background/icon sprites and physical placement not yet calibrated",
+    "Original atlas pixels verified; AIR/browser slice resampling, physical placement and scroll pinning not calibrated",
     "Local matching explicitly case-insensitive substring against authenticated public lobby projection"
-  ]
+  ],
+  "atlas": {
+    "files": [
+      {
+        "bytes": 681,
+        "file": "native-tourney-search-over.png",
+        "frame": "lobby0512",
+        "height": 24,
+        "rgbaExact": true,
+        "sha256": "73604b2a6b8b7d23de6faa76e800c6fae497aeade5bebe21bdb54b422ce24d2c",
+        "width": 40
+      },
+      {
+        "bytes": 1027,
+        "file": "native-tourney-search-focus.png",
+        "frame": "lobby0513",
+        "height": 24,
+        "rgbaExact": true,
+        "sha256": "d0767cba46ce5b71da4a665eb9143b103a5f7e1f306778f22d3b49a571be8753",
+        "width": 40
+      },
+      {
+        "bytes": 680,
+        "file": "native-tourney-search-up.png",
+        "frame": "lobby0514",
+        "height": 24,
+        "rgbaExact": true,
+        "sha256": "e3b524dd1d2b2057782bb75453f63cbdd55ba4de012e458bb30960e9bbdacd28",
+        "width": 40
+      },
+      {
+        "bytes": 570,
+        "file": "native-tourney-search-icon.png",
+        "frame": "lobby0516",
+        "height": 14,
+        "rgbaExact": true,
+        "sha256": "4b2ffa91eb66ffb8af7fccf1f65888fa4ac0995bf6d8f37cd15dea0332230cd4",
+        "width": 14
+      },
+      {
+        "bytes": 584,
+        "file": "native-tourney-search-icon-disabled.png",
+        "frame": "lobby0517",
+        "height": 14,
+        "rgbaExact": true,
+        "sha256": "a86762d88f316175d1329c414c7d7aaad24d7935ad24caf14e52eb2dc09285c7",
+        "width": 14
+      },
+      {
+        "bytes": 522,
+        "file": "native-tourney-search-reset-up.png",
+        "frame": "lobby0550",
+        "height": 18,
+        "rgbaExact": true,
+        "sha256": "3741b5b8a0d5c231d94d67e9b912e2a9da3d14d154b335a165fb13c5583705f0",
+        "width": 40
+      },
+      {
+        "bytes": 519,
+        "file": "native-tourney-search-reset-down.png",
+        "frame": "lobby0551",
+        "height": 18,
+        "rgbaExact": true,
+        "sha256": "80442232a8258acdfffac8f9bab9455d0b2ad2d0c932a8a8dac73f50398eb4fa",
+        "width": 40
+      }
+    ],
+    "method": "StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding",
+    "sources": {
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+    }
+  }
 }

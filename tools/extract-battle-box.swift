@@ -37,3 +37,6 @@ print("PASS native tournament common81 panel24x24; exact RGBA readback")
 
 try extract("init_lobby/desktop_assets.png",[("common0030","up",20,40),("common0032","down",20,40),("common0027","disabled",20,40),("common0020","shadow",40,40)],"native-tourney-entry-","tourney-entry-atlas")
 print("PASS native tournament entry states/shadow; exact RGBA readback")
+
+try extract("init_lobby/desktop_assets.png",[("lobby0512","over",40,24),("lobby0513","focus",40,24),("lobby0514","up",40,24),("lobby0516","icon",14,14),("lobby0517","icon-disabled",14,14),("lobby0550","reset-up",40,18),("lobby0551","reset-down",40,18)],"native-tourney-search-","tourney-search-atlas")
+print("PASS native player search7sprites exact decoded RGBA")
