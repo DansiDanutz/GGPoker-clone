@@ -1063,3 +1063,7 @@ Recorded eliminations no longer become future-hand waiting seats or expose inval
 ### Tournament result window — local state and native fallback audio
 
 Eliminated/winning players receive their actual place and projected/settled local award after chip motion. The360×611window uses native finalist/winner/info/ribbon crops, existing player avatars, Close/reopen and authenticated own Last Hand. Actual start/elimination/finish times survive restart and do not confuse pause-adjusted blind schedules with wall time; legacy times stay unknown. Native embedded win/ITM/fall audio respects local effects/master controls and window cancellation. Three-session browser checks cover places/prizes,original crop dimensions,48pxavatars,payout gate,poll stability,Last Hand and restart. Full brand/font/flag/Save/Share/Best Hand/Bad Beat parity,country winnerBGM and physical native timing remain open. See docs/rea/tournament-result.md.
+
+### Tournament result PNG — local Save policy
+
+Save exports the players actual result to a356×535PNG using the native UTC/title/place filename convention. Real download, native-background pixel samples, late decode cancellation, immediate private DOM cleanup, error/retry and shared32-hand history export are browser-tested. Local Save/Close replaces external sharing by explicit local policy; native PLAYGG.RO Save/Share configuration is unknown. The common PNG renderer resets all cloned insets so offscreen capture cannot become transparent. See docs/rea/tournament-result.md. Full image/native brand/font parity remains open.

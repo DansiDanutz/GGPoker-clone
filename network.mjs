@@ -1,7 +1,7 @@
 import {installTournamentResult} from './tournament-result.mjs';
 import {installCashSitOutMenu} from './cash-sitout-menu.mjs';
 import {hotkeyActions,readHotkeys,keyCodes,keyCaption,readHotkeyGroups,hotkeyGroup} from './hotkey-bindings.mjs';
-import {installPlayerNotes} from './player-note-ui.mjs';
+import {installPlayerNotes,historyPng} from './player-note-ui.mjs';
 import {bestFiveFocus} from './engine/hand.mjs';
 import {playChipLayout,aofBetParts,readChipShuffle,createChipShuffle,paintShuffle,remoteShuffleFrame} from './chip-shuffle.mjs';
 import {createSqueezePanel} from './card-squeeze.mjs';
@@ -116,7 +116,7 @@ const helmet=helmetModule?helmetModule.installHelmet(()=>({state,rabbitOpened:ra
 const rabbitModule=await fetch('/rabbit-view.mjs',{signal:AbortSignal.timeout(5000)}).then(r=>r.ok?import('./rabbit-view.mjs'):null,()=>null);
 const rabbitView=rabbitModule?rabbitModule.installRabbitView(document.querySelector('.boardArea'),()=>chatWindow?null:state,number=>operate('rabbit',{number}),playCues,()=>playerNotes.refresh()):{update(){}};
 const playerNotes=installPlayerNotes($('tableSettings'),()=>({state,rabbitOpened:rabbitView.opened===true,room:rushMode?'rush:'+rushPoolKind+':'+state?.noteTable:room,token,enabled:!chatWindow&&(!rushMode||!!state?.noteTable),...(rushMode?{notesPath:'/api/rush/'+rushPoolKind+'/notes',notesTable:state?.noteTable}:{} )}));
-const tournamentResults=installTournamentResult($('tableSettings'),()=>({state:chatWindow?null:state,room,token,animating:!!pendingHand||!!document.querySelector('.award')}),()=>playerNotes.openHistory(),avatarSource,playCues);
+const tournamentResults=installTournamentResult($('tableSettings'),()=>({state:chatWindow?null:state,room,token,animating:!!pendingHand||!!document.querySelector('.award')}),()=>playerNotes.openHistory(),avatarSource,playCues,historyPng);
 // Next-blind scheduling remains unavailable until its server trigger is established.
 let cashSitOutMenu;
 const cashSitOut=document.createElement('input'),cashSitOutLabel=element('label');cashSitOut.type='checkbox';cashSitOut.id='cashSitOut';const cashSitOutCaption=element('span','',' Sit out next hand');cashSitOutCaption.dataset.nativeLabel='MobileSitOut';cashSitOutLabel.append(cashSitOut,cashSitOutCaption);cashSitOutLabel.hidden=true;tableSettings.append(cashSitOutLabel);cashSitOut.onchange=async()=>{if(!cashSitOut.checked&&state?.returnFundingRequired){updateCashSitOut();openAddChips();return}cashSitOut.disabled=true;await operate('sit-out',{paused:cashSitOut.checked});updateCashSitOut()};

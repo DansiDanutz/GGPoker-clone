@@ -520,9 +520,13 @@ body:has(#dealMeIn:not([hidden])) footer:has(#join[hidden]){margin-top:0}
 
 .resultSummary{background:transparent url('/home-art/native-result-final.png') center top / 320px 112px no-repeat}
 .tournamentResult[data-winner=true] .resultSummary{background-image:url('/home-art/native-result-winner.png')}
-.resultSummary::before{content:'';position:absolute;box-sizing:border-box;top:112px;left:0;width:100%;height:82px;border:12px solid transparent;border-image:url('/home-art/native-result-info.png') 12 11 11 12 fill stretch}
-.resultSummary::after{content:'';position:absolute;box-sizing:border-box;top:96px;left:8px;width:calc(100% - 16px);height:31px;border-left:42px solid transparent;border-right:42px solid transparent;border-image:url('/home-art/native-result-ribbon.png') 0 42 fill stretch}
+.resultInfo{content:'';position:absolute;box-sizing:border-box;top:112px;left:0;width:100%;height:82px;border:12px solid transparent;border-image:url('/home-art/native-result-info.png') 12 11 11 12 fill stretch}
+.resultRibbon{content:'';position:absolute;box-sizing:border-box;top:96px;left:8px;width:calc(100% - 16px);height:31px;border-left:42px solid transparent;border-right:42px solid transparent;border-image:url('/home-art/native-result-ribbon.png') 0 42 fill stretch}
 .resultSummary p{z-index:1}
 
 .resultAvatar{position:absolute;left:32px;top:70px;width:48px;height:48px;object-fit:cover;border-radius:50%;z-index:1}
 .resultPlayer{top:96px;left:92px;width:136px;height:24px;line-height:24px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+
+.resultLastHand{position:absolute;left:182px;top:384px;width:146px;height:30px;background:#333;color:white;border:1px solid #666}
+.resultExport{box-sizing:border-box;position:fixed;left:-10000px;top:0;width:356px;height:535px;overflow:hidden;background:#171717}
+.resultExport .tournamentResult{border:0}
