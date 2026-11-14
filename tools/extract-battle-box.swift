@@ -22,3 +22,7 @@ func extract(_ relative:String,_ entries:[(String,String,Int,Int)],_ prefix:Stri
 try extract("after_lobby/desktop_table_assets.png",[("table0385","winner",297,77),("table0386","remaining",181,121)],"native-battle-box-","battle-box-atlas")
 try extract("init_lobby/desktop_assets.png",[("battleroyale0037","left",160,22),("battleroyale0038","right",160,22),("battleroyale0044","arrow",4,9)],"native-battle-rules-","battle-rules-atlas")
 print("PASS native bounty panels and Battle rules lines160x22/arrow4x9; exact RGBA readback")
+
+try extract("init_lobby/desktop_assets.png",[("battleroyale0002","logo",128,110),("battleroyale0004","card",116,124),("battleroyale0005","card-selected",116,124),("lobby0855","players",20,20),("lobby0984","tab-up",24,72),("lobby0985","tab-down",24,72),("lobby0986","tab-over",24,72),("lobby0987","tab-selected",24,72)],"native-battle-lobby-","battle-lobby-atlas")
+for (source,name) in [("battleroyalelobbybg.png","bg"),("battleroyalelobbybottombg.png","bottom")]{let data=try Data(contentsOf:root.appendingPathComponent("battleroyale/"+source)),url=out.appendingPathComponent("native-battle-lobby-"+name+".png");if FileManager.default.fileExists(atPath:url.path){let existing=try Data(contentsOf:url);precondition(existing==data)}else{try data.write(to:url)}}
+print("PASS native Battle lobby logo/cards/tabs/players exact RGBA and unchanged background bytes")

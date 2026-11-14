@@ -1,0 +1,178 @@
+{
+  "authority": "shipped SWF51 and installed assets; static decompilation/byte evidence",
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/battle-lobby-source/scripts/com/nsus/iron/lobby/view/LobbyBackGround.as",
+      "sha256": "40b6e2776f06d3adfd61074f20ea703c23383a8ddf53289dd0601b4c86e4360d",
+      "bytes": 2136
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/battle-lobby-source/scripts/com/nsus/iron/lobby/view/battleroyale/BattleRoyaleNewLobby.as",
+      "sha256": "7e5459f61fe68dfae6596544f2a599222219055089c4acd9a15be64ddbf883a5",
+      "bytes": 10758
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/battle-lobby-source/scripts/com/nsus/iron/lobby/view/battleroyale/LobbySubPageType.as",
+      "sha256": "0d4c2cd91bf055a318db4e7f536c7aa064e50e2a0f62c29d46d3b04ca778a8c6",
+      "bytes": 3416
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/battle-lobby-source/scripts/com/nsus/iron/lobby/view/battleroyale/LobbyTabButton.as",
+      "sha256": "610cd358a2352986f303655dc04317577834641c5a732d1b85e99e74f298117e",
+      "bytes": 5165
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/battle-lobby-source/scripts/com/nsus/iron/lobby/view/battleroyale/LobbyTabView.as",
+      "sha256": "c2a67ed397a3d7e2146ce64d7d53e6eb799af0a8c440d9da988b9848cd6eff18",
+      "bytes": 6750
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/battle-lobby-source/scripts/com/nsus/iron/lobby/view/battleroyale/subpage/BattleRoyaleGameListPage.as",
+      "sha256": "b67f0782134b0482d6fcaafaa3fdb588f2329d17314d594b09950d02a296855d",
+      "bytes": 2349
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/battle-lobby-source/scripts/com/nsus/iron/lobby/view/battleroyale/subpage/BattleRoyaleGameLobbyPage.as",
+      "sha256": "1cd15e30235e3641f62f8612adee55503f3bb1fb30aa10db081aeb26c45ccc3e",
+      "bytes": 27041
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/battle-lobby-source/scripts/com/nsus/iron/lobby/view/battleroyale/subpage/BattleRoyaleLeaderboardPage.as",
+      "sha256": "077c6e0a535f97ce678e95033a1d596dd96f63d1faef28871121864dfa525a29",
+      "bytes": 7015
+    }
+  ],
+  "atlas": {
+    "files": [
+      {
+        "bytes": 24135,
+        "file": "native-battle-lobby-logo.png",
+        "frame": "battleroyale0002",
+        "height": 110,
+        "rgbaExact": true,
+        "sha256": "a47f51ba60e56a14e7936ca3f1917b4b4f41d5af627ed5d1f99f41bbcb9e10f4",
+        "width": 128
+      },
+      {
+        "bytes": 17335,
+        "file": "native-battle-lobby-card.png",
+        "frame": "battleroyale0004",
+        "height": 124,
+        "rgbaExact": true,
+        "sha256": "8f5c9872d4e8ab5ca8c6d103c2bc6671bf713632acc37e0a379e067b6ca1a350",
+        "width": 116
+      },
+      {
+        "bytes": 23895,
+        "file": "native-battle-lobby-card-selected.png",
+        "frame": "battleroyale0005",
+        "height": 124,
+        "rgbaExact": true,
+        "sha256": "74752d329873fa0b83bc87014b4648ff5f42ca5859c001db8f27ba6e40d46a3c",
+        "width": 116
+      },
+      {
+        "bytes": 562,
+        "file": "native-battle-lobby-players.png",
+        "frame": "lobby0855",
+        "height": 20,
+        "rgbaExact": true,
+        "sha256": "1c498c0cc894b83bfb80177890abcca2eb02f58b89b9659eb093e64b23c5ecc6",
+        "width": 20
+      },
+      {
+        "bytes": 1465,
+        "file": "native-battle-lobby-tab-up.png",
+        "frame": "lobby0984",
+        "height": 72,
+        "rgbaExact": true,
+        "sha256": "70a4347bace2a093a74fccd92bd8ec7cc935fe173dfbf18b3600562b2d9d2d91",
+        "width": 24
+      },
+      {
+        "bytes": 1480,
+        "file": "native-battle-lobby-tab-down.png",
+        "frame": "lobby0985",
+        "height": 72,
+        "rgbaExact": true,
+        "sha256": "4e97d7a8a323e029a77a2d211eec96e505dc42a35f34cd2e5b28f55116057194",
+        "width": 24
+      },
+      {
+        "bytes": 1460,
+        "file": "native-battle-lobby-tab-over.png",
+        "frame": "lobby0986",
+        "height": 72,
+        "rgbaExact": true,
+        "sha256": "982865b1cb8560f3600831a846c3710de239c768a02e808248b3b6a318b60a23",
+        "width": 24
+      },
+      {
+        "bytes": 2270,
+        "file": "native-battle-lobby-tab-selected.png",
+        "frame": "lobby0987",
+        "height": 72,
+        "rgbaExact": true,
+        "sha256": "c07413465aa23e231e2a7b6fd8d51ad6c0d1dc0ac64d85fee75239828aadcc53",
+        "width": 24
+      }
+    ],
+    "method": "StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding",
+    "sources": {
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+    }
+  },
+  "backgrounds": [
+    {
+      "source": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/battleroyale/battleroyalelobbybg.png",
+      "output": "native-battle-lobby-bg.png",
+      "sha256": "0465d4620d9c4926013929dd7e44dc71419d4fd7646586d4fe923b854ab1a685",
+      "bytes": 367099
+    },
+    {
+      "source": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/battleroyale/battleroyalelobbybottombg.png",
+      "output": "native-battle-lobby-bottom.png",
+      "sha256": "0f6bc24cf7ad7f801c0f07d601e50480bf52ce285d46edf0ed590737e8726c3f",
+      "bytes": 590204
+    }
+  ],
+  "geometry": {
+    "pageWidth": 1078,
+    "navWidth": 148,
+    "navRowHeight": 72,
+    "mainWidth": 615,
+    "cardContainerLeft": 7,
+    "cardContainerTopFromBottom": 245,
+    "sliderBottom": 105,
+    "cardTop": 17,
+    "cardStep": 120,
+    "cardSize": [
+      116,
+      124
+    ],
+    "joinLeft": 230,
+    "joinBottom": 32,
+    "joinSize": [
+      160,
+      40
+    ],
+    "myTablesLeft": 22,
+    "myTablesBottom": 21,
+    "myTablesSize": [
+      124,
+      44
+    ],
+    "detailsLeft": 395,
+    "detailsBottom": 32
+  },
+  "knownGaps": [
+    "Native buy-in types group matchmaking; local cards select explicit owner events",
+    "Native Highest Bounty winners panel and stage-info overlays not reconstructed",
+    "Local card shows actual remaining budget rather than inferred highest bounty",
+    "Join Now opens local registration instead of an unverified native multi-table registration popup",
+    "Game List retains local functional list; native list columns/filter/sort pending",
+    "Leaderboard is promotion-conditional; no local promotion exists, so no fictitious tab/ranking",
+    "Native global red button/MyTables popup chrome/font/hover timing and physical full-screen parity unverified"
+  ]
+}
