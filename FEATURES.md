@@ -15,7 +15,7 @@ Target: reproduce player-visible workflows using independent code and an owner-c
 | Short Deck | Local 36-card/button-blind engine and hosted fixtures; native ATS-off/3-bet-on HUD branch; independent payout checks | Native forced-bet runtime validation, complete lobby/table comparison and remaining options |
 | Tournaments | Hold’em/PLO three-, four- and six-seat freezeouts, scheduled starts, computers, configurable/free local entry costs, registration, levels, places, persisted prize, eliminated-player watch/reconnect and personal final results, and owner pause/resume with source-backed notices | Multi-table events and native branded formats |
 | Rush | Separate Hold’em/PLO pools, quick-fold transfers and source Fold/bet widgets, isolated human sessions or eleven computers, server timer, queues, sit-out-next-hand/return, recorded HUD/history, timeouts, atomic account wallet funding/rebuy/cash-out and recovery | Multiple stake levels, Cash Drops, native layout/timing and queue fairness |
-| Spin & Gold | Live information-only lobby, Info/Blind Structure/Payout and insurance help; native 3-Max captures and tested rule model | Multiplier-dependent starting stack/time bank, native wheel, matching and gameplay |
+| Spin & Gold | Live information-only lobby, Info/Blind Structure/Payout and insurance help; native 3-Max captures and tested rule model; local owner prize-bank capitalization with atomic persistence and audit | Effective multiplier configuration, prize reservations/settlement, native wheel, matching and gameplay |
 | Battle Royale | Reference label observed | Game rules and format |
 | Leaderboard | Private room standings (net chips over last 20 hands), durable hand results | Cross-room rankings and account identity |
 | Player notes | Private1000-char notes, native opponent HUD editor/frames, ten private20-char label titles, account persistence, auth/backup/restart, shared Hold’em/PLO Rush notes and isolated-browser tests | Advanced own HUD metrics/full native window/skin/global statistics, offline list entry point (unconfirmed), physical comparison of the300ms opponent-note hover tooltip, advanced/global Rush metrics and native Rush HUD comparison |
@@ -1083,3 +1083,7 @@ The Home Cashier uses original108×65up/over/down sprites,RobotoBold16px localiz
 ### Cashier light source clock
 
 Authenticated Home Cashier now has the original70×64light,source30/10anchor and7.5second loop:5second pause,2second cubic-out appearance,0.5second cubic-in disappearance. Browser animation-clock samples,guest/reduced-motion suppression andbright-light pointer passthrough are verified. Physical native timing/account-refresh cadence remain open; no fake escrow counter is shown. See docs/rea/cashier-local-wallet.md.
+
+### Spin operator capital foundation
+
+A separate local owner bank starts atzero andsupports audited,idempotent funding in the existing atomic rooms checkpoint. Owner HTTP/UI tests cover lost acknowledgements,rollback,restart,private key changes andplayer-wallet isolation. No Spin entries orprizes are processed yet. This is local admin policy,not observed native administration. See docs/rea/spin-operator-bank.md andspin-registration-runtime.md.

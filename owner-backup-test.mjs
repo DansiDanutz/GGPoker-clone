@@ -24,7 +24,8 @@ try{
  assert.equal((await fetch(origin+'/api/rooms/'+room+'/start',{method:'POST',headers:{Origin:origin,Authorization:'Bearer '+first.issued,'Content-Type':'application/json'},body:JSON.stringify({version:current.version})})).status,200);
  for(const kind of ['holdem','plo'])assert.equal((await fetch(origin+'/api/rush/'+kind+'/join',{method:'POST',headers:{Origin:origin,Cookie:'localplayer='+rawCookie,'Content-Type':'application/json'},body:JSON.stringify({version:0})})).status,200);
  const liveHand=await(await fetch(origin+'/api/rooms/'+room+'/state',{headers:{Authorization:'Bearer '+first.issued}})).json();
- const liveFiles=Object.fromEntries(['tables.json','rooms.json','local-players.json','rush.json','rush-plo.json','owner-audit.jsonl'].map(name=>[name,readFileSync(join(dir,name))]));
+ const savedPools=new Map(JSON.parse(readFileSync(join(dir,'rooms.json'),'utf8'))).get('local-rush-pools');assert.ok(savedPools.holdem);assert.ok(savedPools.plo);
+ const liveFiles=Object.fromEntries(['tables.json','rooms.json','local-players.json','owner-audit.jsonl'].map(name=>[name,readFileSync(join(dir,name))]));
  const players=readFileSync(join(dir,'local-players.json'));const created=await request('POST','/api/owner-backups');assert.equal(created.status,200);const backup=await created.json();assert.match(backup.id,/^[a-f0-9]{24}$/);
  const file=join(dir,'backups',backup.id+'.json'),archive=JSON.parse(readFileSync(file));assert.equal(statSync(file).mode&0o777,0o600);assert.equal(archive.version,1);assert.ok(!archive.files.some(f=>f.name==='owner.key'));assert.equal(Buffer.from(archive.files.find(f=>f.name==='local-players.json').content,'base64').toString(),players.toString());assert.ok(!readFileSync(file,'utf8').includes(rawCookie));
  for(const [name,bytes] of Object.entries(liveFiles))assert.deepEqual(Buffer.from(archive.files.find(f=>f.name===name).content,'base64'),bytes);
