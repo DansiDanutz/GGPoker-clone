@@ -550,3 +550,5 @@ body:has(#dealMeIn:not([hidden])) footer:has(#join[hidden]){margin-top:0}
 @media(prefers-reduced-motion:reduce){.nativeRunoutBoard.runoutRow,.nativeRunoutBoard .runoutCard,.nativeRunoutBoard .nativeFlop.runoutCard{animation:none;visibility:visible}}
 
 .nativeBattleBounty::backdrop{background:transparent}
+
+.battleStageNoticeTitle{color:#999;font-size:1.8823529412cqw}.battleStageNoticeBody{margin-top:1.6470588235cqw;color:#fff;font-size:1.6470588235cqw}

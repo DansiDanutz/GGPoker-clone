@@ -1,5 +1,5 @@
 import {installBattleBountyScene} from './battle-bounty-scene.mjs';
-import {battleTableState} from './battle-table.mjs';
+import {battleTableState,battleStageNotice} from './battle-table.mjs';
 import {installRimtPanel} from './rimt-panel.mjs';
 import {installSpinWheelScene} from './spin-wheel-scene.mjs';
 import {installTournamentResult} from './tournament-result.mjs';
@@ -82,6 +82,12 @@ function updateTournamentNotice(){
  if(tournamentNoticeCurrent?.kind==='paused'&&tournamentNoticePhase==='hold')hideTournamentNotice();showTournamentNotice();
 }
 matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',event=>{if(event.matches)tournamentNoticeMotion?.finish()});
+const battleNotice=element('div','nativeTournamentNotice battleStageNotice'),battleNoticeText=element('div','nativeTournamentNoticeText'),battleNoticeTitle=element('span','battleStageNoticeTitle'),battleNoticeBody=element('span','battleStageNoticeBody');
+battleNotice.hidden=true;battleNotice.setAttribute('role','status');battleNotice.setAttribute('aria-live','polite');battleNoticeText.append(battleNoticeTitle,battleNoticeBody);battleNotice.append(battleNoticeText);document.querySelector('.felt').append(battleNotice);
+function updateBattleStageNotice(){
+ const notice=battleMode&&!chatWindow?battleStageNotice(state):null;battleNotice.hidden=!notice;if(!notice)return;
+ battleNotice.dataset.nativeNoticeKey=notice.key;if(battleNoticeTitle.textContent!==notice.title)battleNoticeTitle.textContent=notice.title;if(battleNoticeBody.textContent!==notice.body)battleNoticeBody.textContent=notice.body;
+}
 const tournamentLink=new URLSearchParams(location.search).get('mode')==='tournament';
 if(new URLSearchParams(location.search).get('from')==='home'){
  const query=new URLSearchParams(location.search),back=document.createElement('a');
@@ -567,7 +573,7 @@ function render(){
  rimtPanel.update();
  spinWheelScene.update();
  updateTournamentAnnounce();
- updateTournamentNotice();
+ updateTournamentNotice();updateBattleStageNotice();
  updateAddChipsControl();
  if(!state){bountyScene.clear();pendingHand=null;clearPayout();reservedAction=null;reservedPanel.hidden=true;runoutPlan=null;boardSounds.clear();payoutSoundHand=null;soundedPots.clear()}
  if(!state?.hand?.quickFoldAllowed)$('actions').querySelector('.nativeQuickFold')?.remove();

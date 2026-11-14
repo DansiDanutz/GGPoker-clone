@@ -1188,3 +1188,5 @@ Battle private label-title popup (unreleased): native320x324/two-column20char gr
 Battle label popup: native existing green/disabled/shadow Save and close sprites, source-derived close291/3 and hover rotation; browser geometry/paint regression added. Physical native timing/AA remain unverified.
 
 Native Battle stage contract audit: see docs/rea/battle-stages.md and five source receipts. Stage2 MaximumPlayers determines the native round1 advancing population; Stage3 MaximumPlayers differs from TableSize. Native per-stage hands/minutes, clock carry-over and starting blind policies remain explicit implementation gaps; HUD /9 does not prove a nine-seat final.
+
+Battle table stage notice: source RushStageEndType22 during current local shootout, actual finalSeats−1 cutoff, registered-only/unfinished-hand suppression, native existing background and no wagering interception. Native ready/final notices, fade queue/audio and physical layout remain open; controlled-response browser evidence is separate from live qualification engine coverage.

@@ -45,6 +45,16 @@
       "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/vo/NoticeType.as",
       "bytes": 21589,
       "sha256": "b2d943b26314d713eed2fbacc8d060cdea1c6c0e5c0d6c2a7072187c38d70730"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/stage/component/notice/DesktopNotice.as",
+      "bytes": 9692,
+      "sha256": "98eb0f0070c948c093ddea1fc6b546c5d15bfa939d1accfc842a2ec9856f0cb1"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/vo/Notice.as",
+      "bytes": 2165,
+      "sha256": "9fba70ea4cea0dc4c7a35af330b875b098c8528cbb2e6313d38052d4b6e2dbca"
     }
   ],
   "limits": [
@@ -64,5 +74,10 @@
     "localesReviewed": [
       "en"
     ]
+  },
+  "noticeBackground": {
+    "path": "/Users/davidai/.local/share/playgg-art/preview-cf527f8/native-tournament-notice.png",
+    "sha256": "a5525b44e7bb74cdcbfdaf22f09fca20a3619b64604b5d07f373f05c1a735c60",
+    "method": "Reuse existing installed native tournament notice background"
   }
 }
