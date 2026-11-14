@@ -7,7 +7,7 @@ import {spinWheelWaitLights} from './spin-wheel-wait.mjs';
 import {loadSpinWheelArt,drawSpinWheel} from './spin-wheel-render.mjs';
 import {spinWheelPresentation,spinWheelMotionType,spinWheelCues} from './spin-wheel-presentation.mjs';
 import {loadSpinCongratulations,drawSpinCongratulations,spinCongratulationFrameIndex} from './spin-congratulations.mjs';
-export function installSpinWheelScene(host,getState,acknowledge,play,insurancePosition){
+export function installSpinWheelScene(host,getState,acknowledge,play,insurancePosition,presentationId){
  let active=null,windowActive=true;
  const activation=enabled=>{windowActive=enabled;active?.wait?.activate(enabled);active?.waitMotion?.activate(enabled)};
  addEventListener('blur',()=>activation(false));addEventListener('focus',()=>activation(true));
@@ -21,7 +21,7 @@ export function installSpinWheelScene(host,getState,acknowledge,play,insurancePo
    e.node.dataset.phase='insurance-loading';e.status.hidden=false;e.status.textContent='Loading insurance award…';
    e.insuranceArt=await loadSpinInsuranceArt();if(!alive(e)){for(const a of Object.values(e.insuranceArt))a?.close?.();return}const light=await loadSpinInsuranceGlow();await play.preloadSpinInsurance?.();if(!alive(e))return;
    for(const a of awards)if(!Number.isInteger(a.seat)||a.seat<0||a.seat>2||!Number.isSafeInteger(a.amount)||a.amount<=0)throw Error('Invalid committed insurance award');
-   e.insurance=spinInsurancePresentation((-90+Math.random()*180)*Math.PI/180,(-90+Math.random()*180)*Math.PI/180);e.status.hidden=true;let previous=performance.now(),index=-1;
+   if(typeof presentationId!=='string'||!/^[a-f0-9]{48}$/.test(presentationId))throw Error('Invalid insurance presentation identity');const soundKey='river-spin-insurance-seen:'+presentationId+':'+getState().me,playSound=sessionStorage.getItem(soundKey)!=='1';sessionStorage.setItem(soundKey,'1');e.node.dataset.insuranceSound=playSound?'1':'0';e.insurance=spinInsurancePresentation((-90+Math.random()*180)*Math.PI/180,(-90+Math.random()*180)*Math.PI/180,playSound);e.status.hidden=true;let previous=performance.now(),index=-1;
    async function tick(){if(!alive(e))return;try{const now=performance.now(),pose=e.insurance.tick(now-previous);previous=now;e.ctx.clearRect(0,0,1700,1200);e.node.dataset.phase='insurance';e.node.dataset.insuranceAwards=String(awards.length);
     if(!pose.done){const next=spinInsuranceGlowFrameIndex(pose.elapsedMs);if(next!==index){const image=await light.frame(next);if(!alive(e)){image.src='';return}if(e.insuranceImage)e.insuranceImage.src='';e.insuranceImage=image;index=next}for(const a of awards){const position=insurancePosition(a.seat);if(!position||!['x','y','scale'].every(k=>Number.isFinite(position[k]))||position.scale<=0)throw Error('Invalid insurance seat position');e.ctx.save();try{e.ctx.translate(position.x,position.y);e.ctx.scale(position.scale,position.scale);drawSpinInsuranceGlow(e.ctx,e.insuranceImage,0,0,pose.elapsedMs);drawSpinInsurance(e.ctx,e.insuranceArt,String(a.amount),pose,0,0)}finally{e.ctx.restore()}}}
     for(const cue of pose.cues)Promise.resolve(play([cue],()=>alive(e))).then(stop=>{if(alive(e))e.stops.push(stop);else stop?.()}).catch(error=>fail(e,error));
