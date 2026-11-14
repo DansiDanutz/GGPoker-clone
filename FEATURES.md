@@ -1146,3 +1146,5 @@ Released PR127: local all-human hosted Holdem RIMT is merged at5d86d42 (testedcd
 RIMT computer support (implementation): trusted server-created bots can propose2/accept after500ms through durable phase timestamps; public human auth stays unchanged. Unit/file rollback and HTTP/browser human+5computer tests cover both role directions,initial-card-only fixtures,116pot/650chips,per-run independent payouts,decoded cues,displayed balances and pending/final restarts. Guests remain excluded; local bot policy is not native AI.
 
 RIMT keyboard integration: three native Options actions remain unassigned by default and reuse conflict/persistence settings. The shared dispatcher targets visible enabled proposal buttons only. Registry tests and disposable browser tests cover master/category/input/repeat guards, real proposal, payouts and restart; native physical parity remains unverified.
+
+Battle Game List update (unreleased): native five-column geometry and separate selection/open/register/cancel semantics; source hashes and explicit parity gaps in docs/rea/battle-game-list-source.json and battle-royale.md. Real local entry/refund/restart browser coverage added.

@@ -1,0 +1,48 @@
+{
+  "sources": [
+    {
+      "class": "BattleRoyaleTourneyListView.as",
+      "sha256": "f4093caf6c31ced7f9f43c78b3d07b7252d4a6fbf1de84b73b9f3491512a5f31"
+    },
+    {
+      "class": "subpage/BattleRoyaleGameListPage.as",
+      "sha256": "b67f0782134b0482d6fcaafaa3fdb588f2329d17314d594b09950d02a296855d"
+    }
+  ],
+  "geometry": {
+    "contentX": 148,
+    "listWidth": 924,
+    "headerHeight": 24,
+    "rowStep": 28,
+    "rowBackgroundHeight": 25,
+    "status": [
+      0,
+      146
+    ],
+    "event": [
+      151,
+      308
+    ],
+    "players": [
+      535,
+      66
+    ],
+    "bounty": [
+      623,
+      153
+    ],
+    "actionX": 816
+  },
+  "signals": {
+    "click": "selection/brief info only",
+    "doubleClick": "OPEN_TOURNEY_LOBBY",
+    "join": "BATTLE_ROYALE_PLAY_NOW",
+    "unregister": "UNREGISTER_BATTLEROYALE_TOURNEY"
+  },
+  "limitations": [
+    "Native complete tournament lobby is not reconstructed by the network registration page.",
+    "Local selected-event details footer is retained; native fonts/action art/players icon/start date and full pixel match remain incomplete.",
+    "Local entry count is not claimed as the native running alive-player count.",
+    "Highest amount comes from actual configured operator inventory; native global preset/matchmaking remains unverified."
+  ]
+}
