@@ -3,6 +3,7 @@ import {splitPots} from './engine/pots.mjs';
 import {createRimt,readRimt,applyRimt} from './engine/rimt.mjs';
 import {finishRunout} from './engine/table.mjs';
 const fail=(status,message)=>{throw Object.assign(Error(message),{status})};
+export function rimtParticipant(player){return !!player&&(player.bot===true?typeof player.noteId==='string'&&/^[a-f0-9]{32}$/.test(player.noteId):!player.bot&&typeof player.account==='string'&&player.account.length>0)}
 const financialKeys=['hands','board','deck','end','stacks','folded','committed','initialStacks','bets','price','variant','blind','button','runoutBoards','runoutDecision','runoutHand','runoutPending'];
 function selected(s,runs){let d=createRimt({hand:s.hand,proposer:s.proposer,decider:s.decider,suggestUntil:s.suggestUntil,decisionMs:s.decisionMs},s.createdAt);d=applyRimt(d,{hand:d.hand,action:'suggest',seat:d.proposer,runs},s.createdAt);return runs===1?d:applyRimt(d,{hand:d.hand,action:'decide',seat:d.decider,agreed:true},s.createdAt)}
 export function validateRoomRimt(room){
@@ -13,7 +14,7 @@ export function validateRoomRimt(room){
   for(let count=1;count<=3;count++)finishRunout(structuredClone(v.base),selected(d,count),v.allocations[count-1]);
   const expected=structuredClone(v.base);if(d.runs!==null)finishRunout(expected,d,v.allocations[d.runs-1]);
   for(const key of financialKeys)if(JSON.stringify(g[key])!==JSON.stringify(expected[key]))throw Error();
-  if(d.runs===null&&(room.actionClock!==undefined||room.deadline!==null||![d.proposer,d.decider].every(i=>room.players[i]?.account&&!room.players[i].bot)))throw Error();
+  if(d.runs===null&&(room.actionClock!==undefined||room.deadline!==null||![d.proposer,d.decider].every(i=>rimtParticipant(room.players[i]))))throw Error();
  }catch{throw Error('Invalid room RIMT checkpoint')}
 }
 export function beginRoomRimt(room,input,now){
@@ -41,4 +42,12 @@ export function prepareRoomRimt(room,now){
  const proposer=equity.wins[0]===equity.wins[1]?[...seats].sort((a,b)=>(a-g.button-1+g.hands.length)%g.hands.length-(b-g.button-1+g.hands.length)%g.hands.length)[0]:seats[equity.wins[0]<equity.wins[1]?0:1],decider=seats.find(seat=>seat!==proposer),pots=splitPots(g.committed,g.folded).pots;
  const allocations=[1,2,3].map(count=>pots.map(p=>Array.from({length:count},(_,run)=>Math.floor(p.amount/count)+(run===0?p.amount%count:0))));
  beginRoomRimt(room,{proposer,decider,suggestUntil:now+15000,decisionMs:15000,allocations},now);
+}
+
+// Local computer policy: suggest two runs and accept a proposal after500ms; expiry wins at the deadline.
+export function advanceRoomRimtBots(room,now){
+ if(!room.rimt||!room.hand?.runoutPending)return false;const d=readRimt(room.rimt.decision),deadline=d.proposal===null?d.suggestUntil:d.proposedAt+d.decisionMs;if(now>=deadline)return false;
+ if(d.proposal===null&&room.players[d.proposer]?.bot===true&&now>=d.createdAt+500)return applyRoomRimt(room,d.proposer,'rimt-suggest',{number:d.hand,runs:2},now);
+ if(d.proposal!==null&&room.players[d.decider]?.bot===true&&now>=d.proposedAt+500)return applyRoomRimt(room,d.decider,'rimt-decide',{number:d.hand,agreed:true},now);
+ return false;
 }

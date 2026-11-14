@@ -1,4 +1,4 @@
-import {applyRoomRimt,roomRimtView,validateRoomRimt,prepareRoomRimt} from './room-rimt.mjs';
+import {applyRoomRimt,roomRimtView,validateRoomRimt,prepareRoomRimt,advanceRoomRimtBots,rimtParticipant} from './room-rimt.mjs';
 import {spinInsuranceTerms} from './spin-insurance-terms.mjs';
 import {spinWheelSegments} from './spin-wheel-segments.mjs';
 import {spinRules} from './spin-rules.mjs';
@@ -105,7 +105,7 @@ function cashHand(r,now,avatarFor){
   if(after>before){r.topUps??=[];r.topUps.push({subject:p.account||p.digest,seat:i,name:p.name,hand:r.number+1,before,after,added:after-before,at:now});if(r.topUps.length>100)r.topUps.shift()}
  }
  const button=previous?nextDealer(active,previous):active.findIndex(Boolean);
- delete r.rimt;r.number++;r.hand=startHand(stacks,r.settings?.blind||4,button,r.settings?.variant,0,sittingOut,r.settings?.rimt===true&&active.every((v,i)=>!v||r.players[i]?.account&&!r.players[i].bot)?r.number:null);r.hand.hudStartedAt=now;r.hand.hudSubjects=r.players.map(p=>p?noteSubject(p):null);r.hand.hudNames=r.players.map(p=>p?.name??null);r.hand.hudAvatars=r.players.map(p=>p?.account?avatarFor(p.account):p?0:null);startClock(r,now);r.ready.fill(false);delete r.waitingStacks;delete r.previousHand;return true;
+ delete r.rimt;r.number++;r.hand=startHand(stacks,r.settings?.blind||4,button,r.settings?.variant,0,sittingOut,r.settings?.rimt===true&&active.every((v,i)=>!v||rimtParticipant(r.players[i]))?r.number:null);r.hand.hudStartedAt=now;r.hand.hudSubjects=r.players.map(p=>p?noteSubject(p):null);r.hand.hudNames=r.players.map(p=>p?.name??null);r.hand.hudAvatars=r.players.map(p=>p?.account?avatarFor(p.account):p?0:null);startClock(r,now);r.ready.fill(false);delete r.waitingStacks;delete r.previousHand;return true;
 }
 function newRoom(table,body,capacity,now){
  if(table?.rimt!==undefined&&(typeof table.rimt!=='boolean'||table.rimt&&((table.mode||'cash')!=='cash'||table.variant&&table.variant!=='holdem')))fail(400,'RIMT practice requires a Holdem cash table');
@@ -252,7 +252,7 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
     r.version++;return {changed:true,players:chatRoster(r),moderated:{...player,muted:body.muted}};
   }
   scheduledStart(r,now,avatarFor);
-  if(r?.rimt&&r.hand?.runoutPending&&['tick','state','watch'].includes(op)){const ended=!!r.hand?.end;if(applyRoomRimt(r,null,'expire',{},now)&&!ended&&r.hand.end)record(r)}
+  if(r?.rimt&&r.hand?.runoutPending&&['tick','state','watch'].includes(op)){const ended=!!r.hand?.end;let changed=applyRoomRimt(r,null,'expire',{},now);if(advanceRoomRimtBots(r,now))changed=true;if(changed&&!ended&&r.hand.end)record(r)}
   if(op==='tick'){
     if(!r)return null;
     if(r.tournament?.nextDealAt!=null&&now>=r.tournament.nextDealAt)tournamentHand(r,now,avatarFor);
