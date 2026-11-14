@@ -12,11 +12,11 @@ export function battleStageNotice(state){
 
 // Transport interruptions clear continuity, while an ended session stays consumed.
 export function battleStageAudio(){
- let prior=null,session=null;const ended=new Set();
+ let prior=null,session=null,generation=0;const ended=new Set();
  const closed=new Set(['draining','qualification','shootout','final-ready','final-table','finished']);
- return {interrupt(){prior=null},observe(state,catchUp=false){
-  if(!state?.registered||typeof state.battleSession!=='string'||!state.battleSession){prior=null;return []}
-  if(session!==state.battleSession){session=state.battleSession;prior=null}
+ return {interrupt(){prior=null;generation++},lease(){const ticket=generation;return()=>ticket===generation},observe(state,catchUp=false){
+  if(!state?.registered||typeof state.battleSession!=='string'||!state.battleSession){prior=null;generation++;return []}
+  if(session!==state.battleSession){session=state.battleSession;prior=null;generation++}
   const finished=closed.has(state.battlePhase),play=finished&&!ended.has(session)&&!catchUp&&prior==='rush';
   if(finished)ended.add(session);prior=state.battlePhase;return play?['BnRRoundEnd']:[];
  }};

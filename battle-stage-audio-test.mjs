@@ -15,3 +15,5 @@ gate=battleStageAudio();gate.observe(state('rush'));assert.deepEqual(gate.observ
 console.log('PASS Battle stage audio gate: one witnessed Rush finish, silent initial/repeated/stale/hidden/interrupted/new-session reads');
 
 gate=battleStageAudio();gate.observe(state('rush'));assert.deepEqual(gate.observe(state('shootout')),['BnRRoundEnd']);gate.observe(state('rush','b'));gate.observe(state('rush','a'));assert.deepEqual(gate.observe(state('shootout','a')),[],'Returning to a consumed identity cannot replay');
+
+gate=battleStageAudio();gate.observe(state('rush'));gate.observe(state('shootout'));const delayed=gate.lease();assert.equal(delayed(),true);gate.interrupt();assert.equal(delayed(),false);
