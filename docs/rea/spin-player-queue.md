@@ -1,5 +1,7 @@
 # Spin player registration — local practice
 
+Current release: PR119 includes the playable local queue,table and native-source wheel with persistent predeal completion. See [current Spin presentation status](spin-wheel-presentation.md#current-release--pr119). Earlier informational-only/disabled/not-rendered statements below are historical checkpoints. Native effective configuration,insurance and physical runtime parity remain open.
+
 The native Spin lobby evidence retains the two play-money stakes, 3-Max selection, quantity 1–4 and separate insurance control. Native registration and wheel evidence is catalogued in `spin-registration-runtime.md` and `spin-configuratie-nativa.md`. This implementation adds local account-backed registration; it does not establish pixel parity for the new queue/status controls or implement insurance or wheel presentation.
 
 ## State and trust boundary

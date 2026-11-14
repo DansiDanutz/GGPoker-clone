@@ -1,17 +1,34 @@
+import {loadSpinInsuranceArt,drawSpinInsurance} from './spin-insurance-render.mjs';
+import {loadSpinInsuranceGlow,drawSpinInsuranceGlow,spinInsuranceGlowFrameIndex} from './spin-insurance-glow.mjs';
+import {spinInsurancePresentation} from './spin-insurance-presentation.mjs';
 import {spinWheelFlares} from './spin-wheel-flares.mjs';
 import {spinWheelWaitMotion} from './spin-wheel-wait-motion.mjs';
 import {spinWheelWaitLights} from './spin-wheel-wait.mjs';
 import {loadSpinWheelArt,drawSpinWheel} from './spin-wheel-render.mjs';
 import {spinWheelPresentation,spinWheelMotionType,spinWheelCues} from './spin-wheel-presentation.mjs';
 import {loadSpinCongratulations,drawSpinCongratulations,spinCongratulationFrameIndex} from './spin-congratulations.mjs';
-export function installSpinWheelScene(host,getState,acknowledge,play){
+export function installSpinWheelScene(host,getState,acknowledge,play,insurancePosition){
  let active=null,windowActive=true;
  const activation=enabled=>{windowActive=enabled;active?.wait?.activate(enabled);active?.waitMotion?.activate(enabled)};
  addEventListener('blur',()=>activation(false));addEventListener('focus',()=>activation(true));
- const dispose=()=>{const e=active;if(!e)return;active=null;cancelAnimationFrame(e.raf);e.player?.cancel();e.wait?.cancel();e.waitMotion?.cancel();e.flares?.cancel();for(const stop of e.stops)stop?.();for(const value of Object.values(e.art||{}))value?.close?.();e.prize?.image?.close?.();e.node.remove()};
+ const dispose=()=>{const e=active;if(!e)return;active=null;cancelAnimationFrame(e.raf);e.player?.cancel();e.insurance?.cancel();e.insuranceImage&&(e.insuranceImage.src='');for(const a of Object.values(e.insuranceArt||{}))a?.close?.();e.wait?.cancel();e.waitMotion?.cancel();e.flares?.cancel();for(const stop of e.stops)stop?.();for(const value of Object.values(e.art||{}))value?.close?.();e.prize?.image?.close?.();e.node.remove()};
  const alive=e=>active===e;
  function fail(e,error){if(!alive(e))return;cancelAnimationFrame(e.raf);for(const stop of e.stops)stop?.();e.status.hidden=false;e.status.textContent=e.finished?'Spin completion could not be confirmed. Retry to recover your table.':'Spin could not load. Retry to continue.';e.retry.hidden=false;e.retry.onclick=()=>{e.retry.hidden=true;if(e.finished)finish(e);else{dispose();update()}};console.error('Spin presentation:',error.message)}
  async function finish(e){if(!alive(e))return;e.finished=true;e.canvas.hidden=true;e.status.hidden=false;e.status.textContent='Waiting for the other players…';try{if(await acknowledge()===false)throw Error('Completion was not saved')}catch(error){fail(e,error)}}
+ async function insuranceThenFinish(e){
+  const awards=getState()?.spin?.insuranceAwards||[];if(!awards.length){finish(e);return}
+  try{
+   e.node.dataset.phase='insurance-loading';e.status.hidden=false;e.status.textContent='Loading insurance award…';
+   e.insuranceArt=await loadSpinInsuranceArt();if(!alive(e)){for(const a of Object.values(e.insuranceArt))a?.close?.();return}const light=await loadSpinInsuranceGlow();await play.preloadSpinInsurance?.();if(!alive(e))return;
+   for(const a of awards)if(!Number.isInteger(a.seat)||a.seat<0||a.seat>2||!Number.isSafeInteger(a.amount)||a.amount<=0)throw Error('Invalid committed insurance award');
+   e.insurance=spinInsurancePresentation((-90+Math.random()*180)*Math.PI/180,(-90+Math.random()*180)*Math.PI/180);e.status.hidden=true;let previous=performance.now(),index=-1;
+   async function tick(){if(!alive(e))return;try{const now=performance.now(),pose=e.insurance.tick(now-previous);previous=now;e.ctx.clearRect(0,0,1700,1200);e.node.dataset.phase='insurance';e.node.dataset.insuranceAwards=String(awards.length);
+    if(!pose.done){const next=spinInsuranceGlowFrameIndex(pose.elapsedMs);if(next!==index){const image=await light.frame(next);if(!alive(e)){image.src='';return}if(e.insuranceImage)e.insuranceImage.src='';e.insuranceImage=image;index=next}for(const a of awards){const position=insurancePosition(a.seat);if(!position||!['x','y','scale'].every(k=>Number.isFinite(position[k]))||position.scale<=0)throw Error('Invalid insurance seat position');e.ctx.save();try{e.ctx.translate(position.x,position.y);e.ctx.scale(position.scale,position.scale);drawSpinInsuranceGlow(e.ctx,e.insuranceImage,0,0,pose.elapsedMs);drawSpinInsurance(e.ctx,e.insuranceArt,String(a.amount),pose,0,0)}finally{e.ctx.restore()}}}
+    for(const cue of pose.cues)Promise.resolve(play([cue],()=>alive(e))).then(stop=>{if(alive(e))e.stops.push(stop);else stop?.()}).catch(error=>fail(e,error));
+    if(pose.done){finish(e);return}e.raf=requestAnimationFrame(tick);
+   }catch(error){fail(e,error)}}e.raf=requestAnimationFrame(tick);
+  }catch(error){fail(e,error)}
+ }
  async function start(e,s){try{
   const response=await fetch('/home-art/native-spin-wheel-motion.json',{signal:AbortSignal.timeout(5000)});if(!response.ok)throw Error('Native wheel motion unavailable');const data=await response.json();
   e.art=await loadSpinWheelArt();if(!alive(e)){for(const a of Object.values(e.art))a?.close?.();return}
@@ -26,7 +43,7 @@ export function installSpinWheelScene(host,getState,acknowledge,play){
    for(const cue of pose.cues)Promise.resolve(play([cue],()=>alive(e))).then(stop=>{if(alive(e))e.stops.push(stop);else stop?.()}).catch(error=>fail(e,error));
    if(pose.congratulation){const index=spinCongratulationFrameIndex(pose.congratulation.elapsedMs);if(index!==frameIndex){frame=await e.congrats.frame(index);frameIndex=index}if(!alive(e))return}
    e.node.dataset.phase=pose.phase;e.node.dataset.rotation=String(pose.wheel);drawSpinWheel(e.ctx,e.art,labels,pose);if(pose.congratulation)drawSpinCongratulations(e.ctx,frame,pose.congratulation,e.prize);
-   if(pose.done){finish(e);return}e.raf=requestAnimationFrame(tick);
+   if(pose.done){insuranceThenFinish(e);return}e.raf=requestAnimationFrame(tick);
   }catch(error){fail(e,error)}}
   e.raf=requestAnimationFrame(tick);
  }catch(error){fail(e,error)}}

@@ -1,5 +1,7 @@
 # Spin & Gold registration, runtime configuration and funding
 
+Current release: PR119 includes the playable local queue,table and native-source wheel with persistent predeal completion. See [current Spin presentation status](spin-wheel-presentation.md#current-release--pr119). Earlier informational-only/disabled/not-rendered statements below are historical checkpoints. Native effective configuration,insurance and physical runtime parity remain open.
+
 Current implementation status: PR117 adds explicit owner practice rules and the authenticated playable registration journey; see `spin-player-queue.md`. The disabled-lobby descriptions below record earlier investigation checkpoints, not current release behavior. Native effective configuration, insurance, initial absent-player policy and wheel parity remain unresolved.
 ## Verified local state
 

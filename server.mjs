@@ -1,3 +1,4 @@
+import {spinInsuranceCues} from './spin-insurance-presentation.mjs';
 import {spinWheelCues} from './spin-wheel-presentation.mjs';
 import {readFile} from 'node:fs/promises';
 import {recoverOwnerRestore,restoreOwnerBackup} from './owner-restore.mjs';
@@ -33,7 +34,7 @@ function loadRestoredModels(){
 }
 const hostedId=id=>createHash('sha256').update('river-hosted:'+id).digest('hex').slice(0,48);
 setInterval(()=>{if(restoring||restoreBlocked)return;for(const table of tables){try{roomRequest(hostedId(table.id),'tick',undefined,{},table)}catch{console.error('Hosted table timer could not save state; prior checkpoint retained')}}try{roomRequest.tickSpin()}catch{console.error('Spin timer could not save state; prior checkpoint retained')}},500).unref();
-const files=new Set(['spin-wheel-flares.mjs','spin-wheel-wait-motion.mjs','spin-wheel-wait.mjs','spin-wheel-sparkles.mjs','spin-wheel-scene.mjs','spin-wheel-light.mjs','spin-wheel-glow.mjs','spin-congratulation-rows.mjs','spin-congratulations.mjs','spin-wheel-prize-effect.mjs','spin-wheel-presentation.mjs','spin-wheel-render.mjs','spin-wheel-amount.mjs','spin-wheel-motion.mjs','tournament-result.mjs','cash-sitout-menu.mjs','note-tooltip.mjs','rabbit-peel.mjs','rabbit-view.mjs','native-language.mjs','emoticon-animation-data.mjs','emoticon-animation.mjs','emoticons.mjs','emoticon-picker.mjs','helmet-ui.mjs','helmet-scope.mjs','hand-panel.mjs','hotkey-bindings.mjs','hotkey-settings.mjs','player-note-ui.mjs','card-squeeze.mjs','chip-shuffle.mjs','betting-preferences.mjs','felt.css','felt.mjs','spin-lobby.mjs','engine/spin.mjs','engine/prizes.mjs','index.html','ui.mjs','game.mjs','engine/hand.mjs','engine/pots.mjs','engine/deck.mjs','engine/table.mjs','network.html','network.mjs','table-audio.mjs','nolimit.html','nolimit.mjs','lobby.html','lobby.mjs']);
+const files=new Set(['spin-insurance-presentation.mjs','spin-insurance-render.mjs','spin-insurance-motion.mjs','spin-insurance-glow.mjs','spin-wheel-flares.mjs','spin-wheel-wait-motion.mjs','spin-wheel-wait.mjs','spin-wheel-sparkles.mjs','spin-wheel-scene.mjs','spin-wheel-light.mjs','spin-wheel-glow.mjs','spin-congratulation-rows.mjs','spin-congratulations.mjs','spin-wheel-prize-effect.mjs','spin-wheel-presentation.mjs','spin-wheel-render.mjs','spin-wheel-amount.mjs','spin-wheel-motion.mjs','tournament-result.mjs','cash-sitout-menu.mjs','note-tooltip.mjs','rabbit-peel.mjs','rabbit-view.mjs','native-language.mjs','emoticon-animation-data.mjs','emoticon-animation.mjs','emoticons.mjs','emoticon-picker.mjs','helmet-ui.mjs','helmet-scope.mjs','hand-panel.mjs','hotkey-bindings.mjs','hotkey-settings.mjs','player-note-ui.mjs','card-squeeze.mjs','chip-shuffle.mjs','betting-preferences.mjs','felt.css','felt.mjs','spin-lobby.mjs','engine/spin.mjs','engine/prizes.mjs','index.html','ui.mjs','game.mjs','engine/hand.mjs','engine/pots.mjs','engine/deck.mjs','engine/table.mjs','network.html','network.mjs','table-audio.mjs','nolimit.html','nolimit.mjs','lobby.html','lobby.mjs']);
 http.createServer(async(req,res)=>{
  const json=(code,data)=>{res.writeHead(code,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data))};
  if(restoring||restoreBlocked)return json(503,{error:restoreBlocked?'Restart recovery is required':'Local recovery in progress; retry shortly'});activeRequests++;
@@ -42,9 +43,9 @@ http.createServer(async(req,res)=>{
  const path=new URL(req.url,origin).pathname;
  // Reference recordings are private to the Mac and never served in shared-room mode.
  const localHome=process.env.POKER_REFERENCE_HOME==='1'&&host==='127.0.0.1'&&origin==='http://127.0.0.1:'+port;
- const cue=/^\/table-audio\/(Check|Call|Bet|Raise|AllIn|Fold|DealCard|ShowCard|RabbitCard|RabbitCardDouble|ShowDownCard|Board|GatherChips|WinPot|ShuffleUp|ShuffleCombine|ShuffleOther|SqueezeOpen|AofButton|ChessClock|TimeBankTick|TournamentResultFT|TournamentResultITM|TournamentFallResult|SpinAndGoldSpin|SNGWheelStuckHigh|SNGWheelStuckLow|SngFireworks|SNGWheelOut|SngBigWin|SngWheelFrameEffect|SngWheelFrameLight|SngWheelBaseLight)\.mp3$/.exec(path);
+ const cue=/^\/table-audio\/(Check|Call|Bet|Raise|AllIn|Fold|DealCard|ShowCard|RabbitCard|RabbitCardDouble|ShowDownCard|Board|GatherChips|WinPot|ShuffleUp|ShuffleCombine|ShuffleOther|SqueezeOpen|AofButton|ChessClock|TimeBankTick|TournamentResultFT|TournamentResultITM|TournamentFallResult|SpinAndGoldSpin|SNGWheelStuckHigh|SNGWheelStuckLow|SngFireworks|SNGWheelOut|SngBigWin|SngWheelFrameEffect|SngWheelFrameLight|SngWheelBaseLight|SngInsuranceText|SngPrizeCheers|SngPrizeDaller)\.mp3$/.exec(path);
  if(localHome&&cue&&req.method==='GET'){
-  const wheelAudio=Object.values(spinWheelCues).includes(cue[1]);
+  const wheelAudio=Object.values(spinWheelCues).includes(cue[1])||Object.values(spinInsuranceCues).includes(cue[1]);
   let data;try{data=await readFile(join((wheelAudio||cue[1].startsWith('Shuffle')||cue[1].startsWith('Tournament')||['RabbitCard','RabbitCardDouble','ChessClock','TimeBankTick','ShowDownCard'].includes(cue[1]))?referenceArt:join(homedir(),'Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/sounds'),(wheelAudio||cue[1].startsWith('Tournament')||['RabbitCard','RabbitCardDouble','AofButton','ChessClock','TimeBankTick','ShowDownCard'].includes(cue[1])?'':'Sound')+cue[1]+'.mp3'))}catch{return json(404,{error:'Local sound unavailable'})}
   res.writeHead(200,{'Content-Type':'audio/mpeg','Cache-Control':'private, max-age=3600'});res.end(data);return;
  }
@@ -71,7 +72,7 @@ http.createServer(async(req,res)=>{
   let body;try{body=JSON.parse(raw);if(!body||Array.isArray(body)||typeof body!=='object')throw Error()}catch{return json(400,{error:'Invalid JSON'})}
   if(body.account!==account)return json(401,{error:'Signed-in account changed'});delete body.account;
   if(path.endsWith('/cancel')){if(Object.keys(body).length!==1||typeof body.id!=='string'||!(/^[a-f0-9]{48}$/).test(body.id))return json(400,{error:'Expected a Spin registration identity'});try{return json(200,roomRequest.cancelSpinRegistration(body.id,account))}catch(error){return json(error.status||500,{error:error.status?error.message:'Local operation failed'})}}
-  try{return json(200,roomRequest.queueSpin(account,body))}catch(error){return json(error.status||500,{error:error.status?error.message:'Local operation failed'})}
+  try{return json(200,roomRequest.queueSpin(account,body))}catch(error){return json(error.status||500,{error:error.status?error.message:'Local operation failed',...(error.status===409&&error.code==='spin_rules_changed'?{code:error.code}:{})})}
  }
  if(localHome&&path==='/local/wallet'&&req.method==='GET'){const account=playerProfile.identity(req);return account?json(200,{account,...roomRequest.wallet(account)}):json(401,{error:'Sign in locally'})}
  if(localHome&&['/local/me','/local/login','/local/create','/local/logout','/local/avatar'].includes(path))return await playerProfile.handle(req,res,path,json);

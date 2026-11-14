@@ -1,5 +1,7 @@
 # Local Spin operator capital — implementation in progress
 
+Current release: PR119 includes the playable local queue,table and native-source wheel with persistent predeal completion. See [current Spin presentation status](spin-wheel-presentation.md#current-release--pr119). Earlier informational-only/disabled/not-rendered statements below are historical checkpoints. Native effective configuration,insurance and physical runtime parity remain open.
+
 This is independently specified local play-credit administration. The native operator backend was not observed. Native payout evidence requires a separate prize funding source,but does not establish native admin screen layout orcapitalization policy.
 
 ## Current implemented boundary

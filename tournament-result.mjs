@@ -62,7 +62,7 @@ export function resultGlyphLayout(value,font){
  if(!Number.isSafeInteger(value)||value<0)return null;return resultTextGlyphLayout(String(value),font,32);
 }
 export function resultTextGlyphLayout(text,font,size){
- if(typeof text!=='string'||!text||text.length>64||![32,90].includes(size)||font?.size!==56||!Array.isArray(font.glyphs)||font.glyphs.length>128||!Array.isArray(font.atlasSize)||font.atlasSize.length!==2||!font.atlasSize.every(n=>Number.isInteger(n)&&n>0&&n<=4096))return null;
+ if(typeof text!=='string'||!text||text.length>64||![32,40,90].includes(size)||font?.size!==56||!Array.isArray(font.glyphs)||font.glyphs.length>128||!Array.isArray(font.atlasSize)||font.atlasSize.length!==2||!font.atlasSize.every(n=>Number.isInteger(n)&&n>0&&n<=4096))return null;
  const r=font.region;if(!r||!['x','y','width','height'].every(k=>Number.isInteger(r[k])&&r[k]>=0)||r.x+r.width>font.atlasSize[0]||r.y+r.height>font.atlasSize[1])return null;
  if(!font.glyphs.every(g=>g&&Number.isInteger(g.id)&&g.id>=0&&g.id<=1114111)||new Set(font.glyphs.map(g=>g.id)).size!==font.glyphs.length)return null;
  const scale=size/56,byId=new Map(font.glyphs.map(g=>[g.id,g])),glyphs=[];let width=0,height=0;
