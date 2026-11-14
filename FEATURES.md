@@ -1092,3 +1092,5 @@ A separate local owner bank starts atzero andsupports audited,idempotent funding
 Spin prize exposure follow-up (source,not released): internal atomic bank reserve/cancel now covers worst-case jackpot forboth observed stakes,with retry/cold restart/rollback andrestore-while-held tests. Not connected to registration orprize settlement; no playable Spin claim. See docs/rea/spin-operator-bank.md.
 
 Spin entry escrow source follow-up:bank hold+wallet debit+registration andrefund commit together;both stakes,three private accounts,retry/rollback/cold restart/corrupt checkpoint/backup restoration tested. Explicit synthetic practice configuration only;native defaults unresolved. No publicentryroute,draw,table orsettlement enabled.
+
+Spin authoritative draw source follow-up:three fundedentries gateone crypto100Mticket plusdecisiontime persisted atomically;bothstakes/all8outcomes,sharedpracticeconfig,retry/no-redraw/no-refund,failedwriteandcoldrestartpass. No publicentry/drawroute,renderedwheel,table orsettlement enabled.

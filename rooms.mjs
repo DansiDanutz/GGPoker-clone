@@ -1,11 +1,11 @@
-import {spinPracticeConfiguration} from './engine/spin.mjs';
+import {spinPracticeConfiguration,spinOutcome} from './engine/spin.mjs';
 import {spinBank} from './spin-bank.mjs';
 import {rushPool} from './engine/rush-pool.mjs';
 import {emoticonById} from './emoticons.mjs';
 import {cashWallet} from './cash-wallet.mjs';
 import {prizeAmounts} from './engine/prizes.mjs';
 import {readFileSync,writeFileSync,renameSync} from 'node:fs';
-import {createHash,randomBytes} from 'node:crypto';
+import {createHash,randomBytes,randomInt} from 'node:crypto';
 import {startHand,act,options,nextDealer,omahaRank,preflopRaised,preflopOpportunities,continuationStats,showdownStats,rabbitCards} from './engine/table.mjs';
 import {bestShortDeck} from './engine/hand.mjs';
 import {eliminationPlaces} from './engine/eliminations.mjs';
@@ -476,7 +476,8 @@ export function openRooms(file,avatarFor=()=>0,walletsEnabled=false){
    if(!Array.isArray(spinEntries)||spinEntries.length>10000||new Set(spinEntries.map(m=>m?.id)).size!==spinEntries.length||spinEntries.length&&!walletsEnabled)throw Error('Invalid Spin entries');
    const totals=new Map();
    for(const m of spinEntries){
-    if(!m||Object.keys(m).some(k=>!['id','buyIn','configuration','players'].includes(k))||typeof m.id!=='string'||!/^[a-f0-9]{48}$/.test(m.id)||![5000,10000].includes(m.buyIn)||!Array.isArray(m.players)||!m.players.length||m.players.length>100||new Set(m.players.map(p=>p?.account)).size!==m.players.length||m.players.filter(p=>!p.cancelled).length>3||m.players.some(p=>!p||Object.keys(p).some(k=>!['account','cancelled'].includes(k))||typeof p.account!=='string'||!/^[a-z0-9][a-z0-9_-]{1,19}$/.test(p.account)||typeof p.cancelled!=='boolean'||!Object.hasOwn(wallet.state.accounts,p.account)))throw Error('Invalid Spin entries');
+    if(!m||Object.keys(m).some(k=>!['id','buyIn','configuration','players','ticket','drawnAt'].includes(k))||typeof m.id!=='string'||!/^[a-f0-9]{48}$/.test(m.id)||![5000,10000].includes(m.buyIn)||!Array.isArray(m.players)||!m.players.length||m.players.length>100||new Set(m.players.map(p=>p?.account)).size!==m.players.length||m.players.filter(p=>!p.cancelled).length>3||m.players.some(p=>!p||Object.keys(p).some(k=>!['account','cancelled'].includes(k))||typeof p.account!=='string'||!/^[a-z0-9][a-z0-9_-]{1,19}$/.test(p.account)||typeof p.cancelled!=='boolean'||!Object.hasOwn(wallet.state.accounts,p.account)))throw Error('Invalid Spin entries');
+    if((m.ticket===undefined)!==(m.drawnAt===undefined)||m.ticket!==undefined&&(!Number.isSafeInteger(m.drawnAt)||m.drawnAt<0||m.drawnAt>8640000000000000||!Number.isSafeInteger(m.ticket)||m.ticket<0||m.ticket>=100000000||m.players.filter(p=>!p.cancelled).length!==3))throw Error('Invalid Spin draw checkpoint');
     try{if(JSON.stringify(spinPracticeConfiguration(m.configuration,m.buyIn))!==JSON.stringify(m.configuration))throw Error()}catch{throw Error('Invalid Spin configuration')}
     for(const p of m.players){const t=totals.get(p.account)??{spent:0,returned:0};t.spent+=m.buyIn;if(p.cancelled)t.returned+=m.buyIn;totals.set(p.account,t)}
     const reservation=bank.state.reservations?.find(r=>r.id===m.id);if(!reservation||reservation.buyIn!==m.buyIn||reservation.cancelled!==m.players.every(p=>p.cancelled))throw Error('Invalid Spin entry funding');
@@ -555,18 +556,21 @@ export function openRooms(file,avatarFor=()=>0,walletsEnabled=false){
   request.fundSpinBank=command=>bankTransaction(()=>bank.fund(command));
   request.reserveSpinBank=(id,buyIn)=>bankTransaction(()=>bank.reserve(id,buyIn));
   request.cancelSpinBank=id=>bankTransaction(()=>{if(spinEntries.some(m=>m.id===id&&m.players.some(p=>!p.cancelled)))fail(409,'Refund Spin entries before releasing capital');return bank.cancel(id)});
-  const spinView=(m,account)=>({id:m.id,buyIn:m.buyIn,registered:m.players.filter(p=>!p.cancelled).length,configuration:structuredClone(m.configuration),entry:structuredClone(m.players.find(p=>p.account===account)??null)});
+  const spinResult=m=>{if(m.ticket===undefined)return null;const outcome=spinOutcome(m.buyIn,m.ticket);return {...outcome,...m.configuration.outcomes.find(r=>r.multiplier===outcome.multiplier)}};
+  const spinView=(m,account)=>({id:m.id,buyIn:m.buyIn,registered:m.players.filter(p=>!p.cancelled).length,configuration:structuredClone(m.configuration),outcome:spinResult(m),decidedAt:m.drawnAt??null,entry:structuredClone(m.players.find(p=>p.account===account)??null)});
   request.spinRegistration=(id,account)=>{wallet.summary(account);const m=spinEntries.find(m=>m.id===id);if(!m)fail(404,'Spin registration not found');return spinView(m,account.toLowerCase())};
   request.registerSpin=command=>bankTransaction(()=>{
    if(!command||Object.keys(command).some(k=>!['id','buyIn','account','configuration'].includes(k))||typeof command.id!=='string'||!/^[a-f0-9]{48}$/.test(command.id)||![5000,10000].includes(command.buyIn))fail(400,'Invalid Spin registration');
    const configuration=spinPracticeConfiguration(command.configuration,command.buyIn);wallet.summary(command.account);const account=command.account.toLowerCase();let m=spinEntries.find(m=>m.id===command.id);
    if(m&&(m.buyIn!==command.buyIn||JSON.stringify(m.configuration)!==JSON.stringify(configuration)))fail(409,'Spin rules changed');const prior=m?.players.find(p=>p.account===account);if(prior){if(prior.cancelled)fail(409,'Spin registration identity was already refunded');return spinView(m,account)}
+   if(m?.ticket!==undefined)fail(409,'Spin result is already decided');
    if(m&&(m.players.filter(p=>!p.cancelled).length>=3||m.players.length>=100)||!m&&spinEntries.length>=10000)fail(409,'Spin registration capacity reached');
    bank.reserve(command.id,command.buyIn);wallet.move(account,-command.buyIn,'spin-entry',command.id);if(!m){m={id:command.id,buyIn:command.buyIn,configuration,players:[]};spinEntries.push(m)}m.players.push({account,cancelled:false});return spinView(m,account);
   });
   request.cancelSpinRegistration=(id,name)=>bankTransaction(()=>{
-   wallet.summary(name);const account=name.toLowerCase(),m=spinEntries.find(m=>m.id===id),p=m?.players.find(p=>p.account===account);if(!p)fail(404,'Spin registration not found');if(!p.cancelled){wallet.move(account,m.buyIn,'spin-refund',id);p.cancelled=true;if(m.players.every(p=>p.cancelled))bank.cancel(id)}return spinView(m,account);
+   wallet.summary(name);const account=name.toLowerCase(),m=spinEntries.find(m=>m.id===id),p=m?.players.find(p=>p.account===account);if(!p)fail(404,'Spin registration not found');if(!p.cancelled){if(m.ticket!==undefined)fail(409,'Spin result is already decided');wallet.move(account,m.buyIn,'spin-refund',id);p.cancelled=true;if(m.players.every(p=>p.cancelled))bank.cancel(id)}return spinView(m,account);
   });
+  request.drawSpin=id=>bankTransaction(()=>{const m=spinEntries.find(m=>m.id===id);if(!m)fail(404,'Spin registration not found');if(m.players.filter(p=>!p.cancelled).length!==3)fail(409,'Three funded registrations are required');if(m.ticket===undefined){m.ticket=randomInt(100000000);m.drawnAt=Date.now();}return spinView(m)});
   request.nextGrantSequence=()=>wallet.nextSequence();
   request.lastGrant=()=>wallet.lastGrant();
   request.grant=(name,command)=>{if(!walletsEnabled)fail(503,'Local cash wallets are disabled');const before=JSON.stringify(packed());try{const receipt=wallet.grant(name,command),after=JSON.stringify(packed());if(after!==before){writeFileSync(file+'.tmp',after,{mode:0o600});renameSync(file+'.tmp',file)}return receipt}catch(error){unpack(JSON.parse(before));throw error}};
