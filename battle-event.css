@@ -14,3 +14,5 @@
 
 /* shortcut: source search geometry with provisional vector controls; native lobby512–514/search sprites await extraction. */
 #eventPlayerSearch{position:absolute;left:7px;top:67px;width:400px;height:28px;background:#171717;margin:0}#eventPlayerSearch[hidden]{display:none}#eventPlayerQuery{position:absolute;left:16px;top:4px;width:321px;height:19px;background:#ddd;color:#217b00;border:0;font:13px NativeTourneyRoboto,Arial,sans-serif;padding:0}#eventPlayerSearchSubmit,#eventPlayerSearchClose{position:absolute;top:2px;width:24px;height:22px;padding:0;border:0}#eventPlayerSearchSubmit{left:364px}#eventPlayerSearchClose{left:340px}#eventRows.searchOpen .eventTableHead{margin-bottom:28px}#eventPlayerSearch{z-index:2}#eventPlayerSearchToggle{background:none;border:0;padding:0;color:inherit;font:inherit;width:100%;height:20px;text-align:left}
+
+#eventPlayerSearchSubmit[hidden],#eventPlayerSearchClose[hidden]{display:none}#eventPlayerSearchClose{left:350px;top:4px;width:40px;height:18px;font:12px NativeTourneyRoboto,Arial,sans-serif}
