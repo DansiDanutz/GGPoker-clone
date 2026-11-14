@@ -1,6 +1,6 @@
 # Native tournament lobby — recovered client contract
 
-This records the installed client, not a proposed design. `tourney-lobby-source.json` binds24 selected ActionScript classes by SHA-256. FFDec exported only these classes from the installed Game/51/IronDesktop.swf; private extracted source stays outside the repository. No original account interaction or foreground app was required.
+This records the installed client, not a proposed design. `tourney-lobby-source.json` binds28 selected ActionScript classes by SHA-256. FFDec exported only these classes from the installed Game/51/IronDesktop.swf; private extracted source stays outside the repository. No original account interaction or foreground app was required.
 
 ## Window and three independent tab groups
 
@@ -38,7 +38,7 @@ Additional payout gate: TourneyPayoutPage explicitly hides its generic header fo
 
 ## Players and Tables — additional eight recovered classes
 
-The receipt now contains24 classes. New source includes TourneyPlayersPage, TourneyPlayerList, TourneyPlayerCellRenderer, TourneyTablesPage, TourneyTableList, TourneyLobbyTableCellRenderer, TourneyHowToPlayPage and BattleRoyaleInformationPage. These resolve the selected-row Open callback and Battle-specific rules page rather than relying on guessed routes.
+The preceding recovery expanded the receipt to24 classes. New source includes TourneyPlayersPage, TourneyPlayerList, TourneyPlayerCellRenderer, TourneyTablesPage, TourneyTableList, TourneyLobbyTableCellRenderer, TourneyHowToPlayPage and BattleRoyaleInformationPage. These resolve the selected-row Open callback and Battle-specific rules page rather than relying on guessed routes.
 
 Tables uses a401x23 header at y2 and list at y26. Its columns are Table54, Players54, Largest Stack140, Smallest Stack140. Cell labels start at x0/58/116/260 with those same widths, at y1/h20; separator is x0/y22/w406/h1. Only nonempty tables are valid list items. Selecting a table dispatches TOURNEYLOBBY_PLAYERS_SELECT with the actual tournament/table IDs. Double-click calls onOpenTable; Open dispatches OPEN_TOURNEY_TABLE with the two string IDs. It does not send a join/register/seat command.
 
@@ -81,3 +81,15 @@ This is an operational native-geometry reconstruction, not full1:1 art. Panel/ta
 `TourneyTabButton` creates vector fills, not atlas sprites. Native height32/radius4, default#3c3c3c/label#b3b3b3, selected#a48954/white. Only the first/last visible tab gets its corresponding rounded ends; a single tab gets both. Group width is viewport.width-11, equally divided, with no gap. Main350 and right401 follow the actual361/412 viewports. Selected tabs have mouse input disabled. These replace the provisional28px gold/gray buttons; no invented hover sprite is substituted.
 
 The real browser pane fixture verifies these fills/heights/group widths/corners,8px border-image and24x24 loaded asset, then exercises all existing registration/Rush/restart behavior. Exact physical typography/browser versus AIR resampling, header art and player-column/profile/search/audio parity still remain open.
+
+## Inherited Latin font contract and unbranded title
+
+The inventory now includes28 selected classes. Newly recovered LabelButton, UniqueLabel, TourneyRegistrationButton and Setting complete the relevant inheritance chain; existing recovered StageAssets/InitFont/GlobalButton establish the initialized font mapping. Hashes and reused TrueType files are recorded in `tourney-font-source.json`.
+
+LabelButton creates getNicknameLabel at18px, regular, with useRoboto=true. StageAssets preserves this flag and UniqueLabel routes ordinary Latin text through Setting.getDefaultFont(...,useRoboto). InitFont maps it to embedded Roboto. Thus tournament tabs use18px regular Roboto, not the provisional14px Arial. The label box starts x2/y1 with width button.width-4; the local tab label span now preserves those bounds. Physical glyph baseline/auto-scale resampling still needs native-runtime calibration.
+
+The header title uses getLabel(...,24,white,bold=true), whose useRoboto defaults false: the initialized default family is Roboto Condensed, with the bold variant. For a type without configured brand assets, title container x10 plus label x4 gives x14/y10,500x33. Header registration instantiates178x44 at596,12 with19px default-family regular text. Existing native regular/bold Condensed and Roboto font files are reused, without download or duplicate art.
+
+Brand backgrounds and banners are dynamic URLs resolved through actual tournament-type metadata; no matching local type is configured here. The native no-type branch hides both and uses the unbranded title position. No arbitrary PLAYGG/GG promotional banner is invented. The local Back navigation remains a separate affordance in the header and is not claimed as native artwork.
+
+Browser checks assert18/24bold/19 sizes, title bounds and actual loaded font faces, then repeat entry/refund/Rush/focus/restart. TrueType bounds/cmap/glyph/name tests now include regular Condensed. Long-title native autoScale, non-Latin script font branches, exact physical text rasterization, remaining native header/button artwork, player fields/profile/search and sound are unfinished.
