@@ -1,0 +1,184 @@
+{
+  "method": "Selected FFDec exports from installed Game/51/IronDesktop.swf; no foreground/native account interaction",
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/tourneylobby/players/TourneyLobbyPlayers.as",
+      "bytes": 15287,
+      "sha256": "27d5c547812768b3a3dac88d994215adaf6fd2ba5df1587cc24b69bae4e48396"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/tourneylobby/players/preview/TourneyTablePreview.as",
+      "bytes": 15384,
+      "sha256": "c7135fb05ef97becf65b4a3b9303d1a6b32b095e6db748f110405f61a223f761"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/tourneylobby/players/preview/position/TourneyPreviewPlayerPositionManager.as",
+      "bytes": 1935,
+      "sha256": "c74c4286d7d6caa93bcc5fc22a884f27b44904315d98cfd04d6d1314012bfb59"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/view/TourneyPreviewPlayerCell.as",
+      "bytes": 7219,
+      "sha256": "bd34ac5ab4a11f44003fcc9fd7b34afbc1440d2ffaee7921d52d52966acd9234"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/view/PreviewPlayerCell.as",
+      "bytes": 20932,
+      "sha256": "197f7337dd77c3b238f729fe54aef23092a7d34d585cb85c2905b298799a83d7"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/tourneylobby/players/preview/position/TourneyTablePreviewPositionData.as",
+      "bytes": 997,
+      "sha256": "80106958d8153cfda45e713b41d678af51266f1fffff89f4725860e623a810d2"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/tourneylobby/players/preview/position/TourneyTablePreviewTwoPositionData.as",
+      "bytes": 483,
+      "sha256": "c00a2de714617faca5ac61e7e583d0aa0c980e5fb1681f19876b7a08314b8110"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/tourneylobby/players/preview/position/TourneyTablePreviewFourPositionData.as",
+      "bytes": 557,
+      "sha256": "421aeac8213c77ba017d0d2b9fd6b6c3eccea760b7e9a50364d06a31fe843620"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/tourneylobby/players/preview/position/TourneyTablePreviewSixPositionData.as",
+      "bytes": 289,
+      "sha256": "e63b38919f833d66f8ff8fd4053d75d479ced5484e523816abd95bafd471fabc"
+    }
+  ],
+  "positions": {
+    "TourneyTablePreviewPositionData": {
+      "player": [
+        [
+          178,
+          27
+        ],
+        [
+          290,
+          36
+        ],
+        [
+          290,
+          155
+        ],
+        [
+          178,
+          165
+        ],
+        [
+          66,
+          155
+        ],
+        [
+          66,
+          36
+        ]
+      ],
+      "button": [
+        [
+          165,
+          78
+        ],
+        [
+          242,
+          81
+        ],
+        [
+          248,
+          125
+        ],
+        [
+          165,
+          118
+        ],
+        [
+          84,
+          125
+        ],
+        [
+          89,
+          81
+        ]
+      ]
+    },
+    "TourneyTablePreviewTwoPositionData": {
+      "player": [
+        [
+          178,
+          27
+        ],
+        [
+          178,
+          165
+        ]
+      ],
+      "button": [
+        [
+          165,
+          78
+        ],
+        [
+          165,
+          118
+        ]
+      ]
+    },
+    "TourneyTablePreviewFourPositionData": {
+      "player": [
+        [
+          178,
+          27
+        ],
+        [
+          321,
+          101
+        ],
+        [
+          178,
+          165
+        ],
+        [
+          36,
+          101
+        ]
+      ],
+      "button": [
+        [
+          165,
+          78
+        ],
+        [
+          271,
+          90
+        ],
+        [
+          165,
+          118
+        ],
+        [
+          62,
+          90
+        ]
+      ]
+    }
+  },
+  "unknowns": [
+    "Original server preview update cadence",
+    "Original server dynamic HUD/country/badge data",
+    "Physical AIR font and animation timing",
+    "Public local seat projection and preview UI not yet implemented"
+  ],
+  "backgrounds": [
+    {
+      "file": "Preview_TournamentTable_BR_st1.png",
+      "bytes": 134175,
+      "sha256": "0529a5ff2b63e612812b45e06dd57dfa72684497d9e3cc07f4983f469753d2fc"
+    },
+    {
+      "file": "Preview_TournamentTable_BR_st3.png",
+      "bytes": 138688,
+      "sha256": "ee905e223bcd8e6354ff74d555afeeb7d6411ffdeab82be0ece7e61314a038d0"
+    }
+  ]
+}
