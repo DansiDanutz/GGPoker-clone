@@ -36,3 +36,8 @@
 .fairplayReport .reportIntro{top:32px}.fairplayReport .reportPlayerHint{top:129px}
 .reportCategoryHeading{position:relative;left:8px;font:14px/20px NativeActionRoboto,Arial,sans-serif}.reportCategoryHeading::before{left:-10.5px}
 .reportDetail{padding-left:8px;font:14px/20px NativeActionRoboto,Arial,sans-serif}.reportDetail::before{left:-2.5px}
+
+.reportDetailEditor{position:absolute;left:8px;top:30px;box-sizing:border-box;width:420px;height:70px;border:solid transparent;border-width:10px 9px 9px 10px;border-image:url('/home-art/native-fairplay-input.png') 10 9 9 10 fill;pointer-events:none}
+.reportDetail textarea{left:12px;top:34px;padding:2px;border:0;background:transparent;color:#d1d1c0;font:14px Arial,sans-serif;overflow-y:auto}
+.reportDetail textarea::placeholder{color:#999;opacity:1}
+.reportDetail .reportCount{font:13px Arial,sans-serif;color:#666}

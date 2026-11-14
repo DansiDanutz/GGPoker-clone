@@ -197,5 +197,65 @@
       110,
       37
     ]
+  },
+  "reportEditor": {
+    "files": [
+      {
+        "bytes": 360,
+        "file": "native-fairplay-input.png",
+        "frame": "table_menu0145",
+        "height": 20,
+        "rgbaExact": true,
+        "sha256": "158454eedbecb85b5a9dc1280d4562c17b3578c386a3864a3bb22520d1708ff3",
+        "width": 20
+      }
+    ],
+    "method": "StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding",
+    "sources": {
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/after_lobby/desktop_table_assets.json": "9e00ce78028f67e6b0ad7c770c0c65519bde01943c209f860f8dd58e930d5c29",
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/after_lobby/desktop_table_assets.png": "6bf5b733a31f0de22cbe9d578c93a9c081e314fc97840838dc72145d07d26b65"
+    },
+    "scripts": [
+      {
+        "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/fiarplayReport/NoteEditView.as",
+        "sha256": "e1179f5adc4f7180aad72283a46d1a5b1375fb6a649e3c690fae0b0984585ea2"
+      },
+      {
+        "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/fairplayReport/FairplayReportView.as",
+        "sha256": "12c28173c915a372a474ed02b9d02e00e02e188b9bbab8481f5cdf84466b7ecb"
+      },
+      {
+        "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/asset/StageAssets.as",
+        "sha256": "e993e9ebfc32e1214162109e9af1eb3eef98e2cf6cbf6d7fb0ce1be4e3f0b0a3"
+      }
+    ],
+    "contract": {
+      "background": [
+        8,
+        30,
+        420,
+        70
+      ],
+      "input": [
+        12,
+        34,
+        410,
+        70
+      ],
+      "inputFontSize": 14,
+      "inputColor": "#d1d1c0",
+      "placeholderColor": "#999999",
+      "counterColor": "#666666",
+      "counterFontSize": 13,
+      "counterFormat": "length/1000",
+      "maxChars": 1000,
+      "slice": [
+        10,
+        10,
+        1,
+        1
+      ],
+      "scrollbar": "Native external5px scrollbar not reconstructed; textarea retains functional standard scrolling."
+    }
   }
 }

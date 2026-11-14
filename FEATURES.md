@@ -1208,3 +1208,5 @@ Fair Play report buttons: recovered GlobalButton GREEN/DARK_GRAY110×37 at100/23
 Fair Play DotLabel layout: source blue5px circles,14px condensed headings at27px/10 or107px,13px explanatory copy at28px/32 or129px, native player-selection instruction and detail placeholder. Local administrator routing and30-hour hand policy remain explicit; native30-day help discrepancy and complete window chrome remain open.
 
 Fair Play eligibility audit: native HandHistoryView uses currentDate.setHours(hours−30), strict StartTime cutoff and actual user membership;30days English help contradicts the code. Local30elapsed-hours retained with last-millisecond/exact-expiry/future/restart tests. Native DST calendar-hour behavior remains unverified. Desktop report overrides generic590px with460×610; both outcome containers380×300 now match source, preserving local retry drafts.
+
+Fair Play detail editor: original table_menu145 nine-slice420×70, source4px input inset,14px system sans/#d1d1c0 text, gray placeholder,13px#666 length/1000 counter. Actual multiline/paste1000-limit/replace/report-retry tested. Native external scrollbar and physical text rasterization remain open.
