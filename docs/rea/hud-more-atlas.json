@@ -41,6 +41,10 @@
       {
         "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/utils/applySlice9Grid.as",
         "sha256": "4d030b550dd3ecce8e8886962ea1dc83fa0c3a9d0322dac080559484b3f34d1c"
+      },
+      {
+        "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/lib/components/Button.as",
+        "sha256": "005aff16f04b263bfd0550ea73d919275afba37703e4ae36a55dcdbcae62b107"
       }
     ],
     "report": {
@@ -58,7 +62,7 @@
       "height": 37
     },
     "fontSize": 19,
-    "hover": "constructor passes null overState; up skin retained",
+    "hover": "up skin with RGB multiplier1.3 and nominal0.2s tween; native easing unverified",
     "downLabelAlpha": 0.5,
     "disabled": "common27 and equal-RGB-average color matrix; label alpha0.5",
     "shadow": {
@@ -98,6 +102,7 @@
         "file": "native-note-button-shadow.png",
         "sha256": "13d746777729dd3f7fca15e2aaebc22a59bfb2137c322cf28f2d0cf47c4bbbea"
       }
-    ]
+    ],
+    "font": "default useRoboto=false; NativeActionRoboto/RobotoCondensed from inherited LabelButton font contract"
   }
 }

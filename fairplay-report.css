@@ -15,8 +15,8 @@
 
 .fairplayReport button{margin-right:0}.fairplayReport h2,.fairplayReport h3{color:#ccc;font-weight:400}.fairplayReport .reportSubmit,.fairplayReport .reportClose,.fairplayReport .reportOutcomeClose{margin:0;min-width:0}
 
-/* Native GlobalButton: constructor keeps hover equal to up; disabled uses equal-RGB gray atlas. */
-.fairplayReport :is(.reportSubmit,.reportClose,.reportOutcomeClose){padding:0;border:0;border-radius:0;background:transparent;color:#fff;font:19px Arial;opacity:1;filter:none;--report-button-image:url('/home-art/native-note-button-gray-up.png')}
+/* Native GlobalButton: hover brightens the up skin; disabled uses equal-RGB gray atlas. */
+.fairplayReport :is(.reportSubmit,.reportClose,.reportOutcomeClose){padding:0;border:0;border-radius:0;background:transparent;color:#fff;font:19px NativeActionRoboto,Arial,sans-serif;opacity:1;filter:brightness(1);transition:filter .2s linear;--report-button-image:url('/home-art/native-note-button-gray-up.png')}
 .fairplayReport .reportSubmit{--report-button-image:url('/home-art/native-note-button-green-up.png')}
 .fairplayReport :is(.reportSubmit,.reportClose,.reportOutcomeClose)::before{content:'';position:absolute;left:-5px;top:5px;box-sizing:border-box;width:calc(100% + 10px);height:calc(100% + 5px);border:15px solid transparent;border-image:url('/home-art/native-note-button-shadow.png') 15 fill;pointer-events:none}
 .fairplayReport :is(.reportSubmit,.reportClose,.reportOutcomeClose)::after{content:'';position:absolute;inset:0;box-sizing:border-box;border:solid transparent;border-width:20px 9px 19px 10px;border-image:var(--report-button-image) 20 9 19 10 fill;pointer-events:none}
@@ -24,3 +24,7 @@
 .fairplayReport .reportSubmit:active{--report-button-image:url('/home-art/native-note-button-green-down.png')}.fairplayReport :is(.reportClose,.reportOutcomeClose):active{--report-button-image:url('/home-art/native-note-button-gray-down.png')}
 .fairplayReport :is(.reportSubmit,.reportClose,.reportOutcomeClose):active>span,.fairplayReport :is(.reportSubmit,.reportClose,.reportOutcomeClose):disabled>span{opacity:.5}
 .fairplayReport :is(.reportSubmit,.reportClose,.reportOutcomeClose):disabled{--report-button-image:url('/home-art/native-note-button-gray-disabled.png');opacity:1;filter:none}
+
+.fairplayReport :is(.reportSubmit,.reportClose,.reportOutcomeClose):hover:not(:disabled):not(:active){filter:brightness(1.3)}
+.fairplayReport :is(.reportSubmit,.reportClose,.reportOutcomeClose):active,.fairplayReport :is(.reportSubmit,.reportClose,.reportOutcomeClose):disabled{filter:brightness(1);transition:none}
+@media(prefers-reduced-motion:reduce){.fairplayReport :is(.reportSubmit,.reportClose,.reportOutcomeClose){transition:none}}
