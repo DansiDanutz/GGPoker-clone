@@ -1,8 +1,9 @@
+import {spinWheelGlow} from './spin-wheel-glow.mjs';
 import {spinWheelPrizeEffect} from './spin-wheel-prize-effect.mjs';
 import {spinWheelAmount} from './spin-wheel-amount.mjs';
-const dimensions={base:[360,360],stone:[387,387],arrow:[66,90],symbol:[148,148],fontImage:[245,261],effect:[150,173]};
+const dimensions={base:[360,360],stone:[387,387],arrow:[66,90],symbol:[148,148],fontImage:[245,261],effect:[150,173],glow:[134,134],glitter:[150,150]};
 export async function loadSpinWheelArt(){
- const names=['native-spin-wheel-0.png','native-spin-wheel-2.png','native-spin-wheel-3.png','native-spin-wheel-4.png','native-spin-wheel-font.png','native-spin-wheel-7.png','native-spin-wheel-font.json'];
+ const names=['native-spin-wheel-0.png','native-spin-wheel-2.png','native-spin-wheel-3.png','native-spin-wheel-4.png','native-spin-wheel-font.png','native-spin-wheel-7.png','native-spin-wheel-9.png','native-spin-wheel-10.png','native-spin-wheel-font.json'];
  const results=await Promise.allSettled(names.map(async name=>{const r=await fetch('/home-art/'+name,{signal:AbortSignal.timeout(5000)});if(!r.ok)throw Error('Native wheel asset unavailable: '+name);return name.endsWith('.json')?r.json():createImageBitmap(await r.blob())}));
  const close=()=>{for(const r of results)if(r.status==='fulfilled')r.value?.close?.()};
  const failed=results.find(r=>r.status==='rejected');if(failed){close();throw failed.reason}
@@ -11,10 +12,12 @@ export async function loadSpinWheelArt(){
 }
 export function drawSpinWheel(ctx,art,labels,pose){
  if(!Array.isArray(labels)||labels.length!==8||!Number.isFinite(pose?.wheel)||!Number.isFinite(pose?.arrow)||pose.wheelAlpha!==undefined&&(!Number.isFinite(pose.wheelAlpha)||pose.wheelAlpha<0||pose.wheelAlpha>1)||pose.wheelOffsetY!==undefined&&!Number.isFinite(pose.wheelOffsetY))throw Error('Provide eight explicit wheel labels and a valid pose');
+ const glow=pose.glow?spinWheelGlow(pose.prizeElapsed,pose.phase==='exit'?pose.prizeElapsed-9500:null):null;
  const effect=pose.highlight?spinWheelPrizeEffect(pose.targetIndex,pose.prizeElapsed):null;
  const amounts=labels.map(label=>spinWheelAmount(art.font,label));for(const [key,[w,h]]of Object.entries(dimensions))if(art[key]?.width!==w||art[key]?.height!==h)throw Error('Native wheel image dimensions changed');
  ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);ctx.save();
  try{
+  if(glow){ctx.save();ctx.translate(ctx.canvas.width/2-404,176);ctx.save();ctx.translate(406,glow.y);ctx.rotate(glow.rotation*Math.PI/180);ctx.globalAlpha*=glow.glow.alpha;ctx.drawImage(art.glow,glow.glow.x,glow.glow.y,glow.glow.size,glow.glow.size);ctx.restore();if(glow.glitter.visible){ctx.globalAlpha*=glow.glitter.alpha;ctx.drawImage(art.glitter,glow.glitter.x,glow.glitter.y,glow.glitter.size,glow.glitter.size)}ctx.restore()}
   ctx.globalAlpha*=pose.wheelAlpha??1;ctx.translate(ctx.canvas.width/2-404,176+(pose.wheelOffsetY??0));ctx.scale(2.1,2.1);ctx.save();ctx.translate(193.5,193.5);ctx.rotate(pose.wheel*Math.PI/180);ctx.drawImage(art.base,-180,-180);
   ctx.save();ctx.scale(.5,.5);
   for(const [slot,tokens]of amounts.entries()){
