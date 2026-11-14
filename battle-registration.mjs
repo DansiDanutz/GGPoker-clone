@@ -15,7 +15,11 @@ export function readBattleEvent(value){
   else{if(typeof value.checkpoint!=='string'||value.registrations.length!==settings.capacity||!Number.isSafeInteger(value.startedAt)||value.startedAt<0||!Number.isSafeInteger(value.startedAt+settings.rushDurationMs))throw Error();battleModel(value)}
   if(value.qualification!==undefined){if(typeof value.qualification!=='string'||value.checkpoint===null)throw Error();battleQualifier(value)}
   if(value.finalRoom!==undefined&&(typeof value.finalRoom!=='string'||!/^[a-f0-9]{48}$/.test(value.finalRoom)||value.qualification===undefined||battleQualifier(value).view().phase!=='final-ready'))throw Error();
-  if(value.payouts!==undefined&&(value.finalRoom===undefined||settings.prizeShares===undefined||!Array.isArray(value.payouts)||value.payouts.length<2||value.payouts.some(p=>!p||Object.keys(p).sort().join(',')!=='account,amount,place'||!value.registrations.includes(p.account)||!Number.isSafeInteger(p.amount)||p.amount<0||!Number.isInteger(p.place)||p.place<1)))throw Error();
+  if(value.payouts!==undefined){
+   if(settings.prizeShares===undefined||!Array.isArray(value.payouts)||value.payouts.length<1||value.payouts.some(p=>!p||Object.keys(p).sort().join(',')!=='account,amount,place'||!value.registrations.includes(p.account)||!Number.isSafeInteger(p.amount)||p.amount<0||!Number.isInteger(p.place)||p.place<1))throw Error();
+   if(value.finalRoom===undefined){const q=battleQualifier(value).view(),p=value.payouts[0];if(q.phase!=='final-ready'||q.qualified.length!==1||value.payouts.length!==1||p.account!==q.qualified[0].id||p.place!==1||p.amount!==settings.capacity*settings.entryCost)throw Error()}
+   else if(value.payouts.length<2)throw Error();
+  }
   return structuredClone(value);
  }catch{throw Error('Invalid Battle Royale event checkpoint')}
 }
