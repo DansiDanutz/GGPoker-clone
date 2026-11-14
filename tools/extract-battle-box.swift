@@ -40,3 +40,6 @@ print("PASS native tournament entry states/shadow; exact RGBA readback")
 
 try extract("init_lobby/desktop_assets.png",[("lobby0512","over",40,24),("lobby0513","focus",40,24),("lobby0514","up",40,24),("lobby0516","icon",14,14),("lobby0517","icon-disabled",14,14),("lobby0550","reset-up",40,18),("lobby0551","reset-down",40,18)],"native-tourney-search-","tourney-search-atlas")
 print("PASS native player search7sprites exact decoded RGBA")
+
+try extract("init_lobby/desktop_assets.png",[("lobby_preview0014","dealer",20,21),("lobby_preview0015","small-blind",24,25),("lobby_preview0016","big-blind",24,25),("lobby_preview0030","info",64,46)],"native-tourney-preview-","tourney-preview-atlas")
+for (source,name) in [("Preview_TournamentTable_BR_st1.png","rush"),("Preview_TournamentTable_BR_st3.png","final")]{let data=try Data(contentsOf:root.appendingPathComponent("preview/"+source)),url=out.appendingPathComponent("native-tourney-preview-"+name+".png");if FileManager.default.fileExists(atPath:url.path){let existing=try Data(contentsOf:url);precondition(existing==data)}else{try data.write(to:url)}}

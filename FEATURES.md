@@ -1168,3 +1168,5 @@ Tournament registration paint (unreleased): actual up/down/disabled/shadow sprit
 Tournament search release PR157/158: native-derived inline Players search and7original sprites, Enter/min3/max30/Reset/blur controls, immutable wallet/room/polling/restart and sixbrowserfinal600chips/150prizes/14bounties verified on installed runtime. Search matching is an explicit local substring policy. Selected-table preview/profile remain unfinished;9-class source/actual seat/marker contracts are recorded in docs/rea/tourney-preview-source.json and tourney-lobby.md.
 
 Tournament preview backend (unreleased): authenticated read-only actual table/seat/chips/Dealer-SB-BB/avatar projection for Rush and final, fast-fold reassignment exclusion and unchanged file bytes/restart verified. Preview graphics and lobby HUD adapter are still unimplemented.
+
+Tournament selected-table preview (unreleased): native Battle Rush/final backgrounds, actual assigned seat/avatar/chips/Dealer-SB-BB, recovered2–6seat anchors, shortened list/native footer geometry and stale-response rejection. No fabricated HUD/country/badges; View Profile adapter and physical font/logo parity remain incomplete.
