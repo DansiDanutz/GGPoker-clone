@@ -28,3 +28,11 @@
 .fairplayReport :is(.reportSubmit,.reportClose,.reportOutcomeClose):hover:not(:disabled):not(:active){filter:brightness(1.3)}
 .fairplayReport :is(.reportSubmit,.reportClose,.reportOutcomeClose):active,.fairplayReport :is(.reportSubmit,.reportClose,.reportOutcomeClose):disabled{filter:brightness(1);transition:none}
 @media(prefers-reduced-motion:reduce){.fairplayReport :is(.reportSubmit,.reportClose,.reportOutcomeClose){transition:none}}
+
+/* DotLabel source: title x8, copy x9/y22, radius2.5 dot at0/10. */
+.fairplayReport h2,.fairplayReport h3{left:27px;width:410px;height:20px;font:14px/20px NativeActionRoboto,Arial,sans-serif;color:#ccc}
+.fairplayReport h2::before,.fairplayReport h3::before,.reportCategoryHeading::before,.reportDetail::before{content:'';position:absolute;left:-10.5px;top:7.5px;width:5px;height:5px;border-radius:50%;background:#43a1ff}
+.fairplayReport .reportIntro,.fairplayReport .reportPlayerHint{position:absolute;left:28px;width:410px;height:51px;margin:0;font:13px/normal NativeActionRoboto,Arial,sans-serif;color:#ccc;overflow:auto}
+.fairplayReport .reportIntro{top:32px}.fairplayReport .reportPlayerHint{top:129px}
+.reportCategoryHeading{position:relative;left:8px;font:14px/20px NativeActionRoboto,Arial,sans-serif}.reportCategoryHeading::before{left:-10.5px}
+.reportDetail{padding-left:8px;font:14px/20px NativeActionRoboto,Arial,sans-serif}.reportDetail::before{left:-2.5px}

@@ -104,5 +104,55 @@
       }
     ],
     "font": "default useRoboto=false; NativeActionRoboto/RobotoCondensed from inherited LabelButton font contract"
+  },
+  "reportDotLabels": {
+    "languageSource": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/languages/string_table.json",
+    "sha256": "c0ce0735b46095e36594f9be9f81fac6d9be1136a1dd23e60defc71fd9f7b665",
+    "english": {
+      "FairplayReport": "Fairplay Report",
+      "FairplayReportMessage": "Should you experience or observe any offensive or fraudulent activity on GGPoker Network, please file a report here. Once a report has been filed, our Security Team will commence an investigation as soon as possible.",
+      "ReportLastDays": "* Report feature is avaialble only for hands played in the last 30days.",
+      "WhoAreYouReporting": "Who Are You Reporting?",
+      "PleaseSelectTheOffendingPlayer": "Please select the offending player(s).",
+      "Pleasegiveusdetails": "Please give us details",
+      "Describewhathappened": "Describe what happened"
+    },
+    "dot": {
+      "radius": 2.5,
+      "x": 0,
+      "y": 10,
+      "color": "#43a1ff"
+    },
+    "title": {
+      "x": 8,
+      "width": 410,
+      "fontSize": 14
+    },
+    "copy": {
+      "x": 9,
+      "y": 22,
+      "width": 410,
+      "height": 51,
+      "fontSize": 13
+    },
+    "groups": [
+      [
+        19,
+        10
+      ],
+      [
+        19,
+        107
+      ],
+      [
+        19,
+        269
+      ],
+      [
+        19,
+        401
+      ]
+    ],
+    "localPolicy": "Local admin destination and existing30-hour hand-report window retained explicitly; native help says30days, server policy not established."
   }
 }
