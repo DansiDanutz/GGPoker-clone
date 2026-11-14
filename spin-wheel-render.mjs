@@ -15,6 +15,7 @@ export function drawSpinWheel(ctx,art,labels,pose){
  if(!Array.isArray(labels)||labels.length!==8||!Number.isFinite(pose?.wheel)||!Number.isFinite(pose?.arrow)||pose.wheelAlpha!==undefined&&(!Number.isFinite(pose.wheelAlpha)||pose.wheelAlpha<0||pose.wheelAlpha>1)||pose.wheelOffsetY!==undefined&&!Number.isFinite(pose.wheelOffsetY))throw Error('Provide eight explicit wheel labels and a valid pose');
  const glow=pose.glow?spinWheelGlow(pose.prizeElapsed,pose.phase==='exit'?pose.prizeElapsed-9500:null):null;
  const light=pose.frameLight?spinWheelFrameLight(pose.targetIndex,pose.frameLight.elapsedMs,pose.frameLight.delaySeconds):null;
+ const sparkles=pose.sparkles??[];if(!Array.isArray(sparkles)||sparkles.some(p=>!p||!['x','y','scale','alpha'].every(k=>Number.isFinite(p[k]))||p.scale<.1||p.scale>2.5||p.alpha<0||p.alpha>1||!Number.isInteger(p.color)||p.color<0||p.color>=16777215))throw Error('Invalid native sparkle pose');
  const effect=pose.highlight?spinWheelPrizeEffect(pose.targetIndex,pose.prizeElapsed):null;
  const amounts=labels.map(label=>spinWheelAmount(art.font,label));for(const [key,[w,h]]of Object.entries(dimensions))if(art[key]?.width!==w||art[key]?.height!==h)throw Error('Native wheel image dimensions changed');
  ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);ctx.save();
@@ -28,4 +29,5 @@ export function drawSpinWheel(ctx,art,labels,pose){
   }
   ctx.restore();if(light){const layer=art.frameLightLayer??=new OffscreenCanvas(122,159),mask=layer.getContext('2d');mask.clearRect(0,0,122,159);mask.globalCompositeOperation='source-over';mask.drawImage(art.light,0,light.y+159,122,80);mask.globalCompositeOperation='destination-in';mask.drawImage(art.frameMask,0,0);ctx.save();ctx.rotate(light.rotation*Math.PI/180);ctx.globalAlpha*=light.alpha;ctx.drawImage(layer,-61,-159);ctx.restore()}if(effect){ctx.save();ctx.rotate(effect.rotation*Math.PI/180);ctx.translate(0,-85);ctx.scale(effect.scale,effect.scale);ctx.globalAlpha*=effect.alpha;ctx.drawImage(art.effect,-76,-86.5);ctx.restore()}ctx.restore();ctx.drawImage(art.symbol,156.5,156.5,74,74);ctx.drawImage(art.stone,0,0);ctx.translate(193.5,13.5);ctx.rotate(pose.arrow*Math.PI/180);ctx.drawImage(art.arrow,-16.5,-14,33,45);
  }finally{ctx.restore()}
+ for(const p of sparkles){const layer=art.sparkleLayer??=new OffscreenCanvas(150,150),tint=layer.getContext('2d');tint.clearRect(0,0,150,150);tint.globalCompositeOperation='source-over';tint.drawImage(art.glitter,0,0);tint.globalCompositeOperation='source-in';tint.fillStyle='#'+p.color.toString(16).padStart(6,'0');tint.fillRect(0,0,150,150);ctx.save();try{ctx.translate(ctx.canvas.width/2-404+p.x,176+p.y);ctx.scale(p.scale,p.scale);ctx.globalAlpha*=p.alpha;ctx.drawImage(layer,-75,-75)}finally{ctx.restore()}}
 }

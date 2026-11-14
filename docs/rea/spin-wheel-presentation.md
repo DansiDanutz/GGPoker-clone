@@ -141,3 +141,11 @@ Three-browser fault injection now rejects the first motion-JSON load with503,ver
 spin-ready requests now use the existing5-second AbortSignal timeout pattern,preventing a permanently pending request from holding the shared request queue. The stalled-connection timeout itself has not yet been fault-injected. Retry controls are local recovery UI,not claimed native pixel parity.
 
 Stalled-request acceptance now passes: the actual player's first completion fetch never resolves until its provided AbortSignal fires. The browser observed5001ms,verified no first hand,clicked Retry without another motion load,and recovered a deliberately discarded successful response by polling. The complete three-account tournament/payout/restart oracle passed afterward. This closes the earlier untested timeout claim.
+
+## Individual native sparkles
+
+SpinAndGoldWheel825–839spawns immediately,then schedules a new particle after500–1500ms. The source passes a random0–360value directly to Math.cos/sin; the implementation preserves these radian calculations rather than silently converting degrees. Radius is300–500around387/387. Glitter1555–1603uses500–800ms cubic entry,scale0.1→0.5–2.5,then a twice-as-long cubicOut alpha fade and a random24-bit RGB replacement retaining texture alpha.
+
+spin-wheel-sparkles.mjs reconstructs those poses with injected deterministic randomness for tests. The type2 controller suppresses new particles on exit and clears them on cancellation. The renderer tints exact atlas10 through a reused alpha-preserving canvas and draws particles after the wheel in source root coordinates. Input validation precedes canvas mutation. Unit tests cover source angle semantics,immediate/delayed spawn,entry/fade,spawn suppression and cancel. Headless checks verify actual red-tinted pixels,exact original redraw without trails,invalid alpha rejection and preserved transforms.
+
+The Glitter class emits PLAY_SOUND synchronously before SpinAndGoldWheel attaches its signal listener; no extra bomb sound was inferred from that unreachable initial listener path. Physical native animation/sound parity still needs direct runtime evidence. Waiting-state base/ring sweeps and flares remain unimplemented.
