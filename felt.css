@@ -500,3 +500,29 @@ body:has(#dealMeIn:not([hidden])) footer:has(#join[hidden]){margin-top:0}
 /* SitOutList:560-unit frame,four56-unit rows at64-unit pitch;native logical table scale. */
 #cashSitOutMenuButton{font:12px Arial;min-width:58px;padding:4px 8px;margin-right:36px}#cashSitOutMenuButton[hidden]{display:none}
 .nativeCashSitOutMenu{position:fixed;width:560px;height:288px;border:2px solid #000;border-radius:10px;transform-origin:0 0;z-index:31;padding:0;background:transparent;box-sizing:border-box}.nativeCashSitOutMenu[hidden]{display:none}.nativeCashSitOutMenu::before{content:'';position:absolute;inset:0;border:2px solid #404040;border-radius:8px;background:#171717f2;pointer-events:none}.nativeCashSitOutMenu>button{position:absolute;left:26px;top:18px;width:508px;min-width:0;height:56px;margin:0;padding:0;border:0;border-radius:8px;background:transparent;color:#eee;text-align:left}.nativeCashSitOutMenu>button:nth-child(2){top:82px}.nativeCashSitOutMenu>button:nth-child(3){top:146px}.nativeCashSitOutMenu>button:nth-child(4){top:210px}.nativeCashSitOutMenu>button:hover:not(:disabled),.nativeCashSitOutMenu>button:focus-visible{background:#2c2c2c;filter:none}.nativeCashSitOutMenu>button:disabled{color:#666;opacity:1}.nativeCashSitOutMenu .sitOutMenuText{position:absolute;left:40px;top:8px;width:428px;height:40px;white-space:nowrap;font:28px/40px NativeHistoryRoboto,Arial,sans-serif}.sitOutMenuCheck{display:none;position:absolute;left:0;top:12px;width:32px;height:32px;background:url('/home-art/native-history-sitout-check.png') center/100% 100% no-repeat}.nativeCashSitOutMenu [aria-checked=true] .sitOutMenuCheck{display:block}
+
+/* Source: TourneyRewardPopup ordinary viewport360x611; local credits and history actions. */
+.tournamentResult{box-sizing:border-box;width:360px;height:611px;max-width:calc(100vw - 16px);max-height:calc(100vh - 16px);padding:0;border:1px solid #555;background:#171717;color:white;font-family:Arial,sans-serif;overflow:auto}
+.tournamentResult::backdrop{background:#0005}
+.resultHeading{height:30px;box-sizing:border-box;margin:0;padding:6px 26px;font-size:14px;font-weight:normal;background:#252525}
+.resultSummary{position:absolute;top:50px;left:20px;width:calc(100% - 40px);height:194px;background:#242424;text-align:center}
+.resultPlayer{position:absolute;top:70px;left:0;width:100%;font-size:16px;margin:0}
+.resultTitle{position:absolute;top:126px;left:0;width:100%;font-size:15px;color:#ffc343;margin:0}
+.resultDate{position:absolute;top:146px;left:0;width:100%;font-size:13px;color:#9fa09f;margin:0}
+.resultRank{position:absolute;top:162px;left:0;width:100%;font-size:18px;margin:0}
+.resultMessage{position:absolute;top:240px;left:5px;width:calc(100% - 10px);font-size:16px;color:#999;white-space:pre-line;text-align:center}
+.resultPrizeLabel{position:absolute;top:310px;width:100%;margin:0;font-size:14px;color:#999;text-align:center}
+.resultPrize{position:absolute;top:338px;width:100%;font-size:28px;text-align:center}
+.resultStatus{position:absolute;top:410px;left:20px;width:calc(100% - 40px);font-size:13px;color:#aaa;text-align:center}
+.resultActions{position:absolute;top:561px;left:20px;right:20px;display:flex;justify-content:center;gap:20px}
+.resultActions button{width:130px;height:37px;font-size:19px;background:#444;color:white;border:1px solid #777;border-radius:4px}
+.resultActions button:hover{background:#555}.resultActions button:active{background:#333}
+
+.resultSummary{background:transparent url('/home-art/native-result-final.png') center top / 320px 112px no-repeat}
+.tournamentResult[data-winner=true] .resultSummary{background-image:url('/home-art/native-result-winner.png')}
+.resultSummary::before{content:'';position:absolute;box-sizing:border-box;top:112px;left:0;width:100%;height:82px;border:12px solid transparent;border-image:url('/home-art/native-result-info.png') 12 11 11 12 fill stretch}
+.resultSummary::after{content:'';position:absolute;box-sizing:border-box;top:96px;left:8px;width:calc(100% - 16px);height:31px;border-left:42px solid transparent;border-right:42px solid transparent;border-image:url('/home-art/native-result-ribbon.png') 0 42 fill stretch}
+.resultSummary p{z-index:1}
+
+.resultAvatar{position:absolute;left:32px;top:70px;width:48px;height:48px;object-fit:cover;border-radius:50%;z-index:1}
+.resultPlayer{top:96px;left:92px;width:136px;height:24px;line-height:24px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}

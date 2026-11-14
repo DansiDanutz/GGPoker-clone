@@ -1,5 +1,5 @@
 export const audioChannels=[{id:'table',label:'Table Sound'},{id:'effects',label:'Sound Effect'}];
-export function audioChannel(cue){return ['RabbitCard','RabbitCardDouble','Fold','DealCard','Board','GatherChips','WinPot','ShowCard','ShowDownCard','SqueezeOpen'].includes(cue)?'table':['Check','Call','Bet','Raise','AllIn','ShuffleUp','ShuffleCombine','ShuffleOther','AofButton'].includes(cue)?'effects':null}
+export function audioChannel(cue){return ['RabbitCard','RabbitCardDouble','Fold','DealCard','Board','GatherChips','WinPot','ShowCard','ShowDownCard','SqueezeOpen'].includes(cue)?'table':['Check','Call','Bet','Raise','AllIn','ShuffleUp','ShuffleCombine','ShuffleOther','AofButton','TournamentResultFT','TournamentResultITM','TournamentFallResult'].includes(cue)?'effects':null}
 export function audioPreviewChoices(id,previous){
  const choices=id==='table'?['Board','DealCard','ShowCard','GatherChips','WinPot','Fold','ShowDownCard','SqueezeOpen']:id==='effects'?['Bet','Call','Raise','Check','AllIn','AofButton']:[];
  return choices.filter(c=>c!==previous);
@@ -14,7 +14,7 @@ export function voluntaryReveals(before,after){
  return (after.hand.shownIndices||[]).flatMap((indices,seat)=>(indices||[]).filter(index=>!before.hand.shownIndices?.[seat]?.includes(index)).map(index=>({seat,index,own:seat===after.me})));
 }
 // DefineSound sample counts from the installed client's embedded 44.1kHz MP3s.
-const cueSamples={RabbitCard:13824,RabbitCardDouble:27648,ShowDownCard:12672,ShuffleUp:9216,ShuffleCombine:11520,ShuffleOther:116352,ChessClock:9216,TimeBankTick:220500};
+const cueSamples={TournamentFallResult:443520,TournamentResultFT:488448,TournamentResultITM:510336,RabbitCard:13824,RabbitCardDouble:27648,ShowDownCard:12672,ShuffleUp:9216,ShuffleCombine:11520,ShuffleOther:116352,ChessClock:9216,TimeBankTick:220500};
 // Native default clock: sweep .4s, selected-card notifications span 2s, throw .2s, flop spread .3s.
 export function showdownPlan(before,after){
  const old=before?.hand,h=after?.hand;
