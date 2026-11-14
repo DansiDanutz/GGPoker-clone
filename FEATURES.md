@@ -1148,3 +1148,5 @@ RIMT computer support (implementation): trusted server-created bots can propose2
 RIMT keyboard integration: three native Options actions remain unassigned by default and reuse conflict/persistence settings. The shared dispatcher targets visible enabled proposal buttons only. Registry tests and disposable browser tests cover master/category/input/repeat guards, real proposal, payouts and restart; native physical parity remains unverified.
 
 Battle Game List update (unreleased): native five-column geometry and separate selection/open/register/cancel semantics; source hashes and explicit parity gaps in docs/rea/battle-game-list-source.json and battle-royale.md. Real local entry/refund/restart browser coverage added.
+
+Battle Game List metadata (unreleased): persisted actual start timestamp and survivor count distinct from registrations, including unresolved all-ins, shootouts and final eliminations; rendered running count/completed winner/time with explicit local date-format policy.

@@ -18,10 +18,11 @@ export function battleRush(entries,config,checkpoint=null){
    pool=rushPool(entries,config.blind,saved.pool);sessions=restored;closed=saved.closed;
   }catch{throw Error('Invalid Battle Rush checkpoint')}
  }
+ const alive=()=>[...pool.players.values()].filter(p=>p.balance>0||p.table!==null).length;
  const phase=()=>closed?([...pool.tables.values()].some(t=>!t.settled)?'draining':'qualification'):'rush';
  function tick(now){
   if(!Number.isSafeInteger(now)||now<config.startedAt)throw Error('Invalid Battle Rush clock');
-  if(now>=config.rushEndsAt||[...pool.players.values()].filter(p=>p.balance>0||p.table!==null).length<=config.finalSeats)closed=true;
+  if(now>=config.rushEndsAt||alive()<=config.finalSeats)closed=true;
   return phase();
  }
  function player(account,session,table){
@@ -38,5 +39,5 @@ export function battleRush(entries,config,checkpoint=null){
  function fold(account,session,table,now){player(account,session,table);tick(now);pool.fold(account,null,!closed);tick(now);return view(account,session)}
  function qualification(){if(phase()!=='qualification')throw Error('Finish all Battle Rush hands before qualification');return [...pool.players].map(([id,p])=>({id,stack:p.balance}))}
  function snapshot(){return JSON.stringify({version:1,config,entries,closed,sessions:[...sessions],pool:pool.snapshot()})}
- return {view,deal,move,fold,tick,phase,qualification,snapshot,total:pool.total,sessions:()=>Object.fromEntries(sessions)};
+ return {view,deal,move,fold,tick,phase,alive,qualification,snapshot,total:pool.total,sessions:()=>Object.fromEntries(sessions)};
 }
