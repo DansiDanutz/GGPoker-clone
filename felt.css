@@ -538,5 +538,13 @@ body:has(#dealMeIn:not([hidden])) footer:has(#join[hidden]){margin-top:0}
 /* CommunityCardPosition: RIT105/RITT72 vertical steps, same card layer pivot358/93. */
 .felt[data-seats] #board[hidden]{display:none}
 .nativeRunoutBoards{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none}
-.nativeRunoutBoard{position:absolute;left:-21.058823529cqw;width:42.120941176cqw;height:10.939764706cqw;display:flex;justify-content:flex-start;gap:.232cqw}
+.nativeRunoutBoard{--board-gap:.232cqw;position:absolute;left:-21.058823529cqw;width:42.120941176cqw;height:10.939764706cqw;display:flex;justify-content:flex-start;gap:.232cqw}
 .nativeRunoutBoard .card,.nativeRunoutShared{width:8.238588235cqw;height:10.939764706cqw;flex:0 0 auto}
+
+/* RIMT: new cards arrive at the ordinary row; completed river rows then move up. */
+.nativeRunoutBoard.runoutRow{animation:showRunoutRow .000001s var(--run-start) steps(1,end) both,moveRunoutRow .4s var(--run-move) cubic-bezier(.3333333333,1,.6666666667,1) both}
+@keyframes showRunoutRow{from{visibility:hidden}to{visibility:visible}}
+@keyframes moveRunoutRow{from{top:-5.4705882353cqw}to{top:var(--run-rest-y)}}
+.nativeRunoutBoard .runoutCard{animation:showRunoutCard .000001s var(--board-delay) steps(1,end) both}
+.nativeRunoutBoard .nativeFlop.runoutCard{animation:spreadFlop .3s cubic-bezier(.3333333333,1,.6666666667,1) var(--board-delay) both,showRunoutCard .000001s var(--board-delay) steps(1,end) both}
+@media(prefers-reduced-motion:reduce){.nativeRunoutBoard.runoutRow,.nativeRunoutBoard .runoutCard,.nativeRunoutBoard .nativeFlop.runoutCard{animation:none;visibility:visible}}

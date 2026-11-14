@@ -203,7 +203,7 @@ addEventListener('resize',()=>{if(state?.me!=null)positionShuffle(selfShuffleArt
 addEventListener('storage',e=>{if(e.storageArea===localStorage&&(e.key===null||e.key==='river-chip-shuffle'))renderShuffles()});
 function frame(value){if(!value)return null;const {version,chat,issued,avatars,shuffles,...rest}=value;return JSON.stringify(rest)}
 let payoutSoundHand=null,runoutPlan=null;const soundedPots=new Set(),boardSounds=new Set();
-document.querySelector('.felt').addEventListener('animationstart',e=>{if(e.animationName==='showRunoutCard'&&e.target.dataset.boardSound==='1'&&runoutPlan&&runoutPlan.number===state?.number&&e.target.isConnected&&!boardSounds.has(e.target.dataset.boardIndex)){boardSounds.add(e.target.dataset.boardIndex);playCues(['Board'])}});
+document.querySelector('.felt').addEventListener('animationstart',e=>{if(e.animationName==='showRunoutCard'&&e.target.dataset.boardSound==='1'&&runoutPlan&&runoutPlan.number===state?.number&&e.target.isConnected&&!boardSounds.has(e.target.dataset.boardIndex)){boardSounds.add(e.target.dataset.boardIndex);playCues([e.target.dataset.flopSound==='1'?'BoardFlop':'Board'])}});
 document.querySelector('.felt').addEventListener('animationend',e=>{
  if(runoutPlan?.street&&(e.animationName==='spreadFlop'&&e.target.dataset.boardIndex==='2'||e.animationName==='showRunoutCard'&&Number(e.target.dataset.boardIndex)>=3)){runoutPlan=null;lastFeltFrame=null;render()}
 });
@@ -308,13 +308,25 @@ function drawTable(g){
   card.style.setProperty('--throw-x',(492+144*step.index)/17+'cqw');card.style.setProperty('--throw-delay',(step.at-200)/1000+'s');
   card.onanimationend=card.onanimationcancel=()=>card.remove();feltFrame.append(card);
  }
+ if(runoutPlan?.runouts&&collected)for(const [run,plan]of runoutPlan.runouts.entries())for(const step of plan.board.filter(s=>s.cue)){
+  const card=cards([g.runoutBoards[run][step.index===0?2:step.index]])[0];card.classList.add('boardThrow');card.setAttribute('aria-hidden','true');card.dataset.boardIndex=run+':'+step.index;
+  card.style.setProperty('--throw-x',(492+144*step.index)/17+'cqw');card.style.setProperty('--throw-delay',(step.at-200)/1000+'s');card.onanimationend=card.onanimationcancel=()=>card.remove();feltFrame.append(card)
+ }
  feltFrame.style.setProperty('--showdown-offset',runoutPlan?runoutPlan.complete/1000+'s':'0s');
  const faces=cards(multipleRuns?g.board.slice(0,sharedCount):g?.board||[]);if(focusBySeat.size)for(const [i,card]of faces.entries()){card.dataset.bestFive=boardFocus.has(i)?'1':'0';card.classList.toggle('nativeFocusDim',!boardFocus.has(i))}if(!multipleRuns&&(runoutPlan?.board[0]?.index===0||changed&&!prev.g.board.length)&&faces.length>=3&&!matchMedia('(prefers-reduced-motion: reduce)').matches)faces.slice(0,3).forEach((c,i)=>{c.classList.add('nativeFlop');c.style.setProperty('--flop-index',i)});if(runoutPlan&&!multipleRuns)for(const step of runoutPlan.board){const card=faces[step.index];card.classList.add('runoutCard');card.style.setProperty('--board-delay',step.at/1000+'s');card.dataset.boardSound=step.cue?'1':'0';card.dataset.boardIndex=step.index}const board=$('board'),nextBoard=board.cloneNode(false);nextBoard.append(...faces);updateElement(board,nextBoard);
  const runs=g?.end&&g.runoutBoards?.length>1?g.runoutBoards:null;board.hidden=!!runs&&sharedCount===0;
  let runouts=document.querySelector('.nativeRunoutBoards');
  if(runs){
   const next=element('div','nativeRunoutBoards');
-  for(const [index,row]of runs.entries()){const line=element('div','nativeRunoutBoard');line.dataset.run=String(index);line.setAttribute('aria-label','Run '+(index+1)+' of '+runs.length);line.style.top=(-93-(runs.length-1-index)*(runs.length===2?105:72))/17+'cqw';for(const [cardIndex,card]of cards(row).entries()){if(cardIndex<sharedCount){const shared=element('span','nativeRunoutShared');shared.setAttribute('aria-hidden','true');line.append(shared)}else line.append(card)}next.append(line)}
+  for(const [index,row]of runs.entries()){
+   const line=element('div','nativeRunoutBoard'),plan=runoutPlan?.runouts?.[index];line.dataset.run=String(index);line.setAttribute('aria-label','Run '+(index+1)+' of '+runs.length);line.style.top=(-93-(runs.length-1-index)*(runs.length===2?105:72))/17+'cqw';
+   if(plan){line.classList.add('runoutRow');line.style.setProperty('--run-rest-y',line.style.top);line.style.setProperty('--run-start',plan.showAt/1000+'s');line.style.setProperty('--run-move',plan.moveAt/1000+'s')}
+   for(const [cardIndex,card]of cards(row).entries()){
+    if(cardIndex<sharedCount){const shared=element('span','nativeRunoutShared');shared.setAttribute('aria-hidden','true');line.append(shared)}else{
+     if(plan){const step=plan.board.find(s=>s.index===cardIndex);card.classList.add('runoutCard');card.style.setProperty('--board-delay',step.at/1000+'s');card.dataset.boardSound=step.cue?'1':'0';card.dataset.boardIndex=index+':'+cardIndex;card.dataset.flopSound=step.cue&&cardIndex===0?'1':'0';if(cardIndex<3){card.classList.add('nativeFlop');card.style.setProperty('--flop-index',cardIndex)}}line.append(card)
+    }
+   }next.append(line)
+  }
   if(runouts)updateElement(runouts,next);else board.parentElement.append(next)
  }else runouts?.remove();
  const pot=$('pot').cloneNode(false);
