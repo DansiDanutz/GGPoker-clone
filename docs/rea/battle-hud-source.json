@@ -65,6 +65,11 @@
       "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/network/protocol/TourneyLobby/GetDynamicHudBattleRoyaleResponse.as",
       "bytes": 2963,
       "sha256": "fc851f3f8cb85c7cb74ec7e41f1057d595740bd92128e9c5fd4ae6723f9e6dce"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/table/view/popup/smarthud/TotalAmountPanel.as",
+      "bytes": 2199,
+      "sha256": "56303a6dca7a209798b28147fea4516c7671505d7713bd4ab261cd95de297dd1"
     }
   ],
   "protocol": {
@@ -88,7 +93,7 @@
   "unverified": [
     "Original server aggregation window/formulas/rounding and split-kill attribution",
     "Currency/internal monetary scaling beyond typed protocol",
-    "Complete title/user/info/note subcomponent artwork and own HUD frame",
+    "Complete title/user/info/note subcomponent artwork and own HUD average/frame; metric card and TotalAmountPanel geometry recovered",
     "Physical AIR font/audio/animation timing",
     "Local Battle final supports2\u20136; native HUD finalRankAverage label fixes denominator9"
   ]
