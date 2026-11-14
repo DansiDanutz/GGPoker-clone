@@ -1,0 +1,21 @@
+import {element} from './felt.mjs';
+import {openFairplayReport} from './fairplay-report.mjs';
+let active=null;
+async function read(path,options){const response=await fetch(path,{cache:'no-store',...options}),data=await response.json();if(!response.ok)throw Object.assign(Error(data.error||'Reporting unavailable'),{status:response.status});return data}
+async function identity(viewer){const me=await read('/local/me');if(me.name?.toLowerCase()!==viewer)throw Object.assign(Error('Signed-in account changed'),{status:409})}
+function show(event,name,viewer,info,avatar){
+ if(active)return;let timer,checking=false;const endpoint='/api/battle/'+encodeURIComponent(event)+'/player-report?player='+encodeURIComponent(name);
+ const dialog=openFairplayReport({owner:'battle:'+event+':'+viewer,choices:[{id:name,name,avatar}],reportTypes:info.categories,intro:'Send a player report to your local administrator. No hand is attached.',submit:async({targets,category,detail})=>{if(targets.length!==1||targets[0]!==name)throw Error('Choose the selected player');try{const data=await read(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({viewer,category,detail})});if(data.viewer!==viewer||data.name!==name)throw Error('Report identity changed');return data.reportReceipt}catch(error){if([401,403,409].includes(error.status))dialog.close();throw error}},onClose:()=>{clearInterval(timer);if(active===dialog)active=null}});active=dialog;
+ const check=async()=>{if(checking||active!==dialog)return;checking=true;try{await identity(viewer)}catch(error){if(active===dialog&&[401,403,409].includes(error.status))dialog.close()}finally{checking=false}};timer=setInterval(check,1000);void check();
+}
+addEventListener('pagehide',()=>active?.close());
+export function installBattleReport(pane,event,name,viewer,closeHud,clearHud){
+ const button=element('button','battleHudMore'),divider=element('i','battleHudMoreDivider'),menu=element('div','battleHudMoreMenu'),report=element('button','battleHudReport','Report');let alive=true;
+ button.type=report.type='button';button.hidden=true;menu.hidden=true;button.setAttribute('aria-label','More player actions');button.setAttribute('aria-haspopup','menu');button.setAttribute('aria-expanded','false');menu.setAttribute('role','menu');report.setAttribute('role','menuitem');menu.append(report);pane.append(button,divider,menu);divider.hidden=true;
+ const hide=()=>{menu.hidden=true;button.setAttribute('aria-expanded','false')},outside=e=>{if(!menu.contains(e.target)&&e.target!==button)hide()};document.addEventListener('pointerdown',outside);
+ const load=async()=>{await identity(viewer);const data=await read('/api/battle/'+encodeURIComponent(event)+'/player-report?player='+encodeURIComponent(name));await identity(viewer);if(data.viewer!==viewer||data.name!==name||!data.categories||typeof data.categories!=='object'||Array.isArray(data.categories)||!Object.keys(data.categories).length||Object.values(data.categories).some(s=>typeof s!=='string'))throw Error('Invalid report capability');return data};
+ button.onclick=()=>{menu.hidden=!menu.hidden;button.setAttribute('aria-expanded',String(!menu.hidden))};button.onkeydown=e=>{if(e.key==='ArrowDown'){e.preventDefault();menu.hidden=false;button.setAttribute('aria-expanded','true');report.focus()}};pane.addEventListener('keydown',e=>{if(e.key==='Escape'&&!menu.hidden){e.preventDefault();e.stopImmediatePropagation();hide();button.focus()}},true);
+ report.onclick=async()=>{if(!alive||report.disabled)return;hide();report.disabled=true;try{const info=await load();if(!alive)return;const src=pane.querySelector('.battleHudAvatar').getAttribute('src'),avatar=src?.startsWith('/local/avatar-images/')?src:Number(/avatar-(\d)\.png$/.exec(src||'')?.[1]||0);if(await closeHud())show(event,name,viewer,info,avatar)}catch(error){if(alive){if([401,403,409].includes(error.status))clearHud();else pane.querySelector('.battleHudMessage').textContent=error.message}}finally{if(alive)report.disabled=false}};
+ void load().then(()=>{if(alive)button.hidden=divider.hidden=false}).catch(error=>{if(alive&&[401,403,409].includes(error.status))clearHud()});
+ return {dispose(){alive=false;document.removeEventListener('pointerdown',outside);button.remove();divider.remove();menu.remove()}};
+}
