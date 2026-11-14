@@ -140,6 +140,51 @@
       "path": "/Users/davidai/Sandbox/rea-tools/hud-window-source/scripts/com/nsus/iron/table/view/popup/smarthud/SmartHudTitleBar.as",
       "bytes": 12334,
       "sha256": "d6241912f6ba82eec1c62d88c95ae4803c74ce223f83710e79287629f0a65477"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/hud-window-source/scripts/com/nsus/iron/table/view/popup/smarthud/moremenu/SmartHudMoreMenu.as",
+      "bytes": 6422,
+      "sha256": "1953761dc01265b094fcf578df941fa237be98b3329cc68065a70d7cbb1d6909"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/hud-window-source/scripts/com/nsus/iron/table/view/popup/smarthud/moremenu/MoreMenuButton.as",
+      "bytes": 1762,
+      "sha256": "b24155087470ecbfe25cf4bdacb0ee38142d3c23a292a4c380617d15fc2d5c58"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/hud-window-source/scripts/com/nsus/iron/table/view/popup/smarthud/moremenu/ReportButton.as",
+      "bytes": 461,
+      "sha256": "7fe0e92bd6323c4addc28c999bc3458c7fc21f11dd3416d27e6c6a6405761b11"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/hud-window-source/scripts/com/nsus/iron/vo/FairplayReportVo.as",
+      "bytes": 564,
+      "sha256": "6d4198b9d33c439dad377eb4d80fb8438c0cc30d6e3c7c89c16eeeff1787de1c"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/hud-window-source/scripts/com/nsus/iron/controller/SendFairplayReportCommand.as",
+      "bytes": 2517,
+      "sha256": "05b25724c1f67fc1778b7b8dd8ed860f2bca40b4fd1c591be0504df56fbc5b37"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/hud-window-source/scripts/com/nsus/iron/controller/GetReportTypesCommand.as",
+      "bytes": 436,
+      "sha256": "acf9e2b46ab10a424b2440b0a34a5d66f5f077e7ace2de8e0a0910daa6d22d1a"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/fairplayReport/FairplayReportView.as",
+      "bytes": 16390,
+      "sha256": "12c28173c915a372a474ed02b9d02e00e02e188b9bbab8481f5cdf84466b7ecb"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/fiarplayReport/fairplayReportWindowMediator.as",
+      "bytes": 3923,
+      "sha256": "879039a0fcb62d8af4d3b3c43077a02169428a997319663087713c1b6336dc27"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/fiarplayReport/DesktopFairplayReportView.as",
+      "bytes": 3201,
+      "sha256": "142923e84b305c2ddaaf6ed47dbdcfa2daacf9e6a0b64c510ab494aedcf12530"
     }
   ],
   "protocol": {
