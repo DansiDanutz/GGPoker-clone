@@ -1,3 +1,4 @@
+import {battleSettings,readBattleEvent,battleModel} from './battle-registration.mjs';
 import {applyRoomRimt,roomRimtView,validateRoomRimt,prepareRoomRimt,advanceRoomRimtBots,rimtParticipant} from './room-rimt.mjs';
 import {spinInsuranceTerms} from './spin-insurance-terms.mjs';
 import {spinWheelSegments} from './spin-wheel-segments.mjs';
@@ -486,7 +487,7 @@ function view(r,me,avatarFor,account){
 const digest=token=>createHash('sha256').update(token).digest('hex');
 export const noteSubject=p=>digest(p.account?'account:'+p.account.toLowerCase():p.bot?'bot:'+p.noteId:'seat:'+p.digest);
 export function openRooms(file,avatarFor=()=>0,walletsEnabled=false){
-  let rooms=new Map(),wallet=cashWallet(),rushStates={},bank=spinBank(),spinEntries=[],rules=spinRules();
+  let rooms=new Map(),wallet=cashWallet(),battleEvents={},rushStates={},bank=spinBank(),spinEntries=[],rules=spinRules();
   function validateRush(variant,saved){
     if(!['holdem','plo'].includes(variant)||!saved||!Array.isArray(saved.entries)||saved.entries.length>100||new Set(saved.entries.map(p=>p?.id)).size!==saved.entries.length||saved.entries.some(p=>!p||typeof p.id!=='string'||!p.id||!Number.isSafeInteger(p.stack)||p.stack<16||p.walletFunded!==undefined&&(p.walletFunded!==true||p.bot||p.left||!Object.hasOwn(wallet.state.accounts,p.id.toLowerCase())))||!Number.isSafeInteger(saved.version)||saved.version<0||saved.pool!==null&&typeof saved.pool!=='string')throw Error('Invalid Rush wallet checkpoint');
     if(saved.pool!==null){const pool=rushPool(saved.entries,4,saved.pool,variant);if(saved.entries.some(p=>p.left&&(pool.players.get(p.id).balance!==0||pool.players.get(p.id).table!==null||[...pool.tables.values()].some(t=>!t.settled&&t.ids.includes(p.id)))))throw Error('Invalid departed Rush balance');}
@@ -513,13 +514,14 @@ export function openRooms(file,avatarFor=()=>0,walletsEnabled=false){
    for(const [name,a]of Object.entries(wallet.state.accounts)){const t=totals.get(name)??{spent:0,returned:0,prizes:0,insuranceSpent:0,insuranceReturned:0,insurancePrizes:0};if((a.spinSpent??0)!==t.spent||(a.spinReturned??0)!==t.returned||(a.spinPrizes??0)!==t.prizes||(a.spinInsuranceSpent??0)!==t.insuranceSpent||(a.spinInsuranceReturned??0)!==t.insuranceReturned||(a.spinInsurancePrizes??0)!==t.insurancePrizes)throw Error('Invalid Spin wallet escrow')}
   }
   function unpack(data){
-    if(!Array.isArray(data)||['local-cash-wallets','local-rush-pools','local-spin-bank','local-spin-entries','local-spin-rules'].some(key=>data.filter(entry=>entry?.[0]===key).length>1))throw Error('Invalid cash wallet checkpoint');
-    rooms=new Map(data);rules=spinRules(rooms.get('local-spin-rules'));rooms.delete('local-spin-rules');spinEntries=rooms.get('local-spin-entries')??[];rooms.delete('local-spin-entries');bank=spinBank(rooms.get('local-spin-bank'));rooms.delete('local-spin-bank');wallet=cashWallet(rooms.get('local-cash-wallets'));rooms.delete('local-cash-wallets');rushStates=rooms.get('local-rush-pools')??{};rooms.delete('local-rush-pools');
+    if(!Array.isArray(data)||['local-battle-events','local-cash-wallets','local-rush-pools','local-spin-bank','local-spin-entries','local-spin-rules'].some(key=>data.filter(entry=>entry?.[0]===key).length>1))throw Error('Invalid cash wallet checkpoint');
+    rooms=new Map(data);battleEvents=rooms.get('local-battle-events')??{};rooms.delete('local-battle-events');if(!battleEvents||typeof battleEvents!=='object'||Array.isArray(battleEvents))throw Error('Invalid Battle Royale checkpoint');if(Object.keys(battleEvents).length&&!walletsEnabled)throw Error('Battle wallet mode is required');for(const [id,event]of Object.entries(battleEvents)){readBattleEvent(event);if(event.settings.id!==id)throw Error('Invalid Battle event identity')}
+rules=spinRules(rooms.get('local-spin-rules'));rooms.delete('local-spin-rules');spinEntries=rooms.get('local-spin-entries')??[];rooms.delete('local-spin-entries');bank=spinBank(rooms.get('local-spin-bank'));rooms.delete('local-spin-bank');wallet=cashWallet(rooms.get('local-cash-wallets'));rooms.delete('local-cash-wallets');rushStates=rooms.get('local-rush-pools')??{};rooms.delete('local-rush-pools');
     if(!rushStates||typeof rushStates!=='object'||Array.isArray(rushStates))throw Error('Invalid Rush wallet checkpoint');
     if(Object.keys(rushStates).length&&!walletsEnabled)throw Error('Rush wallet mode is required for funded pools');
     for(const [variant,saved]of Object.entries(rushStates))validateRush(variant,saved);for(const room of rooms.values())validateRoomRimt(room);validateSpinEntries();
   }
-  const packed=()=>[...rooms,...(rules.state.revision?[['local-spin-rules',rules.state]]:[]),...(spinEntries.length?[['local-spin-entries',spinEntries]]:[]),...(bank.state.sequence?[['local-spin-bank',bank.state]]:[]),...(Object.keys(wallet.state.accounts).length?[['local-cash-wallets',wallet.state]]:[]),...(Object.keys(rushStates).length?[['local-rush-pools',rushStates]]:[])];
+  const packed=()=>[...rooms,...(Object.keys(battleEvents).length?[['local-battle-events',battleEvents]]:[]),...(rules.state.revision?[['local-spin-rules',rules.state]]:[]),...(spinEntries.length?[['local-spin-entries',spinEntries]]:[]),...(bank.state.sequence?[['local-spin-bank',bank.state]]:[]),...(Object.keys(wallet.state.accounts).length?[['local-cash-wallets',wallet.state]]:[]),...(Object.keys(rushStates).length?[['local-rush-pools',rushStates]]:[])];
   try{unpack(JSON.parse(readFileSync(file,'utf8')))}catch(e){if(e.code!=='ENOENT')throw e}
   for(const r of rooms.values())if(r.reservations!==undefined&&(!Array.isArray(r.reservations)||r.reservations.length>r.players.length||new Set(r.reservations.map(p=>p?.seat)).size!==r.reservations.length||new Set(r.reservations.map(p=>p?.account)).size!==r.reservations.length||r.reservations.some(p=>!p||!Number.isInteger(p.seat)||p.seat<0||p.seat>=r.players.length||r.players[p.seat]||typeof p.account!=='string'||!p.account.trim()||p.account.length>24||!Number.isSafeInteger(p.expiresAt)||p.expiresAt<0||p.expiresAt>8640000000000000)))throw Error('Invalid cash reservations');
   for(const r of rooms.values())for(const [i,p]of r.players.entries())if(p&&(p.walletFunded!==undefined&&(p.walletFunded!==true||!r.settings||r.tournament||p.bot||typeof p.account!=='string'||!Object.hasOwn(wallet.state.accounts,p.account.toLowerCase()))||p.walletTopUp!==undefined&&(!p.walletFunded||!Number.isSafeInteger(p.walletTopUp)||p.walletTopUp<=0||!Number.isSafeInteger(p.topUpTo)||p.walletTopUp>p.topUpTo||!r.ready[i])))throw Error('Invalid funded cash seat');
@@ -572,7 +574,7 @@ export function openRooms(file,avatarFor=()=>0,walletsEnabled=false){
         renameSync(file+'.tmp',file);
       }catch(e){
         // Discard the unacknowledged update; reload the last committed snapshot.
-        try{unpack(JSON.parse(readFileSync(file,'utf8')))}catch(err){if(err.code!=='ENOENT')throw err;rooms=new Map();wallet=cashWallet();rushStates={};bank=spinBank();spinEntries=[];rules=spinRules()}
+        try{unpack(JSON.parse(readFileSync(file,'utf8')))}catch(err){if(err.code!=='ENOENT')throw err;rooms=new Map();wallet=cashWallet();battleEvents={};rushStates={};bank=spinBank();spinEntries=[];rules=spinRules()}
         throw e;
       }
     }
@@ -655,8 +657,26 @@ export function openRooms(file,avatarFor=()=>0,walletsEnabled=false){
       }catch(error){unpack(JSON.parse(before));throw error}
     }
   }:null;
+  function battleTransaction(change){
+   if(!walletsEnabled)fail(404,'Local Battle Royale unavailable');const before=JSON.stringify(packed());
+   try{const result=change();if(JSON.stringify(packed())!==before){writeFileSync(file+'.tmp',JSON.stringify(packed()),{mode:0o600});renameSync(file+'.tmp',file)}return result}catch(error){unpack(JSON.parse(before));throw error}
+  }
+  function battleFind(id){if(!walletsEnabled||!Object.hasOwn(battleEvents,id))fail(404,'Battle Royale event not found');return battleEvents[id]}
+  function battleAccount(account){wallet.summary(account);return account.toLowerCase()}
+  request.createBattleEvent=settings=>battleTransaction(()=>{try{settings=battleSettings(settings)}catch{fail(400,'Invalid local Battle Royale settings')}if(Object.hasOwn(battleEvents,settings.id))fail(409,'Battle event already exists');battleEvents[settings.id]={settings,revision:0,registrations:[],startedAt:null,checkpoint:null};return {id:settings.id}});
+  request.battleEvents=account=>Object.keys(battleEvents).map(id=>request.battleEvent(id,account));
+  request.battleEvent=(id,account)=>{const e=battleFind(id),name=account==null?null:battleAccount(account),registered=e.registrations.includes(name),model=e.checkpoint===null?null:battleModel(e);return {settings:structuredClone(e.settings),revision:e.revision,count:e.registrations.length,registered,phase:model?model.phase():'registration',...(registered&&model?{session:model.sessions()[name],stage:model.view(name,model.sessions()[name])}:{})}};
+  request.registerBattleEvent=(id,account)=>battleTransaction(()=>{const e=battleFind(id),name=battleAccount(account);if(e.registrations.includes(name))return request.battleEvent(id,name);if(e.checkpoint!==null)fail(409,'Battle registration closed');const room=createHash('sha256').update('river-battle:'+id).digest('hex').slice(0,48);wallet.move(name,-e.settings.entryCost,'tournament-entry',room);e.registrations.push(name);e.revision++;if(e.registrations.length===e.settings.capacity){e.startedAt=Date.now();e.checkpoint=battleModel(e).snapshot()}readBattleEvent(e);return request.battleEvent(id,name)});
+  request.cancelBattleEvent=(id,account)=>battleTransaction(()=>{const e=battleFind(id),name=battleAccount(account);if(e.checkpoint!==null)fail(409,'Battle registration already started');if(!e.registrations.includes(name))return request.battleEvent(id,name);wallet.move(name,e.settings.entryCost,'tournament-refund',createHash('sha256').update('river-battle:'+id).digest('hex').slice(0,48));e.registrations=e.registrations.filter(a=>a!==name);e.revision++;readBattleEvent(e);return request.battleEvent(id,name)});
+  request.battlePlay=(id,account,op,body)=>battleTransaction(()=>{
+   const e=battleFind(id),name=battleAccount(account);if(e.checkpoint===null||!e.registrations.includes(name))fail(409,'Join the Battle Royale event first');if(!Number.isSafeInteger(body.revision)||body.revision!==e.revision)fail(409,'Refresh Battle Royale state');
+   const model=battleModel(e);if(model.sessions()[name]!==body.session)fail(401,'Invalid Battle Royale session');const before=e.checkpoint,now=Date.now();
+   try{if(op==='deal')model.deal(name,body.session,now);else if(op==='act')model.move(name,body.session,body.table,body.action,body.target,now);else if(op==='quick-fold')model.fold(name,body.session,body.table,now);else fail(400,'Unknown Battle Royale command')}catch(error){if(error.status)throw error;fail(409,error.message)}
+   const next=model.snapshot();if(next!==before){e.checkpoint=next;e.revision++;readBattleEvent(e)}return request.battleEvent(id,name);
+  });
+  request.tickBattle=()=>battleTransaction(()=>{for(const e of Object.values(battleEvents)){if(e.checkpoint===null)continue;const model=battleModel(e);model.tick(Date.now());const next=model.snapshot();if(next!==e.checkpoint){e.checkpoint=next;e.revision++;readBattleEvent(e)}}});
   request.wallet=name=>wallet.summary(name);
   request.notes=notes;
-  request.hasActivePlay=()=>bank.summary().reserved>0||[...rooms.values()].some(r=>r.hand&&!r.hand.end||r.tournament?.startedAt!=null&&r.tournament.winner==null&&!r.tournament.cancelledAt)||Object.values(rushStates).some(saved=>saved.pool&&JSON.parse(saved.pool).tables.some(([,t])=>!t.settled));
+  request.hasActivePlay=()=>Object.values(battleEvents).some(e=>e.registrations.length>0)||bank.summary().reserved>0||[...rooms.values()].some(r=>r.hand&&!r.hand.end||r.tournament?.startedAt!=null&&r.tournament.winner==null&&!r.tournament.cancelledAt)||Object.values(rushStates).some(saved=>saved.pool&&JSON.parse(saved.pool).tables.some(([,t])=>!t.settled));
   return request;
 }
