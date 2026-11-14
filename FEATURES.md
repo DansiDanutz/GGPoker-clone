@@ -1087,3 +1087,6 @@ Authenticated Home Cashier now has the original70×64light,source30/10anchor and
 ### Spin operator capital foundation
 
 A separate local owner bank starts atzero andsupports audited,idempotent funding in the existing atomic rooms checkpoint. Owner HTTP/UI tests cover lost acknowledgements,rollback,restart,private key changes andplayer-wallet isolation. No Spin entries orprizes are processed yet. This is local admin policy,not observed native administration. See docs/rea/spin-operator-bank.md andspin-registration-runtime.md.
+
+
+Spin prize exposure follow-up (source,not released): internal atomic bank reserve/cancel now covers worst-case jackpot forboth observed stakes,with retry/cold restart/rollback andrestore-while-held tests. Not connected to registration orprize settlement; no playable Spin claim. See docs/rea/spin-operator-bank.md.
