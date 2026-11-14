@@ -58,6 +58,17 @@ http.createServer(async(req,res)=>{
   if(body.account!==account)return json(401,{error:'Signed-in account changed'});
   return json(200,path==='/local/cash-leave'?roomRequest.leaveCash(account,body.leaving):path.endsWith('sit-out')?roomRequest.pauseCash(account):roomRequest.resumeCash(account));
  }
+ if(localHome&&path==='/local/spin'){
+  if(!['GET','POST'].includes(req.method))return json(405,{error:'Method not allowed'});
+  if(req.method==='POST'&&req.headers.origin!==origin)return json(403,{error:'Local origin required'});
+  const account=playerProfile.identity(req);if(!account)return json(401,{error:'Sign in locally'});
+  if(!cashWalletsEnabled)return json(503,{error:'Local practice mode is disabled'});
+  if(req.method==='GET')return json(200,{account,rules:roomRequest.spinRules().stakes,registrations:roomRequest.spinQueue(account)});
+  if(!req.headers['content-type']?.startsWith('application/json'))return json(415,{error:'Expected JSON'});
+  let raw='';for await(const chunk of req){raw+=chunk;if(Buffer.byteLength(raw)>1024)return json(413,{error:'Request too large'})}
+  let body;try{body=JSON.parse(raw);if(!body||Array.isArray(body)||typeof body!=='object')throw Error()}catch{return json(400,{error:'Invalid JSON'})}
+  try{return json(200,roomRequest.queueSpin(account,body))}catch(error){return json(error.status||500,{error:error.status?error.message:'Local operation failed'})}
+ }
  if(localHome&&path==='/local/wallet'&&req.method==='GET'){const account=playerProfile.identity(req);return account?json(200,{account,...roomRequest.wallet(account)}):json(401,{error:'Sign in locally'})}
  if(localHome&&['/local/me','/local/login','/local/create','/local/logout','/local/avatar'].includes(path))return await playerProfile.handle(req,res,path,json);
  if(localHome&&req.method==='GET'&&(path==='/'||['/launch.html','/seat.html','/seat.mjs','/playgg.html','/playgg.mjs','/playgg-carousel.mjs','/home-review.html'].includes(path)||['/home-art/native-history-roboto.ttf','/home-art/native-history-roboto-italic.ttf','/home-art/native-hud-roboto-bold.ttf','/home-art/native-show-roboto-condensed-bold.ttf','/home-art/native-action-roboto-condensed.ttf'].includes(path)||/^\/home-art\/[a-zA-Z0-9_-]+\.(png|webp|json)$/.test(path))){
