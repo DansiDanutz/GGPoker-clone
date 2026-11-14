@@ -19,6 +19,6 @@ export function spinWheelPresentation(data,wheelIndex,variant,multiplier){
    else if(phase==='celebrationExit'&&time>=700)enter('complete');
   }
   const done=['complete','cancelled'].includes(phase),exit=phase==='exit'?Math.min(time/700,1)**3:0,celebrating=['celebration','celebrationExit'].includes(phase),progress=1-(1-Math.min(time/700,1))**3,scale=phase==='celebrationExit'?1-progress:progress;
-  return {wheel:pose.wheel,arrow:pose.arrow,phase,type,done,cues,targetIndex:7-wheelIndex,prizeElapsed:phase==='prize'?time:phase==='exit'?hold+time:0,wheelAlpha:done||celebrating?0:1-exit,wheelOffsetY:-300*exit,highlight:type>=1&&['prize','exit'].includes(phase),glow:type===2&&['prize','exit'].includes(phase),congratulation:celebrating?{x:387-283*scale,y:387-283*scale,scale,alpha:scale}:null};
+  return {wheel:pose.wheel,arrow:pose.arrow,phase,type,done,cues,targetIndex:7-wheelIndex,prizeElapsed:phase==='prize'?time:phase==='exit'?hold+time:0,wheelAlpha:done||celebrating?0:1-exit,wheelOffsetY:-300*exit,highlight:type>=1&&['prize','exit'].includes(phase),glow:type===2&&['prize','exit'].includes(phase),congratulation:celebrating?{x:387-283*scale,y:387-283*scale,scale,alpha:scale,elapsedMs:phase==='celebrationExit'?8000+time:time}:null};
  }};
 }
