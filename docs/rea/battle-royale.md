@@ -116,3 +116,34 @@ Next implementation boundary: first trace Rush-session relocation, tournament ha
 - com/nsus/iron/table/services/request/RushTourneyNewHand.as: `b0dbcf678aacdac2fd71bb192a10057de668b629c1cba1b371394c9e212c52e8`
 - com/nsus/network/protocol/types/tagBattleRoyalePlayer.as: `7046b7bb8f5cb18f01bdeda312340ffa2fda8bb248c19a4e4a8efa96891e169a`
 - com/nsus/network/protocol/types/tagBattleRoyaleStage.as: `753a94e9ce10f7dcb24293ab19daf46f9c969a89cdf6c468e839384b1a194b98`
+
+## Session synchronization and bounty evidence
+
+Four more recovered classes bring the inventory to21. RushSession.sync copies server session identity, event id, TableId, start/end timestamps, balance, commission, rebuy sum, hand count, blind group, end-session reservation, status and remaining time bank. It synchronizes linked session/HUD data and sets the player's balance from the returned session balance. setTourney binds the table to the event and its BattleRoyaleInformation.player, using the event type's table type, currency and maximum players. An empty waiting table is distinct from the currently assigned hand table. The actual relocation trigger is not established by this sync method alone; no local migration is claimed implemented.
+
+### Bounty callbacks
+
+OnMysteryBountyMoneyIn callback4110 marks the event as in mystery-bounty mode and refreshes the table menu. Outside catch-up it synchronizes supplied prize pools, derives display-list data and triggers the box-entry presentation when the total pool is positive; it also changes movie/break-popup state. The recovered branch computes a guarantee-adjusted local value, but the shown appearMysteryBountyBox call passes totalMysteryBountyPrizePool. Do not treat that unused temporary as a proven financial top-up or change the local ledger to match a presumed guarantee.
+
+OnMysteryBountyEarned callback4111 skips its effect construction during catch-up. For Battle Royale, every supplied key yields its own award record with PotIndex, StringHandId, hunted UserId and Hunters. Each hunter supplies Amount, ActualAmount and AwardType. The code increments the player's actual-bounty accumulator and key count, attaches hunters and grade/quality/effect metadata, deduplicates the presentation hunter list and sorts awards by hand and pot. A shared/multi-hunter award is explicitly represented; a single visible winner cannot establish sole entitlement. Box grade/effect selection is display metadata, not a recovered random draw algorithm.
+
+If the local user is a hunter and SkipAnimation is false, the client hides a detail view before invoking the bounty effect. SkipAnimation is passed into presentation; it is not permission to skip or repeat financial settlement. No cash-wallet credit is performed by this recovered presentation callback. Account balance/award delivery must be traced separately. A reconnect must rebuild authoritative earned totals while suppressing old effects, rather than rerunning the incrementing callback over historical events.
+
+OnBounty callback4063 is a separate general bounty pipeline. Its helpers group by pot, sort seats and choose a representative using supplied amount/position data; OceanKO-specific types are present. These rules must not be copied into Mystery Battle Royale merely because both display a bounty. The Mystery path above has its own Battle Royale branch.
+
+### Local implementation invariants now established
+
+- Event and Rush-session ids are separate authorities. A hand-table assignment carries no new registration debit, and a stale session cannot move or alter the current entrant.
+- Tournament stack chips, event entry cost, prize pool, bounty bank, awarded bounty and account wallet credits are separate quantities. A bounty animation cannot create any of them.
+- Every financial award needs an immutable event/hand/pot/key identity, an explicit hunter allocation and exactly-once persisted settlement. Retry/reconnect may redisplay totals but may not credit twice.
+- Catch-up and SkipAnimation suppress presentation without changing financial entitlement. New live effects and durable state reconstruction require separate paths.
+- Final-table knockout sharing, RNG/distribution, pool exhaustion, guarantee funding and account-credit callbacks remain unverified native-server policy. Local owner practice rules must be explicit before they are implemented.
+
+The next code boundary is an event-owned tournament pool and atomic ledger, reusing the hand engine without reusing cash registration. First acceptance requires real hands, conserved tournament stacks, distinct session ownership, stage-boundary restart and no cash debit on rematch. The current source work does not pass that gate.
+
+### Additional bounty/session source hashes
+
+- com/nsus/iron/model/rush/RushSession.as: `8be7aa2a9a9786cbd3844cc06046ee8c98e456dd16249641dc954f7463006344`
+- com/nsus/iron/table/services/callback/OnMysteryBountyMoneyIn.as: `0222cedbce539f6497663337c03702c44392cfbc999dfd5b7090e88b50ee2a64`
+- com/nsus/iron/table/services/callback/OnMysteryBountyEarned.as: `c3b0d60a386e98e655c519e208017f3078acbe80d64b3354ca327f0545d71b96`
+- com/nsus/iron/table/services/callback/OnBounty.as: `c11834e3d3adfcb3d1e1dddb8e1e2bb62630f0b185ef61636891301a5b4d37c3`
