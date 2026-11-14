@@ -21,6 +21,7 @@ with Image.open(atlas_path)as atlas:
   with Image.open(out/name)as actual:assert actual.size==(w,h) and actual.convert('RGBA').tobytes()==pixels.tobytes()
   records[-1].update(frame=[x,y,w,h],rgbaExact=True)
 font_path=root/'bmfont/new_spinandgold_normal_wheel.fnt';font=ET.parse(font_path).getroot();page=font.find('pages/page');assert len(font.findall('pages/page'))==1 and page.get('id')=='0'
+assert not font.findall('kernings/kerning'),'A changed native font needs kerning reconstruction before extraction'
 name=page.get('file');assert name=='new_spinandgold_normal_wheel.png'
 png=font_path.parent/'bmfont.png';font_atlas=font_path.parent/'bmfont.xml';sources.extend([font_path,png,font_atlas])
 region=ET.parse(font_atlas).getroot().find("SubTexture[@name='new_spinandgold_normal_wheel']");assert region is not None
