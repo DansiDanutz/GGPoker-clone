@@ -73,3 +73,11 @@ Header Register/Unregister use existing server authority and actual entry cost, 
 Tests `--battle-event` verify actual registration/refund/re-entry, source pane bounds, real tabs, live Rush table/disabled Open, stable focus and restart. `--battle-final --battle-prizes --battle-bounties --battle-event-open` opens the actual final from the table row in a separate nonparticipant session before playing, verifies guest401/no private cards/no seat token/no wallet or room writes, then completes the existing six-player qualification/final payout/restart journey. Model watch privacy is checked in battle-final-room-test.
 
 This is an operational native-geometry reconstruction, not full1:1 art. Panel/tab/nine-patch artwork, exact fonts, dynamic player column variants, profile/search, true native date/localization, physical comparison and sound remain incomplete. Local How to Play wording/flow is not claimed pixel-identical to the native stage page. No screenshot is used as an interactive replacement.
+
+## Native panel and vector-tab paint
+
+`TourneyLobbyBase` uses common atlas81 as a24x24 bitmap with8px fixed nine-slice borders; the outer width is viewport+4. Reused extraction tooling crops the installed init_lobby atlas frame common0081 and reads it back to assert exact decoded RGBA, without inventing trim padding. The PNG is251bytes; hashes and script/atlas receipts are in `tourney-panel-source.json`. CSS paints it in a noninteractive pseudo-layer so8px borders do not shift native child coordinates.
+
+`TourneyTabButton` creates vector fills, not atlas sprites. Native height32/radius4, default#3c3c3c/label#b3b3b3, selected#a48954/white. Only the first/last visible tab gets its corresponding rounded ends; a single tab gets both. Group width is viewport.width-11, equally divided, with no gap. Main350 and right401 follow the actual361/412 viewports. Selected tabs have mouse input disabled. These replace the provisional28px gold/gray buttons; no invented hover sprite is substituted.
+
+The real browser pane fixture verifies these fills/heights/group widths/corners,8px border-image and24x24 loaded asset, then exercises all existing registration/Rush/restart behavior. Exact physical typography/browser versus AIR resampling, header art and player-column/profile/search/audio parity still remain open.
