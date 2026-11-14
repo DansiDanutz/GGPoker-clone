@@ -7,6 +7,11 @@
       "bytes": 1283
     },
     {
+      "class": "com.nsus.iron.lobby.view.tourneylobby.BattleRoyaleInformationPage",
+      "sha256": "8679cf9df7ee3076b0f266ebc529dc66c2440863ce7cebaed2c86ee2997f4ff7",
+      "bytes": 6716
+    },
+    {
       "class": "com.nsus.iron.lobby.view.tourneylobby.BattleRoyaleStageView",
       "sha256": "e90031b8e8725a0a0d816ce2548b9739427aa48ccc4f9287b18c26ebf4121b7d",
       "bytes": 3083
@@ -72,6 +77,41 @@
       "bytes": 15287
     },
     {
+      "class": "com.nsus.iron.lobby.view.tourneylobby.players.player.TourneyPlayerCellRenderer",
+      "sha256": "461578aaa03eb686ec6d2eb5ce22a4a5fc2f9f1bf6b8d89d782aa883c6f94c3a",
+      "bytes": 16452
+    },
+    {
+      "class": "com.nsus.iron.lobby.view.tourneylobby.players.player.TourneyPlayerList",
+      "sha256": "69e49d80b643f8f9ff17c1d96fde4bb2176635eff1a5388aebdc6030ce9a6b51",
+      "bytes": 13226
+    },
+    {
+      "class": "com.nsus.iron.lobby.view.tourneylobby.players.player.TourneyPlayersPage",
+      "sha256": "3ecfc55df4a4170c0bde6ef37286f6ab8dffcdb33da385052a903bd55c0c0b55",
+      "bytes": 13051
+    },
+    {
+      "class": "com.nsus.iron.lobby.view.tourneylobby.players.table.TourneyLobbyTableCellRenderer",
+      "sha256": "0d29d402621c886d862d7a52abe9d8560233067906fc4f90f362a43715011d5a",
+      "bytes": 4431
+    },
+    {
+      "class": "com.nsus.iron.lobby.view.tourneylobby.players.table.TourneyTableList",
+      "sha256": "cc54fbd7e3273f4cf3b1456fa10ff570a95682747581a2f692da5bd165374af3",
+      "bytes": 2309
+    },
+    {
+      "class": "com.nsus.iron.lobby.view.tourneylobby.players.table.TourneyTablesPage",
+      "sha256": "f75d42384b81b95dbb10973d70e726f291d61c3826691920d258c0515e2dd020",
+      "bytes": 4986
+    },
+    {
+      "class": "com.nsus.iron.lobby.view.tourneylobby.staking.TourneyHowToPlayPage",
+      "sha256": "403ee82e7324a63a4cb02e67a760607a7900dd2740a73a4f1ed57f02f9e08de1",
+      "bytes": 5352
+    },
+    {
       "class": "com.nsus.iron.lobby.view.tourneylobby.staking.TourneyLobbyStaking",
       "sha256": "3f447aadbed0fc906171e583a056f84743e6503871e1aa11f36f6f0721f9ef5e",
       "bytes": 9036
@@ -129,5 +169,40 @@
     ],
     "onOk": "UNREGISTER_BATTLE_ROYALE",
     "scope": "Tournament lobby; global Game List mediator not yet established"
+  },
+  "tables": {
+    "headerWidth": 401,
+    "headerHeight": 23,
+    "listY": 26,
+    "headerWidths": [
+      54,
+      54,
+      140,
+      140
+    ],
+    "rowLabelOffsets": [
+      0,
+      58,
+      116,
+      260
+    ],
+    "rowLabelWidths": [
+      54,
+      54,
+      140,
+      140
+    ],
+    "rowSeparator": [
+      0,
+      22,
+      406,
+      1
+    ],
+    "openSignal": "OPEN_TOURNEY_TABLE",
+    "openPayload": [
+      "tourneyID",
+      "tableID"
+    ],
+    "rushOpenAllowed": false
   }
 }
