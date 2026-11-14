@@ -235,7 +235,7 @@ function applyState(data){
 
 async function request(op,body={}){
  const headers={'Content-Type':'application/json'};if(token)headers.Authorization='Bearer '+token;
- const res=await fetch(rushMode?'/api/rush/'+rushPoolKind+'/'+op:'/api/rooms/'+room+'/'+op,{method:op==='state'?'GET':'POST',headers,body:op==='state'?undefined:JSON.stringify(body),cache:'no-store',...(op==='helmet'||op==='chat'?{signal:AbortSignal.timeout(5000)}:{})});
+ const res=await fetch(rushMode?'/api/rush/'+rushPoolKind+'/'+op:'/api/rooms/'+room+'/'+op,{method:op==='state'?'GET':'POST',headers,body:op==='state'?undefined:JSON.stringify(body),cache:'no-store',...(op==='helmet'||op==='chat'||op==='spin-ready'?{signal:AbortSignal.timeout(5000)}:{})});
  let data=await res.json();
  if(!res.ok){if(rushMode&&res.status===409&&op!=='state')await request('state');if(res.status===401||res.status===404){sessionStorage.removeItem(key);token=null;state=null;render()}throw Error(data.error)}
  if(rushMode){

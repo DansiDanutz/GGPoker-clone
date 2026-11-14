@@ -5,7 +5,7 @@ export function installSpinWheelScene(host,getState,acknowledge,play){
  let active=null;
  const dispose=()=>{const e=active;if(!e)return;active=null;cancelAnimationFrame(e.raf);e.player?.cancel();for(const stop of e.stops)stop?.();for(const value of Object.values(e.art||{}))value?.close?.();e.prize?.image?.close?.();e.node.remove()};
  const alive=e=>active===e;
- function fail(e,error){if(!alive(e))return;cancelAnimationFrame(e.raf);for(const stop of e.stops)stop?.();e.status.hidden=false;e.status.textContent='Spin could not finish. Your hand has not started.';e.retry.hidden=false;e.retry.onclick=()=>{e.retry.hidden=true;if(e.finished)finish(e);else{dispose();update()}};console.error('Spin presentation:',error.message)}
+ function fail(e,error){if(!alive(e))return;cancelAnimationFrame(e.raf);for(const stop of e.stops)stop?.();e.status.hidden=false;e.status.textContent=e.finished?'Spin completion could not be confirmed. Retry to recover your table.':'Spin could not load. Retry to continue.';e.retry.hidden=false;e.retry.onclick=()=>{e.retry.hidden=true;if(e.finished)finish(e);else{dispose();update()}};console.error('Spin presentation:',error.message)}
  async function finish(e){if(!alive(e))return;e.finished=true;e.canvas.hidden=true;e.status.hidden=false;e.status.textContent='Waiting for the other players…';try{if(await acknowledge()===false)throw Error('Completion was not saved')}catch(error){fail(e,error)}}
  async function start(e,s){try{
   const response=await fetch('/home-art/native-spin-wheel-motion.json',{signal:AbortSignal.timeout(5000)});if(!response.ok)throw Error('Native wheel motion unavailable');const data=await response.json();
