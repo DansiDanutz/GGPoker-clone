@@ -101,11 +101,16 @@ http.createServer(async(req,res)=>{
  if(path==='/api/hosted'&&req.method==='GET'){res.setHeader('X-Playgg-Time-Cards','1');res.setHeader('X-Playgg-Tournament-Entries','1');res.setHeader('X-Playgg-Time-Card-Options','1');return json(200,tables.map(t=>({...t,room:hostedId(t.id),...roomRequest(hostedId(t.id),'summary',undefined,{},t)})))}
  if(path==='/api/tables'&&req.method==='GET')return json(200,tables);
  const backup=/^\/api\/owner-backups(?:\/([a-f0-9]{24})(\/restore)?)?$/.exec(path);
- if((['/api/owner-spin-bank','/api/owner-chat','/api/owner-reports','/api/owner-wallets','/api/owner-seats','/api/owner-tournaments'].includes(path)&&['GET','POST'].includes(req.method))||(path==='/api/tables'&&req.method==='POST')||(path==='/api/owner-audit'&&req.method==='GET')||(backup&&(['GET','POST','DELETE'].includes(req.method)))){
+ if((['/api/owner-spin-rules','/api/owner-spin-bank','/api/owner-chat','/api/owner-reports','/api/owner-wallets','/api/owner-seats','/api/owner-tournaments'].includes(path)&&['GET','POST'].includes(req.method))||(path==='/api/tables'&&req.method==='POST')||(path==='/api/owner-audit'&&req.method==='GET')||(backup&&(['GET','POST','DELETE'].includes(req.method)))){
   if(origin!=='http://127.0.0.1:'+port||host!=='127.0.0.1')return json(403,{error:'Owner changes require local-only mode'});
   const token=Buffer.from((req.headers.authorization||'').replace(/^Bearer /,''));const expected=Buffer.from(key);
   if(req.headers.origin&&req.headers.origin!==origin)return json(403,{error:'Local origin required'});
   if(token.length!==expected.length||!timingSafeEqual(token,expected))return json(401,{error:'Owner key required'});
+  if(path==='/api/owner-spin-rules'){
+   if(!cashWalletsEnabled)return json(503,{error:'Local practice mode is disabled'});if(req.method==='GET')return json(200,roomRequest.spinRules());
+   if(req.headers.origin!==origin)return json(403,{error:'Local origin required'});if(!req.headers['content-type']?.startsWith('application/json'))return json(415,{error:'Expected JSON'});let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>16000)return json(413,{error:'Request too large'});chunks.push(chunk)}
+   try{return json(200,roomRequest.setSpinRules(JSON.parse(Buffer.concat(chunks))))}catch(error){return json(error instanceof SyntaxError?400:error.status||500,{error:error instanceof SyntaxError?'Invalid JSON':error.status?error.message:'Could not save Spin practice rules'})}
+  }
   if(path==='/api/owner-spin-bank'){
    if(!cashWalletsEnabled)return json(503,{error:'Local cash wallets are disabled'});
    if(req.method==='GET')return json(200,roomRequest.spinBank());
