@@ -1124,3 +1124,5 @@ Released PR123: native-source catch-up sound policy now keeps interrupted insura
 
 
 RIMT backend checkpoint (unreleased): authenticated hand-bound suggest/decide operations, private checkpoint validation, stopped betting clock, atomic write rollback, multi-board history and once-only expiry/completion pass seven targeted suites, including actual HTTP process restarts. Tests seed an isolated armed hand; normal room activation and native controls are still absent. See docs/rea/run-it-multiple-times.md.
+
+RIMT native artwork checkpoint: 13 exact atlas frames (title/body/close/info and all three states of three button themes) extracted with RGBA readback and repeat-run preservation. Total9,944bytes; reproducible tools/extract-rimt.py, private home-art/rea/rimt-art.json. UI integration and live release remain open.
