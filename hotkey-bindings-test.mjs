@@ -17,3 +17,6 @@ assert.deepEqual(readHotkeys().addChips,[]);assert.equal(hotkeyGroup("addChips")
 assert.deepEqual(readHotkeys().sitOutAllCash,[]);assert.equal(hotkeyGroup("sitOutAllCash"),"functions");const globalPause=assignHotkey(readHotkeys(),"sitOutAllCash",[71]);assert.deepEqual(readHotkeys(JSON.stringify(globalPause)).sitOutAllCash,[71]);assert.throws(()=>assignHotkey(globalPause,"sitOut",[71]),/already assigned/);
 
 assert.deepEqual(readHotkeys().rabbit,[]);assert.equal(hotkeyGroup('rabbit'),'functions');assert.deepEqual(readHotkeys(JSON.stringify(assignHotkey(readHotkeys(),'rabbit',[72]))).rabbit,[72]);
+
+for(const id of ["runItOnce","runItTwice","runItThreeTimes"]){assert.deepEqual(readHotkeys()[id],[]);assert.equal(hotkeyGroup(id),"options");const assigned=assignHotkey(readHotkeys(),id,[82]);assert.deepEqual(readHotkeys(JSON.stringify(assigned))[id],[82]);assert.throws(()=>assignHotkey(assigned,"showAll",[82]),/already assigned/)}
+console.log("PASS native RIMT options: unassigned defaults, persistence and conflict protection");
