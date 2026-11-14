@@ -1,0 +1,34 @@
+{
+  "method": "Existing selected FFDec source from installed IronDesktop.swf; static data contract only, no account interaction",
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/battle-royale-source/scripts/com/nsus/iron/vo/battleroyale/BattleRoyaleType.as",
+      "bytes": 5834,
+      "sha256": "d4cd082a440418a6fdffb4fa45018ea3c6a1fffdcf4e7e669e179dcf213b87c3"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/battle-royale-source/scripts/com/nsus/iron/vo/battleroyale/BattleRoyaleStageInfo.as",
+      "bytes": 5630,
+      "sha256": "bed63aa4b0e0c76524def977977cb8320e6469177a70002a3a66c15ab246fa14"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/battle-royale-source/scripts/com/nsus/network/protocol/types/tagBattleRoyaleStage.as",
+      "bytes": 2102,
+      "sha256": "753a94e9ce10f7dcb24293ab19daf46f9c969a89cdf6c468e839384b1a194b98"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/battle-royale-source/scripts/com/nsus/network/protocol/types/tagBattleRoyalePreset.as",
+      "bytes": 1699,
+      "sha256": "3363a1222b2afe69ebd16a28991ef49ef8556b1db6fc5cd3415e3d02af09bddf"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/battle-royale-source/scripts/com/nsus/network/protocol/types/tagBattleRoyaleTypeInfo.as",
+      "bytes": 724,
+      "sha256": "8b0e98c6dd454dedc4bb7df03c506294fd1b4ad9c6ce8d0aea8e6c6698b96737"
+    }
+  ],
+  "limits": [
+    "Actual server preset values were not captured",
+    "Protocol declarations do not prove server validation, scheduling or settlement policies"
+  ]
+}

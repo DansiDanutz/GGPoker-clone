@@ -1186,3 +1186,5 @@ Opponent Battle note UI (unreleased): native-position textarea/counter/palette, 
 Battle private label-title popup (unreleased): native320x324/two-column20char grid and color order, changed-field-only private patch using shared table labels; Save/retry retains failed text, Cancel leaves saved titles, caption/tooltip refresh. Owner isolation/disjoint updates/atomic/restart/HTTP tests. Save/close artwork and physical typography remain provisional.
 
 Battle label popup: native existing green/disabled/shadow Save and close sprites, source-derived close291/3 and hover rotation; browser geometry/paint regression added. Physical native timing/AA remain unverified.
+
+Native Battle stage contract audit: see docs/rea/battle-stages.md and five source receipts. Stage2 MaximumPlayers determines the native round1 advancing population; Stage3 MaximumPlayers differs from TableSize. Native per-stage hands/minutes, clock carry-over and starting blind policies remain explicit implementation gaps; HUD /9 does not prove a nine-seat final.
