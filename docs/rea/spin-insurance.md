@@ -29,3 +29,11 @@ A complete local implementation needs explicit owner practice insurance terms,se
 ## Still unknown
 
 Effective operator rates and IDs,play-money eligibility,purchase deadlines,partial batch failure/refund behavior and exact native payment settlement are unresolved. Native server financial behavior is not recovered from these client classes. Local insurance remains disabled until its explicit practice contract and transaction tests exist.
+
+## Explicit practice terms — backend stage
+
+The optional owner stake-rule property `insurance: {premium, payout}` now accepts only whole positive play credits up to1000000000for each value. Omission disables the terms; there are no default values and no native tariff is inferred. Parent rules already require local-practice mode. Revision retries,strict checkpoint/audit validation and private cloned reads include these terms.
+
+Queued matches snapshot the server rule as queueInsurance and return a cloned insuranceTerms object. Later owner edits affect future revisions,not an already matched table. Snapshot terms are checked against the retained rule audit on restart. Tests cover invalid/extra/fractional terms,disable and retry,real HTTP save/restart/backup restoration,failed-save rollback,pending-rule edit rejection,old-match immutability and tampered snapshot rejection. Uninsured engine/payout and HTTP queue regressions pass.
+
+This stage does not purchase insurance,charge a premium,add capital exposure or pay an award. The player insurance action remains disabled. Owner form controls and transactional pre-draw purchase/refund/award integration are required before enabling it or releasing this backend stage. No live owner terms or balances were changed.
