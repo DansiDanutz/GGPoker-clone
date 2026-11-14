@@ -7,12 +7,13 @@ export function battleSettings(value){
 export function battleModel(event){return battleRush(event.registrations.map(id=>({id,stack:event.settings.stack})),{eventId:event.settings.id,blind:event.settings.blind,finalSeats:event.settings.finalSeats,startedAt:event.startedAt,rushEndsAt:event.startedAt+event.settings.rushDurationMs},event.checkpoint)}
 export function readBattleEvent(value){
  try{
-  if(!value||Object.keys(value).filter(k=>k!=='qualification').sort().join(',')!=='checkpoint,registrations,revision,settings,startedAt'||!Number.isSafeInteger(value.revision)||value.revision<0)throw Error();
+  if(!value||Object.keys(value).filter(k=>!['qualification','finalRoom'].includes(k)).sort().join(',')!=='checkpoint,registrations,revision,settings,startedAt'||!Number.isSafeInteger(value.revision)||value.revision<0)throw Error();
   const settings=battleSettings(value.settings);
   if(!Array.isArray(value.registrations)||value.registrations.length>settings.capacity||new Set(value.registrations).size!==value.registrations.length||value.registrations.some(a=>typeof a!=='string'||!/^[a-z0-9][a-z0-9_-]{1,19}$/.test(a)))throw Error();
   if(value.checkpoint===null){if(value.startedAt!==null||value.registrations.length>=settings.capacity)throw Error()}
   else{if(typeof value.checkpoint!=='string'||value.registrations.length!==settings.capacity||!Number.isSafeInteger(value.startedAt)||value.startedAt<0||!Number.isSafeInteger(value.startedAt+settings.rushDurationMs))throw Error();battleModel(value)}
   if(value.qualification!==undefined){if(typeof value.qualification!=='string'||value.checkpoint===null)throw Error();battleQualifier(value)}
+  if(value.finalRoom!==undefined&&(typeof value.finalRoom!=='string'||!/^[a-f0-9]{48}$/.test(value.finalRoom)||value.qualification===undefined||battleQualifier(value).view().phase!=='final-ready'))throw Error();
   return structuredClone(value);
  }catch{throw Error('Invalid Battle Royale event checkpoint')}
 }
