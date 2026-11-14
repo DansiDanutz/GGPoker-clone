@@ -539,7 +539,10 @@ export function openRooms(file,avatarFor=()=>0,walletsEnabled=false){
     }
   };
   request.spinBank=()=>bank.summary();
-  request.fundSpinBank=command=>{if(!walletsEnabled)fail(503,'Local cash wallets are disabled');const before=JSON.stringify(packed());try{const receipt=bank.fund(command),after=JSON.stringify(packed());if(after!==before){writeFileSync(file+'.tmp',after,{mode:0o600});renameSync(file+'.tmp',file)}return receipt}catch(error){unpack(JSON.parse(before));throw error}};
+  const bankTransaction=operation=>{if(!walletsEnabled)fail(503,'Local cash wallets are disabled');const before=JSON.stringify(packed());try{const receipt=operation(),after=JSON.stringify(packed());if(after!==before){writeFileSync(file+'.tmp',after,{mode:0o600});renameSync(file+'.tmp',file)}return receipt}catch(error){unpack(JSON.parse(before));throw error}};
+  request.fundSpinBank=command=>bankTransaction(()=>bank.fund(command));
+  request.reserveSpinBank=(id,buyIn)=>bankTransaction(()=>bank.reserve(id,buyIn));
+  request.cancelSpinBank=id=>bankTransaction(()=>bank.cancel(id));
   request.nextGrantSequence=()=>wallet.nextSequence();
   request.lastGrant=()=>wallet.lastGrant();
   request.grant=(name,command)=>{if(!walletsEnabled)fail(503,'Local cash wallets are disabled');const before=JSON.stringify(packed());try{const receipt=wallet.grant(name,command),after=JSON.stringify(packed());if(after!==before){writeFileSync(file+'.tmp',after,{mode:0o600});renameSync(file+'.tmp',file)}return receipt}catch(error){unpack(JSON.parse(before));throw error}};

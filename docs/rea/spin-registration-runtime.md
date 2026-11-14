@@ -53,3 +53,19 @@ These are reconstruction requirements andlocal accounting design,not a claim abo
 ## Verification in this pass
 
 node spin-test.mjs PASS: both stakes,all eight weighted outcomes andboundary tickets,26blind levels,minute/hand transitions,final cap andinvalid inputs; unresolved configuration stays unset. A separate Node assertion pass recomputed the100Mfrequency total,all prize sums andthe operator deltas above. No new backend/UI functionality is claimed here.
+
+
+## 2026-11-14 — Decided result and wheel motion evidence
+
+REA process captures `ev_cf93455188417b07871245eae5e5c9bf7a76290207b5256c8bf1c5846034d81c` and `ev_f57cddf637fb3a8ddf0a5497c431d5d55cc3b14adbbb7a828ec4f3057621fe35` ran installed FFDec26.4.0 against the installed IronDesktop.swf, selecting six classes. Both exports exited0. The second terminal capture reports truncation; separately read and SHA256-hashed source files establish the code statements below. These captures prove decompiler execution, not execution of a native Spin game. Retained capture/source manifests are in local Git QA metadata; exported proprietary source stays outside the public repository.
+
+- `tagNotifySpinAndGoldMultiplierDecidedParameter` carries TourneyType,SitAndGoId,TableId,SitAndGoTypeIndex,Multiplier andWinSegment. The bulk wrapper is a collection named DecidedMultiplierList. It contains no starting-stack/time-bank assignment. `OnSpinAndGoldMultiplierDecidedBulk.onDispatch` and `OnStartSpinAndGoldWheelCommand.execute` have no substantive body in this build; these stubs must not be described as proven working event handlers.
+- `SpinAndGoldStartupCommand.initView` constructs SpinAndGoldTableView3D, selects Currency.CHIP, sets display currency/exchange rate and registers TableMediator. Game chips must remain distinct from entry/prize wallet money.
+- `SpinAndGoldWheel.setSpinWheelState` uses the supplied wheelIndex and transforms it to targetIndex=7-wheelIndex. It ignores a repeat while STATE_SPIN, clears waiting/effect motion, then chooses an animation variant1–4. That Math.random call selects a visual deceleration variant, not a prize outcome. Persisted match result must determine the target on every client/reconnect.
+- Motion uses asset `assets/spinandgold/spinAndGoldWheelMotion.json` (89851bytes,SHA256 `22fe1566a23475949346cd8548ddb1564c9b363cba41f879b06517c757671c5b`). It has constantVelocityMotion38frames and reductionMotion01/02/03/04 with583/499/558/583frames. Frames contain wd(wheel degrees),ad(arrow degrees),ss(high stuck sound flag). Reduction applies targetIndex×45degrees. Do not replace this motion with an arbitrary CSS spin.
+- Frame advancement is ceil(elapsedSeconds/0.033), computed per enterFrame tick. Therefore frame counts alone do not prove wall-clock duration: enterFrame cadence and dropped frames matter. Native timing remains physically unmeasured.
+- Start dispatches SOUND_SPIN_AND_GOLD_SPIN. Each ss flag dispatches SOUND_SPIN_AND_GOLD_WHEEL_STUCK_HIGH; wheel rotation changes beyond10degrees dispatch SOUND_SPIN_AND_GOLD_STUCK_LOW. Follow these triggers rather than a timer unrelated to motion.
+- Prize motionType0/1/2 delays are0.5/4.5/9.5seconds. Type1 adds frame highlight/effects; type2 also glow/glitter, SNG_WHEEL_FIREWORKS and a congratulations continuation. Then the wheel/glow/glitter exit over0.7seconds with Ease.easeIn and SOUND_SNG_WHEEL_OUT. This is a source schedule, not a measured native audio/render synchronization claim.
+- SpinAndGoldWheelView3D forwards insurance data using the selected entry's buyIn/currency flags and clears wheel state on hide. Closing/reopening must clear local transient effects without changing a persisted selected prize.
+
+Effective stack/time-bank/insurance configuration remains unresolved. This evidence improves the future wheel implementation requirements; it does not enable registration or establish a playable Spin table.

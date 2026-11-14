@@ -4,7 +4,7 @@ This is independently specified local play-credit administration. The native ope
 
 ## Current implemented boundary
 
-spin-bank.mjs stores funding-only version1state: available,funded,sequence andup to100audit events. Default capital iszero; reading it changes nothing. Available equals funded until game reservations/settlement are implemented. A funding command contains sequence,amount andreason. Amount is a whole local play-credit value1–1000000000; this cap is local policy,not a recovered native limit. Reasons are required,trimmed andlimited to200characters.
+spin-bank.mjs stores funding-only version1state: available,funded,sequence andup to100audit events. Default capital iszero; reading it changes nothing. For legacy version1 state,available equals funded. Version2 adds per-match reservations;available plus active reservations equals funded. Settlement is not enabled yet. A funding command contains sequence,amount andreason. Amount is a whole local play-credit value1–1000000000; this cap is local policy,not a recovered native limit. Reasons are required,trimmed andlimited to200characters.
 
 A matching retry of the latest command returns its original receipt. Reusing its sequence with different data orskipping asequence fails. Totals stay within safe integers. Acheckpoint validates event order,retained-history length,amounts,running balances andcapital conservation. Summary remains readable ifcommand numbers are exhausted; new funding isdisabled.
 
@@ -24,8 +24,21 @@ The UI keeps the same command after a lost acknowledgement; retry credits once. 
 - Existing tournament-wallet-test.mjs andowner-monitor-test.mjs PASS after the metadata/transaction changes.
 - owner-backup-test.mjs andowner-restore-http-test.mjs PASS: backup export,cold restoration of both embedded Rush pools,active-hand guards,rescue androllback. The backup fixture was corrected to assert the current local-rush-pools metadata instead of requiring obsolete standalone Rush files. No production backup behavior changed.
 
-Tests use ephemeral servers,data andheadless muted browsers. No live operator orplayer funds were changed. Source changes have not been committed/released yet.
+Tests use ephemeral servers,data andheadless muted browsers. No live operator orplayer funds were changed. Funding changes were released in PR109, head0295d7bff246469de9f7e1236aa78faccba04a90, after exact-head candidate tests and guarded idle restart; six owner files15496bytes stayed unchanged.
 
 ## Required next stages
 
-Add tested prize reservations/house exposure andsettlement in the same atomic boundary before connecting matching orPlay Now. Preserve exact100Mprobabilities; do not reroll foraffordability. Recover/validate effective per-multiplier stack/time-bank/insurance configuration before charging entries. Registration,multiplayer game flow,wheel,payout andnative visual/runtime fidelity remain incomplete; see spin-registration-runtime.md.
+Connect the tested reservation primitive to registration/entry escrow andadd prize settlement in the same atomic boundary before enabling matching orPlay Now. Preserve exact100Mprobabilities; do not reroll foraffordability. Recover/validate effective per-multiplier stack/time-bank/insurance configuration before charging entries. Registration,multiplayer game flow,wheel,payout andnative visual/runtime fidelity remain incomplete; see spin-registration-runtime.md.
+
+
+## Prize exposure reservation — source implementation pending release
+
+Before accepting any entry, a match needs the full worst-case operator exposure: max(prizePool) minus three buy-ins. For observed5000/10000stakes this is99985000/199970000credits. The bank holds this amount without drawing a result orfiltering probabilities. The three entry contributions must later be held in player escrow atomically before starting a match; a bank hold alone does not prove a funded game.
+
+reserve(id,buyIn) accepts a bounded alphanumeric identity,one observed stake andsufficient free capital. Exact retry returns the same receipt; another stake under that ID fails. cancel(id) returns the exposure once andkeeps a cancelled tombstone,so delayed retries cannot reopen that match. A local10000record capacity rejects additional reservations rather than deleting accounting identities; this is independent local policy,not native operator evidence.
+
+Version1 funding snapshots load unchanged. First reservation upgrades to version2 with validated reservation identities,stakes,exact exposure,unique IDs andcancelled flags. Funding while held records the reserved amount alongside available in its audit receipt; their sum equals cumulative funding at that point. Current capital always reconciles available+active holds=funded. Receipt/summary objects are cloned. No prize debit,draw orsettlement exists in this stage.
+
+openRooms exposes internal reserveSpinBank/cancelSpinBank methods through the same snapshot/temp-write/rename/rollback boundary as funding. These are not public/player/owner HTTP actions. Integration into registration remains required,including player debits,queue membership andentry escrow in the same transaction. Restore refuses current outstanding Spin reservations; cancelling them allows restore. No live bank hold was created.
+
+spin-reservation-test.mjs RED first reproduced the missing reservation operation;GREEN verifies both stakes,all possible payout exposure,simultaneous holds,insufficient capital without mutation,strict IDs/checkpoints,exact reserve/cancel retry,cancelled identity reuse rejection,funding while held,player isolation,cold restart andfailed-write rollback forboth reserve/cancel. A second RED exposed missing backup protection;GREEN rejects restore while held andallows it after cancellation. Existing funding/Rush/restore regressions also pass. Full Spin gameplay remains incomplete.
