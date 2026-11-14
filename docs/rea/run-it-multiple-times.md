@@ -1,6 +1,6 @@
 # Run It Multiple Times — recovered native contract
 
-Status: native negotiation is source-investigated; the explicit-allocation multi-board pot helper is implemented and unit-tested but not connected to gameplay. The local app still settles one board. No RIMT button, negotiation or multi-board payout is represented as implemented. Fifteen selected classes were recovered with the installed FFDec; source bytes and hashes remain private in Sandbox and Git QA metadata. No native account action, bet or GUI activation was performed.
+Status: the source-informed negotiation model and explicit-allocation multi-board pot helper are implemented and unit-tested, but neither is connected to gameplay. The local app still settles one board. No RIMT button, negotiation or multi-board payout is represented as implemented. Fifteen selected classes were recovered with the installed FFDec; source bytes and hashes remain private in Sandbox and Git QA metadata. No native account action, bet or GUI activation was performed.
 
 ## Roles and state transitions
 
@@ -57,3 +57,16 @@ The [official GGPoker help article](https://help.ggpoker.com/es/article/RIMT-Cor
 Tests independently verify unequal contributions 50/120/200/120 with the fourth player folded: contested pots 200 and 210, an 80-chip unmatched return once, and final explicit three-run payouts 67/206/217/0, totaling 490. Other cases cover two runs, tied odd amounts, a zero-valued run, no contested pot, frozen inputs, sparse/malformed arrays, nonfinite comparisons, unsafe totals and exact one-board compatibility. Real Hold'em evaluators check a shared flop where aces win one run, kings make a set on another and a board straight ties the third; explicit thirds of a 201-chip pot yield 100/101/0 with the folded contribution retained.
 
 Existing pot, live-pot/privacy/restart, inactive-seat, PLO/PLO-5/PLO-6, Short Deck, AoF, tournament and insured Spin wallet regressions pass after extracting the shared award helper. No negotiation, new board dealing, endpoint, UI control, timeout fallback or wallet transfer is enabled by this function. Source implementation is not deployed. Server role/deadline negotiation and an evidenced dealing/allocation policy are required next before exposing RIMT in the app.
+
+
+## Hand-bound negotiation model — source implementation, not gameplay-wired
+
+`engine/rimt.mjs` now provides creation, strict checkpoint reconstruction and pure command application. Creation requires an explicit hand number, distinct proposer/decider seats, creation time, proposal deadline and decision duration. There is no guessed native timeout or automatic equity-based role selection. Times are whole safe milliseconds, and overflow of the derived deadline is rejected.
+
+Only the proposer may choose one/two/three runs. Choosing one resolves immediately; two/three requires the decider's boolean response. Agreement records the proposal; refusal records one run. The saved state contains the proposal, decision, timestamps and outcome reason. Repeating the same role/hand/choice returns the same result even after its deadline; a changed choice or wrong hand/actor is rejected. Deadline equality closes a new choice, avoiding disagreement between expiry and acceptance at the boundary. Commands and states reject extra fields and inconsistent snapshots, including accepted outcomes beyond their deadline. Inputs are cloned rather than mutated.
+
+Expiry is an explicit local practice policy: if mutual agreement is absent when the supplied deadline expires, resolve to one run. It never silently authorizes multiple boards. This conservative fallback is not presented as a recovered native timeout rule. The caller must persist the returned state atomically, bind it to an authenticated room/seat and execute server timers; none of those HTTP/storage integrations is enabled by this pure model.
+
+Tests cover one/two/three, agreement/refusal, expiry before/at both deadlines, actor and stale-hand rejection, retry identity, changed-choice conflicts, clock reversal, invalid timestamps, overflow, frozen inputs and malformed reconstructed states. JSON round trips are checked at initial/proposed/final stages; this proves checkpoint compatibility, not a restarted live server. A combined rank fixture feeds confirmed outcomes into settleRunouts: a 201-chip pot gives 201/0 for one run, 101/100 for two, and 100/101 for three under the caller's explicit allocations. The fixture uses real Hold'em evaluation but preselected boards, not a newly playable hand.
+
+Next integration must pause a card engine before automatic runout, obtain eligible server-designated roles, persist the pending negotiation with private deck state, then deal/settle only the final authorized count. Native odd-chip/deck/timeout policies and full browser controls remain unresolved; the UI is not enabled.
