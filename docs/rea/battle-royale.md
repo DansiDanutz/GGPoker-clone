@@ -147,3 +147,13 @@ The next code boundary is an event-owned tournament pool and atomic ledger, reus
 - com/nsus/iron/table/services/callback/OnMysteryBountyMoneyIn.as: `0222cedbce539f6497663337c03702c44392cfbc999dfd5b7090e88b50ee2a64`
 - com/nsus/iron/table/services/callback/OnMysteryBountyEarned.as: `c3b0d60a386e98e655c519e208017f3078acbe80d64b3354ca327f0545d71b96`
 - com/nsus/iron/table/services/callback/OnBounty.as: `c11834e3d3adfcb3d1e1dddb8e1e2bb62630f0b185ef61636891301a5b4d37c3`
+
+## Local Rush-stage foundation
+
+battle-rush.mjs now wraps the existing six-seat hand/pool engine in an event-owned stage boundary. The caller must provide eventId, even blind, finalSeats(2–6), startedAt and rushEndsAt explicitly. There are no presumed native operator defaults and no wallet calls. This is a backend foundation, not an exposed or playable Battle Royale mode.
+
+Each entrant has a distinct random persisted session. Commands validate that session and the current table id, rejecting stale or missing assignment ids before touching a hand. Views clone a limited projection and reuse visibleCards; opponents' private cards/deck cannot be read or mutated through that projection. The checkpoint binds entries/configuration/session mapping and pool chip totals. It is a private server checkpoint and must not be sent to browsers.
+
+Deadline expiry (or the configured survivor threshold) closes new deals/rematches. Existing hands can finish while draining; only after all active tables settle does the coordinator expose qualification balances. It does not pick qualified players, invent shootout winners or pay money. Closed status persists, so a restored event cannot reopen merely because a caller supplies an earlier timestamp. The outer server must supply its own time and atomically persist commands; HTTP/account-cookie registration, transactional storage and wallet entry funding are not integrated yet.
+
+battle-rush-test.mjs drives a real fast-fold rematch before the old hand finishes, restores both active tables in a fresh process, drains them through real check/call actions and verifies1200chips and the qualification boundary. It also covers incorrect sessions, old/missing table ids, mutable-view isolation, changed event config, duplicate sessions, missing pool checkpoints and reopening prevention. rush-pool-test.mjs remains green. Existing engine limitations (six-seat pool/initial minimum stack) still apply. Browser journey, qualification/shootout/final play and financial settlement remain unimplemented.
