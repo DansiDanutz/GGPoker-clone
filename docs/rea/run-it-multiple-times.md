@@ -230,3 +230,7 @@ The graphics, row motion, focus and card/audio paths reuse the previously recove
 ## RIMT keyboard integration — 14 November 2026
 
 Native HotKey.as registers RUN_IT_ONCE, RUN_IT_TWICE and RUN_IT_THREE_TIMES as OPTION actions without default key-code arguments. The local registry now exposes all three under Options, unassigned by default. Existing settings handle assignment, conflicts, persistence and category enablement. The table dispatcher clicks only a visible, enabled proposer button; it does not assign Yes/No shortcuts. Master/category switches, input focus, modal guards and key-repeat suppression remain shared with other hotkeys. Browser verification uses a disposable pending-hand fixture, not the owner account. This does not establish native seated layout or physical keyboard timing parity.
+
+## Decision label reconstruction — 14 November 2026
+
+RimtDecideView creates three labels at content y33, height40 and font30: nickname white, MobileAimWantsTo gray11711154, proposal gold16426752. updateLayout centers their combined widths with two5-unit gaps. The local decision panel now uses separate text nodes/spans with these colors, height and spacing. Text remains escaped through textContent; overlong local nicknames shrink/ellipsis instead of covering the fixed decision controls. Native account-type nickname colors/bold and exact Flash glyph shaping remain unverified. A rendered850px panel test checks the three colors,16.5px content offset,20px height and2.5px gaps alongside existing role/busy/retry/deadline tests.
