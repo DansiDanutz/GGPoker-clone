@@ -110,6 +110,16 @@
       "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/ButtonColor.as",
       "bytes": 988,
       "sha256": "6102ebf3300a6933f077b5d5b2e7c061a5f11054139cea95417f9353daf0db7c"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/popup/PopupBase.as",
+      "bytes": 7644,
+      "sha256": "ff7f9f116a4eb4136848476d0766b8e294853e3644c8a6c10cd02496f8c6c472"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/window/WindowCloseButton.as",
+      "bytes": 4440,
+      "sha256": "cebb279fedf50491d05f81077a0e19e9e5f2112e54f26ec88817ef1955620d1c"
     }
   ],
   "protocol": {
@@ -136,5 +146,45 @@
     "Complete title/user/info/note subcomponent artwork, full own header/detail frame",
     "Physical AIR font/audio/animation timing",
     "Local Battle final supports2\u20136; native HUD finalRankAverage label fixes denominator9"
-  ]
+  ],
+  "labelButtonArt": {
+    "method": "Reuse existing exact-crop desktop note button extraction; no new image files",
+    "atlasHashes": {
+      "desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+      "desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+    },
+    "files": [
+      {
+        "file": "native-note-button-green-up.png",
+        "sha256": "fd677822bcff53570ffbce04e0d7bca7043cacb552cf9c6c5409ae0bc291fc14"
+      },
+      {
+        "file": "native-note-button-green-down.png",
+        "sha256": "50a7075d722bf895368ae939dd86e46168a423011c40ffe18e59b5a675f65761"
+      },
+      {
+        "file": "native-note-button-gray-disabled.png",
+        "sha256": "ef61570f3fb1e795303371157641ccb934240279b2e8262240efff6ff3310879"
+      },
+      {
+        "file": "native-note-button-shadow.png",
+        "sha256": "13d746777729dd3f7fca15e2aaebc22a59bfb2137c322cf28f2d0cf47c4bbbea"
+      },
+      {
+        "file": "native-note-button-close-up.png",
+        "sha256": "4bc589fff4dc7b0c331d6792bdce5975fc2a024da240cbcd226302a9d06c41e6"
+      },
+      {
+        "file": "native-note-button-close-over.png",
+        "sha256": "a9eae69e62df245886bd57d6a8c6c117e40acae114fa31ff4da1ca79e31bdf70"
+      },
+      {
+        "file": "native-note-button-close-down.png",
+        "sha256": "465af2b1e22405308214b3e0172872b3171c32c579f916e6afdd767eb2a6d1da"
+      }
+    ],
+    "limits": [
+      "Native physical resampling and default tween easing uncalibrated"
+    ]
+  }
 }

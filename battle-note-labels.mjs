@@ -1,7 +1,8 @@
 import {element} from './felt.mjs';
 export function openBattleNoteLabels(pane,name,titles,colors,selected,save,onClose){
  const dialog=element('dialog','battleLabelDialog'),title=element('h2','',name),grid=element('div','battleLabelGrid'),button=element('button','battleLabelSave','Save'),dismiss=element('button','battleLabelClose'),message=element('p','battleLabelMessage');let pending=false,disposed=false;
- dialog.id='battleLabelDialog';dialog.setAttribute('aria-label','Private player label titles');button.type=dismiss.type='button';button.disabled=true;dismiss.setAttribute('aria-label','Close label titles');dismiss.textContent='×';message.setAttribute('role','status');
+ dialog.id='battleLabelDialog';dialog.setAttribute('aria-label','Private player label titles');button.type=dismiss.type='button';button.disabled=true;dismiss.setAttribute('aria-label','Close label titles');button.replaceChildren(element('span','','Save'));dismiss.append(element('span'));
+ for(const state of ['green-up','green-down','gray-disabled','shadow','close-up','close-over','close-down']){const image=new Image();image.src='/home-art/native-note-button-'+state+'.png'}message.setAttribute('role','status');
  const dirty=()=>[...grid.querySelectorAll('input')].some(input=>input.value!==titles[Number(input.dataset.color)]);
  function position(){const r=pane.getBoundingClientRect();Object.assign(dialog.style,{inset:'auto',margin:'0',left:Math.max(4,Math.min(innerWidth-324,r.left+pane.clientLeft+40))+'px',top:Math.max(4,Math.min(innerHeight-328,r.top+pane.clientTop+108))+'px'})}
  function dispose(){if(disposed)return;disposed=true;removeEventListener('resize',position);dialog.close();dialog.remove();onClose()}
