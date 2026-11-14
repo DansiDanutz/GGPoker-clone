@@ -1,5 +1,6 @@
 # Spin & Gold registration, runtime configuration and funding
 
+Current implementation status: PR117 adds explicit owner practice rules and the authenticated playable registration journey; see `spin-player-queue.md`. The disabled-lobby descriptions below record earlier investigation checkpoints, not current release behavior. Native effective configuration, insurance, initial absent-player policy and wheel parity remain unresolved.
 ## Verified local state
 
 spin-lobby.mjs is currently informational: two observed play-money stakes5000/10000,quantity1–4,Info/Blind Structure/Payout/insurance help. Both Play Now controls are disabled. engine/spin.mjs contains eight observed100M-frequency outcomes and26blind levels,with minute- orhand-based progression. startingChips/timeBankCards remain null. This is not a playable Spin implementation.
