@@ -709,7 +709,7 @@ rules=spinRules(rooms.get('local-spin-rules'));rooms.delete('local-spin-rules');
    else if(e.checkpoint!==null&&e.qualification===undefined)preview=battleModel(e).preview(table);
    if(!preview)fail(404,'Battle table preview unavailable');return {...preview,players:preview.players.map(p=>({...p,avatar:avatarFor(p.name)}))};
   };
-  request.battleHud=(id,player)=>{
+  request.battleHud=(id,player,viewer=null)=>{
    const event=battleFind(id),name=battleAccount(player);if(!event.registrations.includes(name))fail(404,'Battle player unavailable');
    let games=0,passed=0,totalWinnings=0,totalBounty=0;const places=[],sizes=new Set();
    // Local career policy: completed local events only; original server aggregation and shared-kill semantics are unknown.
@@ -719,7 +719,14 @@ rules=spinRules(rooms.get('local-spin-rules'));rooms.delete('local-spin-rules');
     const bounty=e.bounty?battleBountyLedger(e).summary().awards.flatMap(a=>a.hunters).filter(p=>p.account===name).reduce((n,p)=>n+p.amount,0):0;totalBounty+=bounty;totalWinnings+=(e.payouts?.find(p=>p.account===name)?.amount??0)+bounty;
     const seat=final?.players.findIndex(p=>p.account===name)??-1;if(seat>=0&&Number.isSafeInteger(final.tournament.finishes?.[seat])){places.push(final.tournament.finishes[seat]);sizes.add(final.players.length)}
    }
-   return {name,avatar:avatarFor(name),scope:'completed-local-events',games,totalWinnings,totalBounty,passStage1Rate:games?Math.floor(passed*100/games):null,finalRankAverage:places.length?places.reduce((n,p)=>n+p,0)/places.length:null,finalTableSizes:[...sizes].sort((a,b)=>a-b),totalKills:null};
+   const summary={name,avatar:avatarFor(name),scope:'completed-local-events',games,totalWinnings,totalBounty,passStage1Rate:games?Math.floor(passed*100/games):null,finalRankAverage:places.length?places.reduce((n,p)=>n+p,0)/places.length:null,finalTableSizes:[...sizes].sort((a,b)=>a-b),totalKills:null};
+   if(viewer!==null&&battleAccount(viewer)===name){
+    const samples=[];for(const e of Object.values(battleEvents)){const r=e.finalRoom?rooms.get(e.finalRoom):null,p=r?.players.find(p=>p.account===name),stats=p?r.hud?.[noteSubject(p)]:null;if(stats)samples.push(stats)}
+    const ratio=(n,d)=>{let numerator=0,denominator=0;for(const s of samples)if(Number.isSafeInteger(s[n])&&s[n]>=0&&Number.isSafeInteger(s[d])&&s[d]>=0){numerator+=s[n];denominator+=s[d]}return denominator?Math.round(numerator*100/denominator):null};
+    const street=key=>Object.fromEntries([['CB','Bets','Opportunities'],['FCB','Folds','Responses'],['CCB','Calls','Responses'],['RCB','Raises','Responses']].map(([label,n,d])=>[label,ratio(key+'Cb'+n,key+'Cb'+d)]));
+    summary.ownStats={scope:'recorded-local-final-hands',hands:samples.reduce((n,s)=>n+(Number.isSafeInteger(s.hands)&&s.hands>=0?s.hands:0),0),flop:street('flop'),turn:street('turn'),river:{WT:ratio('showdowns','flopsSeen'),WSD:ratio('showdownWins','showdowns'),TAF:null}};
+   }
+   return summary;
   };
   request.battleEvents=account=>Object.keys(battleEvents).map(id=>request.battleEvent(id,account));
   request.battleEvent=(id,account)=>{const e=battleFind(id),name=account==null?null:battleAccount(account),registered=e.registrations.includes(name),model=e.checkpoint===null?null:battleModel(e),qualification=e.qualification===undefined?null:battleQualifier(e).view(),bounty=e.bounty?battleBountyLedger(e).summary():null,final=e.finalRoom?rooms.get(e.finalRoom):null,alive=e.payouts?1:final?final.tournament.out.filter(n=>n===null).length:qualification?qualification.direct.length+qualification.contenders.length:model?model.alive():null;return {...(bounty?{bounty,bountyHighest:Math.max(...e.bounty.items.map(p=>p.amount)),bountyHighlights:bounty.awards.map(a=>{const h=e.bounty.hands?.find(h=>h.number===a.hand)??rooms.get(e.finalRoom)?.hudHistory?.find(h=>h.number===a.hand);return {hand:a.hand,pot:a.pot,victim:a.victim,amount:a.amount,hunters:a.hunters,at:h?.at??null,avatars:a.hunters.map(p=>h?.avatars?.[h.names.indexOf(p.account)]??0)}})}:{}),settings:structuredClone(e.settings),revision:e.revision,startedAt:e.startedAt,alive,count:e.registrations.length,registered,finalEligible:!!(registered&&qualification?.qualified?.length>1&&qualification.qualified.some(p=>p.id===name)),...(e.finalRoom?{finalRoom:e.finalRoom}:{}),...(e.payouts?{payouts:structuredClone(e.payouts)}:{}),phase:e.payouts?'finished':e.finalRoom?'final-table':qualification?qualification.phase:model?model.phase():'registration',...(qualification?{qualification}:{}),...(registered&&model?{session:model.sessions()[name],stage:model.view(name,model.sessions()[name])}:{})}};
