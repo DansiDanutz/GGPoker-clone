@@ -1,3 +1,4 @@
+import {cashGroupCatalog} from './cash-group-catalog.mjs';
 import {installCashGroupDialog} from './cash-group-dialog.mjs';
 import {installLobbyPlayerHud} from './lobby-player-hud.mjs';
 import {installBattleLobby} from './battle-lobby.mjs';
@@ -397,11 +398,11 @@ function cashCatalog(request,mode){
   if(group&&mode==='shortdeck')columns.replaceChildren(...['Promotion','Stakes','Buy-in','Players','Action'].map(x=>node('span',x)));
   updateElement($('columns'),columns);
   nextList.replaceChildren(...rows.map((r,i)=>{const b=node('button',''),n=r.occupied,stake=mode==='shortdeck'?r.blind+' ('+r.blind+')':r.blind/2+' / '+r.blind,stack=r.minBuyIn!==undefined&&r.minBuyIn!==r.maxBuyIn?r.minBuyIn+'–'+r.maxBuyIn:r.stack??'30–100';
-   const cells=group?[r.name,mode==='plo'?r.mode.toUpperCase().replace(/(\d)/,'-$1'):(r.capacity||4)+'-Max',stake,stack,n===null?'—':n+'/'+(r.capacity||4),r.open?'Join':'Closed']:[r.name,stake,stack,n===null?'—':n+'/'+(r.capacity||4),r.waitingCount??0,r.avgPot??'—',r.vpip==null?'—':r.vpip+'%','—'];
+   const cells=group?[r.name,mode==='plo'?r.mode.toUpperCase().replace(/(\d)/,'-$1'):(r.capacity||4)+'-Max',stake,mode==='holdem'?r.stack:stack,n===null?'—':mode==='holdem'?String(n):n+'/'+(r.capacity||4),r.open?'Join':'Closed']:[r.name,stake,stack,n===null?'—':n+'/'+(r.capacity||4),r.waitingCount??0,r.avgPot??'—',r.vpip==null?'—':r.vpip+'%','—'];
    if(group&&mode==='shortdeck')cells.splice(1,1);
    if(mode==='aof'){if(group)cells[1]='Hold’em';else{cells.splice(1,0,'Hold’em');cells[7]=r.allInPercent==null?'—':r.allInPercent+'%'}}
 
-   b.setAttribute('aria-label',r.name);b.setAttribute('aria-pressed',String(i===selected));b.append(...cells.map((x,j)=>{
+   b.setAttribute('aria-label',r.name);if(group&&r.groupId){b.dataset.groupId=r.groupId;b.dataset.tableCount=r.members.length;b.title=r.members.length+' matching hosted tables'}b.setAttribute('aria-pressed',String(i===selected));b.append(...cells.map((x,j)=>{
     if(!group&&mode!=='aof'&&j===3&&Number.isInteger(n)){
       const seats=node('span','','seatBlocks'),capacity=r.capacity||6;
       seats.setAttribute('role','img');seats.setAttribute('aria-label',n+' of '+capacity+' seats occupied');seats.title=n+' / '+capacity+' players';
@@ -414,8 +415,8 @@ function cashCatalog(request,mode){
   if(!t){lobbyHud.select(null);updateElement(previewRoot,preview);$('details').textContent='No matching hosted tables';join.removeAttribute('href');$('joinTable').hidden=true;join.textContent='No table selected';return}
   lobbyHud.select(!group&&mode==='holdem'&&t.capacity===6?t:null);
   const own=waitingRoom===t.room?waiting:null;
-  if(group){const line=(...v)=>{const e=node('div','','line');e.append(...v.map(x=>node('span',x)));preview.append(e)};
-   line('Player','Seat','Chips');if(t.seats){t.seats.forEach((p,i)=>{if(p)line(p.name,i+1,p.stack)});if(!t.occupied)line('No players seated','—','—')}else line('Occupied seats',t.occupied??'—','—');
+  if(group){if(t.members)preview.style.overflowY='auto';const line=(...v)=>{const e=node('div','','line');e.append(...v.map(x=>node('span',x)));preview.append(e)};
+   line('Player','Seat','Chips');if(t.members){for(const member of t.members)for(const [i,p]of (member.seats||[]).entries())if(p){line(p.name,i+1,p.stack);preview.lastElementChild.title=member.name}if(!t.occupied)line('No players seated','—','—')}else if(t.seats){t.seats.forEach((p,i)=>{if(p)line(p.name,i+1,p.stack)});if(!t.occupied)line('No players seated','—','—')}else line('Occupied seats',t.occupied??'—','—');
   }else{preview.append(node('div',(t.minBuyIn!==undefined&&t.minBuyIn!==t.maxBuyIn?'Buy-in Range\n'+t.minBuyIn+'–'+t.maxBuyIn:'Buy-in\n'+t.stack)+' chips','oval'));const nativePreview=mode==='holdem'&&t.capacity===6,positions=nativePreview?[[50,85.7],[17.6,64.2],[18.4,34],[50,9.2],[83.3,33.7],[83.7,64.4]]:t.capacity===6?[[50,85],[18,65],[18,34],[50,17],[82,34],[82,65]]:[[50,85],[19,50],[50,17],[81,50]];positions.forEach(([x,y],i)=>{const name=t.seats?(t.seats[i]?.name||'Open seat'):'Seat '+(i+1),s=node('span',nativePreview?'':name,'seatlabel');if(t.seats?.[i]){
  if(t.capacity===6){const avatar=node('span','','previewAvatar');avatar.setAttribute('role','img');avatar.setAttribute('aria-label','Avatar for '+t.seats[i].name);if(Number.isInteger(t.seats[i].avatar)||typeof t.seats[i].avatar==='string'){avatar.style.backgroundImage='url('+avatarSource(t.seats[i].avatar)+')';avatar.style.backgroundSize='cover';avatar.style.backgroundPosition='center'}else avatar.style.backgroundPosition=(i*20)+'% center';s.prepend(avatar)}
  if(!nativePreview)s.append(node('small',t.seats[i].stack+' chips'))}if(nativePreview&&t.seats?.[i]){const plate=node('span','','previewPlate'),label=node('span',name,'previewName');label.title=name;plate.append(label);if(t.seats?.[i])plate.append(node('small',t.seats[i].stack+' chips'));s.append(plate);const button=node('button','','nativePreviewPlayer');button.type='button';button.dataset.seat=i;button.setAttribute('aria-label','Open player HUD for '+name);button.onclick=()=>journey?lobbyHud.open(t,i):location.assign('/launch.html');s.append(button)}if(nativePreview&&!t.seats?.[i]&&t.open&&!t.reservedSeats?.includes(i)&&(!journey||own&&!own.seated&&!own.position)&&(!own?.offer||own.offer.seat===i)){const button=node('button','','nativePreviewSeat');button.type='button';button.dataset.seat=i;button.setAttribute('aria-label','Take seat '+(i+1));button.onclick=()=>location.assign(journey?joinHref(t,true,i):'/launch.html');s.append(button)}s.style.left=x+'%';s.style.top=y+'%';preview.append(s)})}
@@ -431,11 +432,11 @@ function cashCatalog(request,mode){
   else seatLink.href=journey?joinHref(t,true):'/launch.html';
 
  }
- $('groupView').onclick=()=>{view='group';render()};$('tableView').onclick=()=>{view='table';render();refreshWaiting()};render();
+ $('groupView').onclick=()=>{view='group';applyRows()};$('tableView').onclick=()=>{view='table';applyRows();refreshWaiting()};render();
  let previous='';
- function applyRows(){const href=rows[selected]?.href,focused=list.contains(document.activeElement);
-  rows.splice(0,Infinity,...hosted.filter(t=>filter==='all'||filter===t.mode));
-  selected=Math.max(0,rows.findIndex(t=>t.href===href));if(rows[selected]?.room!==waitingRoom){waiting=null;waitingError=''}render();if(focused)list.children[selected]?.focus();
+ function applyRows(){const href=rows[selected]?.href,groupId=rows[selected]?.groupId,focused=list.contains(document.activeElement),filtered=hosted.filter(t=>filter==='all'||filter===t.mode);
+  rows.splice(0,Infinity,...(mode==='holdem'&&view==='group'?cashGroupCatalog(filtered):filtered));
+  selected=Math.max(0,rows.findIndex(t=>mode==='holdem'&&view==='group'&&groupId?t.groupId===groupId:t.href===href));if(rows[selected]?.room!==waitingRoom){waiting=null;waitingError=''}render();if(focused)list.children[selected]?.focus();
  }
  const filterKeys=mode==='aof'?['all','aof','aof-omaha']:['all','plo','plo5','plo6'];
  const filterLabels=mode==='aof'?['All','Hold’em','Omaha']:['All','PLO','PLO-5','PLO-6'];
