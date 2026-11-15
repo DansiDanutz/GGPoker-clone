@@ -8,7 +8,10 @@ export function cashGroupCatalog(tables){
   if(!group.open&&table.open)Object.assign(group,table);
   group.members=members;group.occupied=occupied;
  }
- // Native TableGroups.sortFunc + MathUtil.compareNumber: descending within comparable Hold’em rules.
- // shortcut: local groups share one practice currency/type; operator featured/password/currency gates require actual metadata.
- return rows.sort((a,b)=>(b.blind-a.blind)||((b.minBuyIn??b.stack)-(a.minBuyIn??a.stack))||((b.ante??0)-(a.ante??0))||(b.capacity-a.capacity)||0);
+ return rows.sort(cashRuleOrder);
 }
+
+// Native Tables/TableGroups + MathUtil: descending comparable rules in one practice currency/type.
+// shortcut: operator featured/password/timed/currency/index branches need actual metadata before mapping.
+function cashRuleOrder(a,b){return (b.blind-a.blind)||((b.minBuyIn??b.stack)-(a.minBuyIn??a.stack))||((b.ante??0)-(a.ante??0))||(b.capacity-a.capacity)||0}
+export function cashTableCatalog(tables){return [...tables].sort((a,b)=>cashRuleOrder(a,b)||(Number.isInteger(a.occupied)&&Number.isInteger(b.occupied)?b.occupied-a.occupied:0))}

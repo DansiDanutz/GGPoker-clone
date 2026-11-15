@@ -1,0 +1,48 @@
+{
+  "method": "REA selective headless FFDec ActionScript recovery from original read-only SWF; not native AIR execution",
+  "swf": {
+    "path": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf",
+    "sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1"
+  },
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/vo/Tables.as",
+      "sha256": "4cefa5070bf9cd0ddce81d0234f83321a0e8d09999565ddf96d0198971ec3d06"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/utils/MathUtil.as",
+      "sha256": "f36d307be809b61946288f0320e2e89f7f1d9e550dc6d36d5f1c5c2cce711989"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/StageList.as",
+      "sha256": "45d127988c79605d821081135bd34da95c0986275710945791ba3a37d43e4bfe"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/TableList.as",
+      "sha256": "ca1f4248299068cc4c4658abc08147456c16e1f27516f561ef994a4a90b747f4"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/TableCell.as",
+      "sha256": "9536fcab4c0a6fcc869690060361f21a213675e5d5171780bc05eb15721b0847"
+    }
+  ],
+  "nativeContract": [
+    "TableList enables StageList keyboard and has cellHeight32/cellGap4",
+    "StageList arrows38/40 select next/previous visible valid item without wrapping; Enter13 calls currentCell.onDoubleClick",
+    "TableCell double click dispatches OPEN_TABLE; single click dispatches CLICK",
+    "Ordinary comparable Tables.sortFunc orders descending usdBigBlind/usdMinBuyin/usdAnte/maxPlayers/playerCount; final tableIndex ascending",
+    "Native sort also includes timed, featured, currency, heads-up, private and Omaha branches before/among the comparable priorities"
+  ],
+  "localMapping": [
+    "Only ordinary local Hold\u2019em Table View changes; practice currency/type identical, no fabricated timed/featured/private/operator-index values",
+    "Shared cashRuleOrder preserves Group ordering; Table View adds actual integer occupied count and stable input order for unknown occupancy/ties",
+    "Arrows reuse current row selection/focus/preview; Enter/double click opens actual r.href without join/autojoin intent; no new purchase or reservation"
+  ],
+  "verification": [
+    "RED missing cashTableCatalog export then GREEN rule/occupancy/stable-tie/no-aggregation/no-mutation assertions"
+  ],
+  "remaining": [
+    "Full browser/current-head validation and release pending",
+    "Physical same-size native AIR raster/animation/audio timing/operator metadata/full-app parity unverified"
+  ]
+}
