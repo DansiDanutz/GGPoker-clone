@@ -65,10 +65,16 @@
   "verification": [
     "RED missing getTable and undefined waiting flag, then GREEN cache/queue/auth/HTTP tests",
     "Full source browser PASS own-room orange/font/stable selection, separate observer Wait/Cancel without seat/token/debit, two hands/payout/restart and Group conservation",
-    "Rendered regression: confirmed observer Wait showed column0 before public poll; add assertions1afterWait/0afterCancel and use actual private count"
+    "Rendered regression: confirmed observer Wait showed column0 before public poll; add assertions1afterWait/0afterCancel and use actual private count",
+    "PR257 all17 exact-head checks/reviews PASS including private HTTP/queue/cache/source/font/render, actual own and separate observer Wait/Cancel/count1/0, two hands/payout/restart/manual Join and unchanged owner data"
   ],
   "remaining": [
-    "Final exact-head installed browser/inspection/release pending",
-    "Native physical raster/timing/operator variants/full-app parity incomplete"
-  ]
+    "Native physical raster,autoScale/autoSlice,notification/animation/audio timing and operator brand/featured/private/promotion/full-app parity incomplete"
+  ],
+  "release": {
+    "pr": 257,
+    "testedSha": "09f34fe014274c07f6f2490b2744999e7aa93c02",
+    "mergeCommit": "03fa48656abc04850ecd0fa331d2ed43239e4117",
+    "ownerDataUnchanged": true
+  }
 }

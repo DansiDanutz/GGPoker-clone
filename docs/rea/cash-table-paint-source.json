@@ -108,8 +108,8 @@
     "PR255:13 exact-head checks/reviews passed including installed real normal/hover/selected/empty/full/default buy-in/keyboard/Join, inspected render, two hands/payout/restart and source/font/RGBA/runtime/art identities"
   ],
   "remaining": [
-    "Authenticated own/waiting-row orange/bolditalic and operator brand/featured/private/promotion variants incomplete",
-    "Physical native AIR parent/raster/autoSlice/autoScale and animation/audio timing/full-app parity unverified"
+    "Operator brand/featured/private/promotion variants incomplete",
+    "Physical native AIR parent/raster/autoSlice/autoScale and notification/animation/audio timing/full-app parity unverified"
   ],
   "release": {
     "pr": 255,
@@ -117,5 +117,10 @@
     "mergeCommit": "701575947a010093e021bfdd6ccaed44ead04a02",
     "ownerDataUnchanged": true
   },
-  "sourceDiagnostic": "Source-checkout WIN image complete=true/naturalWidth0 despite matching installed asset hash;not reproduced in either final installed journey;strict WIN assertions retained with HTTP diagnostics,cause unproven"
+  "sourceDiagnostic": "Source-checkout WIN image complete=true/naturalWidth0 despite matching installed asset hash;not reproduced in either final installed journey;strict WIN assertions retained with HTTP diagnostics,cause unproven",
+  "extension": {
+    "pr": 257,
+    "contract": "cash-table-account-source.json",
+    "implemented": "Authenticated own/waiting-row orange/BoldItalic and confirmed count; original PR255 evidence remains historical"
+  }
 }
