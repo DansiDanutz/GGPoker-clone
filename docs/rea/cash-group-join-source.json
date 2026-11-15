@@ -1,5 +1,5 @@
 {
-  "method": "Selective headless FFDec AS exports and existing sprite crop decoded-RGBA readback; not AIR execution",
+  "method": "Selective headless FFDec ActionScript exports bound to original SWF; not AIR runtime or private server execution",
   "swf": {
     "path": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf",
     "bytes": 41892370,
@@ -25,6 +25,30 @@
     {
       "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/vo/AutoJoinVo.as",
       "sha256": "d2dd8a9afd25c03e627a164a219cc765f7d26f75fb000d54d181d37f77b63501"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/services/request/JoinCashGame.as",
+      "sha256": "19dc3da5a58598ef63193d3b106d83de4beb8c9e7f3aba02bf8ce954e73b4ce5"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/network/protocol/Session/JoinCashGameRequest.as",
+      "sha256": "8c23fb4efc49f9f0f23a62f51d1c4f842715562c8f3413a3eb7cb131dd016534"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/network/protocol/Session/JoinCashGameResponse.as",
+      "sha256": "2881cec6c1bf481f9243a62346da1f1b2aaff10829236cbf928852990484ed28"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/services/callback/OnCashGameReady.as",
+      "sha256": "63ece0356c489ca17da321772ac11313db5665f76efb717030642fe383010aeb"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/network/protocol/SessionCallback/NotifyCashGameReadyParameter.as",
+      "sha256": "583d409708c1687429b70047e201c5df538a98389540df75f96195eb6898e3f3"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/vo/TempAutoJoinVo.as",
+      "sha256": "b5a18ce7ecf4d1c4510f4ff5e1f31968343087131b3b9c27df8f65a4c4912daf"
     }
   ],
   "nativeContract": [
@@ -34,7 +58,12 @@
     "Popup has BuyIn and Advanced pages, Join/Cancel/Close; Join persists preferences and creates AutoJoinVo",
     "AutoJoinVo includes tableCount,buyInAmount,stackType,playerStyleType,gameSpeedType,locationType,ticket/currency flags,isAutoBuyIn:true",
     "Table count initial1; default cap6, GGPDE4; further waiting/config/funds/ticket limits; max0 disables Join",
-    "Advanced defaults indices stack1/style1/speed1/location0; choices Short/Average/Deep, Tight/Normal/Loose, Slow/Normal/Fast, Random/Nearby"
+    "Advanced defaults indices stack1/style1/speed1/location0; choices Short/Average/Deep, Tight/Normal/Loose, Slow/Normal/Fast, Random/Nearby",
+    "Popup412x494 normally or412x554GGPSE; preferences persisted by gameType/group id",
+    "Async request1411 sends TableTypeId/TableCount/StackType/PlayerStyleType/GameSpeedType/LocationType/TicketIds, not buyInAmount",
+    "ACK response only Result/LeaveTablePenaltyInfo; actual selection is a separate OnCashGameReady callback",
+    "Ready callback receives real Table/SeatIndex/JoinType/Token and opens TableConnection with reserved seat; Join sets isJoinTable=true",
+    "TempAutoJoinVo retains client isAutoBuyIn/buyInAmount/isFirstCDollar/useTicket settings"
   ],
   "notImplemented": [
     "Group aggregation and normal Group buy-in popup",
@@ -42,5 +71,5 @@
     "Preferences with real locally measured matching; no fabricated operator matching thresholds",
     "Ticket/currency branches depend on actual local feature support"
   ],
-  "next": "Trace normal JoinCashGame request/service payload and popup layout; implement entire local group join flow rather than redirecting to spectator table"
+  "next": "Trace TempAutoJoinVo consumption in post-ready CheckTakeSeat, then implement real local Group popup/multi-table atomic funding/matching; private server thresholds must be explicit unknowns, never fabricated"
 }
