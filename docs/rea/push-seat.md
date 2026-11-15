@@ -1,6 +1,14 @@
 # Push Seat — contract recuperat
 
-Analiză statică a SWF-ului instalat, prin export FFDec selectiv în fluxul REA. Nu au fost trimise comenzi contului real. Hashurile surselor sunt în push-seat-source.json. Această fișă nu declară funcția implementată local.
+Analiză statică a SWF-ului instalat, prin export FFDec selectiv în fluxul REA. Nu au fost trimise comenzi contului real. Hashurile surselor sunt în push-seat-source.json. Secțiunile de contract descriu observațiile statice; checkpointul de mai jos descrie implementarea locală publicată.
+
+## Implementare locală publicată — PR213
+
+[PR213](https://github.com/DansiDanutz/GGPoker-clone/pull/213), sursa `4973b65a7ab43afb0177cd859e4dff70e52c8f01`, este integrat și activ local. Ownerul setează fereastra Push Seat la1–1000mâini pentru o masă cash Hold’em/PLO4/5/6;0omite funcția. Grantul este o politică locală per ocupare a locului, nu un item nativ câștigat. Jucătorul deschide Push Seat, selectează alt loc, așteaptă plata mâinii și apoi confirmă Ready în noua poziție. Anularea este disponibilă înaintea aplicării; aceeași cerere poate fi repetată fără consum dublu. O utilizare în așteptare/aplicată pe masă/mână; conturile, sesiunea, finanțarea, ready și istoricul urmează persoana. Locurile din traseul programat nu primesc oferte noi de buy-in, iar ofertele deja existente blochează traseul.
+
+28verificări pe commitul exact includ planificatorul, auth/Origin/JSON, concurența, rollback, funding/Remove Chips și Ready, plus fluxurile browser în sursă și în pachetul instalat restricționat. Trei sesiuni au trecut owner→Home→listă→buy-in→rezervare→payout→rotație→restart→Ready→a doua mână→cashout, cu30.000credite conservate. Jocul cu cinci computere a trecut două mâini/720chips și reconectare. Coordonatele selectorului, centrul titlului, panoul680×208 și cadrele săgeții1400ms sunt măsurate. Resursele au hashuri în push-seat-art.json.
+
+Nu sunt confirmate pixelii/fonturile AIR, timingul fizic/sunetul, politica serverului privat sau poziționarea identică a intrării în meniul nativ; intrarea locală este în toolbar. Notele de candidat/nepublicat de mai jos păstrează ordinea descoperirilor și sunt istorice. La activare, toate cele șase fișiere owner au rămas identice; testele folosesc date temporare.
 
 ## Acces și selecție
 
