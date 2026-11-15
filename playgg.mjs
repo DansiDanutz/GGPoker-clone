@@ -246,7 +246,7 @@ function catalog(mode){
  battleRulesView?.destroy();battleRulesView=null;battleLobbyView?.destroy();battleLobbyView=null;spinUI?.close();
  const request=++catalogRequest;$('viewSwitch').hidden=false;$('groups').hidden=false;
  const tournament=mode==='tournaments',pane=$('catalog'),list=$('groups'),detailsRoot=$('details');pane.dataset.mode=mode;pane.hidden=false;size();list.replaceChildren();
- $('joinTable').hidden=true;$('takeSeat').textContent='Join table';pane.removeAttribute('data-view');$('catalogName').textContent=tournament?'Tournaments':mode==='plo'?'PLO':mode==='shortdeck'?'Short Deck · local rules':mode==='aof'?'All-In or Fold':'Hold’em';
+ $('joinTable').hidden=true;$('takeSeat').onclick=null;$('eventLobby').onclick=null;$('takeSeat').textContent='Join table';pane.removeAttribute('data-view');$('catalogName').textContent=tournament?'Tournaments':mode==='plo'?'PLO':mode==='shortdeck'?'Short Deck · local rules':mode==='aof'?'All-In or Fold':'Hold’em';
  $('eventSearchLabel').hidden=!tournament;
  $('eventFilter').hidden=mode==='battle';$('eventLobby').hidden=mode==='battle';
  if(mode==='battle'){battleCatalog(request);return}
@@ -270,7 +270,8 @@ function catalog(mode){
  let sort=0,direction=1;
  const headings=['Start','Event Name','Buy-in','Players','Prize'];
  $('columns').replaceChildren(...headings.map((label,i)=>{const b=document.createElement('button');b.textContent=label;b.onclick=()=>{direction=sort===i?-direction:1;sort=i;show(current)};return b}));
- let selected=rooms[2],previous='',current=[];
+ let selected=rooms[2],previous='',current=[],multiBusy=false;
+ async function multiAction(event,op){if(multiBusy)return;multiBusy=true;try{const response=await fetch('/local/multi-tournaments/'+event.id+'/'+op,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({account:player.name})}),data=await response.json();if(!response.ok)throw Error(data.error);previous='';await refresh(false)}catch(error){detailsRoot.textContent=error.message}finally{multiBusy=false}}
  $('eventSearch').value='';$('eventSearch').oninput=()=>show(current);
  function show(events){
   const details=detailsRoot.cloneNode(false),nextList=list.cloneNode(false);
@@ -284,31 +285,40 @@ function catalog(mode){
   const value=t=>sort===0?(t.startsAt||0):sort===1?t.name:sort===2?eventEntry(t):sort===3?t.occupied??-1:t.occupied==null?-1:eventPool(t);
   events.sort((a,b)=>direction*(typeof value(a)==='string'?value(a).localeCompare(value(b)):value(a)-value(b)));
   [...$('columns').children].forEach((b,i)=>{b.textContent=headings[i]+(sort===i?(direction===1?' ▲':' ▼'):'');b.setAttribute('aria-label','Sort by '+headings[i])});
-  if(!events.length){nextList.replaceChildren(cell('No matching tournaments'));details.textContent='';$('takeSeat').removeAttribute('href');$('takeSeat').textContent='Select a tournament';$('eventLobby').removeAttribute('href');updateElement(list,nextList);updateElement(detailsRoot,details);return}
+  if(!events.length){$('takeSeat').onclick=null;nextList.replaceChildren(cell('No matching tournaments'));details.textContent='';$('takeSeat').removeAttribute('href');$('takeSeat').textContent='Select a tournament';$('eventLobby').removeAttribute('href');updateElement(list,nextList);updateElement(detailsRoot,details);return}
   if(!events.some(t=>t.room===selected))selected=events[0].room;
   nextList.replaceChildren(...events.map(t=>{
    const row=document.createElement('button'),started=t.hand>0,closed=!t.open||t.cancelled,available=!closed&&!started;
    row.dataset.room=t.room;row.setAttribute('aria-label',t.name);row.setAttribute('aria-pressed',String(t.room===selected));
-   row.append(...[t.cancelled?'Cancelled':started?'Started':closed?'Closed':t.startsAt?new Date(t.startsAt).toLocaleString(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'On registration',t.name,String(eventEntry(t)),t.occupied==null?'—':t.occupied+'/'+(t.capacity||4),t.occupied==null?'—':String(eventPool(t))].map(cell));
+   row.append(...[t.multi?.status==='complete'?'Finished':t.cancelled?'Cancelled':started?'Started':closed?'Closed':t.startsAt?new Date(t.startsAt).toLocaleString(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'On registration',t.name,String(eventEntry(t)),t.occupied==null?'—':t.occupied+'/'+(t.capacity||4),t.occupied==null?'—':String(eventPool(t))].map(cell));
    row.onclick=()=>{selected=t.room;show(current)};
-   if(selected===t.room){details.replaceChildren();
+   if(selected===t.room){$('takeSeat').onclick=null;$('takeSeat').onkeydown=null;$('takeSeat').removeAttribute('role');$('takeSeat').removeAttribute('tabindex');details.replaceChildren();
     const title=document.createElement('strong');title.textContent=t.name;details.append(title);
     const fields=[['Start',t.startsAt?new Date(t.startsAt).toLocaleString()+' · minimum '+Math.max(2,(t.prizeShares||[100]).length)+' players':'At '+(t.capacity||4)+' registrations'],['Buy-in',eventEntry(t)+' play credits'],['Players',t.occupied==null?'—':t.occupied+' / '+(t.capacity||4)],['Prize',t.occupied==null?'—':eventPool(t)+' play credits'],['Starting chips',String(t.stack||100)],['Blinds',(t.currentBlind||t.blind||4)/2+' / '+(t.currentBlind||t.blind||4)+(t.currentAnte||t.ante?' · Ante '+(t.currentAnte||t.ante):'')],['Format',(t.variant==='plo'?'Pot-limit Omaha':'No-limit Hold’em')+' · freezeout · no rebuys'],['Payout',(t.prizeShares||[100]).length===1?'Winner takes the pool':t.prizeShares.map((n,i)=>(i+1)+': '+n+'%').join(' · ')]];
     fields.push(['Blind levels',t.levelSeconds?t.levelSeconds+' seconds · new hands only':'Server default · new hands only']);
     const dl=document.createElement('dl');for(const [label,value] of fields){const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=label;dd.textContent=value;dl.append(dt,dd)}details.append(dl);
     $('eventLobby').href=eventLink(t.room);
     $('takeSeat').textContent=t.cancelled?'Event cancelled':closed?'Registration closed':started?'Open tournament':'Register';if(available||started)$('takeSeat').href=eventLink(t.room);else $('takeSeat').removeAttribute('href')}
+   if(selected===t.room&&t.multi){const e=t.multi,own=e.entry&&!e.entry.cancelled,account=player?.name.toLowerCase(),assigned=e.tournament?.tables.find(t=>t.seats.some(p=>p?.id===account)),place=e.tournament?.players.find(p=>p.id===account)?.place,prize=e.tournament?.prizes.find(p=>p.id===account)?.amount??0;
+    $('takeSeat').onclick=null;$('takeSeat').removeAttribute('href');$('eventLobby').removeAttribute('href');
+    if(assigned){const url='/network.html?player&mode=tournament&from=home&multi='+e.id+'#'+assigned.room;$('takeSeat').textContent='Open table';$('takeSeat').href=$('eventLobby').href=url}
+    else if(e.status==='registering'&&!own){$('takeSeat').textContent='Register';$('takeSeat').role='button';$('takeSeat').tabIndex=0;$('takeSeat').onkeydown=ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();$('takeSeat').click()}};$('takeSeat').onclick=ev=>{ev.preventDefault();void multiAction(e,'register')}}
+    else $('takeSeat').textContent=e.status==='registering'?'Registered · waiting':place?'Place '+place+' · Prize '+prize:'Registration closed';
+    const notice=document.createElement('p');notice.textContent='Local multi-table Hold’em · idle-only balancing · round-robin seating · serialized elimination order.'+(place?' Your place: '+place+' · Your prize: '+prize+' play credits.':'');details.append(notice);
+    if(e.status==='registering'&&own){const cancel=document.createElement('button');cancel.type='button';cancel.id='cancelMultiEntry';cancel.textContent='Cancel registration';cancel.onclick=()=>void multiAction(e,'cancel');details.append(cancel)}
+   }
    return row;
   }));
   updateElement(list,nextList);updateElement(detailsRoot,details);
   if(focused)[...list.children].find(row=>row.dataset.room===focused)?.focus();
  }
  const standard={room:rooms[2],name:'Four-player freezeout',open:true};show([standard]);
- async function refresh(){if(request!==catalogRequest||pane.hidden)return;
+ async function refresh(schedule=true){if(request!==catalogRequest||pane.hidden)return;
   try{const response=await fetch('/api/hosted',{cache:'no-store'});if(!response.ok)throw Error();const events=(await response.json()).filter(t=>t.mode==='tournament');
+   if(journey){const r=await fetch('/local/multi-tournaments',{cache:'no-store'});if(r.ok)for(const e of (await r.json()).events)events.push({room:e.id,multi:e,name:e.name,mode:'tournament',capacity:e.settings.capacity,stack:e.settings.startingStack,blind:e.settings.blind,entryCost:e.settings.entryCost,prizeShares:e.settings.prizeShares,levelSeconds:e.settings.levelSeconds,occupied:e.registered,prizePool:e.tournament?.pool??e.registered*e.settings.entryCost,open:e.status==='registering',hand:e.status==='registering'?0:1})}
    const publicState=await fetch('/api/rooms/'+rooms[2]+'/watch',{cache:'no-store'});if(publicState.ok){const state=await publicState.json();standard.occupied=state.names.filter(Boolean).length;standard.hand=state.number||0;standard.currentBlind=state.hand?.blind||4}
    if(request!==catalogRequest||pane.hidden)return;const signature=JSON.stringify([standard,...events]);if(signature!==previous){previous=signature;show([standard,...events])}
-  }catch{}if(request===catalogRequest&&!pane.hidden)setTimeout(refresh,2000)
+  }catch{}if(schedule&&request===catalogRequest&&!pane.hidden)setTimeout(refresh,2000)
  }refresh();
 }
 function battleCatalog(request){
