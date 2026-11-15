@@ -1,0 +1,38 @@
+{
+  "method": "Selective headless FFDec26.4 static exports; no real-account, GUI, AIR or private-server execution",
+  "sources": {
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
+    "/Users/davidai/Sandbox/rea-tools/global-sitout-source/scripts/com/nsus/iron/controller/SetGlobalSitoutCommand.as": "35be65c355fc7045b0819f2a4429332e74b55bd3a7cc0914f82ad4b853a373e4",
+    "/Users/davidai/Sandbox/rea-tools/global-sitout-source/scripts/com/nsus/iron/helper/GlobalSitoutManager.as": "67ea5b942ac5c5f03038fcc25f9ad03b17a6c02f55c1e82585cacea07ef641a9",
+    "/Users/davidai/Sandbox/rea-tools/global-sitout-source/scripts/com/nsus/iron/table/controller/SelectSitoutMenuCommand.as": "6c53c6e2e3df9749afb39de504956fe88e2c0bf8ac92a9cfe812c41991df585e",
+    "/Users/davidai/Sandbox/rea-tools/global-sitout-source/scripts/com/nsus/iron/table/controller/OnChangeGlobalSitoutStateCommand.as": "52119b283c44ffbe37c419cd455612c2fb0c058985d0ee9e34f2e1ac15c01816",
+    "/Users/davidai/Sandbox/rea-tools/global-sitout-source/scripts/com/nsus/iron/table/services/request/SetAutoActionFlags.as": "def19d8a7f73725563b1dd450434b253edcb9d8cfbe0ed5aa0683ca6d57873cd",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/controller/GlobalSitoutCommand.as": "72d21dd055a873e5e8f0cbde8748dc0491c1053595cb491219aa1ee8d5a98683",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/controller/SitOutCommand.as": "c82abeecef38eb0347a1e5dd3a2aa55fd7749b1611241a38326c13d64dd87a62",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/controller/SitInCommand.as": "28f24276219110c4ceaa9ff0478beea30fb9436347296f81d7717de16bd7a0bc",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/display/sitoutmenu/SitOutHelper.as": "f40d07ce323dc02100758f53fd6da2babf96a7e0774bba6e3d63a1f90e707a78",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/display/SitOutType.as": "4e3cff4f543d667274ee71dfda88c42cb3298413836579dc4c5232748bc443f3",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/component/SitOutMenuView.as": "af787b9e6c94bca8e5ebf46610697cc549a00c0dccd7333aae37dd257fc7131d",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/network/enum/EAutoActionFlag.as": "30743b06c858ba711d4aeea28f77970a03e56707b961a0b941cbe1d85780720a"
+  },
+  "findings": [
+    "GlobalSitoutManager distinguishes table override and all-table reservation; single override wins and global resume clears reservations",
+    "SelectSitoutMenuCommand distinguishes isGlobal cash and isAll game-wide scopes; IsGlobalAutoAction applies to isAll",
+    "GlobalSitoutCommand cash branch excludes tournaments and Spin; it does not exclude ordinary Rush cash",
+    "SitOutCommand/SetAutoActionFlags3128 handle RushSessionId and queued Rush sessions separately from current hand actions",
+    "Native header All Tables row and cash-specific helper actions are distinct; local cash-scoped labels do not establish full all-games parity"
+  ],
+  "localImplementation": [
+    "Existing supported Holdem/Omaha cash rooms and existing registered Holdem/PLO Rush sessions only",
+    "Single shared rooms/wallet checkpoint transaction; no fold/bet/chip transfer on pause/resume",
+    "Rush scope marker private and advisory; current-pool action clears it",
+    "Paused idle funded Rush sessions requeue on resume; unpaused idle sessions never start implicitly",
+    "Zero balance retains pause and asks for explicit local200chip rejoin; no automatic wallet debit",
+    "New sessions do not inherit old requests; future native inheritance and operator defaults are not established"
+  ],
+  "gaps": [
+    "Tournament/Spin all-games pause and Short Deck scope",
+    "Next-blind SB/BB trigger, missed blinds, penalties and operator timer/refill policy",
+    "Physical native graphics/audio timing and private-server arbitration"
+  ]
+}

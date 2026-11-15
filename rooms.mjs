@@ -561,7 +561,7 @@ export const noteSubject=p=>digest(p.account?'account:'+p.account.toLowerCase():
 export function openRooms(file,avatarFor=()=>0,walletsEnabled=false){
   let rooms=new Map(),wallet=cashWallet(),battleEvents={},rushStates={},bank=spinBank(),spinEntries=[],rules=spinRules(),multi=multiTableRegistry();
   function validateRush(variant,saved){
-    if(!['holdem','plo'].includes(variant)||!saved||!Array.isArray(saved.entries)||saved.entries.length>100||new Set(saved.entries.map(p=>p?.id)).size!==saved.entries.length||saved.entries.some(p=>!p||typeof p.id!=='string'||!p.id||!Number.isSafeInteger(p.stack)||p.stack<16||p.walletFunded!==undefined&&(p.walletFunded!==true||p.bot||p.left||!Object.hasOwn(wallet.state.accounts,p.id.toLowerCase())))||!Number.isSafeInteger(saved.version)||saved.version<0||saved.pool!==null&&typeof saved.pool!=='string')throw Error('Invalid Rush wallet checkpoint');
+    if(!['holdem','plo'].includes(variant)||!saved||!Array.isArray(saved.entries)||saved.entries.length>100||new Set(saved.entries.map(p=>p?.id)).size!==saved.entries.length||saved.entries.some(p=>!p||typeof p.id!=='string'||!p.id||!Number.isSafeInteger(p.stack)||p.stack<16||p.sitOutAllCash!==undefined&&(p.sitOutAllCash!==true||p.bot)||p.walletFunded!==undefined&&(p.walletFunded!==true||p.bot||p.left||!Object.hasOwn(wallet.state.accounts,p.id.toLowerCase())))||!Number.isSafeInteger(saved.version)||saved.version<0||saved.pool!==null&&typeof saved.pool!=='string')throw Error('Invalid Rush wallet checkpoint');
     if(saved.pool!==null){const pool=rushPool(saved.entries,4,saved.pool,variant);if(saved.entries.some(p=>p.left&&(pool.players.get(p.id).balance!==0||pool.players.get(p.id).table!==null||[...pool.tables.values()].some(t=>!t.settled&&t.ids.includes(p.id)))))throw Error('Invalid departed Rush balance');}
   }
 
@@ -797,6 +797,14 @@ rules=spinRules(rooms.get('local-spin-rules'));rooms.delete('local-spin-rules');
     if(typeof account!=='string'||!account.trim())fail(401,'Sign in locally');
     const before=JSON.stringify(packed());let changed=0;const fundingRequired=[];
     try{for(const [id,r]of rooms)if(cashSitOut(r))for(const [i,p]of r.players.entries())if(p&&!p.bot&&p.account===account){if(!paused&&returnNeedsChips(r,i)){fundingRequired.push({room:id,minimum:returnMinimum(r),balance:cashBalance(r,i)});continue}if(setCashPause(r,i,paused,true)){r.actionVersion=r.version;r.touched=Date.now();changed++}}
+      for(const [variant,saved]of Object.entries(rushStates)){
+        const p=saved.entries.find(p=>p.id===account&&!p.bot&&!p.left);if(!p||!paused&&!p.paused)continue;
+        const pool=saved.pool?rushPool(saved.entries,4,saved.pool,variant):null,player=pool?.players.get(account);
+        if(!paused&&player?.table===null&&player.balance===0){fundingRequired.push({pool:variant,minimum:200,balance:0});continue}
+        const queued=!paused&&player?.table===null&&player.balance>0;
+        if(!!p.paused===paused&&!!p.sitOutAllCash===paused&&!!p.queued===queued)continue;
+        p.paused=paused;p.queued=queued;if(paused)p.sitOutAllCash=true;else delete p.sitOutAllCash;saved.version++;validateRush(variant,saved);changed++;
+      }
       if(changed){writeFileSync(file+'.tmp',JSON.stringify(packed()),{mode:0o600});renameSync(file+'.tmp',file)}return {changed,...(fundingRequired.length?{fundingRequired}:{})};
     }catch(error){unpack(JSON.parse(before));throw error}
   };
