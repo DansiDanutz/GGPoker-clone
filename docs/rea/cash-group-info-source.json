@@ -1,0 +1,144 @@
+{
+  "method": "REA selective headless FFDec source;original English catalog and existing atlas44 crop reused;not native AIR runtime",
+  "swf": {
+    "path": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf",
+    "bytes": 41892370,
+    "sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1"
+  },
+  "source": {
+    "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/popup/GroupViewJoinInfoPopup.as",
+    "bytes": 5072,
+    "sha256": "74f7faa089f4c8a519b9f3f334c4b3327f81669983f441e423fde15736384eae"
+  },
+  "fontSources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/GlobalButton.as",
+      "sha256": "eb82ad01852703c14d475d837cb3ffe1785c7f1e624afb81b00caa980762f329"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/text/UniqueLabel.as",
+      "sha256": "ebf2dfc4abce2a7de077b31af397d056ceb526f52b132cc09610b9c1fc1e5803"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/asset/StageAssets.as",
+      "sha256": "e993e9ebfc32e1214162109e9af1eb3eef98e2cf6cbf6d7fb0ce1be4e3f0b0a3"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/Setting.as",
+      "sha256": "7711ac87c7729456e36920529ca5adc88529d50409c095833da862de50c8c854"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/tasks/InitFont.as",
+      "sha256": "d3831e2c3816f4adf93ed7d1bec21a55f47661bbe138da2eb66a471866df9465"
+    }
+  ],
+  "catalog": {
+    "path": "home-art/native-language-en.json",
+    "sha256": "105ca0f0b73a82369ba6d06a8b6d4a87b8adaa87fe8cb9716fcc1b3631eaa93e",
+    "strings": {
+      "AdvancedTablePreference": "Advanced Table Preference",
+      "GuidedTableMostClosely": "You will be guided to tables that most closely meets your preferences.",
+      "TableStackSize": "Table Stack Size",
+      "SelectStackSize": "Select one of three stack size preferences.",
+      "ShortAverageDeep": "Short - Average - Deep",
+      "PlayersStyleText": "Player's Style",
+      "SelectPlayStyle": "Select the playstyle of the table you wish to play against.",
+      "TightNormalLoose": "Tight - Normal - Loose",
+      "TableGameSpeedText": "Table Game Speed",
+      "SelectGameSpeed": "Select your preference on how fast the game is played at the table.",
+      "FastNormalSlow": "Slow - Normal - Fast",
+      "PlayersLocation": "Player's Location",
+      "SelectLocation": "Choose to play against random players or players around you.",
+      "RandomNearby": "Random - Nearby"
+    }
+  },
+  "background": {
+    "file": "native-autofold-help-bg.png",
+    "bytes": 1244,
+    "sha256": "ba4e572fe910093fef10b090c48d5008414e6ec76bf40f44e3c1fa520da37730",
+    "atlas": "init_lobby/desktop_assets",
+    "frame": "lobby_popup0044",
+    "rectangle": {
+      "x": 282,
+      "y": 3509,
+      "w": 60,
+      "h": 60
+    },
+    "size": [
+      60,
+      60
+    ]
+  },
+  "contract": {
+    "viewport": [
+      364,
+      526
+    ],
+    "title": [
+      32,
+      28,
+      300,
+      20,
+      "#b40404",
+      "boldCondensed"
+    ],
+    "explain": [
+      32,
+      64,
+      300,
+      14,
+      "#000000",
+      "Condensed"
+    ],
+    "items": {
+      "x": 32,
+      "width": 300,
+      "y": [
+        121,
+        214,
+        307,
+        400
+      ],
+      "title": [
+        14,
+        0,
+        286,
+        15,
+        "boldCondensed"
+      ],
+      "explain": [
+        14,
+        18,
+        286,
+        14,
+        "Condensed"
+      ],
+      "point": [
+        4,
+        "titleHeight/2",
+        4,
+        "#43a1ff"
+      ],
+      "example": [
+        18,
+        "explain.y+explain.height+2",
+        282,
+        26,
+        8,
+        "#f5f5f5"
+      ]
+    },
+    "close": "ReleaseOutSide.add(this,onClosePopup) -> remove -> CLOSE",
+    "backgroundNineSlice": [
+      20,
+      20,
+      20,
+      20
+    ]
+  },
+  "limits": [
+    "Browser modal/focus/Escape are accessibility behavior;exact native modal stacking not observed",
+    "Native smartDraw text metrics/AIR raster and physical same-size comparison remain unverified",
+    "Native English descriptions do not establish private matching thresholds;local policy remains separately disclosed"
+  ]
+}
