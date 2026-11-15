@@ -39,3 +39,7 @@
 #catalog.nativeCashOperator[data-mode=holdem][data-view=table] #groups .seatBlocks i{position:absolute;visibility:hidden;width:0;height:0}
 #catalog.nativeCashOperator[data-mode=holdem][data-view=table] #groups .seatBlocks::before,#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #groups .seatBlocks::after{content:'';position:absolute;inset:0;width:97px;height:9px;background:url('/home-art/native-cash-table-counter-empty.png') left top/97px 9px no-repeat;clip-path:inset(0 max(0px,calc(98px - var(--seat-capacity)*11px)) 0 0)}
 #catalog.nativeCashOperator[data-mode=holdem][data-view=table] #groups .seatBlocks::after{background-image:url('/home-art/native-cash-table-counter-filled.png');clip-path:inset(0 max(0px,calc(98px - var(--seat-occupied)*11px)) 0 0)}
+
+@font-face{font-family:NativeGroupRow;src:url('/home-art/native-group-roboto-bold-italic.ttf') format('truetype');font-weight:700;font-style:italic;font-display:swap}
+/* TableCellRenderer combines authenticated userIsPlaying/isUserWaiting; name and counter stay ordinary. */
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #groups>button[data-engaged=true]>span:not(:first-child):not(.seatBlocks){color:#ff8932;font-weight:700;font-style:italic}

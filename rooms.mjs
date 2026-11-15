@@ -351,7 +351,7 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
     if(!table||table.mode==='tournament')fail(409,'Preview HUD requires a hosted cash table');
     if(!r)fail(404,'No seated players');
     const owner=noteSubject({account}),me=r.players.findIndex(p=>p?.account?.toLowerCase()===account.toLowerCase());
-    if(op==='preview-paint'){if(Object.keys(body).length)fail(400,'Preview paint is read-only');return {account,me:me<0?null:me,players:r.players.flatMap((p,seat)=>{if(!p)return [];const subject=noteSubject(p),n=notes.get(owner,subject);return [{seat,name:p.name,subject,color:noteColors[n.color],hasText:n.text!==''}]})}}
+    if(op==='preview-paint'){if(Object.keys(body).length)fail(400,'Preview paint is read-only');return {account,me:me<0?null:me,waiting:!!r.waiting?.some(p=>p.account===account),players:r.players.flatMap((p,seat)=>{if(!p)return [];const subject=noteSubject(p),n=notes.get(owner,subject);return [{seat,name:p.name,subject,color:noteColors[n.color],hasText:n.text!==''}]})}}
     if(Object.keys(body).some(k=>!['viewer','seat','subject','text','color','labels','labelChanges','report'].includes(k)))fail(400,'Invalid preview note command');
     let reportReceipt;
     if(Object.keys(body).length){
