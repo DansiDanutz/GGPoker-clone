@@ -38,4 +38,18 @@ TableSocialMenu3D folosește table_menu426 pentru Chat, într-un slot68×68. În
 
 Vechiul Chat fix în colțul de jos acoperea Shuffle. Testul cu pointer real a demonstrat elementFromPoint=Open table chat în centrul Shuffle, deși clickul programatic ar fi trecut. Controalele folosesc acum portaluri deasupra footerului, poziționate după aceeași geometrie a feltului la resize/scroll. Noul test măsoară și Chat555/963/68×68, decodează imaginea150×150 și exercită chatul real în sesiuni separate după shuffle.
 
-Poziționarea Chat este aplicată jucătorilor locali așezați la mesele obișnuite cu șase locuri. Spectatorul păstrează controlul existent; Rush rămâne exclus. Întregul rând social, backplate-ul, SnapCam și schimbarea Chat/Helmet după regulile native nu sunt încă reconstruite; accesul local existent la chat rămâne disponibil. Nu declarăm paritate integrală a rândului social.
+Poziționarea Chat este aplicată jucătorilor locali așezați la mesele obișnuite cu șase locuri. Spectatorul păstrează controlul existent; Rush rămâne exclus. Rândul normal și înlocuirea Chat/Emoji prin Helmet sunt conectate conform secțiunii următoare. SnapCam, Avatar dinamic și celelalte ramuri native rămân neimplementate; nu declarăm paritate integrală a tuturor formatelor.
+
+## Rând social și meniu Emoji pe masă
+
+TableSocialMenu3D aliniază invers controalele vizibile pe sloturi68 și pas70. Fără SnapCam/Helmet, Chat este la−70 și Emoji la0 în grupul625/963. Fundalul424 are rect9-slice42/5/18/76 în bitmap104×89, apoi x−84/y−8/166×84. Cu Helmet activ, Chat și Emoji dispar; Helmet439 ocupă0 și fundalul devine−14/−8/96×84. Pointerul Helmet deschide dialogul real existent pentru dezactivare; nu modifică pariuri.
+
+Emoji427 deschide TableEmoticons3D din stânga la0/30,560×1170. Deschiderea folosește200ms cubic ease-out, de la−560 la0. Grila are4coloane, originea36/42, pas130/140, butoane128×126, imagini92×92 și caption24la−18/92,128×34. Categoriile Standard/Dneg/Greg au28elemente fiecare; ID28/29 sunt excluse în fiecare set, iar ID30 nu primește o etichetă inventată. Sortarea folosește comparația lexicografică nativă a etichetelor cunoscute, nu localeCompare.
+
+Taburile sunt în container4/1061, cu poziții18/16,108/16,198/16 și74×72. Folosesc resursele originale5/2/380; inactivele au matricea grayscale nativă cu1/6pe fiecare canal RGB. Fundalul6 păstrează rectul9-slice20/20/1/1. Cele7cropuri noi ocupă92943bytes și sunt verificate RGBA față de atlas.
+
+Selecția trimite comanda emoticon existentă, autentificată și validată, cu același catalog84de imagini/animații. Nu deschide o pagină externă sau fereastra Chat pentru a simula meniul lateral. Preferința este aceeași cheie de cont folosită de pickerul Chat; se sincronizează între ferestre, iar reload-ul o păstrează. Pentru guest este numai în memoria ferestrei. Schimbarea categoriei nu trimite mesaj.
+
+Un eșec lasă meniul deschis cu eroare și permite retry explicit, fără trimitere automată. Trimiterea așteaptă operația ocupată cu limită5s și revalidează tokenul/locul înainte de a trimite. Schimbarea identității sau plecarea închide meniul vechi. Hotkey-urile de pariere sunt izolate în meniu; Escape îl închide și restabilește focusul. Local închidem după confirmarea trimiterii pentru a păstra recuperarea la eroare; durata exactă de hide AIR și cooldownul privat nu sunt certificate.
+
+Browserul verifică geometria,84miniaturi, pointer real,503/retry, reacție animată în altă sesiune, aceeași mână înainte/după și rândul Helmet/dialog. Fluxul continuă cu două mâini, payout independent, restart, cash-out și înlocuirea locului. Verificarea cu cont local și5computere acoperă preferința după reload și în ambele ferestre, fără mesaj automat, apoi păstrarea720chips. Nu sunt simulate SnapCam sau avatarurile dinamice; ramurile cu Panic și alte formate rămân deschise.

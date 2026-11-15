@@ -5,7 +5,12 @@
     "com/nsus/iron/table/view/component/tablemenu/TableEtcMenu3D.as": "f4fc0c68fd210e7916964628be89e6f28f3b04a68152e44e3827549f2a6e4c39",
     "com/nsus/iron/table/view/component/tablemenu/SideGameGroupView3D.as": "73afd558399bfd2d34da88efa72e647fa89cd875c40c7d1c374f3de2c930eab6",
     "com/nsus/iron/table/TableMediator.as": "a17c9da4b16339a65a8329e0329c52dff7f7fb6072474da02ef6379c1359d4f5",
-    "com/nsus/iron/table/view/component/tablemenu/TableSocialMenu3D.as": "27a4fa33204a21771f3df58b0fb5f2d9f48c7cc7a627edba239655d2465888c7"
+    "com/nsus/iron/table/view/component/tablemenu/TableSocialMenu3D.as": "27a4fa33204a21771f3df58b0fb5f2d9f48c7cc7a627edba239655d2465888c7",
+    "com/nsus/iron/table/view/component/tablemenu/emoticon/TableEmoticons3D.as": "d32f3ad9155b76ba1899199a9ce3837c8c8ecc12743b99a00512bc137f203e4e",
+    "com/nsus/iron/table/view/component/tablemenu/TableSideMenu3D.as": "d7f9e41c707d2a635e79d3b53a2ee761921646e27c8406392211547a2e0a53f9",
+    "com/nsus/iron/chat/tablechat/component/EmoticonItem.as": "1cde01a4c00cc388d373de103229602cfc50a64135f9b84f350a664e066a4ddc",
+    "com/nsus/iron/utils/applySlice9Grid.as": "4d030b550dd3ecce8e8886962ea1dc83fa0c3a9d0322dac080559484b3f34d1c",
+    "com/nsus/iron/utils/MathUtil.as": "f36d307be809b61946288f0320e2e89f7f1d9e550dc6d36d5f1c5c2cce711989"
   },
   "art": [
     {
@@ -55,6 +60,90 @@
         68,
         68
       ]
+    },
+    {
+      "frame": "table_menu0424",
+      "file": "native-table-social-bg.png",
+      "rectangle": {
+        "x": 606,
+        "y": 2790,
+        "w": 104,
+        "h": 89
+      },
+      "sha256": "be64001c47318f4a9cd1732bec00ffdd73ea8697acefe9426e13b0870e272f46",
+      "bytes": 4444
+    },
+    {
+      "frame": "table_menu0427",
+      "file": "native-table-social-emoji.png",
+      "rectangle": {
+        "x": 2429,
+        "y": 2210,
+        "w": 136,
+        "h": 136
+      },
+      "sha256": "9e7e59fb033f5e6a2db4ac484153f2ea2d3f92ce2dfb5de6fb03aee0b7a45d9b",
+      "bytes": 28988
+    },
+    {
+      "frame": "table_menu0439",
+      "file": "native-table-social-helmet.png",
+      "rectangle": {
+        "x": 2169,
+        "y": 2213,
+        "w": 136,
+        "h": 136
+      },
+      "sha256": "22f5e16ccf0415b08fb231572543706ed7a124086db1b7810e299b52c8d4c3e3",
+      "bytes": 22803
+    },
+    {
+      "frame": "table_menu0006",
+      "file": "native-table-emoticon-bg.png",
+      "rectangle": {
+        "x": 3245,
+        "y": 3428,
+        "w": 40,
+        "h": 40
+      },
+      "sha256": "d2a2669b221ddc01c3ad3ab3a53d466a1893a486ad34b5449cf4780ca85bff39",
+      "bytes": 461
+    },
+    {
+      "frame": "table_menu0005",
+      "file": "native-table-emoticon-standard.png",
+      "rectangle": {
+        "x": 3994,
+        "y": 3009,
+        "w": 74,
+        "h": 72
+      },
+      "sha256": "731dfef1ee1edb93b69f96f281e313db4b0a5954d9abfc0d4e531c303097106d",
+      "bytes": 12280
+    },
+    {
+      "frame": "table_menu0002",
+      "file": "native-table-emoticon-dneg.png",
+      "rectangle": {
+        "x": 160,
+        "y": 3008,
+        "w": 74,
+        "h": 72
+      },
+      "sha256": "6565d6b75dbebd663e615b6b0148f0ccb4c27703b30beed43ee9c215a8dd5050",
+      "bytes": 12178
+    },
+    {
+      "frame": "table_menu0380",
+      "file": "native-table-emoticon-greg.png",
+      "rectangle": {
+        "x": 1030,
+        "y": 3011,
+        "w": 74,
+        "h": 72
+      },
+      "sha256": "15a6e7a7675d9d6d1c921f305f55d1cd3c88f80f003233ebc61e58206731d440",
+      "bytes": 11789
     }
   ],
   "geometry": {
@@ -77,9 +166,9 @@
     "preferenceOff": "hide trigger/reset own effect; remote effects continue"
   },
   "limits": [
-    "Local control is ordinary six-seat only; Rush shuffle transport not implemented",
-    "Side-game group/panic/spectator chat offsets not claimed complete",
-    "Full row/physical AIR pixels and speaker phase remain unverified"
+    "Ordinary six-seat normal/no-panic branch; Rush social transport and other formats not claimed",
+    "SnapCam and dynamic Avatar category remain unavailable",
+    "Physical AIR pixels/font metrics/speaker timing remain unverified"
   ],
   "socialChat": {
     "group": [
@@ -99,6 +188,132 @@
       963
     ],
     "branch": "ordinary seated, emoji present in native row; no SnapCam/no Helmet/no panic",
-    "limit": "Full social row/backplate/mute eligibility not reconstructed; existing local chat access preserved"
+    "limit": "Normal seated social row and mute replacement are connected; SnapCam, avatar emoji and panic/other game branches remain incomplete"
+  },
+  "socialRow": {
+    "group": [
+      625,
+      963
+    ],
+    "slot": 68,
+    "gap": 2,
+    "normal": {
+      "chatX": -70,
+      "emojiX": 0,
+      "background": [
+        -84,
+        -8,
+        166,
+        84
+      ]
+    },
+    "muted": {
+      "helmetX": 0,
+      "background": [
+        -14,
+        -8,
+        96,
+        84
+      ]
+    },
+    "background": {
+      "frame": 424,
+      "sliceGrid": [
+        42,
+        5,
+        18,
+        76
+      ]
+    },
+    "actions": {
+      "chat": "OPEN_TABLE_CHAT_CLICK",
+      "emoji": "toggle TableEmoticons3D",
+      "helmet": "OPEN_CHAT_MUTE_HIDE_POPUP"
+    }
+  },
+  "tableEmoticons": {
+    "side": "LEFT_SIDE",
+    "size": [
+      560,
+      1170
+    ],
+    "position": [
+      0,
+      30
+    ],
+    "show": {
+      "seconds": 0.2,
+      "fromX": -560,
+      "toX": 0,
+      "ease": "(t-1)^3+1"
+    },
+    "grid": {
+      "origin": [
+        36,
+        42
+      ],
+      "columns": 4,
+      "pitch": [
+        130,
+        140
+      ],
+      "item": [
+        128,
+        126
+      ],
+      "image": [
+        92,
+        92
+      ],
+      "caption": [
+        -18,
+        92,
+        128,
+        34,
+        24
+      ]
+    },
+    "tabContainer": [
+      4,
+      1061
+    ],
+    "tabs": {
+      "position": [
+        [
+          18,
+          16
+        ],
+        [
+          108,
+          16
+        ],
+        [
+          198,
+          16
+        ]
+      ],
+      "size": [
+        74,
+        72
+      ],
+      "filters": [
+        0,
+        1000,
+        4000
+      ],
+      "frames": [
+        5,
+        2,
+        380
+      ]
+    },
+    "sort": "ascending native translated key; local known English captions, unknown30 remains blank",
+    "preference": "same account key as existing chat picker; guests retain only in-window selection",
+    "limits": [
+      "Avatar10000 unavailable without dynamic avatar provider",
+      "Native block timer/private server cooldown not reproduced; local API errors/retry retained",
+      "Local menu closes after confirmed send to preserve retry; AIR hide/frame timings not established",
+      "Latin English catalog only; full source localization pending"
+    ]
   }
 }

@@ -1,3 +1,4 @@
+import {installTableSocial} from './table-social.mjs';
 import {installAutoFold} from './auto-fold-ui.mjs';
 import {installBattleBountyScene} from './battle-bounty-scene.mjs';
 import {battleTableState,battleStageNotice,battleStageAudio} from './battle-table.mjs';
@@ -125,7 +126,7 @@ function updateAddChipsControl(){const seated=!chatWindow&&!rushMode&&!!advertis
 
 $('copy').onclick=async()=>{try{await navigator.clipboard.writeText(location.href);$('copy').textContent='Copied'}catch{$('invite').select()}};
 const key='river-seat:'+room;
-let token=sessionStorage.getItem(key),state,busy=false,lastCashOut=null,emoticonPicker=null;
+let token=sessionStorage.getItem(key),state,busy=false,lastCashOut=null,emoticonPicker=null,tableSocial=null;
 const autoFold=installAutoFold(tableSettings,()=>({state,busy,identity:state?.account?.toLowerCase()||'',supported:rushMode&&!battleMode&&rushPoolKind==='holdem'&&!chatWindow}),()=>operate('quick-fold',undefined,true));
 let reservedAction;
 const helmetModule=await fetch('/helmet-ui.mjs',{signal:AbortSignal.timeout(5000)}).then(r=>r.ok?import('./helmet-ui.mjs'):null,()=>null);
@@ -205,9 +206,8 @@ const shuffleSeen=new Map(),remoteShuffles=new Map();let shuffleInitialized=fals
 function positionShuffle(art,seat,other=false){const portrait=document.querySelector('.seat[data-seat="'+seat+'"] .portrait');if(!portrait)return;const p=portrait.getBoundingClientRect(),f=document.querySelector('.felt').getBoundingClientRect(),scale=p.width/192*(other ? 0.6 : 1);Object.assign(art.style,{left:(p.left-f.left+p.width/2-69*scale)+'px',top:(p.top-f.top+p.height/2+15*p.width/192-(other?50:95)*scale)+'px',width:145*scale+'px',height:165*scale+'px'})}
 function stopRemote(seat){const entry=remoteShuffles.get(seat);if(entry){entry.stopSound?.();cancelAnimationFrame(entry.raf);entry.art.remove();remoteShuffles.delete(seat)}}
 function positionTableControls(){
- const r=document.querySelector('.felt').getBoundingClientRect(),k=r.width/1700,shuffle=$('shuffleChips'),chat=$('openChat'),seated=!chatWindow&&!rushMode&&capacity()===6&&state?.me!=null;
- Object.assign(shuffle.style,{left:(r.left+29*k)+'px',top:(r.bottom-90*k)+'px',transform:'scale('+k+')'});chat.classList.toggle('nativeSeatedChat',seated);
- Object.assign(chat.style,seated?{left:(r.left+555*k)+'px',top:(r.top+963*k)+'px',transform:'scale('+k+')'}:{left:'',top:'',transform:''});
+ const r=document.querySelector('.felt').getBoundingClientRect(),k=r.width/1700,shuffle=$('shuffleChips');
+ Object.assign(shuffle.style,{left:(r.left+29*k)+'px',top:(r.bottom-90*k)+'px',transform:'scale('+k+')'});
 }
 addEventListener('resize',positionTableControls);addEventListener('scroll',positionTableControls,true);addEventListener('focus',positionTableControls);
 function renderShuffles(){
@@ -313,6 +313,7 @@ function confirmBattleWithdrawal(){
 function btn(text,fn,key){const b=document.createElement('button');b.textContent=text;b.onclick=fn;if(key){b.dataset.key=key;hotkeyHint(b)}$('actions').append(b);return b}
 function list(id,items){const fresh=$(id).cloneNode(false);fresh.append(...items.map(v=>{const li=document.createElement('li');li.textContent=v;return li}));updateElement($(id),fresh)}
 let advertised,lastDraw,lastFeltFrame,pendingVoluntary=[];const remoteVoluntary=new Map();
+tableSocial=installTableSocial(()=>({primary:!chatWindow&&!rushMode,enabled:!chatWindow&&!rushMode&&capacity()===6&&state?.me!=null,identity:JSON.stringify([room,token,state?.me,playerAccount]),account:playerAccount,muted:helmet.muted(),canSend:state?.me!=null&&!state?.chatMuted&&!helmet.muted()}),async id=>{const expected=token,seat=state?.me,until=Date.now()+5000;while(busy){if(Date.now()>=until)throw Error('Table is busy; retry Emoticon');await new Promise(resolve=>setTimeout(resolve,25))}if(token!==expected||state?.me!==seat)throw Error('Player or table changed');return operate('chat',{emoticon:id})},()=>{tableSettings.open=false;$('helmetSetting').click()});
 const entryQuery=new URLSearchParams(location.search);let autoJoinRequested=entryQuery.get('autojoin')==='1'&&entryQuery.has('player')&&localStorage.getItem('river-auto-buyin')==='1';if(entryQuery.has('autojoin')){entryQuery.delete('autojoin');history.replaceState(null,'',location.pathname+(entryQuery.size?'?'+entryQuery:'')+location.hash);$('invite').value=location.href}
 if(!rushMode)fetch('/api/hosted').then(r=>r.json()).then(rows=>{advertised=rows.find(t=>t.room===room);if(!state)render();else updateAddChipsControl();if(autoJoinRequested){autoJoinRequested=false;if(advertised?.open&&!token&&!tournamentLink&&!rushMode&&$('name').value)$('join').requestSubmit()}}).catch(()=>{});
 function capacity(){if(rushMode)return 6;return state?.names.length??advertised?.capacity??4}
@@ -566,7 +567,7 @@ function renderSeatReactions(){
  }
 }
 function renderChat(){
- helmet.refresh();$('chatMessages').hidden=helmet.muted();
+ helmet.refresh();tableSocial?.refresh();$('chatMessages').hidden=helmet.muted();
  const messages=$('chatMessages'),fresh=messages.cloneNode(false);
  for(const m of state?.chat||[]){if(helmet.messageVisible?.(m)===false)continue;const li=element('li','',m.name+': '+m.text);li.dataset.observer=String(m.observer===true);const reaction=chatReaction(m);if(reaction){const img=new Image();img.src=reaction.image;img.alt=reaction.label;img.width=50;img.height=50;li.append(img)}fresh.append(li)}
  updateElement(messages,fresh);
@@ -711,7 +712,7 @@ addEventListener('storage',e=>{
  }
 });
 document.addEventListener('keydown',e=>{
- if(chatWindow||closeSqueeze||!hotkeys.checked||!state||e.isComposing||document.querySelector('dialog:modal')||e.target.closest?.('.nativeHud,.tableHandHistory,.autoFoldEditor')||e.target.isContentEditable||e.target.closest?.('input,textarea,select'))return;
+ if(chatWindow||closeSqueeze||!hotkeys.checked||!state||e.isComposing||document.querySelector('dialog:modal')||e.target.closest?.('.nativeHud,.tableHandHistory,.autoFoldEditor,.tableEmoticonPanel')||e.target.isContentEditable||e.target.closest?.('input,textarea,select'))return;
  const codes=keyCodes(e);if(!codes)return;const bindings=readHotkeys(localStorage.getItem('river-hotkey-bindings')),action=hotkeyActions.find(a=>bindings[a.id].length&&bindings[a.id].join(',')===codes.join(','))?.id;if(!action||!readHotkeyGroups(localStorage.getItem('river-hotkey-groups'))[hotkeyGroup(action)])return;
  // Bound keys must not activate another focused HTML control.
  e.preventDefault();e.stopImmediatePropagation();if(e.repeat)return;
