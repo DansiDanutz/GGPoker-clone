@@ -1,0 +1,28 @@
+{
+  "method": "REA reinspection of retained Game51 FFDec sources/Pcode; no native AIR or fresh physical runtime observation",
+  "sources": {
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/services/callback/OnRabbitCard.as": "7deca524e4fedc50dbbcf868a591414b6f589e25872102808568c15ba066b026",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/component/CommunityCardView3D.as": "85038b5a269431f3f7e65bc39cccb17f45e21fafbc22366510d5bc86330da63f",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/display/card/CommunityCard3D.as": "b589605fdb0982d92321dc15030ffac1c1866d7ae036aa5c35e25b26a29a87ac",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/display/card/Card3D.as": "6446d5f8cc9912385205138a7d00d9c0dfc0d82f0b38916b1b166b960efd8ff5",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/display/card/NewRabbit3D.as": "d247f8d63f4891daa8008a578c69f7df6f59a3b2bea878c048d29bf797fe4d18",
+    "/Users/davidai/Sandbox/rea-tools/rabbit-pcode/scripts/com/nsus/iron/table/TableMediator.pcode": "d8ecc364bdaae72f3f6ad0f5ebf9dc8932d0055395e5a00ca574959f0651e673",
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1"
+  },
+  "nativeFindings": [
+    "OnRabbitCard4017 ignores clients with no seated userPlayer and caches counterfactual cards separately",
+    "CommunityCardView3D consumes CLICK_RABBIT_CARD locally to coordinate its own double-board view; examined handler does not forward a network command",
+    "RABBIT_CARD_OPENED merges local cached Rabbit cards and refreshes own best-five/cards motion",
+    "Original normal animation retains300ms spread plus200ms peel and single/double Rabbit cue selection"
+  ],
+  "localFix": [
+    "Reduced-motion completion cancels the pending spread timer and active RAF before finishing covers",
+    "A single cue latch prevents duplicates when interruption occurs after the cue started",
+    "Completed/reloaded previews have no active completion callback and do not replay on preference changes"
+  ],
+  "limits": [
+    "Server notification broadcast/late-seat eligibility are not established by these local handlers",
+    "No visibility widening based on a localized search snippet or an unreadable official FAQ page",
+    "Native Shadow3D/physical pixel/speaker timing and double-board game support remain unverified/incomplete"
+  ]
+}
