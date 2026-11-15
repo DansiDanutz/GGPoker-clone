@@ -98,7 +98,7 @@ http.createServer(async(req,res)=>{
  }
  if(localHome&&path==='/local/wallet'&&req.method==='GET'){const account=playerProfile.identity(req);return account?json(200,{account,...roomRequest.wallet(account)}):json(401,{error:'Sign in locally'})}
  if(localHome&&['/local/me','/local/login','/local/create','/local/logout','/local/avatar'].includes(path))return await playerProfile.handle(req,res,path,json);
- if(localHome&&req.method==='GET'&&(path==='/'||['/launch.html','/seat.html','/seat.mjs','/playgg.html','/playgg.mjs','/playgg-carousel.mjs','/home-review.html'].includes(path)||['/home-art/native-history-roboto.ttf','/home-art/native-history-roboto-italic.ttf','/home-art/native-hud-roboto-bold.ttf','/home-art/native-show-roboto-condensed-bold.ttf','/home-art/native-action-roboto-condensed.ttf'].includes(path)||/^\/home-art\/[a-zA-Z0-9_-]+\.(png|webp|json)$/.test(path))){
+ if(localHome&&req.method==='GET'&&(path==='/'||['/launch.html','/seat.html','/seat.mjs','/playgg.html','/playgg.mjs','/playgg-carousel.mjs','/home-review.html'].includes(path)||['/home-art/native-group-roboto-bold-italic.ttf','/home-art/native-history-roboto.ttf','/home-art/native-history-roboto-italic.ttf','/home-art/native-hud-roboto-bold.ttf','/home-art/native-show-roboto-condensed-bold.ttf','/home-art/native-action-roboto-condensed.ttf'].includes(path)||/^\/home-art\/[a-zA-Z0-9_-]+\.(png|webp|json)$/.test(path))){
   const file=path==='/'?'launch.html':path.slice(1);
   let data;try{data=await readFile(file.startsWith('home-art/')?join(referenceArt,file.slice(9)):new URL(file,import.meta.url))}catch{return json(404,{error:'Reference asset unavailable'})}
   res.writeHead(200,{'Content-Type':file.endsWith('.ttf')?'font/ttf':file.endsWith('.webp')?'image/webp':file.endsWith('.png')?'image/png':file.endsWith('.json')?'application/json':file.endsWith('.mjs')?'text/javascript':'text/html; charset=utf-8','Cache-Control':'private, no-store','Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff'});res.end(data);return;
@@ -128,10 +128,10 @@ http.createServer(async(req,res)=>{
   if(Object.hasOwn(body,'account')){if(typeof body.account!=='string'||body.account!==account)return json(401,{error:'Signed-in account changed'});delete body.account}
   try{return json(200,rushRequest(account,op,body))}catch(e){if(e.status)return json(e.status,{error:e.message});throw e}
  }
- const match=/^\/api\/rooms\/([0-9a-f]{48})\/(watch|join|state|act|rimt-suggest|rimt-decide|spin-ready|multi-ready|ready|add-chips|remove-chips|remove-chips-option|push-seat|push-seat-cancel|leave|fill-bots|start|end-practice|chat|helmet|sit-out|sit-out-state|shuffle|time-bank|time-card-option|notes|rabbit|show-cards|waiting|preview-notes)$/.exec(path);
+ const match=/^\/api\/rooms\/([0-9a-f]{48})\/(watch|join|state|act|rimt-suggest|rimt-decide|spin-ready|multi-ready|ready|add-chips|remove-chips|remove-chips-option|push-seat|push-seat-cancel|leave|fill-bots|start|end-practice|chat|helmet|sit-out|sit-out-state|shuffle|time-bank|time-card-option|notes|rabbit|show-cards|waiting|preview-notes|preview-paint)$/.exec(path);
  if(match){
   const [,id,op]=match;
-  if(['notes','waiting','preview-notes'].includes(op)?!['GET','POST'].includes(req.method):req.method!==(['state','watch'].includes(op)?'GET':'POST'))return json(405,{error:'Method not allowed'});
+  if(['notes','waiting','preview-notes'].includes(op)?!['GET','POST'].includes(req.method):req.method!==(['state','watch','preview-paint'].includes(op)?'GET':'POST'))return json(405,{error:'Method not allowed'});
   if(req.headers.origin&&req.headers.origin!==origin)return json(403,{error:'Origin not allowed'});
   if(['preview-notes','waiting','spin-ready','multi-ready','rimt-suggest','rimt-decide','remove-chips','remove-chips-option','push-seat','push-seat-cancel'].includes(op)&&req.method==='POST'&&req.headers.origin!==origin)return json(403,{error:'Local origin required'});
   let body={};
@@ -142,7 +142,7 @@ http.createServer(async(req,res)=>{
   }
   const account=localHome?playerProfile.identity(req):null;
   if(op==='chat'&&account&&!(req.headers.authorization||'').replace(/^Bearer /,'')&&req.headers.origin!==origin)return json(403,{error:'Local origin required'});
-  if((['waiting','preview-notes'].includes(op)||op==='join'&&body.useProfile===true)&&!account)return json(401,{error:'Sign in locally'});
+  if((['waiting','preview-notes','preview-paint'].includes(op)||op==='join'&&body.useProfile===true)&&!account)return json(401,{error:'Sign in locally'});
   if(op==='join'&&body.useProfile===true&&account)body.name=account;
   try{return json(200,roomRequest(id,op,(req.headers.authorization||'').replace(/^Bearer /,''),body,tables.find(t=>hostedId(t.id)===id),op==='join'&&body.useProfile!==true?null:account))}
   catch(e){if(e.status)return json(e.status,{error:e.message});throw e}

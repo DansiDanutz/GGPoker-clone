@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-for(const [file,identity]of [['native-history-roboto.ttf','Roboto'],['native-history-roboto-italic.ttf','Roboto Italic'],['native-hud-roboto-bold.ttf','Roboto Bold'],['native-show-roboto-condensed-bold.ttf','Roboto Condensed Bold'],['native-action-roboto-condensed.ttf','Roboto Condensed']]){
+for(const [file,identity]of [['native-group-roboto-bold-italic.ttf','Roboto Bold Italic'],['native-history-roboto.ttf','Roboto'],['native-history-roboto-italic.ttf','Roboto Italic'],['native-hud-roboto-bold.ttf','Roboto Bold'],['native-show-roboto-condensed-bold.ttf','Roboto Condensed Bold'],['native-action-roboto-condensed.ttf','Roboto Condensed']]){
 const font=readFileSync(new URL('./home-art/'+file,import.meta.url));
 assert.equal(font.readUInt32BE(0),0x00010000);
 const tables=new Map(Array.from({length:font.readUInt16BE(4)},(_,i)=>{const p=12+i*16;return [font.toString('ascii',p,p+4),{offset:font.readUInt32BE(p+8),size:font.readUInt32BE(p+12)}]}));
