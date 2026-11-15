@@ -43,7 +43,7 @@ export function installSpinWheelScene(host,getState,acknowledge,play,insurancePo
    else{if(!e.player){e.wait.cancel();e.waitMotion.cancel();e.player=spinWheelPresentation(data,s.spin.wheel.wheelIndex,Math.floor(Math.random()*4)+1,s.spin.multiplier,s.names.length)}pose=e.player.tick(delta)}
    pose.flares=e.flares.tick(delta,pose.phase==='waiting');
    for(const cue of pose.cues)Promise.resolve(play([cue],()=>alive(e))).then(stop=>{if(alive(e))e.stops.push(stop);else stop?.()}).catch(error=>fail(e,error));
-   if(pose.congratulation){const index=spinCongratulationFrameIndex(pose.congratulation.elapsedMs);if(index!==frameIndex){frame=await e.congrats.frame(index);frameIndex=index}if(!alive(e))return}
+   if(pose.congratulation){const index=spinCongratulationFrameIndex(pose.congratulation.elapsedMs);if(index!==frameIndex){frame=await e.congrats.frame(index,false,!!e.prize?.rows?.divider);frameIndex=index}if(!alive(e))return}
    e.node.dataset.phase=pose.phase;e.node.dataset.rotation=String(pose.wheel);drawSpinWheel(e.ctx,e.art,labels,pose);if(pose.congratulation)drawSpinCongratulations(e.ctx,frame,pose.congratulation,e.prize);
    if(pose.done){insuranceThenFinish(e);return}e.raf=requestAnimationFrame(tick);
   }catch(error){fail(e,error)}}
