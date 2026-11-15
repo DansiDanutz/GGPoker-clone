@@ -643,7 +643,7 @@ rules=spinRules(rooms.get('local-spin-rules'));rooms.delete('local-spin-rules');
     advanceWaiting(rooms.get(id),table,Date.now());
     if(rooms.get(id)?.version!==version||JSON.stringify(wallet.state)!==walletBefore||old?.multiTournament&&JSON.stringify(packed())!==snapshot){
       // Clock-only card updates preserve queued bets while the same action remains active.
-      const changed=rooms.get(id),cardMetadata=typeof clockId==='string'&&oldClock?.phase==='cards'&&changed?.actionClock?.id===clockId&&(op==='time-card-option'||changed.actionClock.cardsUsed>cardUses);if(changed&&changed.version!==version){if(op==='chat'&&changed.version===(version??0)+1||cardMetadata||op==='join'&&changed.battleEvent||op==='tournament-control'&&controlFrame===JSON.stringify([changed.number,changed.hand]))changed.actionVersion??=version??0;else changed.actionVersion=changed.version}
+      const changed=rooms.get(id),cardMetadata=typeof clockId==='string'&&oldClock?.phase==='cards'&&changed?.actionClock?.id===clockId&&(op==='time-card-option'||changed.actionClock.cardsUsed>cardUses);if(changed&&changed.version!==version){if(['chat','helmet','shuffle'].includes(op)&&changed.version===(version??0)+1||cardMetadata||op==='join'&&changed.battleEvent||op==='tournament-control'&&controlFrame===JSON.stringify([changed.number,changed.hand]))changed.actionVersion??=version??0;else changed.actionVersion=changed.version}
       try{
         writeFileSync(file+'.tmp',JSON.stringify(packed()),{mode:0o600});
         renameSync(file+'.tmp',file);
