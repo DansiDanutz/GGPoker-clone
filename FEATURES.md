@@ -1371,3 +1371,5 @@ Short Deck cash pause candidate:source applicability confirmed against retainedG
 Short Deck review:reproduced unsupported rabbitShown checkpoint accepted after cash expansion. Shared rabbitSupported retains prior verified formats for both request/view eligibility and checkpoint validation;negative restore testRED→GREEN. Previous candidate headQA is stale and must be repeated.
 
 Tournament/Spin player pause investigation: native separate flags, request3128, global cash versus all-games and return paths are documented in [tournament player pause](docs/rea/tournament-player-pause.md). This is evidence and acceptance scope, not an implemented feature.
+
+Tournament player pause candidate (not live): desired/applied flags, mandatory blinds/cards, local500ms Check/Fold, next-deal return, MTT identity/automatic Ready, Spin3/6 payouts, rollback/restart and three-context browser verified. All-games/global return and next-blind remain incomplete; see tournament-player-pause guide.
