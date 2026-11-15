@@ -59,3 +59,11 @@ Owner GET/POST `/api/owner-multi-tournaments` uses the existing loopback-only ow
 `multi-table-http-test.mjs` starts/stops a real temporary server and creates12independent authenticated profile/cookie sessions. Owner creation, player registration, cancellation/rejoin, duplicate retry, full field allocation, wallet totals and process restart pass. Account spoofing, foreign origins, extra result fields and finish routes are rejected. Existing cash/owner/tournament/Rush wallet, Spin and restore regressions pass.
 
 The HTTP test stops before child gameplay; the financial test holds its card-engine games separately from the registry. Neither proves durable private child hands, cross-table card/session migration, rendered MTT controls or a playable app MTT. Those remain the next required integration steps, and draftPR205 must not be merged/deployed before the complete journey passes. LivePR206 remains unchanged.
+
+## Identitatea meselor și ceasul comun — 15 noiembrie 2026
+
+Registrul salvează `startedAt` la ultima înscriere necesară. Anularea/reînscrierea înaintea completării nu pornește ceasul; repetarea înscrierii și redeschiderea checkpointului nu îl resetează. Acest reper va alimenta nivelurile comune de blinduri ale camerelor. Checkpointurile alocate fără un timestamp întreg nenegativ sunt respinse; schema este încă exclusiv draft, nepublicată.
+
+Fiecare masă din rezumat primește un identificator de cameră de 48 de caractere hexazecimale, derivat prin SHA-256 din domeniul versionat, eveniment și identificatorul mesei. Astfel nu este necesar un registru redundant de legături și identitatea rămâne aceeași la restart și la începerea unei mâini. Acesta este un identificator public, nu token de acces. Camerele efective și autorizarea lor nu sunt încă create de acest pas; existența câmpului `room` nu dovedește că masa poate fi deschisă. La crearea efectivă rămâne obligatorie verificarea coliziunii cu camere existente.
+
+Verificare: `node multi-table-registration-test.mjs` acoperă momentul alocării, retry, checkpoint reopen, identități distincte între mese/evenimente, stabilitate după begin și respingerea ceasurilor invalide. Suitele financiare și HTTP cu restart trec în continuare. Nicio modificare în runtime-ul live PR206.
