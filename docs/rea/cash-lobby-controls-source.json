@@ -24,5 +24,28 @@
     "No AIR execution or new same-size physical screenshot",
     "VIP/featured/regional/junket policies not mapped to ordinary local tables",
     "Local backend FIFO maximum100 preserved; regular lobby UI maximum equals seats per native draw"
+  ],
+  "operatorSources": {
+    "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/components/display/button/UnJoinButton.as": {
+      "sha256": "46065bbaf60a5d0dd2ba0a6e03e2ff752024f352df619b75091d29a20d906c9d",
+      "bytes": 282
+    },
+    "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/components/display/button/LockButton.as": {
+      "sha256": "2d5c81fbc3421d47077e99044b511f813ab93cb732446f71c32dd6482cbf3832",
+      "bytes": 2614
+    },
+    "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/components/display/button/WaitButton.as": {
+      "sha256": "ae01f3b3c2a0c227a5598e39c3a1f75e87fba6df705d396b2a0aa79d2d90671d",
+      "bytes": 275
+    },
+    "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/LobbyDetailViewOperatorBase.as": {
+      "sha256": "b0e51c932eecf8f78f02b8d834fedb351c671d5830262839ae0d659ecad1655d",
+      "bytes": 22173
+    }
+  },
+  "operatorFindings": [
+    "TablePreview Open uses LockButton DARK_GRAY; Join uses LockButton RED; WaitButton and UnJoinButton both extend GlobalButton RED",
+    "Default operator margin10/buttonGap10; each button width90percent and x5percent of viewport",
+    "Button layer follows actual table-info content height and optional waiting-status height37; absolute y depends on parent/layout, not this class alone"
   ]
 }
