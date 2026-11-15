@@ -16,7 +16,7 @@ Preferința Chip Shuffle rămâne în setări. Când este oprită, controlul pro
 |---|---|---|
 | chipShuffle |419activ/420inactiv| START/STOP cosmetic; conectat pe mesele locale șase-seat |
 | straddle |422activ/423inactiv;slot72×62| SEND_STRADDLE; contract în straddle.md, arbitrarea nativă rămâne deschisă |
-| autoFold |429activ/428inactiv| Deschide/închide editorul; integrare Rush Hold’em în auto-fold.md; controlul local de acces rămâne în setări |
+| autoFold |429activ/428inactiv| Deschide/închide editorul; integrare Rush Hold’em în auto-fold.md; control direct Rush și acces între mese în setări, descrise în auto-fold-direct.md |
 | finalTableBetting |431| OPEN_FINAL_TABLE_BETTING; pariul pe o finală este distinct de acțiunea jucătorului din finala locală |
 | deal |430| Cerere de negociere/isMakingADealRequested, nu deal de cărți; negocierea nu este implementată |
 | pushSeat |327| PUSH_SEAT_CLICK; contractul selectorului/rezervării în push-seat.md; arbitrarea serverului și integrarea locală rămân deschise |
