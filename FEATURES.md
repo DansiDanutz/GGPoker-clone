@@ -1270,3 +1270,6 @@ Spin6-Max bank foundation (public registration still gated): version5 optional i
 
 
 Spin lobby polling candidate: keyed registration rows preserve Cancel/Open-table identity and focus; unchanged participant labels/stake text/insurance terms/selection do not repaint every2seconds. Real polling observer verifies zero DOM mutations across two successful fetches; six-seat matching transitions to Open table without replacing its row. Lost-ack retry/refund, six-browser native-wheel tournament and legacy insured3-Max lobby journey are regression gates. Native physical compositor/flicker comparison remains unverified.
+
+
+Multi-table tournament foundation (not connected): explicit local idle-only6-seat balancing/consolidation planner, immutable active-table assignments, strict snapshots, deterministic movement records and deferred-plan status.1,728valid occupancy/live-hand cases and snapshots from actual18-player/three-table Hold’em hands preserve membership and5,400chips. Four native client transfer/metadata exports are hashed; they do not establish private balancing/blind rules. Parent event/registration/wallets/global ranks/child-room/session migration/UI remain required; multi-table hosting is not yet playable. Existing113runtime files remain byte-identical to activePR204. See docs/rea/multi-table-tournaments.md.
