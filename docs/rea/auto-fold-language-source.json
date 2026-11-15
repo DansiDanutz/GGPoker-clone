@@ -1,0 +1,31 @@
+{
+  "method": "REA retained installed-SWF source keys and source autoScale/layout obligations; existing native catalogs and art reused",
+  "sources": {
+    "com/nsus/iron/table/view/component/tablemenu/autofold/AutoFoldContents.as": "50ca1fe0e7676c957976ec1234a1e7f6d7c32e2e27adeb1b61d78a4cd2a9d213",
+    "com/nsus/iron/table/view/popup/gameinfo/newinfo/NewGameInfoData.as": "a4620aa2b18e13dbc53c0140e301a72b599b41675e56daa3c70d61ef0d31fd67",
+    "com/nsus/iron/table/view/popup/gameinfo/newinfo/NewGameInfoType.as": "2a641d4c9a5078396f9449764ba4adeaacafdce2f8b444aa89bc64f07df02907",
+    "com/nsus/iron/components/display/button/LabelButton.as": "5e9cc08b2489e890d5684b9edb2b9b11e452d1ffdb991850f1edc0f83cade197",
+    "com/nsus/iron/vo/ButtonType.as": "9826102d368b5f3eb800514a5effcf7c5b20906af23c1de81a7fbd91a6f2dcd4"
+  },
+  "labelKeys": [
+    "AutoFoldHandcart",
+    "DoNotAutoFoldButton",
+    "DoNotAutoFoldSbBb",
+    "LabelMin",
+    "LabelMax",
+    "ButtonApply",
+    "ButtonCancel",
+    "TableOptionAnimationOn",
+    "TableOptionAnimationOff",
+    "MobildAutoFold",
+    "AutoFoldRange",
+    "AutoFoldSettings",
+    "AutoFoldDependingOn",
+    "AutoFoldCashDrop"
+  ],
+  "limits": [
+    "Physical AIR typography/timing not measured",
+    "Local validation errors remain independent English text",
+    "Full application and Asian font parity incomplete"
+  ]
+}

@@ -2,7 +2,7 @@
 
 ## Implementare locală
 
-Rush & Cash Hold’em are editorul cu169categorii, selecție prin click/drag, procent, excluderi Button/SB/BB și Apply/Cancel. Auto Fold este oprit implicit și se activează explicit, separat pentru contul autentificat. Intrarea locală este în Table settings; aceasta este o adaptare de navigare, nu o potrivire demonstrată a meniului nativ. Omaha, Battle Royale și mesele obișnuite nu primesc editorul.
+Rush & Cash Hold’em are editorul cu169categorii, selecție prin click/drag, procent, excluderi Button/SB/BB și Apply/Cancel. Auto Fold este oprit implicit și se activează explicit, separat pentru contul autentificat. Accesul direct pe masă folosește iconurile native428/429 și geometria rândului Etc (auto-fold-direct.md); Table settings păstrează accesul între mese. Omaha, Battle Royale și mesele obișnuite nu primesc editorul.
 
 Controllerul este conectat la comanda Quick Fold existentă, cu identitatea și versiunea mâinii verificate. Testul cu șase sesiuni temporare execută un fold automat real și termină mâna cu ceilalți cinci, verificând independent payout-ul și1200chips după restart. Verificarea pe commit și activarea runtime-ului se consemnează separat în QA/registrul versiunilor; acest document descrie implementarea, nu declară întreaga clonă finalizată.
 
