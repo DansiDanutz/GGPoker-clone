@@ -10,12 +10,30 @@
     "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/display/card/PlayerSitOutUI3D.as": "11395c699b12c91e76f18bb3aec736ee70f80ccba23ce7d7b4d8e71795f47a96",
     "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/stage/component/SitOutView.as": "e104abf3a1a4f10c45458f9529e664d1e2d83ecbf3bfcb76fb116c4248006be0",
     "/Users/davidai/Sandbox/rea-tools/global-sitout-source/scripts/com/nsus/iron/table/controller/SelectSitoutMenuCommand.as": "6c53c6e2e3df9749afb39de504956fe88e2c0bf8ac92a9cfe812c41991df585e",
-    "/Users/davidai/Sandbox/rea-tools/global-sitout-source/scripts/com/nsus/iron/table/services/request/SetAutoActionFlags.as": "def19d8a7f73725563b1dd450434b253edcb9d8cfbe0ed5aa0683ca6d57873cd"
+    "/Users/davidai/Sandbox/rea-tools/global-sitout-source/scripts/com/nsus/iron/table/services/request/SetAutoActionFlags.as": "def19d8a7f73725563b1dd450434b253edcb9d8cfbe0ed5aa0683ca6d57873cd",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/component/SitOutMenuView.as": "af787b9e6c94bca8e5ebf46610697cc549a00c0dccd7333aae37dd257fc7131d",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/display/SitOutType.as": "4e3cff4f543d667274ee71dfda88c42cb3298413836579dc4c5232748bc443f3",
+    "/Users/davidai/Documents/ChatGPT/REA/GGPoker/home-art/native-language-en.json": "105ca0f0b73a82369ba6d06a8b6d4a87b8adaa87fe8cb9716fcc1b3631eaa93e",
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1"
   },
   "releaseBaseline": {
     "pr": 217,
     "sourceCommit": "b5a7eab53f35830d0e21222b689679ef70dacede",
     "mergeCommit": "640f16dd15c286864ca152ffbc3b4dc09103c48f"
   },
-  "scope": "Tournament and Spin player pause investigation; not implemented by this receipt."
+  "scope": "Tournament and Spin player pause investigation; not implemented by this receipt.",
+  "candidateLocalPolicies": [
+    "Next-deal pause and return while preserving tournament forced bets/cards",
+    "500ms check when due0,otherwise fold; native server timing is unknown",
+    "No forced eliminations when all-paused capped blind schedules cycle; timers continue",
+    "Current-table control only; all-games/global return and next-blind are incomplete"
+  ],
+  "nativeMenu": {
+    "rows": 3,
+    "width": 560,
+    "height": 224,
+    "allKey": "SitOutAllNow",
+    "nextBlindKey": "SitOutAllTableNB",
+    "EnglishLabelsSource": "Existing extracted native-language-en.json; derived artifact identity is recorded separately from retained ActionScript"
+  }
 }

@@ -1,10 +1,10 @@
 # Pauza jucătorului în turnee și Spin — investigație REA
 
-Stare: contractul clientului nativ identificat; comportamentul local al pauzei jucătorului NU este încă implementat. Pauza administrativă a turneului există separat și nu este echivalentă. Versiunea activă rămâne PR217; aceasta a extins numai pauza cash la Short Deck.
+Stare: contractul clientului nativ identificat; implementarea locală este candidat în validare, încă neactivat în serviciul live. Pauza administrativă a turneului există separat și nu este echivalentă. Versiunea activă rămâne PR217; aceasta a extins numai pauza cash la Short Deck.
 
 ## Ce confirmă sursele originale
 
-Hashurile celor zece surse FFDec sunt în `tournament-player-pause-source.json`. Analiză statică; nici AIR, nici serverul privat nu au fost executate.
+Hashurile surselor FFDec, ale SWF-ului și ale dicționarului derivat sunt în `tournament-player-pause-source.json`. Analiză statică; nici AIR, nici serverul privat nu au fost executate.
 
 | Control / stare | Dovadă nativă | Implicație pentru reconstrucție |
 |---|---|---|
@@ -41,3 +41,17 @@ Migrarea MTT schimbă obiectele fizice de masă: preferința trebuie urmărită 
 ## Necunoscute și limitări
 
 Clientul nu dezvăluie politica completă a serverului pentru blind-out, auto-check/fold, revenire în mijlocul mâinii, penalități sau kick-out. Acestea necesită dovezi suplimentare ori reguli locale declarate explicit. Nu certificăm comportament nativ din numele enumurilor. Nu au fost folosite contul real, T3, ferestre în prim-plan sau difuzoarele.
+
+## Candidat local — implementare și verificări
+
+`tourneySitOutNextHand` este preferința privată dorită; `tourneySittingOut` este indicatorul aplicat la deal. `tournamentHand` păstrează stackurile, cărțile și toate contribuțiile obligatorii. Schimbarea preferinței nu modifică mâna curentă. Revenirea este la următorul deal, o regulă locală explicită până la verificarea serverului original. Acțiunile manuale, rezervate și folosirea time bank sunt blocate cât timp indicatorul aplicat este activ.
+
+Schedulerul obișnuit și MTT aplică Check când nu există sumă de plătit, altfel Fold, după500ms. Acesta este comportament local declarat; nu afirmăm că500ms este temporizarea nativă. O pauză nu consumă automat TimeBankCards. MTT transferă preferința împreună cu obiectul contului, rotește tokenul și acceptă participanții în pauză la bariera Ready între mâini. Pauza administrativă păstrează funcția distinctă de înghețare a ceasului evenimentului.
+
+Meniul curent pentru turneu folosește trei rânduri560×224, față de patru rânduri560×288 la cash. Sursa SitOutList.menuAlign calculează40+56N+8(N−1); setSitOut ascunde rândul leave-cash în turneu. Cheile native SitOutAllNow și SitOutAllTableNB sunt păstrate; acțiunile globale și next-blind rămân dezactivate până la implementarea lor. Nu sunt înlocuite cu acțiuni cash. Butonul Deal Me In local revine numai pe masa curentă în această etapă, spre deosebire de isAll din sursa nativă; diferența rămâne deschisă.
+
+Testele modelului acoperă Hold’em/PLO, blinduri/cărți, starea privată, auth/body, rollback, checkpoint corupt, restart și premii. Formatele Spin3/6 și MTT7 sunt jucate cu participanți în pauză, cu mutări între mese, fără Ready manual pentru cei în pauză, apoi cu revenire când este necesar; conservarea jetoanelor, băncii și portofelelor este verificată. La un blind plafonat, toți participanții în pauză pot schimba blinduri fără eliminări: schedulerul continuă mâinile; nu inventăm eliminări forțate. Testul reia un supraviețuitor și verifică încheierea turneului.
+
+Scenariul de browser cu trei contexte izolate verifică pointer real, geometria meniului, contribuția big blind a jucătorului în pauză, ascunderea opțiunilor de pariere, restartul serverului, retry503, revenirea la următorul deal și payoutul prin oracle independent. Validarea exact-head și a pachetului instalabil urmează înainte de release; comparația fizică nativă nu a fost efectuată.
+
+Battle Royale final rămâne exclus din această primă rută de pauză până la teste specifice; nu se extinde implicit eligibilitatea unui format netestat.
