@@ -1,0 +1,102 @@
+{
+  "method": "REA cached/selective FFDec source and exact RGBA atlas crop;paired with PR259 actual native same-size reference,not a full pixel pass",
+  "swf": {
+    "path": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf",
+    "bytes": 41892370,
+    "sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1"
+  },
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/preview/HoldemTablePreview.as",
+      "sha256": "0e1a7f2538a6ebbd73303de1fdbde7bc6076ad486cea5e0e8ab1e6abdb51b778"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/TablePreview.as",
+      "sha256": "25c20c082c462be6f379074b964d480e9d331545cf4593ad20ac5bd2fcb25ad1"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/TablePreviewContents.as",
+      "sha256": "3c7c53a260d679dca481745ecc4aa33610aeadc2ed63c504fc8abe43fd999648"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/view/TableViewComponent.as",
+      "sha256": "792163a5f4f406507da45a337f3b9b7dc9f66f2c8759e583b5c25c610a0e5f3e"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/position/TablePreviewPositionData.as",
+      "sha256": "67a86d783f5667271410c80da678c59ab559899f4372b18c8eb0919554724c84"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/view/PreviewPlayerAvatar.as",
+      "sha256": "26259946edb218565d66bd5dc2406ce13277fc28c1b467e6bf0af176a9aca5f2"
+    }
+  ],
+  "fontSources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/GlobalButton.as",
+      "sha256": "eb82ad01852703c14d475d837cb3ffe1785c7f1e624afb81b00caa980762f329"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/text/UniqueLabel.as",
+      "sha256": "ebf2dfc4abce2a7de077b31af397d056ceb526f52b132cc09610b9c1fc1e5803"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/asset/StageAssets.as",
+      "sha256": "e993e9ebfc32e1214162109e9af1eb3eef98e2cf6cbf6d7fb0ce1be4e3f0b0a3"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/Setting.as",
+      "sha256": "7711ac87c7729456e36920529ca5adc88529d50409c095833da862de50c8c854"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/tasks/InitFont.as",
+      "sha256": "d3831e2c3816f4adf93ed7d1bec21a55f47661bbe138da2eb66a471866df9465"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/LabelButton.as",
+      "sha256": "5e9cc08b2489e890d5684b9edb2b9b11e452d1ffdb991850f1edc0f83cade197"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/lib/components/Button.as",
+      "sha256": "005aff16f04b263bfd0550ea73d919275afba37703e4ae36a55dcdbcae62b107"
+    }
+  ],
+  "atlas": {
+    "files": [
+      {
+        "bytes": 65498,
+        "file": "native-lobby-preview-holdem-table.png",
+        "frame": "lobby_preview0000",
+        "height": 351,
+        "rgbaExact": true,
+        "sha256": "8b9264506aeb2215396cf1c4b9dbae2efd258ac7ea70064208654386a0d834b0",
+        "width": 223
+      }
+    ],
+    "method": "StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding",
+    "sources": {
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+    }
+  },
+  "nativeContract": [
+    "Ordinary Holdem chooses lobby_preview0,223x351;default tableScale1.08;HoldemTablePreview does not override scale;StageImage origin0",
+    "Blinds label getLabel12,color15463885=#ebf5cd,useRoboto true;PositionData six-seat blindsY175;label horizontally centered in viewport",
+    "MobileBuyInRange always title;equal min/max shows single min;otherwise min - max;native Currency.format supplies grouping/currency",
+    "PreviewPlayerAvatar uses actual URL/masked50x50 and optional border/badge flags;no evidence to replace all actual local avatars with silhouettes"
+  ],
+  "localMapping": [
+    "Replace only ordinary local Holdem Table View legacy background;source-size scaled240.84x379.08 at origin0;existing parent viewport retained",
+    "Reuse installed native Roboto;center label at175;CSS14px linebox/native exact font-metric/raster equivalence remains unverified",
+    "Actual validated local min/max (fallback default stack),thousands grouping;practice numbers carry no false operator currency symbol",
+    "Shared translation key MobileBuyInRange;PLO/ShortDeck/AoF and seat/HUD/position controls unchanged"
+  ],
+  "verification": [
+    "RED fixed label lookup empty on legacy UI",
+    "GREEN source full Group browser:fixed120/range60 - 240,RGBA223x351/scale/position/font/color,actual Wait/Cancel,payout/two hands/restart/conservation;final current-head installed QA pending"
+  ],
+  "remaining": [
+    "Parent bounds,full pixel raster/resampling and native typography line metrics unverified",
+    "Player plate/country/numeric HUD/actual avatar-data branches/promotion/operator/window semantics and full-app parity incomplete"
+  ]
+}

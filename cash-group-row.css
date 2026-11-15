@@ -43,3 +43,8 @@
 @font-face{font-family:NativeGroupRow;src:url('/home-art/native-group-roboto-bold-italic.ttf') format('truetype');font-weight:700;font-style:italic;font-display:swap}
 /* TableCellRenderer combines authenticated userIsPlaying/isUserWaiting; name and counter stay ordinary. */
 #catalog.nativeCashOperator[data-mode=holdem][data-view=table] #groups>button[data-engaged=true]>span:not(:first-child):not(.seatBlocks){color:#ff8932;font-weight:700;font-style:italic}
+
+/* TableViewComponent uses lobby_preview0 at scale1.08, origin0; existing parent viewport remains separately tracked. */
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #preview .oval{padding:0;display:block;background:transparent url('/home-art/native-lobby-preview-holdem-table.png') left top/240.84px 379.08px no-repeat}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] .nativePreviewBuyIn{position:absolute;left:0;top:175px;width:100%;color:#ebf5cd;font:12px/14px NativeGroupRow,Arial,sans-serif;text-align:center;white-space:nowrap;pointer-events:none}
+.nativePreviewBuyIn>span{display:block}
