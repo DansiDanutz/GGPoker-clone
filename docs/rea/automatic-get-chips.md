@@ -18,4 +18,8 @@ Anularea păstrează pauza și portofelul. Pollingul și reloadul nu simulează 
 
 `node network-browser-test.mjs --cash-return-funding --cash-auto-get-chips` a eșuat înaintea implementării, așteptând dialogul automat. Extensia intră în browser înainte ca pauza să fie aplicată, verifică absența ofertei înaintea tranziției, apoi dialogul automat, Escape fără debit, lipsa replay-ului la polling/reload, revenirea manuală și un singur debit explicit. Mâna curentă rămâne identică; mâna următoare primește stackul finanțat. Scenariul rulează și cu `--shortdeck`: ordinary4→16/refill12/table268; Short Deck12→120/refill108/table468. Regresia `--cash-sitout --cash-sitout-account` verifică faptul că un loc finanțat în pauză nu primește această ofertă.
 
-Stare: candidat; exact-head și pachetul instalabil trebuie verificate înainte de activare. Fără comparație fizică nouă a popupului nativ, catch-up AIR sau timing de server. Pauza locală rămâne next-deal; Next Blind rămâne dezactivat până la o dovadă adecvată.
+Stare: integrat și activ local prin PR225, merge0f3d75c7a7a7fd73bff30c83543598f4954f58c8, sursă2c14216b8f11ecf376ff9850a0fcfdc9873686e9. Cele19verificări exact-head au trecut:14pe sursă, patru scenarii instalabile și review cu11identități native. Fără comparație fizică nouă a popupului nativ, catch-up AIR sau timing de server. Pauza locală rămâne next-deal; Next Blind rămâne dezactivat până la o dovadă adecvată.
+
+## Activare
+
+Runtime121fișiere/1405875bytes în `/Users/davidai/.local/share/playgg-runtime/auto-get-chips-2c14216`, art1330refolosit. Rollout idle PID99734→52129; backup `pr225-pjumusv2`. Toate cele șase fișiere owner/15496bytes identice, fără QA de gameplay pe live. `network.mjs` servit este identic cu pachetul verificat. Evidence `.git/danslab-qa/pr225-evidence.json` și `pr225-live.json`.
