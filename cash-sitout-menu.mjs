@@ -1,9 +1,9 @@
 export function cashSitOutMenuRows(view){
- const pending=!!view.paused,selected=pending?(view.allCash?'all':'current'):null;
+ const pending=!!view.paused,selected=pending?(view.allTables?'all':'current'):null;
  return [
   {id:'current',key:'MobileSitOut',label:'Sit out next hand'},
-  {id:'all',key:view.tournament?'SitOutAllNow':'GlobalCashGameSitOutNextHand',label:view.tournament?'Sit-out all tables Now':'Sit out all cash tables on next hand'},
-  {id:'next-blind',key:view.tournament?'SitOutAllTableNB':'GlobalCashGameSitOutNextBlind',label:view.tournament?'Sit-out all tables Next Blind':'Sit out all cash tables on next blind'},
+  {id:'all',key:'SitOutAllNow',label:'Sit-out all tables Now'},
+  {id:'next-blind',key:'SitOutAllTableNB',label:'Sit-out all tables Next Blind'},
   {id:'leave-blind',key:'LeaveAllNB',label:'Leave all tables next blind'}
  ].map(row=>({...row,hidden:!!view.tournament&&row.id==='leave-blind',checked:row.id===selected,disabled:!view.enabled||!!view.busy||!['current','all'].includes(row.id)||pending&&row.id!==selected||row.id==='all'&&(!view.account||!view.canAll)}));
 }
