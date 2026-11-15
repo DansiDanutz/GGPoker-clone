@@ -1,0 +1,108 @@
+{
+  "method": "REA original SWF selective FFDec source; actual player/marker indices and source coordinate scale, not screenshot-inferred percentages",
+  "swf": {
+    "path": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf",
+    "bytes": 41892370,
+    "sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1"
+  },
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/position/TablePreviewPositionData.as",
+      "sha256": "67a86d783f5667271410c80da678c59ab559899f4372b18c8eb0919554724c84"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/position/TablePreviewSixPositionData.as",
+      "sha256": "b643a7506a0abf33237a5f12013d10c3e886ef3eeaddae728b286bdb7eda9770"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/position/TablePreviewPositionManager.as",
+      "sha256": "4461eba58fef5c680d19d484c6375336d75fb2539629ea74957abb04ecaf3295"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/view/TableViewComponent.as",
+      "sha256": "792163a5f4f406507da45a337f3b9b7dc9f66f2c8759e583b5c25c610a0e5f3e"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/view/PreviewPlayerCell.as",
+      "sha256": "197f7337dd77c3b238f729fe54aef23092a7d34d585cb85c2905b298799a83d7"
+    }
+  ],
+  "nativeContract": {
+    "scale": 1.08,
+    "sixSeatOrigins": [
+      [
+        112,
+        31
+      ],
+      [
+        183,
+        115
+      ],
+      [
+        187,
+        219
+      ],
+      [
+        112,
+        290
+      ],
+      [
+        39,
+        219
+      ],
+      [
+        42,
+        115
+      ]
+    ],
+    "sixMarkerTopLeft": [
+      [
+        101,
+        79
+      ],
+      [
+        129,
+        134
+      ],
+      [
+        133,
+        209
+      ],
+      [
+        101,
+        244
+      ],
+      [
+        68,
+        209
+      ],
+      [
+        72,
+        134
+      ]
+    ],
+    "dealerPreScaleOffset": [
+      2,
+      2
+    ],
+    "seatIndex": "Direct actual SeatIndex;0 top,1 upper-right,2 lower-right,3 bottom,4 lower-left,5 upper-left. SixPositionData inherits defaults.",
+    "cellScale": "Only coordinates and table texture scaled1.08;avatar/plate/button images retain source dimensions.",
+    "markerPriority": "Per player:dealer else smallBlind else bigBlind else thirdBlind. Heads-up dealer+SB therefore paints dealer only.",
+    "origin": "Player/item/container sprites have default0,0. Marker images use top-left positions,not CSS centered transforms."
+  },
+  "localMapping": [
+    "Ordinary six-seat Holdem Table View uses exact source pixels times1.08,actual local seat indices and unchanged reservation/HUD callbacks.",
+    "Marker rectangles use source top-left and dealer+2 before scale;existing original dealer/SB/BB images reused.",
+    "Heads-up suppresses duplicate SB marker on dealer;does not change actual posted blinds or payouts.",
+    "Other modes/legacy capacities retain existing percentage rendering;no game engine or wallet changes."
+  ],
+  "verification": [
+    "RED legacy seat0x116 instead of120.96 in actual browser.",
+    "GREEN source all six origins/three marker origins,actual sparse-seat2/5 heads-up/dealer-SB priority/fold settlement240chips,HUD/empty-seat exact4/0,manual admission,two hands/payout/restart/reconnect passed;exact-head installed release checks pending."
+  ],
+  "remaining": [
+    "Exact outer parent bounds/clipping and native textfield metrics.",
+    "Table-preview private note/country/heat HUD branches;operator role/variant/full-app parity.",
+    "Native animation/audio timing."
+  ]
+}
