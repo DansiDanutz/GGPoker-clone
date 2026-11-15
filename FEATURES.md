@@ -2,9 +2,9 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
-## Verified release baseline — PR227
+## Verified release baseline — PR229
 
-PR227 merged as `258edea73576d5cba0141d004e188612a77cb284`, tested source `1c0d8ca34bef451e27bfbc7e9793906fa120df77`,14exact-head checks. Selected cash Table View uses actual own Open/Join/Wait/Cancel gates and existing FIFO with no public waiting identities/debit. Two-account cap/error/restart/explicit60buy-in/next-hand660-chip payout, existing waiting-list780-chip journey and delayed-module Auto Buy-In/five-computer two-hand720-chip journey pass on source and installed runtime. A pre-existing PR225 startup race was reproduced and corrected; failed first-head evidence retained. Runtime121files/1,408,342bytes; six owner files15,496bytes preserved. Older candidate statements below are historical.
+PR229 merged as `0648c3f0318cb0bd17fb94a113e1fba524a81f94`, tested source `c6d15b1624dd649761ac2e86bfa3f595c53d215f`,eight exact-head checks. Cash Table View uses native red/gray GlobalButton skins/shadow/slices,37px height,19px Latin Roboto Condensed and source hover/down/disabled states. Real pointer/drag-away/disabled/waiting/FIFO/restart/explicit buy-in/independent660payout and Auto Buy-In/five-computer two-hand720/reconnect pass on source and installed runtime. Runtime121files/1,411,754bytes; art1330reused; six owner files15,496bytes preserved. Absolute parent geometry, physical AIR pixels/raster/Tween timing remain unverified. Older candidate notes below are historical.
 
 ## Released checkpoint — PR221
 
@@ -1402,4 +1402,4 @@ Automatic Get Chips live PR225: native OnSitOut4009 first own low-stack cash tra
 
 Cash lobby controls live PR227: native TablePreview Open/Join/Wait/Cancel gating uses existing own-account FIFO and private status; no public waiting identities or debit. Real pointer/FIFO/queue-cap/503/restart/explicit offered buy-in/full next-hand payout passed in source and installed runtime; Auto Buy-In startup ordering also corrected. [REA evidence](docs/rea/cash-lobby-controls.md).
 
-Selected-table button skin candidate: source GlobalButton red/gray PNGs,shadow,nine-slice,Latin font19,height37,hover/down/disabled states reuse existing art. Real queue/payout and exact-head installed gate pending; [REA contract](docs/rea/lobby-button-skins.md).
+Selected-table button skins live PR229: source GlobalButton red/gray PNGs,shadow,nine-slice,Latin font19,height37,hover/down/disabled states reuse existing art. Eight exact-head checks passed, including source/installed pointer states, queue/payout and five-computer journeys; [REA contract](docs/rea/lobby-button-skins.md).

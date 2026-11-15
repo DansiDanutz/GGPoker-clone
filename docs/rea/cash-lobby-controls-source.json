@@ -47,5 +47,12 @@
     "TablePreview Open uses LockButton DARK_GRAY; Join uses LockButton RED; WaitButton and UnJoinButton both extend GlobalButton RED",
     "Default operator margin10/buttonGap10; each button width90percent and x5percent of viewport",
     "Button layer follows actual table-info content height and optional waiting-status height37; absolute y depends on parent/layout, not this class alone"
-  ]
+  ],
+  "openTableFollowup": {
+    "file": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/controller/OpenTableCommand.as",
+    "sha256": "d4790ade9b5acede7bc362638979d12505cf176571c48c3e9a0795c21614641b",
+    "bytes": 26943,
+    "observation": "Selective export inspected for Open versus Join trace. openTable coordinates subscription/prepareTable lifecycle; no JOIN_TABLE literal in this class. This does not resolve the JOIN_TABLE notification registration/caller or prove seat behavior.",
+    "next": "Trace notification registration and connection/open type before changing normal Join without Auto Buy-In."
+  }
 }
