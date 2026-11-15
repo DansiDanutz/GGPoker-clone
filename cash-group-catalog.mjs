@@ -8,5 +8,7 @@ export function cashGroupCatalog(tables){
   if(!group.open&&table.open)Object.assign(group,table);
   group.members=members;group.occupied=occupied;
  }
- return rows;
+ // Native TableGroups.sortFunc + MathUtil.compareNumber: descending within comparable Hold’em rules.
+ // shortcut: local groups share one practice currency/type; operator featured/password/currency gates require actual metadata.
+ return rows.sort((a,b)=>(b.blind-a.blind)||((b.minBuyIn??b.stack)-(a.minBuyIn??a.stack))||((b.ante??0)-(a.ante??0))||(b.capacity-a.capacity)||0);
 }

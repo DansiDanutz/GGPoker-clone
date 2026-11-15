@@ -1,0 +1,45 @@
+{
+  "method": "REA selective headless FFDec ActionScript recovery; read-only original artifacts, not native AIR execution",
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/vo/TableGroups.as",
+      "sha256": "76708b23a740344b60a18dbc7b6d90c4e1961a8da7002c8dc83006f599fd3761"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/utils/MathUtil.as",
+      "sha256": "f36d307be809b61946288f0320e2e89f7f1d9e550dc6d36d5f1c5c2cce711989"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/StageList.as",
+      "sha256": "45d127988c79605d821081135bd34da95c0986275710945791ba3a37d43e4bfe"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/TableGroupCell.as",
+      "sha256": "6a5919668e749a5c0c4c4d6251b9c52d19b0c9e596c6d1b6aca5071a90d95b64"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/TableGroupList.as",
+      "sha256": "b80dd2656e0c3448f0788976829e4afbfcfa1691c329300f4ee6d16ebf2863e4"
+    }
+  ],
+  "nativeContract": [
+    "TableGroups.sortFunc uses MathUtil.compareNumber descending for usdBigBlind, usdMinBuyin, usdAnte, maxPlayers after game/currency/featured/password gates",
+    "StageList handles ArrowDown40/ArrowUp38 without wrapping; Enter13 invokes currentCell.onDoubleClick; blocked, hidden, inactive native window or absent selection return",
+    "Ordinary TableGroupCell double click emits CLICK then AUTO_JOIN_TABLE; featured/waiting branches differ"
+  ],
+  "localMapping": "Current cashGroupCatalog caller is Hold\u2019em Group View only; all local groups share practice currency/type. Map blind/minBuyIn??stack/ante??0/capacity to comparable rule ordering. Do not invent operator featured/password/currency metadata. Table View remains unsorted by this change.",
+  "verification": [
+    "RED order assertion failed against insertion-order implementation",
+    "GREEN cash-group-catalog-test.mjs includes all four ordering priorities, stable ties, no input mutation and original aggregation cases"
+  ],
+  "remaining": [
+    "Exact-head installed browser QA and release pending",
+    "No release or live runtime change yet; live remains PR249",
+    "Native same-size physical raster, animation and sound timing unverified"
+  ],
+  "implementation": [
+    "Hold\u2019em Group View: ArrowUp/Down clamp at first/last real row and scroll selection into view",
+    "Enter dispatches the same ordinary group action as double click; both open existing authenticated Group confirmation, no automatic funding",
+    "Handler scoped to current visible catalog and actual row focus; modal forms, other catalogs and Table View remain outside this handler"
+  ]
+}

@@ -417,7 +417,7 @@ function cashCatalog(request,mode){
     }
     return node('span',x,j===0?'chip':group&&j===(mode==='shortdeck'?4:5)?'rowAction':'');
    }));
-   b.onclick=e=>{if(selected!==i)waitingError='';selected=i;render();refreshWaiting();list.children[i].focus();if(e.target.closest('.rowAction')&&r.open){if(mode==='holdem'&&journey)void cashGroupJoin.open(r).catch(error=>{waitingError=error.message;render()});else location.assign(joinHref(r))}};return b}));
+   b.onclick=e=>{if(selected!==i)waitingError='';selected=i;render();refreshWaiting();list.children[i].focus();if((e.target.closest('.rowAction')||group&&mode==='holdem'&&e.detail===2)&&r.open){if(mode==='holdem'&&journey)void cashGroupJoin.open(r).catch(error=>{waitingError=error.message;render()});else location.assign(joinHref(r))}};return b}));
   updateElement(list,nextList);
   if(!t){lobbyHud.select(null);updateElement(previewRoot,preview);$('details').textContent='No matching hosted tables';join.removeAttribute('href');$('joinTable').hidden=true;join.textContent='No table selected';return}
   lobbyHud.select(picked?.table||(!group&&mode==='holdem'&&t.capacity===6?t:null));
@@ -441,6 +441,14 @@ function cashCatalog(request,mode){
   else seatLink.href=journey?joinHref(t,true):'/launch.html';
 
  }
+ // StageList handles arrows and Enter; keep browser forms and modal dialogs outside this list untouched.
+ list.onkeydown=event=>{
+  if(request!==catalogRequest||pane.hidden||view!=='group'||mode!=='holdem'||!rows[selected]||event.target.parentElement!==list||!['ArrowDown','ArrowUp','Enter'].includes(event.key))return;
+  event.preventDefault();
+  if(event.key==='Enter'){list.children[selected]?.dispatchEvent(new MouseEvent('click',{bubbles:true,detail:2}));return}
+  const next=Math.max(0,Math.min(rows.length-1,selected+(event.key==='ArrowDown'?1:-1)));
+  if(next!==selected){list.children[next]?.click();list.children[next]?.scrollIntoView({block:'nearest'})}
+ };
  $('groupView').onclick=()=>{view='group';applyRows()};$('tableView').onclick=()=>{view='table';applyRows();refreshWaiting()};render();
  let previous='';
  function applyRows(){const href=rows[selected]?.href,groupId=rows[selected]?.groupId,focused=list.contains(document.activeElement),filtered=hosted.filter(t=>filter==='all'||filter===t.mode);
