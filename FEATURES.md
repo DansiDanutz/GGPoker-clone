@@ -2,7 +2,13 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
-## Verified release baseline — PR247
+## Verified release baseline — PR249
+
+PR249 merged `7ab0db5806e447aea8634935f479767ed719a04f`; tested source `309e4f6c85211ef19f1d4f48d3e16f9c44a51b2e`. Group rows identify the current account using authenticated server me, then apply the original orange and Roboto Bold Italic. Private memo and color-only markers use the two original atlas shapes and source geometry. A lean read-only endpoint returns only marker metadata; note content, history, cards and tokens are excluded. Stale group, roster and account responses cannot repaint another context.
+
+All 18 exact-head checks passed: metadata privacy/no-write/restart/logout, stale/account/malformed-color guards, six native font identities, source/runtime/art review, own-row and memo→color→memo browser actions, Group entry/two hands/payout/restart, manual Join/HUD, Auto Buy-In, six separate hosted sessions with unequal all-ins/fold/uncalled returns/replacement, and inspected rendering. Runtime: 130 files, 1,475,218 bytes. Art: 1,362 files; 1,359 reused by immutable hardlink, with two PNGs and one native font adding 205,364 bytes. Guarded rollout PID85800→79331 preserved all six owner files (15,496 bytes), with no live gameplay QA. [Detailed REA contract and remaining gaps](docs/rea/cash-group-paint.md). Full reconstruction remains active; older notes below are historical.
+
+## Historical release baseline — PR247
 
 PR247 merged `6e2abd86252b2c04c8ab3492e000a37e2ad21899`;tested source `bb492dfa42f7de0b84b8dc91c40ba814ee84c0c3`. Group player list now uses native-derived240×23header/237×28rows and source-proven descending/toggled sorting over actual member rooms/seats/stacks. Selection exposes Profile/Open;double-click and Profile reuse authenticated own/other HUD/private notes/history. Open reaches the actual selected table without join/autojoin or a new debit. Departure/group/view changes clear invalid selection;changed names reject delayed HUD reads. Country/operator numbers and native account/note/live paint remain incomplete.
 
@@ -1448,4 +1454,4 @@ Hold’em Group row live PR245: native ordinary five-column branch,56×20TableSi
 
 Group player-list live PR247: native240×23header/237×28rows,actual room/seat/chips,descending/toggled sort,Profile/double-click private HUD/notes and actual Open without new seat/debit. Departure clears selection;country/operatorNo. and own/partner/note/live paint remain incomplete. [Contract](docs/rea/cash-group-players.md).
 
-Group private paint candidate: actual authenticated me→native orange/BoldItalic;private memo/color-only original masks driven by lean read-only projection,without note content or nickname inference. Stale/account/group guards and full source Group hand/restart flow passed;installed gate pending. [Evidence](docs/rea/cash-group-paint.md).
+Group private paint live PR249: actual authenticated me→native orange/BoldItalic;private memo/color-only original masks driven by lean read-only projection,without note content or nickname inference. Stale/account/group guards and full source Group hand/restart flow passed;all 18 installed checks passed. [Evidence](docs/rea/cash-group-paint.md).

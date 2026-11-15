@@ -76,5 +76,5 @@
     "Automatic native multiwindow behavior differs when browser blocks popups;real-click recovery verified",
     "Exact counter/page/hover easing and native sound timing remain unverified"
   ],
-  "next": "Group player list/Profile/Open/private notes/departure installed PR247;next actual own-account/private note markers using authenticated preview identity,then local metadata/featured/waiting and physical/motion/full-app parity"
+  "next": "Actual own/private-note paint installed PR249;next native Group row ordering and StageList keyboard navigation;country/tableIndex metadata requires explicit local authority,not guessed operator values;physical/timing/full-app parity remains incomplete"
 }

@@ -147,7 +147,15 @@
     "Epoch/abort/name/account guards clear stale/private marks across navigation/roster/account changes;markers grant no authority"
   ],
   "pending": [
-    "Final installed exact-head gate",
     "Native own/marker physical raster/operator default-color customization/partner/live/country/table-number policies remain incomplete"
-  ]
+  ],
+  "release": {
+    "pr": 249,
+    "testedSource": "309e4f6c85211ef19f1d4f48d3e16f9c44a51b2e",
+    "mergeCommit": "7ab0db5806e447aea8634935f479767ed719a04f",
+    "checks": 18,
+    "runtimeFiles": 130,
+    "artFiles": 1362,
+    "ownerDataUnchanged": true
+  }
 }
