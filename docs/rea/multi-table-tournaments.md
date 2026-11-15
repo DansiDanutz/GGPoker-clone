@@ -77,3 +77,11 @@ Un cont alocat poate intra numai pe locul său, fără o a doua taxă de intrare
 Distribuirea cărților, ready-barrier, transferurile și interfața MTT sunt încă neconectate. În acest stadiu camerele acceptă numai join/state/watch/summary; comenzile de joc sunt respinse explicit. Validarea refuză mâini injectate în acest checkpoint intermediar. Activitatea financiară este controlată de turneul părinte, iar o mână reală neîncheiată blochează întotdeauna restaurarea. O cameră asociată unui eveniment absent/neîncheiat sau cu identitate neconformă nu poate ocoli verificarea de restaurare.
 
 Test nou: `multi-table-rooms-test.mjs`; regresii financiare/HTTP MTT, Spin șase locuri, turneu simplu și restaurare model/HTTP. Testul financiar verifică acum și restaurarea unui turneu complet încheiat. Aceste dovezi nu echivalează cu un turneu multi-masă jucabil în browser.
+
+## Prima distribuire privată — integrare internă în draft
+
+`startMultiTournamentHands` pornește prima mână pentru toate mesele numai după conectarea tuturor conturilor alocate. Metoda este internă; nu există încă o comandă de player/owner în interfață pentru ea. Înregistrarea begin în coordonator și mâinile private folosesc aceeași tranzacție atomică. Repetarea după pornire nu redistribuie cărțile și nu scrie fișierul.
+
+`multi-table-deal-test.mjs` verifică șapte jucători la mese de patru și trei: bariera de conectare, eșecul scrierii ambelor mâini, retry, 2.100 de jetoane conservate și lipsa unei taxe suplimentare. Avansarea ceasului comun cu șase intervale produce blindul plafonat 640 la ambele mese. După redeschidere, fiecare token vede exact cele două cărți proprii; spectatorul nu vede nicio carte privată. Sunt respinse nepotrivirile de număr, stack inițial, total, blind, cărți duplicate sau structură deck/hands invalidă. Recuperarea este verificată prin redeschiderea modelului de fișier, nu printr-un test nou de browser sau kill/restart server în timpul mâinii.
+
+Coordonatorul oferă o copie a receiptului curent pentru validare fără a începe o mână nouă. Acțiunile de joc, finish autoritar și mutările rămân neconectate și blocate la nivelul comenzilor camerelor MTT. Acest pas nu reprezintă un turneu jucabil complet.

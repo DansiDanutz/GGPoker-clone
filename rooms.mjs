@@ -572,7 +572,9 @@ export function openRooms(file,avatarFor=()=>0,walletsEnabled=false){
     const expected=new Set();
     for(const e of multi.state.events)if(e.checkpoint){const count=Math.ceil(e.settings.capacity/6);for(let i=0;i<count;i++){
       const tableId='table-'+(i+1),roomId=multiTableRoomId(e.id,tableId),r=rooms.get(roomId),accounts=Array.from({length:6},(_,seat)=>e.checkpoint.entries[seat*count+i]?.id??null),fresh=newRoom(multiTableSettings(e),{},6,0);expected.add(roomId);
-      if(!r||r.multiTournament!==e.id||r.multiTable!==tableId||!isDeepStrictEqual(r.multiAccounts,accounts)||!isDeepStrictEqual(r.settings,fresh.settings)||r.players.length!==6||r.number!==0||r.hand!==null||r.tournament?.entry!==0||r.tournament.pool!==0||r.tournament.startedAt!==e.startedAt||r.players.some((p,seat)=>p&&(p.account!==accounts[seat]||p.bot||p.entryFunded!==undefined||p.walletFunded!==undefined)))throw Error('Invalid multi-table child room');
+      if(!r||r.multiTournament!==e.id||r.multiTable!==tableId||!isDeepStrictEqual(r.multiAccounts,accounts)||!isDeepStrictEqual(r.settings,fresh.settings)||r.players.length!==6||r.tournament?.entry!==0||r.tournament.pool!==0||r.tournament.startedAt!==e.startedAt||r.players.some((p,seat)=>p&&(p.account!==accounts[seat]||p.bot||p.entryFunded!==undefined||p.walletFunded!==undefined)))throw Error('Invalid multi-table child room');
+      if(r.hand){const receipt=multi.hand(e.id,tableId),g=r.hand;if(!Array.isArray(g.deck)||!Array.isArray(g.hands)||g.hands.length!==6||g.hands.some((h,i)=>!Array.isArray(h)||h.length!==(accounts[i]?2:0))||!Array.isArray(g.board)||g.board.length!==0||!Number.isSafeInteger(g.hudStartedAt)||g.hudStartedAt<e.startedAt||g.blind!==blindLevel(e.startedAt,g.hudStartedAt,e.settings.levelSeconds*1000,e.settings.blind).bigBlind)throw Error('Invalid multi-table private hand');const cards=[...g.deck,...g.hands.flat(),...g.board];if(!receipt||receipt.finish!==null||receipt.number!==r.number||!isDeepStrictEqual(receipt.begin.ids,accounts)||!isDeepStrictEqual(receipt.begin.stacks,g.initialStacks)||g.variant!=='holdem'||g.end!==null||!Array.isArray(g.stacks)||g.stacks.length!==6||g.stacks.some(n=>!Number.isSafeInteger(n)||n<0)||!Array.isArray(g.committed)||g.committed.length!==6||g.committed.some(n=>!Number.isSafeInteger(n)||n<0)||g.stacks.reduce((a,b)=>a+b,0)+g.committed.reduce((a,b)=>a+b,0)!==receipt.begin.stacks.reduce((a,b)=>a+b,0)||cards.length!==52||new Set(cards).size!==52||cards.some(c=>typeof c!=='string'||!/^([2-9TJQKA])[cdhs]$/.test(c)))throw Error('Invalid multi-table private hand')}
+      else if(r.number!==0)throw Error('Invalid multi-table missing hand');
     }}
     for(const [id,r]of rooms)if((r.multiTournament!==undefined||r.multiTable!==undefined||r.multiAccounts!==undefined)&&!expected.has(id))throw Error('Invalid orphan multi-table room');
   }
@@ -659,6 +661,15 @@ rules=spinRules(rooms.get('local-spin-rules'));rooms.delete('local-spin-rules');
     return receipt;
   });
   request.cancelMultiTournament=(id,name)=>bankTransaction(()=>multi.cancel(id,name,wallet));
+  request.startMultiTournamentHands=id=>bankTransaction(()=>{
+    const event=multi.summary(id);if(event.status!=='allocated')fail(409,'Wait for the funded field');
+    const tables=event.tournament.tables;
+    if(tables.some(t=>{const r=rooms.get(t.room);return r.multiAccounts.some((a,i)=>a&&r.players[i]?.account!==a)}))fail(409,'Wait for every assigned player to join');
+    if(tables.every(t=>rooms.get(t.room).hand))return {started:0};
+    if(tables.some(t=>t.number!==0||rooms.get(t.room).hand))fail(409,'Initial multi-table hand state changed');
+    const now=Date.now();for(const t of tables){const r=rooms.get(t.room),receipt=multi.begin(id,t.id,1);tournamentHand(r,now,avatarFor,receipt.stacks)}
+    return {started:tables.length};
+  });
   request.beginMultiTournamentHand=(id,tableId,number)=>bankTransaction(()=>multi.begin(id,tableId,number));
   request.finishMultiTournamentHand=(id,tableId,number,after,button)=>bankTransaction(()=>multi.finish(id,tableId,number,after,button,wallet));
   request.spinRules=format=>rules.summary(format);
