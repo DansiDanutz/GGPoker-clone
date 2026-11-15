@@ -1,6 +1,6 @@
 # Native / local Table View: same-size evidence
 
-This is a measured reference checkpoint, not a completed 1:1 acceptance test. The installed PLAYGG.RO application and an isolated local practice fixture were captured at exactly **1200 × 963 pixels**. The local snapshot uses the installed PR257 runtime, source `09f34fe014274c07f6f2490b2744999e7aa93c02`; product code was not changed in this checkpoint.
+Historical PR259 baseline: [PR260 now corrects the preview texture and buy-in label](cash-preview-surface.md); the original/before captures and findings below remain preserved. This is a measured reference checkpoint, not a completed 1:1 acceptance test. The installed PLAYGG.RO application and an isolated local practice fixture were captured at exactly **1200 × 963 pixels**. The local snapshot uses the installed PR257 runtime, source `09f34fe014274c07f6f2490b2744999e7aa93c02`; product code was not changed in this checkpoint.
 
 The original client was not running initially. A requested background launch spawned a child that activated itself. The UI inspection used only Hold’em/Table View navigation and list scrolling, with background event delivery; no seat, wager, waiting-list, cashier or promotion action was sent. The window was minimized and the application gracefully quit; zero remaining windows and terminal process state were checked. Future background-only work must use the saved reference/source, rather than relaunch a client known to activate itself.
 

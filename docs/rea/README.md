@@ -6,6 +6,7 @@ Aceasta este versiunea publică a fișelor detaliate. Explică aspectul,controal
 
 | Fișă | Acoperire |
 |---|---|
+| [Previzualizare Hold’em:textură și buy-in](cash-preview-surface.md) | PR260:textură originală,scară/etichetă/font/culoare,reguli reale fixed/range,captură după și limite |
 | [Comparație nativă la aceeași dimensiune](native-table-comparison.md) | 1200×963:capturi reale,fixture izolată,diferențe confirmate,fundal/etichetă/metadata/promoții și limite |
 | [Table View:cont autentificat și așteptare](cash-table-account.md) | PR257:identitate reală,portocaliu/font nativ,Wait/Cancel/contor,confidențialitate și actualizare fără pierderea marcajelor |
 | [Table View:grafica și contoare](cash-table-paint.md) | PR255:font/culori/indicator native,contoare originale97×9,măști,stări și limite |

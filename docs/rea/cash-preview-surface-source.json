@@ -93,10 +93,48 @@
   ],
   "verification": [
     "RED fixed label lookup empty on legacy UI",
-    "GREEN source full Group browser:fixed120/range60 - 240,RGBA223x351/scale/position/font/color,actual Wait/Cancel,payout/two hands/restart/conservation;final current-head installed QA pending"
+    "GREEN source full Group browser:fixed120/range60 - 240,RGBA223x351/scale/position/font/color,actual Wait/Cancel,payout/two hands/restart/conservation;historical pre-PR260 check, superseded by the following exact-head result",
+    "PR260 all18 exact-head checks/reviews PASS including installed fixed/ranged/grouped amounts, source/RGBA/fonts/runtime/art, real controls/two hands/payout/restart, separate1200x963after capture and unchanged PR259 baseline hashes"
   ],
   "remaining": [
     "Parent bounds,full pixel raster/resampling and native typography line metrics unverified",
     "Player plate/country/numeric HUD/actual avatar-data branches/promotion/operator/window semantics and full-app parity incomplete"
-  ]
+  ],
+  "release": {
+    "pr": 260,
+    "testedSha": "15024c8eb88d136a1f3d44eb2220f42f74e2e408",
+    "mergeCommit": "dda375efc44fd7fe67c6206033bbec1b144dc560",
+    "ownerDataUnchanged": true
+  },
+  "afterCapture": {
+    "file": "clone-table-preview-after.png",
+    "sha256": "b845ee26e86319bb6b9e50289f7913b7c399797d31ba976fc1b643d89429526f",
+    "width": 1200,
+    "height": 963,
+    "isolated": true,
+    "nativeRelaunched": false,
+    "privateArtifactOnly": true
+  },
+  "nextPlayerContract": {
+    "sources": [
+      {
+        "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/view/PreviewPlayerCell.as",
+        "sha256": "197f7337dd77c3b238f729fe54aef23092a7d34d585cb85c2905b298799a83d7"
+      },
+      {
+        "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/view/PreviewPlayerFlag.as",
+        "sha256": "1748682d9947e0ca75e4ed006316cce93f61e363f6e99344685fda95c87dc9ac"
+      }
+    ],
+    "findings": [
+      "PreviewPlayerInfo and NewPreviewPlayerHud are internal classes in PreviewPlayerCell, not independently exportable classes.",
+      "Cell avatar origin0,0;info0,30;HUD-36,-5;flag23,15;note hit target-30,-25.",
+      "Info background lobby_preview30 centered;name Roboto10 at background top+14 (own italic+13),balance Roboto10 at top+29;name width equals background width.",
+      "Own nickname color16746802,bold italic;other nickname uses actual account/subscription styling;balance play-money color13421772 otherwise7720958.",
+      "Balance is actual player Balance formatted by table currency;no literal chips suffix in source.",
+      "Flag uses actual CountryCode;bitmap scale0.25,offset-11,-8 within flag component.",
+      "HUD hidden when heat0;otherwise actual mandatory VPIP if enabled, AoF all-in ratio or ordinary VPIP;not seat number. Container scale0.55;ratio Roboto11."
+    ],
+    "implementationStatus": "Evidence recovered;local preview plate/flag/HUD parity still pending,not claimed implemented."
+  }
 }

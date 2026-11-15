@@ -2,11 +2,29 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
-## Current native comparison — same extent, not a parity pass
+## Native comparison baseline — PR259, surface corrected PR260
 
 The native window and isolated installed PR257 fixture were both captured at1200×963. The comparison confirms a legacy preview-background mismatch and incorrect center-label contract, and identifies remaining promotion/metadata/typography/window semantics. Native child activation occurred despite a background launch request; original was minimized and gracefully quit after read-only navigation. No real-money game action was sent. Product code remains PR257. [Findings and exact evidence scope](docs/rea/native-table-comparison.md). Raw images stay local; do not relaunch the native client in background-only work.
 
-## Verified release baseline — PR257
+## Verified release baseline — PR260
+
+PR260 merged `dda375efc44fd7fe67c6206033bbec1b144dc560`; tested source `15024c8eb88d136a1f3d44eb2220f42f74e2e408`.
+
+The ordinary local Hold’em Table preview now uses the original `lobby_preview0000` texture (223 × 351), decoded-RGBA verified against the installed atlas. TableViewComponent selects this texture and defaults to scale 1.08; HoldemTablePreview does not override it. The CSS paints 240.84 × 379.08 at the existing preview origin instead of stretching the legacy photo to the parent.
+
+The center label always uses the source `MobileBuyInRange` key, native Roboto 12 and #ebf5cd at source six-seat y175. It reads actual validated local min/max rules, falling back to the table’s fixed default stack. Equal bounds show one amount; a range shows min - max. Thousands grouping is retained (9,760); practice amounts do not pretend to be operator dollars. The existing translation machinery handles the title. The CSS 14px linebox and existing parent bounds still require exact native font-metric/raster verification.
+
+No seat, HUD, dealer/blind marker, selection, waiting, admission or wallet handler was replaced. Other game variants retain their existing renderer. Actual profile avatars are preserved: source PreviewPlayerAvatar uses a real URL plus border/badge flags, so the different native capture alone does not justify replacing all local images with silhouettes.
+
+All 18 exact-head checks/reviews passed: Swift exact crop readback, six preview/inheritance/avatar-context and seven font-chain source identities, six font identities, all 130 runtime/1,365 art hashes, cache/privacy/FIFO/HTTP guards, actual fixed120/range60 - 240/9,760 label and image/scale/color/font/position assertions, real Table/Group controls, observer Wait/Cancel, Group funding/replay/two windows, manual Join/preview/HUD, two hands with five computers, independently verified payouts, restart/reconnect and cross-room conservation. A separate isolated after-capture at1200×963 was visually reviewed against the saved original. All PR259 original/before image hashes stayed unchanged. The native client was not launched again.
+
+Guarded idle rollout PID 27857→37426 preserved all six owner files (15,496 bytes), no live gameplay QA. Runtime: 130 files, 1,482,571 bytes. Art: 1,365 files; 1,364 immutable verified hardlinks plus one PNG adding 65,498 bytes. One small runtime snapshot; no dependencies, worktrees, models or large downloads. Previous runtimes/art were preserved. Markdown/report are current; generated HTML/inventories remain historical PR216.
+
+This resolves two confirmed PR259 baseline differences. It is not full preview or app parity: parent bounds/clipping/resampling, exact text metrics, player plates/country/numeric HUD/actual avatar-data branches, promotions, footer/window semantics and native timing remain incomplete or unverified. Continue from the saved reference/source under the background-only constraint; the native launcher’s observed self-activation makes another unattended launch inappropriate.
+
+[Detailed source contract](docs/rea/cash-preview-surface.md).
+
+## Historical release baseline — PR257
 
 PR257 merged `03fa48656abc04850ecd0fa331d2ed43239e4117`; tested source `09f34fe014274c07f6f2490b2744999e7aa93c02`.
 
