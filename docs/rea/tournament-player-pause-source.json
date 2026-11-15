@@ -1,0 +1,21 @@
+{
+  "method": "REA static analysis of retained selective FFDec exports. No native AIR, server or real account execution. Client protocol does not prove private server behavior.",
+  "sources": {
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/controller/GlobalSitoutCommand.as": "72d21dd055a873e5e8f0cbde8748dc0491c1053595cb491219aa1ee8d5a98683",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/controller/SitOutCommand.as": "c82abeecef38eb0347a1e5dd3a2aa55fd7749b1611241a38326c13d64dd87a62",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/controller/GlobalSitInCommand.as": "0a73a1a624799fd74c6feb27a792f10ba28574af43e1aeab9e0176f72f146aa6",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/controller/SitInCommand.as": "28f24276219110c4ceaa9ff0478beea30fb9436347296f81d7717de16bd7a0bc",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/vo/TablePlayer.as": "a7e2398f4f903f59bcb6bd809e869ad54662da3e38c462b52cd9faeee2cb74af",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/network/enum/EAutoActionFlag.as": "30743b06c858ba711d4aeea28f77970a03e56707b961a0b941cbe1d85780720a",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/display/card/PlayerSitOutUI3D.as": "11395c699b12c91e76f18bb3aec736ee70f80ccba23ce7d7b4d8e71795f47a96",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/stage/component/SitOutView.as": "e104abf3a1a4f10c45458f9529e664d1e2d83ecbf3bfcb76fb116c4248006be0",
+    "/Users/davidai/Sandbox/rea-tools/global-sitout-source/scripts/com/nsus/iron/table/controller/SelectSitoutMenuCommand.as": "6c53c6e2e3df9749afb39de504956fe88e2c0bf8ac92a9cfe812c41991df585e",
+    "/Users/davidai/Sandbox/rea-tools/global-sitout-source/scripts/com/nsus/iron/table/services/request/SetAutoActionFlags.as": "def19d8a7f73725563b1dd450434b253edcb9d8cfbe0ed5aa0683ca6d57873cd"
+  },
+  "releaseBaseline": {
+    "pr": 217,
+    "sourceCommit": "b5a7eab53f35830d0e21222b689679ef70dacede",
+    "mergeCommit": "640f16dd15c286864ca152ffbc3b4dc09103c48f"
+  },
+  "scope": "Tournament and Spin player pause investigation; not implemented by this receipt."
+}

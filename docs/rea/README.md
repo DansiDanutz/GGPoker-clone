@@ -74,3 +74,5 @@ node network-browser-test.mjs --bots
 ```
 
 Testele browser cer Chrome și pachetul local de referință,folosesc date temporare și rulează fără activarea ferestrelor utilizatorului. Nu este necesară instalarea unor dependențe sau un build. Verificările native cu fereastră/audio sunt separate și necesită autorizarea explicită a testării în prim-plan.
+
+- [Tournament/Spin player pause investigation](tournament-player-pause.md): native flags/global scope/return, current gaps and release acceptance; not yet implemented.
