@@ -1,5 +1,5 @@
 /* Interior dimensions follow the native720-unit editor and750-unit background. */
-.autoFoldEditor{position:fixed;inset:auto 8px 8px auto;margin:0;padding:0;width:750px;height:1112px;max-width:none;max-height:none;border:0;background:transparent;color:#ccc;transform:scale(var(--auto-fold-scale,.5));transform-origin:bottom right;overflow:visible;z-index:90;font:26px NativeActionRoboto,Arial,sans-serif}
+.autoFoldEditor{position:fixed;inset:auto;margin:0;padding:0;width:720px;height:1112px;max-width:none;max-height:none;border:0;background:transparent;color:#ccc;transform:scale(var(--auto-fold-scale,.5));transform-origin:top left;overflow:visible;clip-path:inset(-8px 0 -8px -8px);z-index:90;font:26px NativeActionRoboto,Arial,sans-serif}
 .autoFoldContents{position:relative;width:750px;height:1104px;background:#171717;border:4px solid #000;border-radius:15px;box-sizing:content-box;margin:-4px}
 .autoFoldContents h2{position:absolute;left:48px;top:20px;margin:0;font:32px NativeActionRoboto,Arial,sans-serif;color:#ccc}
 .autoFoldEditor button{min-width:0;margin:0;padding:0;cursor:pointer;filter:none}.autoFoldEditor button:hover{filter:none}.autoFoldEditor button:focus-visible{outline:3px solid #ddd;outline-offset:2px}

@@ -14,7 +14,11 @@
     "com/nsus/iron/table/view/popup/gameinfo/newinfo/NewGameInfoData.as": "a4620aa2b18e13dbc53c0140e301a72b599b41675e56daa3c70d61ef0d31fd67",
     "com/nsus/iron/table/view/popup/gameinfo/newinfo/NewGameInfoType.as": "2a641d4c9a5078396f9449764ba4adeaacafdce2f8b444aa89bc64f07df02907",
     "com/nsus/iron/components/display/button/GlobalButton.as": "eb82ad01852703c14d475d837cb3ffe1785c7f1e624afb81b00caa980762f329",
-    "com/nsus/iron/components/display/button/ButtonColor.as": "6102ebf3300a6933f077b5d5b2e7c061a5f11054139cea95417f9353daf0db7c"
+    "com/nsus/iron/components/display/button/ButtonColor.as": "6102ebf3300a6933f077b5d5b2e7c061a5f11054139cea95417f9353daf0db7c",
+    "com/nsus/iron/table/view/component/TableMenu3D.as": "c4e04e9e22aaabb21c77b088ecc678250405b9c4ec2a53a699935f78e55b8853",
+    "com/nsus/iron/table/view/component/tablemenu/TableSideMenu3D.as": "d7f9e41c707d2a635e79d3b53a2ee761921646e27c8406392211547a2e0a53f9",
+    "com/nsus/lib/base/Ease.as": "fb54a8c5d923e95bbe6acf9d1d8360790630b8db3e617e3ee41e8ea1db0bb481",
+    "com/nsus/iron/table/view/popup/gameinfo/newinfo/NewGameInfoView.as": "50bbebeef00e53200f177adec143589060d69319bd6bd53c77f5b028235b639c"
   },
   "items": [
     {
@@ -1130,5 +1134,22 @@
     "AutoFoldSettings",
     "AutoFoldDependingOn",
     "AutoFoldCashDrop"
-  ]
+  ],
+  "sideMenu": {
+    "side": "RIGHT_SIDE",
+    "stageWidth": 1700,
+    "size": 720,
+    "height": 1112,
+    "y": "viewPort.height - 1112",
+    "showX": [
+      1700,
+      980
+    ],
+    "showSeconds": 0.2,
+    "easeOut": "(t-1)^3+1",
+    "hide": "TableSideMenu3D targets its current shown x; AutoFoldView3D removes contents immediately",
+    "backgroundWidth": 750,
+    "infoButtonClick": "show, not toggle",
+    "infoReleaseOutside": "hide help; retain editor for clicks within table menu"
+  }
 }

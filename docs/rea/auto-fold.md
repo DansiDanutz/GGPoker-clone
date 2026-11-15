@@ -26,7 +26,7 @@ Integrarea locală trebuie să păstreze identitatea mâinii și contului, să a
 
 AutoFoldView3D folosește meniul lateral cu size720 și înălțime1112. AutoFoldContents desenează un fundal750×1104, titlul la48/20, tabelul de mâini centrat la y82, selectorul de rată la360/717 și pozițiile la53/878. Apply are264×64 la76/1019; Cancel la380/1019. Diferența dintre dimensiunea meniului și fundalului este păstrată ca fapt, nu corectată prin presupunere.
 
-Apply salvează activarea, cele două permisiuni de poziție, rata și indicii selectați, sincronizează managerul și emite AUTO_FOLD_STATE_CHANGE. Cancel reîncarcă datele salvate și închide meniul. Geometria celulelor, toate stările grafice și animațiile panoului necesită auditul claselor componente înainte de realizarea UI.
+Apply salvează activarea, cele două permisiuni de poziție, rata și indicii selectați, sincronizează managerul și emite AUTO_FOLD_STATE_CHANGE. Cancel reîncarcă datele salvate și închide meniul. Geometria și stările recuperate sunt descrise mai jos; clasele de bază stabilesc separat ancorarea și animația.
 
 ## Model și verificare locală
 
@@ -46,7 +46,7 @@ Un click schimbă celula și stabilește modul pentru drag. EnterFrame continuă
 
 createAutoFold este controllerul folosit de editorul și transportul Rush. Prima citire, schimbarea contului și recuperarea după întrerupere consumă snapshotul curent; o nouă versiune de acțiune eligibilă programează1secundă. Pollurile identice nu resetează timerul. La expirare sunt verificate din nou identitatea, mâna/handVersion, preferințele, busy și eligibilitatea. Un număr de generație invalidează inclusiv callbackuri deja puse în coadă înainte de interrupt. Eșecul trimiterii oprește continuitatea și nu retrimite aceeași acțiune automat; apelantul transportului trebuie să prezinte eroarea.
 
-Testele cu ceas controlat au demonstrat o eroare înainte de corecție: un callback păstrat după interrupt putea trimite. Testul eșuează fără generație și trece cu ea. Sunt verificate și lipsa replay-ului, modificarea preferințelor și cazul în care mâna/contul se schimbă înainte de expirare. Aceste teste nu reprezintă încă un Auto Fold efectuat în aplicație.
+Testele cu ceas controlat au demonstrat o eroare înainte de corecție: un callback păstrat după interrupt putea trimite. Testul eșuează fără generație și trece cu ea. Sunt verificate și lipsa replay-ului, modificarea preferințelor și cazul în care mâna/contul se schimbă înainte de expirare. Aceste teste izolate nu sunt singure dovadă de Auto Fold în aplicație; verificarea browser de mai jos acoperă integrarea.
 
 ## Editor conectat și verificare în browser
 
@@ -61,3 +61,13 @@ Rush state expune numai identitatea contului deja autentificat. Comenzile UI pă
 Testul browser verifică169celule, dimensiunile44/4/620, cele15imagini decodate, Info, rata min/max prin pointer, pictarea a trei celule, protecția ultimei selecții, izolarea F1, Cancel, eroare localStorage/retry și schimbarea contului. Reload-ul și recuperarea dupăHTTP503 consumă snapshotul fără fold; numai o acțiune nouă a adversarului pornește noua decizie. Exact un POST automat este trimis cu contul corect. Un POST pentru alt cont este refuzat fără schimbarea fișierului poolului.
 
 După fold, utilizatorul temporar selectează Sit out pentru a opri rematch-ul automat al poolului; ceilalți cinci joacă până la showdown. Astfel se verifică payout-ul fără confundarea soldului liber cu chips deja așezate într-o mână nouă. Toate1200chips rămân în pool, foldatul nu primește potul, iar preferința dezactivată și plățile persistă după restart. Datele ownerului live nu sunt folosite de fixture.
+
+## Ancorare, mișcare și închiderea explicațiilor
+
+TableMenu3D setează AutoFoldView3D pe RIGHT_SIDE și y=viewPort.height−1112. TableSideMenu3D pornește x=1700 și ajunge la1700−720=980 în0,2secunde. Ease.easeOut este exact(t−1)³+1; curba CSS echivalentă are punctele(1/3,1),(2/3,1). Fundalul750 depășește cu30unități marginea scenei; containerul local720 taie acea margine, păstrând pozițiile interioare. La resize se păstrează alinierea dreapta/jos. Reduced motion sare peste deplasare.
+
+Nu inventăm o glisare de închidere: hide din clasa de bază are aceeași coordonată inițială și țintă, iar AutoFoldView3D elimină conținutul imediat după super.hide. Timpii reali de compoziție AIR rămân neobservați.
+
+Butonul Info nativ arată explicația la fiecare click, fără toggle; ReleaseOutSide o ascunde. În implementare, click în editor în afara explicației o închide fără a pierde draftul. Clickul pe explicație sau pe închidere o ascunde. Skinul complet NewGameInfoView, localizarea și măsurarea fonturilor AIR rămân de potrivit.
+
+Testul browser măsoară cinci poziții ale animației, inclusiv capetele și progresul cubic la25/50/75%, durata200ms, ancora720 și resize în850×650/1196×929. Verifică și preferința reduced motion și comportamentul repetării/închiderii Info. Este dovadă de contract static și execuție locală, nu comparație fizică frame cu frame cu AIR.
