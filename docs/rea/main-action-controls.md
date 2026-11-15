@@ -19,3 +19,7 @@ Rush retains its separately mounted quick-fold control. AoF retains its separate
 The isolated headless owner+five-computer browser test first failed on the prior DOM order F2,F1,F3. It now checks F1,F2,F3 and real keyboard Tab movement without a room-version change. Additional pointer checks compare the native hover/down images, pressed label offsets28/71 and text#999999; moving off the pressed button before releasing must cancel the action. Existing stage-coordinate/font checks, amount editing, full-hand independent payout, second hand, reconnect and cold restart remain regression gates for Hold’em and Omaha.
 
 The source export and test do not establish native seated placement relative to every window, AIR/browser glyph rasterization, or physical animation/speaker timing. Spin3/6-Max is now activated with explicit local owner rules and verified browser tournaments; see spin-six.md. Native effective configuration and NoDealing remain separate unverified/unimplemented boundaries.
+
+## Regresie Short Deck
+
+Testul de apăsare F2 folosește starea legală due a serverului: Call cu sumă are28/71la apăsare, Check fără sumă are34+14=48. Un run Short Deck a reprodus vechea presupunere fixă[28,71]; testul corectat a trecut fluxul complet cu cinci computere fără schimbarea desenării butoanelor.

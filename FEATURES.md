@@ -2,7 +2,11 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
-## Current released checkpoint — PR215
+## Verified release baseline — PR216
+
+PR216 merged as `53dbdcdd69cad8413cc33de8a0a161d58b22f639`, tested source `99a758863421afe023f644f411315957f1f67ddf`. Global cash pause/return includes existing Hold’em/PLO Rush sessions with atomic persistence and25exact-head checks; resumed hands retain1200chips per format, no implicit rebuy or future-session inheritance. Runtime121files/1,399,610bytes reuses art1330files; six owner files15,496bytes preserved. Short Deck follow-up below is a new candidate. Earlier notes are historical.
+
+## Released checkpoint — PR215
 
 PR215 merged as `7c545d980fcbbb94d825c0dbf414280aa2102dcb`, tested source `342e7abb21e2f5ccfbbc50abac058948136ec098`. Live runtime121files/1,397,738bytes; native Sit Out header icon/state/anchor verified with11exact-head checks. Six owner files/15,496bytes preserved, no live QA hands. Art1330files shares1329immutable prior resources, adding only817bytePNG and manifest storage. Earlier release/candidate notes are historical. New all-cash Rush work below is not yet released.
 
@@ -1357,3 +1361,7 @@ Automatic seat admission candidate:shared reservedSeats list now drives first-fr
 Cash Sit Out header candidate:active HeaderSitOutButton→TableWindowHeaderDetail→TableWindowMediator→TableMediator→SitOutMenuView traced by selective FFDec exports,distinct from legacySitOutButton3D. Nativecommon0317private817bytecrop/decodedRGBAverified;36×26header mask with sourcegray/white/hover/open/downstates replaces58×24text trigger. RED→GREEN full authenticatedcashmenu pointer/keyboard/pause/return/restart/503 journey;existinghistoryartunchanged. Full nativewindowheaderlayout/physicalpixels/audio/nextblindpolicy remain unverified.
 
 Global cash/Rush candidate:five new native command/manager exports distinguish cash vs all-games scope and support existing Rush cash inclusion. Shared atomic checkpoint extends pause/resume to existing funded Holdem/PLO Rush;private scope,local override,queued return only from paused,idempotence/rollback/restart,no hand/wallet mutation,zero-balance explicit rebuy,no future-session inheritance. RED→GREEN models and mixed header/settings/hotkey browser pass,including resumed Rush hands/payout1200per format. Tourney/Spin all-games,Short Deck,next-blind/private timers remain incomplete. See docs/rea/global-cash-rush.md.
+
+Short Deck cash pause candidate:source applicability confirmed against retainedGame51TableInfo/header/menu/global cash guards. Sharedcash eligibility addsShortDeck;independentRabbit guard prevents unverified feature exposure. RED→GREENthree-handante/button/no-card/128balance/next-deal return/status/global rollback/restart/30000wallet proof;five-computerpaused-host continuation; sourcecashmenu browser andShortDeckbotsfulltwohand144pot/720chipjourney PASS. Primary F2testnowuseslegalDue to distinguishnativeCheck48singlelabel vsCall28/71. Local2×configuredblindreturn ruleexplicit;nativephysicaltiming/operatorpolicyunverified. See docs/rea/shortdeck-sitout.md.
+
+Short Deck review:reproduced unsupported rabbitShown checkpoint accepted after cash expansion. Shared rabbitSupported retains prior verified formats for both request/view eligibility and checkpoint validation;negative restore testRED→GREEN. Previous candidate headQA is stale and must be repeated.

@@ -95,8 +95,9 @@ function step(room,action,target){
 }
 function timeCardEvent(room,automatic=false){return {type:'time-card-used',seat:room.hand.turn,street:room.hand.board.length,afterAction:room.hand.history.length,sequence:room.actionClock.cardsUsed-1,seconds:room.settings.freeTimeChipSecondsPerUnit,...(automatic?{automatic:true}:{})}}
 function expireClock(room,now){if(room.hand?.runoutPending)return;while(autoTimeCard(room,now)){room.hand.historyEvents??=[];room.hand.historyEvents.push(timeCardEvent(room,true));room.version++}if(now>=room.deadline)step(room,room.hand.variant==='aof'||options(room.hand).due?'fold':'check')}
-function cashSitOut(r){return !!r?.settings&&!r.tournament&&[undefined,'holdem','plo','plo5','plo6'].includes(r.settings.variant)}
-function rabbitEligible(r,me){const g=r?.hand,p=r?.players[me];return !!(cashSitOut(r)&&p&&g?.end&&[0,3,4].includes(g.board.length)&&g.hands[me]?.length&&g.hudSubjects?.[me]===noteSubject(p))}
+function cashSitOut(r){return !!r?.settings&&!r.tournament&&[undefined,'holdem','plo','plo5','plo6','shortdeck'].includes(r.settings.variant)}
+function rabbitSupported(r){return !!r?.settings&&!r.tournament&&[undefined,'holdem','plo','plo5','plo6'].includes(r.settings.variant)}
+function rabbitEligible(r,me){const g=r?.hand,p=r?.players[me];return !!(rabbitSupported(r)&&p&&g?.end&&[0,3,4].includes(g.board.length)&&g.hands[me]?.length&&g.hudSubjects?.[me]===noteSubject(p))}
 function hasHandBalance(r,i){return !!(r.hand&&r.players[i]&&(r.hand.hands[i].length||r.hand.sittingOut?.[i]&&r.hand.hudSubjects?.[i]===noteSubject(r.players[i])))}
 function cashBalance(r,i){
  if(!r.players[i])return 0;
@@ -678,7 +679,7 @@ rules=spinRules(rooms.get('local-spin-rules'));rooms.delete('local-spin-rules');
    }
    if(t?.walletSettled!==undefined&&!(t.walletSettled===false&&t.cancelRequested===true)&& (t.walletSettled!==true||!r.players.some(p=>p?.entryFunded)||!(t.cancelledAt||t.winner!==null&&Array.isArray(t.prizes))))throw Error('Invalid tournament wallet settlement');
   }
-  for(const r of rooms.values())if(r.hand?.rabbitShown!==undefined&&(!cashSitOut(r)||!r.hand.end||![0,3,4].includes(r.hand.board.length)||!Array.isArray(r.hand.rabbitShown)||r.hand.rabbitShown.length!==r.players.length||r.hand.rabbitShown.some((v,i)=>typeof v!=='boolean'||v&&!r.hand.hands[i]?.length)))throw Error('Invalid Rabbit reveal state');
+  for(const r of rooms.values())if(r.hand?.rabbitShown!==undefined&&(!rabbitSupported(r)||!r.hand.end||![0,3,4].includes(r.hand.board.length)||!Array.isArray(r.hand.rabbitShown)||r.hand.rabbitShown.length!==r.players.length||r.hand.rabbitShown.some((v,i)=>typeof v!=='boolean'||v&&!r.hand.hands[i]?.length)))throw Error('Invalid Rabbit reveal state');
   const notes=openNotes(file+'.notes.json');
   for(const r of rooms.values())if(r.actionVersion!==undefined&&(!Number.isSafeInteger(r.version)||!Number.isSafeInteger(r.actionVersion)||r.actionVersion<0||r.actionVersion>r.version))throw Error('Invalid action version');
   let migrated=false;for(const r of rooms.values())for(const p of r.players)if(p?.bot&&!p.noteId){p.noteId=randomBytes(16).toString('hex');migrated=true}

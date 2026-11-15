@@ -1,0 +1,30 @@
+{
+  "method": "Reuse matching retained selective FFDec sources; current SWF and TableInfo hashes match the prior Game51 applicability receipt. Static evidence only; no AIR/account execution.",
+  "sources": {
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/vo/TableInfo.as": "7d044be76dea95375f26aeccade14ebb8620afedec682b75e35596d578e51da6",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/component/TableMenu3D.as": "c4e04e9e22aaabb21c77b088ecc678250405b9c4ec2a53a699935f78e55b8853",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/component/SitOutMenuView.as": "af787b9e6c94bca8e5ebf46610697cc549a00c0dccd7333aae37dd257fc7131d",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/controller/GlobalSitoutCommand.as": "72d21dd055a873e5e8f0cbde8748dc0491c1053595cb491219aa1ee8d5a98683",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/stage/component/action/button/ActionButton.as": "d33865fae3f02fbf1185fb0876cb2f74c436577a5c1fc768f918a11e2c28fa0b",
+    "/Users/davidai/Sandbox/rea-tools/sitout-trigger-source/scripts/com/nsus/iron/components/display/button/window/HeaderSitOutButton.as": "707e93066c62ce894630388805928d0473f15b8557dd3db749d6b5b696867b38",
+    "/Users/davidai/Sandbox/rea-tools/sitout-trigger-source/scripts/com/nsus/iron/components/display/window/frame/header/TableWindowHeaderDetail.as": "ec18f6bb9541f037b7d61f16c1bcf7799ce627e4759dcdd7d3d43f41109169fa"
+  },
+  "nativeFindings": [
+    "TableInfo identifies SixPlusHoldem separately and uses buttonBlind for displayed stakes",
+    "Native header/menu and global cash guards do not exclude SixPlusHoldem",
+    "TableMenu3D explicitly recognizes SIX_PLUS_HOLDEM among cash chip-control games",
+    "ActionButton single-label y34 plus down14 gives48; label+amount y14/57 plus14 gives28/71"
+  ],
+  "localRules": [
+    "Existing36card ante+equal live button blind engine retained; exact native forced-bet allocation is not certified",
+    "Pause excludes the player from next-hand ante/button blind/deal while preserving their stack",
+    "Return is next-deal only; existing local minimum2times configured blind is not claimed as native Short Deck operator policy",
+    "Global supported cash scope includes Short Deck; Rabbit and other opt-in feature eligibility remain independently gated"
+  ],
+  "unknowns": [
+    "Native seated forced-bet/runtime timing and physical pixel/audio comparison",
+    "Native missed-blind/penalty/kick-out/operator-refill policy",
+    "Next-blind SB/BB trigger and other unimplemented formats"
+  ]
+}
