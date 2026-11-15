@@ -21,3 +21,7 @@ RED sitOutSupported lipsea, apoi RED Rabbit apărea neintenționat. GREEN verifi
 Browserul --cash-sitout --cash-sitout-account --cash-sitout-menu --shortdeck a trecut meniul, geometria la două dimensiuni, pointer/keyboard/Escape, state/restart/503retry, header/hotkeys/global scope/glyph-uri și Deal Me In; openingul8/4/4/4/4/4, lipsa ante-ului în pauză și payout-ul sunt verificate independent. Browserul --shortdeck --bots --hosted a trecut un jucător+cinci computere, două mâini, showdown, payout independent, reconectare și release.
 
 Testul generic de apăsare F2 presupunea Call cu sumă. Sursa ActionButton confirmă y34+14=48 pentru Check fără sumă, iar Call păstrează28/71. Aserțiunea folosește acum due din starea legală a serverului; nu s-a redesenat panoul pentru a satisface o presupunere greșită a testului. Existing Short Deck evaluator1404clase/sidepot și Rabbit/Hold’em/Rush au trecut regresiile. Candidatul nu este încă activat; paritatea fizică nativă și next-blind rămân incomplete.
+
+## Revizie de restaurare
+
+Revizia a reprodus un checkpoint Short Deck cu rabbitShown care era acceptat după lărgirea categoriei cash. rabbitSupported păstrează acum lista de formate Rabbit anterior verificate și este comun atât afișării/cererii, cât și validării la încărcare. RED missing-exception→GREEN; nici un câmp Rabbit Short Deck nu este acceptat implicit la restaurare. QA pentru primul commit de candidat este istoric și trebuie repetat pe noul head.
