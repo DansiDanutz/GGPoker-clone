@@ -1,0 +1,89 @@
+{
+  "method": "REA selective FFDec original SWF, internal PreviewPlayerInfo class, AccountType and exact decoded RGBA reused atlas image",
+  "swf": {
+    "path": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf",
+    "bytes": 41892370,
+    "sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1"
+  },
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/view/PreviewPlayerCell.as",
+      "sha256": "197f7337dd77c3b238f729fe54aef23092a7d34d585cb85c2905b298799a83d7"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/vo/AccountType.as",
+      "sha256": "cf192d2ea99a400790ae217f30e1e7a5c5e7bc9ba4c8bdccb33d2e101c979b82"
+    }
+  ],
+  "fontSources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/GlobalButton.as",
+      "sha256": "eb82ad01852703c14d475d837cb3ffe1785c7f1e624afb81b00caa980762f329"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/text/UniqueLabel.as",
+      "sha256": "ebf2dfc4abce2a7de077b31af397d056ceb526f52b132cc09610b9c1fc1e5803"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/asset/StageAssets.as",
+      "sha256": "e993e9ebfc32e1214162109e9af1eb3eef98e2cf6cbf6d7fb0ce1be4e3f0b0a3"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/Setting.as",
+      "sha256": "7711ac87c7729456e36920529ca5adc88529d50409c095833da862de50c8c854"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/tasks/InitFont.as",
+      "sha256": "d3831e2c3816f4adf93ed7d1bec21a55f47661bbe138da2eb66a471866df9465"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/LabelButton.as",
+      "sha256": "5e9cc08b2489e890d5684b9edb2b9b11e452d1ffdb991850f1edc0f83cade197"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/lib/components/Button.as",
+      "sha256": "005aff16f04b263bfd0550ea73d919275afba37703e4ae36a55dcdbcae62b107"
+    }
+  ],
+  "atlas": {
+    "files": [
+      {
+        "bytes": 3073,
+        "file": "native-tourney-preview-info.png",
+        "frame": "lobby_preview0030",
+        "height": 46,
+        "rgbaExact": true,
+        "sha256": "6f1ae33f01464eb414a5e2cabd08e5165da592492d3ad970f8eb5f8060d9794a",
+        "width": 64
+      }
+    ],
+    "method": "StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding",
+    "sources": {
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+    }
+  },
+  "nativeContract": [
+    "Info origin avatar center+(0,30);lobby_preview30 bitmap64x46 centered;local avatar center y25 means plate top32.",
+    "Name Roboto10 normal top14,own top13 bold italic orange#ff8932;normal AccountType resolves white#ffffff,not constructor gray#cccccc.",
+    "Balance Roboto10 top29,play-money#cccccc;actual Balance formatted by currency.",
+    "Private notes/country/heat HUD are separate original components,not encoded in the plate bitmap."
+  ],
+  "localMapping": [
+    "Reuse already installed native-tourney-preview-info.png;no new artwork or dependencies.",
+    "Only ordinary six-seat Holdem Table View changes;other variants and actual seat/HUD handlers retained.",
+    "Own identity exclusively from authenticated privatePaint metadata,not nickname comparison.",
+    "Actual practice stack locale grouped without literal chips suffix or operator dollars;normal local accounts have no operator partner/subscriber type.",
+    "Existing percentage seat anchors and12pxCSS linebox remain approximate;native parent and text raster still pending."
+  ],
+  "verification": [
+    "RED browser measured legacy60x30 instead of native64x46.",
+    "GREEN source browser checks64x46/top32/native image/Roboto10/peer white/playmoney gray/actual120/own orange bold italic top13;private HUD notes/admission/two hands/payout/reconnect passed. Exact-head installed release QA pending.",
+    "Full background rectangle touches a blind marker at its transparent edge;glyph-bound range check verifies no visible name/balance text is covered."
+  ],
+  "remaining": [
+    "Native parent viewport and clipping,exact textfield metrics/ellipsis versus autoSlice.",
+    "Private note markers on the table preview,actual country/HUD data and partner/subscription semantics.",
+    "Whole application fidelity and native animation/audio timing."
+  ]
+}

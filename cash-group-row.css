@@ -48,3 +48,9 @@
 #catalog.nativeCashOperator[data-mode=holdem][data-view=table] #preview .oval{padding:0;display:block;background:transparent url('/home-art/native-lobby-preview-holdem-table.png') left top/240.84px 379.08px no-repeat}
 #catalog.nativeCashOperator[data-mode=holdem][data-view=table] .nativePreviewBuyIn{position:absolute;left:0;top:175px;width:100%;color:#ebf5cd;font:12px/14px NativeGroupRow,Arial,sans-serif;text-align:center;white-space:nowrap;pointer-events:none}
 .nativePreviewBuyIn>span{display:block}
+
+/* PreviewPlayerCell info at avatar center+(0,30); native64x46 background centered. */
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #preview .previewPlate{top:32px;width:64px;height:46px;padding:0;border:0;border-radius:0;background:transparent url('/home-art/native-tourney-preview-info.png') left top/64px 46px no-repeat;font:10px/12px NativeGroupRow,Arial,sans-serif}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #preview .previewPlate .previewName{position:absolute;left:0;top:14px;width:64px;color:#fff;font:10px/12px NativeGroupRow,Arial,sans-serif}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #preview .previewPlate small{position:absolute;left:0;top:29px;width:64px;color:#ccc;font:10px/12px NativeGroupRow,Arial,sans-serif}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #preview .previewPlate[data-own=true] .previewName{top:13px;color:#ff8932;font-weight:700;font-style:italic}
