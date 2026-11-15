@@ -82,3 +82,10 @@ The base grouped rendered scenario passed. The test waits for observed popup val
 ## Pre-release review checkpoint
 
 Strict restore validation now rejects a non-boolean enabled permission (including the truthy string`yes`); its corruption assertion failed before the repair and passed afterward. Twelve targeted suites passed after this repair: manual/automatic/group removal, cash wallet rooms, owner seat removal, ordinary/global cash leave, sit-out, owner restore, MTT wallet, insured Spin entry and owner grants. Seven changed production/browser modules passed Node syntax checks. These are working-tree checks, not commit-bound PR release QA or a full application coverage measurement.
+
+
+## Native result/selector correction candidate
+
+Further retained source inspection found a concrete presentation mismatch after PR210. `UnifiedRemoveChipsPopup.buildResultViewModel` sets the AOFTableCashOut result to the slider value (the withdrawal), not balance minus withdrawal. `BuyInResultView` uses an18px title and22px total; the play-money total color is#999999. `RenewBalanceSelector` has separate minimum/maximum buttons, a selection row56px below the input and slider origin80px within that row. These are source-derived component facts, not proof of overall seated-screen placement. Hashes for five inspected components are recorded in `remove-chips-popup-source.json`.
+
+The candidate reuses existing result typography, displays the selected withdrawal amount and restores real Min/Max controls instead of stretching the range across their space. The rendered assertion reproduced absent Max before implementation. This does not establish total popup height, exact translated title, full native vertical layout, native compositor or sound parity.

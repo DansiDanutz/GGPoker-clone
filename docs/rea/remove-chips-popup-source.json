@@ -1,0 +1,30 @@
+{
+  "scope": "Retained selective static native source, no native seated runtime comparison",
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/control-contracts-source/scripts/com/nsus/iron/table/view/popup/buyin/UnifiedRemoveChipsPopup.as",
+      "bytes": 19915,
+      "sha256": "b17f01b950c76ffb01547b616241ff3152be2f310379c51ad609bfb18a3142e1"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/popup/buyin/BuyInPopupBase.as",
+      "bytes": 7875,
+      "sha256": "76e697396b3898b50703d45b1f5ca9e9ecfb2ff178829fec7c458e7db8f78635"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/popup/buyin/renew/RenewBalanceSelector.as",
+      "bytes": 12454,
+      "sha256": "8c87fa007269507a6cb63043ebb5b1726b0094258c92a8c4f01e90b0c095fee0"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/popup/buyin/result/BuyInResultView.as",
+      "bytes": 13512,
+      "sha256": "e07b624df13c6218759b4efb3bfe45d90cedb4b619aae740ead17b18879566ff"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/popup/buyin/NewBalanceDropDownList.as",
+      "bytes": 12680,
+      "sha256": "ce400ceae19196c844938c3f9df3558e5bf5c624a5fb397fa2ab790e75ecc0ee"
+    }
+  ]
+}
