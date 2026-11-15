@@ -1,0 +1,25 @@
+{
+  "scope": "Retained selective static native exports; no native GUI/account command or fresh export in this checkpoint",
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/control-contracts-source/scripts/com/nsus/iron/table/vo/TableInfo.as",
+      "sha256": "7d044be76dea95375f26aeccade14ebb8620afedec682b75e35596d578e51da6",
+      "bytes": 65400
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/control-contracts-source/scripts/com/nsus/iron/table/controller/AutoRemoveChipCommand.as",
+      "sha256": "bba391ea22f2a5d6cd3ace90419dc6641481657ce563090771ab8fe62d873e87",
+      "bytes": 1421
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/control-contracts-source/scripts/com/nsus/iron/table/controller/SetAofAutoRemoveChipOptionCommand.as",
+      "sha256": "21ab33973521d7f02e7e969fe24f3d15507752b1559ca0ab830465247951e684",
+      "bytes": 964
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/vo/GameType.as",
+      "sha256": "90f0a0862faf67d8f66904b9d0f6f57a9fa5ed7e6397778ca0e2189f3265c91d",
+      "bytes": 5598
+    }
+  ]
+}
