@@ -83,8 +83,10 @@
 #catalog[data-mode=holdem] #preview .previewName{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 #catalog[data-mode=holdem] #preview .previewPlate small{font:10px/12px Arial,sans-serif}
 #preview .previewPosition{position:absolute;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font:bold 11px Arial,sans-serif;color:#fff;pointer-events:none}
-#preview .blindPosition{background:radial-gradient(circle at 40% 30%,#43b4ff,#0065ef 65%);border:1px solid #004bd2;box-shadow:0 1px 2px #000}
-#preview .dealerPosition{background:url('/home-art/dealer-disc.png') center/contain no-repeat;color:transparent}
+#preview .previewPosition{border:0;box-shadow:none;border-radius:0;color:transparent;background:transparent center/100% 100% no-repeat}
+#preview .previewPosition[data-position=dealer]{width:20px;height:21px;background-image:url('/home-art/native-tourney-preview-dealer.png')}
+#preview .previewPosition[data-position=smallBlind]{width:24px;height:25px;background-image:url('/home-art/native-tourney-preview-small-blind.png')}
+#preview .previewPosition[data-position=bigBlind]{width:24px;height:25px;background-image:url('/home-art/native-tourney-preview-big-blind.png')}
 
 
 
