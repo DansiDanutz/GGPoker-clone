@@ -40,6 +40,66 @@
       "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/group/list/HoldemGroupViewItem.as",
       "bytes": 531,
       "sha256": "71e18ddc1e9cdc795da33a07a9a54aba0c5ed0f26c66daf7de003e5b13550ab4"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/renderer/HoldemPlayerCellRenderer.as",
+      "bytes": 941,
+      "sha256": "014397cca705922053a1930b85647ab3c71143ee2d58cda9d382e7b000fcf92e"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/group/list/LobbyPlayerCell.as",
+      "bytes": 4598,
+      "sha256": "61bf888621679dc991a317ffbf7846566d8f03fad1b0cd8dc8201d60930f6af2"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/group/list/LobbyPlayers.as",
+      "bytes": 4140,
+      "sha256": "dcf0715041c355c662c49dc51aa93a6250e3ae0e5c572bd7a1facfecb3a1b32a"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/LobbyDetailViewOperatorBase.as",
+      "bytes": 22173,
+      "sha256": "b0e51c932eecf8f78f02b8d834fedb351c671d5830262839ae0d659ecad1655d"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/LobbyDetailPage.as",
+      "bytes": 2009,
+      "sha256": "bdbfa8c1d033497477ecc9f880e12a27fa3b1e39f4adb8d4f8766c14bb2d6796"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/group/herder/ItemSliderHeader.as",
+      "bytes": 11198,
+      "sha256": "38d5f882fb73c59af2493c757e2e8122a0ef4d0712dbf0951bc2e9851f46c516"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/type/PreviewSliderItemType.as",
+      "bytes": 2098,
+      "sha256": "c287bc535ce07d5db13ea21b6317b7239cf10c8f6ee3f2ea9f3138cec7e3a50d"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/components/display/button/OpenRedButton.as",
+      "bytes": 354,
+      "sha256": "f4404dddc820e7a0f6feed06be9ff50ff653c6c4792cc5b03ea9a561d4bf3b52"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/components/display/button/ViewProfileButton.as",
+      "bytes": 376,
+      "sha256": "461a83655b761d0d6c833288d8f7b1e6b34c95cde66200a0a81889e1a310d56d"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/components/display/button/ViewJoinTableButton.as",
+      "bytes": 376,
+      "sha256": "0889d431a24847eca139f502ae666c963005cf5e705c544d126dc8978ca353bf"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/renderer/PlayerCellRenderer.as",
+      "bytes": 5498,
+      "sha256": "b8eb2dee7f3d534c9b547a0f21ffbac9055f71b6310105d4b9eeb6a9dec0314d"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/utils/MathUtil.as",
+      "bytes": 2778,
+      "sha256": "f36d307be809b61946288f0320e2e89f7f1d9e550dc6d36d5f1c5c2cce711989"
     }
   ],
   "observed": [
@@ -48,12 +108,83 @@
     "Ordinary HoldemGroupViewItem viewport240x28;rendererHoldemPlayerCellRenderer",
     "Row CLICK selects and updates operator;DOUBLE_CLICK calls viewProfile\u2192SmartHudPlayerData from actual GroupViewItemVo\u2192SHOW_SMART_HUD",
     "Selected guest operator OPEN;selected user VIEW_PROFILE+OPEN;unselected normal guest/user JOIN_TABLE unless actual waiting-state branch",
-    "OPEN dispatches actual selected GroupViewItemVo.tableId;not a synthetic seat or buy-in command"
+    "OPEN dispatches actual selected GroupViewItemVo.tableId;not a synthetic seat or buy-in command",
+    "MathUtil compareNumber/compareString default return -1 when first>second;sortOrder1 descending,0 ascending;new category retains direction;TABLE_NUMBER header not interactive",
+    "Header240x23 columns41/107/30/62;renderer237x28 cells41/104/30/60;Roboto12,line252526at27",
+    "Row selection common133;hover0x11ffffff;header242424/down333333/Roboto13color888888;sort frame lobby_preview34 nominal0.2rotation",
+    "Selected user operator ProfileDARK_GRAY/OpenRED,height38,gap10,width90percent;GlobalButtonRoboto18bold"
   ],
   "pending": [
-    "Recover actual renderer/cell/operator geometry and source assets before implementing",
-    "Determine sortOrder1 semantics from comparator;do not guess ascending/descending",
-    "Local public data has member room/seat/account name/chips;no country/operator table number;do not fabricate them",
-    "Existing Group preview is local Player/Seat/Chips projection;native player-list/footer not yet reconstructed"
+    "Final exact-head installed Profile/private note/Open/departure/manual/AutoBuyIn/six-session gate",
+    "Native physical parent/raster/operator slide/sort easing/sound not observed",
+    "Native country/operator-number/own/partner/note/live metadata and featured/private waiting policies incomplete"
+  ],
+  "fontSources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/GlobalButton.as",
+      "sha256": "eb82ad01852703c14d475d837cb3ffe1785c7f1e624afb81b00caa980762f329"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/text/UniqueLabel.as",
+      "sha256": "ebf2dfc4abce2a7de077b31af397d056ceb526f52b132cc09610b9c1fc1e5803"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/asset/StageAssets.as",
+      "sha256": "e993e9ebfc32e1214162109e9af1eb3eef98e2cf6cbf6d7fb0ce1be4e3f0b0a3"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/Setting.as",
+      "sha256": "7711ac87c7729456e36920529ca5adc88529d50409c095833da862de50c8c854"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/tasks/InitFont.as",
+      "sha256": "d3831e2c3816f4adf93ed7d1bec21a55f47661bbe138da2eb66a471866df9465"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/LabelButton.as",
+      "sha256": "5e9cc08b2489e890d5684b9edb2b9b11e452d1ffdb991850f1edc0f83cade197"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/lib/components/Button.as",
+      "sha256": "005aff16f04b263bfd0550ea73d919275afba37703e4ae36a55dcdbcae62b107"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/ButtonColor.as",
+      "sha256": "6102ebf3300a6933f077b5d5b2e7c061a5f11054139cea95417f9353daf0db7c"
+    }
+  ],
+  "atlas": {
+    "files": [
+      {
+        "bytes": 193,
+        "file": "native-cash-group-player-selected.png",
+        "frame": "common0133",
+        "height": 10,
+        "rgbaExact": true,
+        "sha256": "40cf57fb1cdbab6a3de6d5ebc9f5f2021e7420b2d04d145e8bb556516c70da40",
+        "width": 10
+      },
+      {
+        "bytes": 255,
+        "file": "native-cash-group-player-sort.png",
+        "frame": "lobby_preview0034",
+        "height": 4,
+        "rgbaExact": true,
+        "sha256": "8dd0218e5c9e67b4f40ae399cb9529548fbc1ccbdbbea6d03ecc3b5fdf309685",
+        "width": 8
+      }
+    ],
+    "method": "StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding",
+    "sources": {
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+    }
+  },
+  "localImplementation": [
+    "Flatten actual member room/seat/name/stack;keys distinguish duplicate names on different tables;no synthetic seats",
+    "Select/double-click/Profile reuse authenticated private HUD/notes/history;Open uses actual member table without join/autojoin intent",
+    "Group/view/departure clears selection;sort/poll preserves logical player;changed seat name rejects delayed HUD read",
+    "Country/operator number absent:unknown cells/unavailable headers/actual table-name tooltip;no fabricated flags or numbering",
+    "Local integer play chips/base nickname paint;native own/partner/stream/note paint incomplete"
   ]
 }
