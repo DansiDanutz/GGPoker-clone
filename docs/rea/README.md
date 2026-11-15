@@ -86,3 +86,5 @@ Testele browser cer Chrome și pachetul local de referință,folosesc date tempo
 - [Rabbit motion lifecycle](rabbit-motion.md): stale spread timer RED→GREEN,independent local peel evidence,early/late motion interruption and once-only cues; no inferred server sharing change.
 
 - [Automatic Get Chips on applied cash pause](automatic-get-chips.md): native first-transition/default threshold, existing dialog, no implicit debit and no reload replay.
+
+- [Cash lobby selected-table controls](cash-lobby-controls.md): source-backed Open/Join/Wait/Cancel and own-account queue integration.

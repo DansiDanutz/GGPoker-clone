@@ -1,0 +1,28 @@
+{
+  "method": "Fresh selective FFDec26.4.0 headless export; no AIR execution",
+  "swf_sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
+  "sources": {
+    "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/CashGameLobby.as": {
+      "sha256": "2c5b96c5cc4677de4d055ff8de9175816cf58a520ee8b066125b5d7f3139c2fc",
+      "bytes": 12521
+    },
+    "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/NormalCashGameLobby.as": {
+      "sha256": "5fb68ee3fb858b9fdc5fb47edb06c722a4cf8c698a58819851cfa6f69cc63ed1",
+      "bytes": 8899
+    },
+    "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/TablePreview.as": {
+      "sha256": "25c20c082c462be6f379074b964d480e9d331545cf4593ad20ac5bd2fcb25ad1",
+      "bytes": 10326
+    }
+  },
+  "nativeFindings": [
+    "TablePreview.onOperatorSignalHandler distinguishes OPEN_TABLE/JOIN_TABLE/WAIT_TABLE/WAIT_TABLE_CANCEL and checks login",
+    "draw shows OPEN+UN_JOIN when own waiting, OPEN+WAIT if full and queue below max, OPEN+JOIN_TABLE if nonfull, OPEN only for current player or queue cap/operator gates",
+    "CashGameLobby CHANGE_PREVIEW binds actual table ID and isUserWaiting; SELECT refreshes group preview"
+  ],
+  "limits": [
+    "No AIR execution or new same-size physical screenshot",
+    "VIP/featured/regional/junket policies not mapped to ordinary local tables",
+    "Local backend FIFO maximum100 preserved; regular lobby UI maximum equals seats per native draw"
+  ]
+}
