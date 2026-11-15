@@ -2,6 +2,10 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
+## Current released checkpoint — PR213
+
+PR213 merged as `97ce1ac471fcc01db5f57119292e525c46b4d57d`; exact tested source `4973b65a7ab43afb0177cd859e4dff70e52c8f01`. Live runtime `push-seat-4973b65`:121files/1,396,199bytes, private art1329files/208,848,660bytes.28exact-head checks passed, including three-account Push Seat and one-human/five-computer journeys in both source and restricted installed runtime. Six owner files/15,496bytes remained identical on activation. Push Seat is opt-in for hosted Hold’em/PLO4/5/6; rotation, pending reservation protection, private identity, payout barrier, Ready and restart are tested. Native physical rendering/audio, entitlement earning, arbitration and blind compensation are not certified; local policies are explicit. Earlier candidate notes below are historical, not current release status. See [Push Seat](docs/rea/push-seat.md).
+
 ## Released MTT checkpoint — PR205
 
 PR205 merged as `30ab81e45a4ff8667f3cdcd9d50f4c62c3bcbf16`; tested source `e5cc06f35e7c747ba0dc054e70e2a21652b1bc6f`. Installed runtime `mtt-release-e5cc06f`:116 files/1,353,687 bytes, 1,323 existing art files, six owner files/15,496 bytes preserved. Forty exact-head checks cover 37 automated commands, installed 12-browser pause-to-winner, syntax/package and native source hashes and focused review. Earlier candidate notes below are historical checkpoints, not the current release status. Full native parity remains incomplete; see `docs/rea/multi-table-tournaments.md`.
@@ -1341,3 +1345,7 @@ Push Seat native-notice policy correction (unreleased): targetedEN recovery+Noti
 Push Seat UI candidate (not live): native selector/info PNGs and exact source1400ms cubic arrow frames; own/reserved seats omitted, occupied/empty targets, Escape/cancel, pending/applied notices with actor/native translation parameters, payout-safe seat refresh, Ready after move. Full headless three-account owner→Home/list→buyin→reserve live→payout→CCW0→2→restart→Ready→second private hand→cashout PASS,30000wallet conservation. Separate one human+5bots two-hand regression PASS. Native rendered pixel comparison/physical timing and release QA outstanding.
 
 Push Seat review: native viewport-origin targets/title midpoint and both scale9 backgrounds corrected; dim click closes. Explicit local reservation safety blocks the full pending rotation interval from new seats and rejects paths crossing existing offers. RED→GREEN planner/join protection. Headless --push-seat passes measured target center186/768, headingheight/3.5, info680×208 alongside full two-hand/restart/cashout flow. Pixel-perfect AIR rendering/audio remains unverified.
+
+Push Seat follow-up candidate:source-backed bottom-row entry62×62 atx29+visibleShuffle70,yheight−90 replaces header button; pending entitlement hides entry, separate footer cancel retained. Native3sourcehash receipt,resize/scroll/visibility repositioning; RED→GREENgeometry andshufflevisibility toggles,livecancel/re-reserve/fulltwohands/restart/cashout browser PASS. Not installed; current livePR213 remains unchanged.
+
+Automatic seat admission candidate:shared reservedSeats list now drives first-free selection, so a pending Push Seat interval is skipped rather than incorrectly refusing entry while other seats remain. New RED→GREEN test covers4/5admission,explicit blocked seat/no debit,restart,full denial,cancel restoration,committed-blind conservation and waiting-seat once-only cashout. Waiting/buy-in/position/sparse-cash/PushSeat model regressions PASS. Not released.

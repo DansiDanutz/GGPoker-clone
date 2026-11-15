@@ -1,0 +1,38 @@
+{
+  "evidence": "Static FFDec exported native client sources; no native account or GUI actions",
+  "sources": {
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/component/TableMenu3D.as": "c4e04e9e22aaabb21c77b088ecc678250405b9c4ec2a53a699935f78e55b8853",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/component/tablemenu/TableEtcMenu3D.as": "f4fc0c68fd210e7916964628be89e6f28f3b04a68152e44e3827549f2a6e4c39",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/component/tablemenu/SideGameGroupView3D.as": "73afd558399bfd2d34da88efa72e647fa89cd875c40c7d1c374f3de2c930eab6"
+  },
+  "native": {
+    "bottomRowY": "viewport.height - 90",
+    "sideGameGroupX": 9,
+    "hiddenSideGameIconLeft": 20,
+    "visibleSideGameWidth": 82,
+    "slotWidth": 62,
+    "slotHeight": 62,
+    "slotGap": 8,
+    "fitIcon": "min(slotWidth / bitmap.width, slotHeight / bitmap.height, 1)",
+    "order": [
+      "chipShuffle",
+      "straddle",
+      "autoFold",
+      "finalTableBetting",
+      "deal",
+      "pushSeat",
+      "splashEgg",
+      "splashCigar",
+      "splashWater",
+      "splashPunch",
+      "promotion"
+    ],
+    "panicKickOutYOffset": 119
+  },
+  "localBranch": "Funded six-seat cash with no side-game group, spectator chat, Straddle, Rush Auto Fold, final-table bet or deal controls: x29 plus70 only when Chip Shuffle is visible; yheight-90. Separate local Cancel Push Seat action in footer.",
+  "unknowns": [
+    "Native physical pixel/font/compositor equality",
+    "Unimplemented menu slots and panic-kick-out branch",
+    "Private entitlement and operator policy"
+  ]
+}

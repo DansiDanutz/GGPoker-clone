@@ -1,6 +1,14 @@
 # Push Seat — contract recuperat
 
-Analiză statică a SWF-ului instalat, prin export FFDec selectiv în fluxul REA. Nu au fost trimise comenzi contului real. Hashurile surselor sunt în push-seat-source.json. Această fișă nu declară funcția implementată local.
+Analiză statică a SWF-ului instalat, prin export FFDec selectiv în fluxul REA. Nu au fost trimise comenzi contului real. Hashurile surselor sunt în push-seat-source.json. Secțiunile de contract descriu observațiile statice; checkpointul de mai jos descrie implementarea locală publicată.
+
+## Implementare locală publicată — PR213
+
+[PR213](https://github.com/DansiDanutz/GGPoker-clone/pull/213), sursa `4973b65a7ab43afb0177cd859e4dff70e52c8f01`, este integrat și activ local. Ownerul setează fereastra Push Seat la1–1000mâini pentru o masă cash Hold’em/PLO4/5/6;0omite funcția. Grantul este o politică locală per ocupare a locului, nu un item nativ câștigat. Jucătorul deschide Push Seat, selectează alt loc, așteaptă plata mâinii și apoi confirmă Ready în noua poziție. Anularea este disponibilă înaintea aplicării; aceeași cerere poate fi repetată fără consum dublu. O utilizare în așteptare/aplicată pe masă/mână; conturile, sesiunea, finanțarea, ready și istoricul urmează persoana. Locurile din traseul programat nu primesc oferte noi de buy-in, iar ofertele deja existente blochează traseul.
+
+28verificări pe commitul exact includ planificatorul, auth/Origin/JSON, concurența, rollback, funding/Remove Chips și Ready, plus fluxurile browser în sursă și în pachetul instalat restricționat. Trei sesiuni au trecut owner→Home→listă→buy-in→rezervare→payout→rotație→restart→Ready→a doua mână→cashout, cu30.000credite conservate. Jocul cu cinci computere a trecut două mâini/720chips și reconectare. Coordonatele selectorului, centrul titlului, panoul680×208 și cadrele săgeții1400ms sunt măsurate. Resursele au hashuri în push-seat-art.json.
+
+Nu sunt confirmate pixelii/fonturile AIR, timingul fizic/sunetul, politica serverului privat sau poziționarea identică a intrării în meniul nativ; intrarea locală este în toolbar. Notele de candidat/nepublicat de mai jos păstrează ordinea descoperirilor și sunt istorice. La activare, toate cele șase fișiere owner au rămas identice; testele folosesc date temporare.
 
 ## Acces și selecție
 
@@ -107,3 +115,13 @@ Testul headless `node network-browser-test.mjs --push-seat` a trecut: owner opt-
 Sursa PushSeatsView desenează numai dim-ul de la y30; containerul și țintele rămân la originea viewportului. CSS a fost corectat să nu deplaseze țintele cu30px, iar titlul este centrat vertical în jurul height/3.5. Ambele fundaluri informative folosesc scale9 cu margini10, nu întinderea uniformă a panoului lateral. Clickul pe dim închide selectorul conform onDimClick.
 
 Protecție locală explicită: rotația nu traversează un loc pentru care există deja o ofertă de buy-in, iar pe intervalul unei cereri în așteptare nu se acordă oferte noi. Altfel un jucător ar putea confirma un loc pe care rotația tocmai l-ar ocupa. RED în planificator și join pe un loc intermediar, apoi GREEN; nu se pretinde recuperarea acestei politici din serverul privat. Intervalul verifică limitele înainte de iterare pentru a nu bloca încărcarea unui checkpoint corupt.
+
+## Candidat ulterior PR213 — rândul nativ al iconului
+
+Revizia TableMenu3D/TableEtcMenu3D/SideGameGroupView3D a confirmat y=viewport.height−90, baza x9+20 când grupul side-game este ascuns, slot62×62 și spațiu8. Bitmapul70×70 este redus la62×62. În cash-ul local fără celelalte sloturi, Push Seat este la x29 sau99 dacă Chip Shuffle este vizibil. Rândul nativ conține și Straddle/Auto Fold/final bet/deal în condițiile lor; nu se pretinde implementarea acestor sloturi prin poziționarea actuală. Sursele/hashurile și ramurile neimplementate sunt în table-etc-menu-source.json.
+
+Candidatul mută controlul din header în rândul mesei, urmărește resize/scroll și vizibilitatea Chip Shuffle, ascunde iconul când rezervarea consumă dreptul și păstrează Cancel Push Seat separat în footer ca facilitate locală. RED pentru headerul greșit și repoziționarea lipsă după schimbarea preferinței, apoi GREEN: măsurători62×62/x29↔99/y90, ascundere după rezervare, Cancel/re-reserve și întregul flux de două mâini/restart/30.000credite. Aceste schimbări ulterioare nu sunt încă activate live; PR213 rămâne versiunea instalată.
+
+## Corecție candidat — alegerea automată a locului
+
+Selecția implicită din rooms.mjs consulta numai rezervările obișnuite și se putea opri la primul loc din intervalul Push Seat, deși existau alte locuri libere. Folosește acum aceeași listă reservedSeats ca ofertele și vederea publică. Testul push-seat-join-test.mjs reproduce refuzul incorect, apoi verifică alegerea locurilor4și5 în timp ce2și3 sunt protejate, refuzul explicit fără debit, restart, capacitate epuizată, eliberarea la anulare și cashout o singură dată pentru noii jucători încă nedealți. Conservarea include atât soldurile disponibile la masă, cât și blindurile deja comise. Este o regulă a serverului local; nu se atribuie algoritmului privat nativ.

@@ -379,7 +379,7 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
     if(body.buyIn!==undefined&&(!table||r.tournament))fail(400,'Custom buy-in requires a hosted cash table');
     if(table&&!r.tournament&&(!Number.isSafeInteger(selectedBuyIn)||selectedBuyIn<(table.minBuyIn??table.stack)||selectedBuyIn>(table.maxBuyIn??table.stack)))fail(400,'Buy-in is outside table limits');
     const name=body.name?.trim?.();if(!name||name.length>24)fail(400,'Enter a name (1–24 characters)');
-    me=body.seat??r.players.findIndex((p,i)=>!p&&!r.reservations?.some(r=>r.seat===i));if(me<0)fail(409,'Room is full');
+    me=body.seat??r.players.findIndex((p,i)=>!p&&!reservedSeats(r).includes(i));if(me<0)fail(409,'Room is full');
     if(r.players[me]||reservedPushSeats(r).includes(me)||r.reservations?.some(p=>p.seat===me&&p.account!==account))fail(409,'Seat is occupied or reserved');
     if(ownReservation)r.reservations=r.reservations.filter(p=>p!==ownReservation);
     if(r.waiting?.some(p=>p.account===account))r.waiting=r.waiting.filter(p=>p.account!==account);
