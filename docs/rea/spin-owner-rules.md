@@ -1,5 +1,14 @@
 # Spin — reguli explicite de practică în consola owner
 
+## Stare curentă — PR203
+
+Editorul owner separă formatele3-Max/6-Max pentru fiecare miză locală5000/10000. Pentru6-Max cere distribuția completă per multiplicator:frecvențe însumând100M,procente de premii1–6poziții însumând100,stackuri/carduri,intervale/clock și scară explicită de small-blinds. Asigurarea configurabilă declanșeazăX2la3-Max șiX4la6-Max. Câmpurile neconfigurate sunt goale. Nu sunt presupuse probabilități sau reguli private native.
+
+Persistența acceptă în continuareversion1; prima configurație6promovează laver2,cu maximum4seturi independente (miză,locuri),audit100,ceas verificat identic cu configurația finanțată și recuperare atomică. Salvarea regulilor nu finanțează banca și nu debitează jucători. Înscrierea/masa/premiile/restartul sunt conectate și testate;vezi [fișa6-Max](spin-six.md).
+
+Secțiunile de mai jos păstrează checkpointul inițial3-Max. Afirmațiile despre version1exclusiv sau funcții încă neconectate sunt istorice și sunt înlocuite de starea curentă de mai sus. NoDealing și backendul privat al operatorului rămân neimplementate/neobservate.
+
+
 ## Scop și limită
 
 Configurația efectivă nativă per multiplicator rămâne neconfirmată. Această funcție salvează numai reguli declarate local-practice; nu transformă300fise sau15secunde/card în valori native recuperate. Nu activează încă Play Now,matchmakingul sau roata. Banca și portofelele nu se modifică la salvare.

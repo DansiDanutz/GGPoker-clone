@@ -1,6 +1,15 @@
 # Spin player registration — local practice
 
-Current release: PR119 includes the playable local queue,table and native-source wheel with persistent predeal completion. See [current Spin presentation status](spin-wheel-presentation.md#current-release--pr119). Earlier informational-only/disabled/not-rendered statements below are historical checkpoints. Native effective configuration,insurance and physical runtime parity remain open.
+## Current release — PR203
+
+The local queue supports explicit3-Max and6-Max formats. `GET /local/spin?seats=6` discovers six-seat rules; omitted seats retain3-Max. POST includes optional `seats:6`, bound to the operation identity along with account/stake/revision/insurance. The final required entry (third or sixth) atomically funds, draws, awards optionalX2/X4insurance and creates the matching table. All registered accounts must join and finish the presentation before the first deal. Waiting-entry cancellation/refund and private token recovery remain supported.
+
+Owner rules, rendered6-Max lobby/editor, six-session tournaments, native eight-segment wheel, four-to-six-prize congratulations, independent payouts and restart are verified throughPR202/203. Other explicit outcome counts use a labelled local draw confirmation. See [six-seat implementation/evidence](spin-six.md). Native operator odds, NoDealing and exact physical layout/audio timing remain unverified.
+
+The sections below retain the original3-Max implementation checkpoint. Statements that insurance/wheel are unavailable or matching always needs three players are historical, superseded by the current status above.
+
+
+Historical release checkpoint: PR119 includes the playable local queue,table and native-source wheel with persistent predeal completion. See [current Spin presentation status](spin-wheel-presentation.md#current-release--pr119). Earlier informational-only/disabled/not-rendered statements below are historical checkpoints. Native effective configuration,insurance and physical runtime parity remain open.
 
 The native Spin lobby evidence retains the two play-money stakes, 3-Max selection, quantity 1–4 and separate insurance control. Native registration and wheel evidence is catalogued in `spin-registration-runtime.md` and `spin-configuratie-nativa.md`. This implementation adds local account-backed registration; it does not establish pixel parity for the new queue/status controls or implement insurance or wheel presentation.
 
