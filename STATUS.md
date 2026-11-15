@@ -4,13 +4,13 @@ This project is a local play-money application under active development. It is n
 
 ## Current verified release
 
-PR264 merged `8b49cac367e82e80a34aabe05160d3939ef2c69a`; tested source `7a64a4770baa9ba1cfce8e1bd97c4b5b37832e16`.
+PR266 merged `480b5aefdfdf4e3a7144fff71f44c872c54db273`; tested source `12e1c62b87872ae7ad690e3147f172ea9851b021`.
 
-Ordinary six-seat Hold’em preview now uses the original source seat indices and exact coordinate points at scale1.08. Dealer/blind images use source top-left points and the dealer pre-scale(2,2) offset. A heads-up dealer/SB player has one dealer marker,while real blinds remain posted. All13 exact-head checks/reviews passed,including actual sparse seats2/5 and240-chip fold settlement,all six origins,three marker origins,private HUD/seat admission,two six-player hands,independent payouts,cold restart/reconnect and isolated1200×963 visual review. No native relaunch.
+The ordinary Hold’em Table View parent is calibrated to the original1200×963 native reference and recovered source dimensions. Actual preview is approximately(843.985,185)/241×376;Open(856.032,571)/216.891×38;Wait y619. The existing list/counter geometry is unchanged. All14 exact-head checks/reviews passed,including source/capture/runtime/art identities,1200parent/header/control geometry,900×700 proportional resize/restore,real HUD/admission/sparse heads-up,Group/Table/Wait/Cancel/buy-in replay,two hands,independent payouts,cold restart and cross-room conservation. No native relaunch.
 
-Runtime130files1,483,974bytes;all1,365existing art files reused,no added artwork. Guarded idle rollout PID35939→99093 preserved all six owner files(15,496bytes) byte-for-byte. Backup `/Users/davidai/.local/state/playgg-rollouts/pr264-yk26x0gm`. No live gameplay writes. Parent/outer-raster/textfield/country/heat/private-note/operator/full-app timing parity remains incomplete.
+Runtime130files1,485,462bytes;existing1,365art files reused,no added art bytes. Guarded idle rollout PID99093→22223 preserved all six owner files(15,496bytes) byte-for-byte. Backup `/Users/davidai/.local/state/playgg-rollouts/pr266-i67elkw8`. No live gameplay writes. Group parent/native tab art,font/color-profile/full-app timing fidelity remain incomplete.
 
-[Source identities and remaining gaps](docs/rea/cash-preview-seat.md).
+[Calibration and remaining gaps](docs/rea/cash-preview-parent.md).
 
 ## Native reference checkpoint
 
