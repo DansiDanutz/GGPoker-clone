@@ -4,7 +4,7 @@ This project is a local play-money application under active development. It is n
 
 ## Current verified release
 
-PR251 adds native-derived comparable Hold’em Group ordering and ArrowUp/Down/Enter/double-click actions. All10exact-head checks passed, including confirmation without debit, two hands, payouts and restart. Runtime130files1,476,293bytes;art1362unchanged;all6ownerfiles15,496bytes preserved. [Evidence and limits](docs/rea/cash-group-order.md). Previous PR249 account/private-note paint remains installed. Full1:1 reconstruction remains incomplete.
+PR253 adds native-derived Hold’em Table View rule/player-count ordering and arrow/Enter/double-click actions. Actual room opens as spectator without seat token, reservation or debit. All10exact-head checks passed, including Group/manual Join, two hands, payouts and restart/reconnect. Runtime130files1,476,593bytes;art1362unchanged;all6ownerfiles15,496bytes preserved. [Evidence and limits](docs/rea/cash-table-order.md). Group actions/private paint remain installed. Full1:1 reconstruction remains incomplete.
 
 ## Implemented workflows
 

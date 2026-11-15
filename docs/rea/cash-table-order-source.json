@@ -39,10 +39,17 @@
     "Arrows reuse current row selection/focus/preview; Enter/double click opens actual r.href without join/autojoin intent; no new purchase or reservation"
   ],
   "verification": [
-    "RED missing cashTableCatalog export then GREEN rule/occupancy/stable-tie/no-aggregation/no-mutation assertions"
+    "RED missing cashTableCatalog export then GREEN rule/occupancy/stable-tie/no-aggregation/no-mutation assertions",
+    "PR253 all10 exact-head checks PASS; installed real Table/Group keyboard/pointer, spectator no seat/token/debit, two hands/payout/restart/manual Join/HUD and unchanged owner data"
   ],
   "remaining": [
-    "Full browser/current-head validation and release pending",
-    "Physical same-size native AIR raster/animation/audio timing/operator metadata/full-app parity unverified"
-  ]
+    "Native operator/timed/featured/private/currency/index metadata unavailable;not invented",
+    "Physical same-size native AIR raster/animation/audio timing/full-app parity unverified"
+  ],
+  "release": {
+    "pr": 253,
+    "testedSha": "9616b88c5d5b6113f036135747554a104b8c5c7a",
+    "mergeCommit": "9adadd12205797c7157a4865859ee27a779c35f4",
+    "ownerDataUnchanged": true
+  }
 }
