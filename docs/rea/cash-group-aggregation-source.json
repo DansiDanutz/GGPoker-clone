@@ -1,0 +1,42 @@
+{
+  "method": "REA selective headless FFDec;not AIR runtime/private-server observation",
+  "swf": {
+    "path": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf",
+    "bytes": 41892370,
+    "sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1"
+  },
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/view/lobby/groupview/TableGroup.as",
+      "bytes": 18363,
+      "sha256": "49a4d58f19e300b8db124082fd87447b74dae7e99fa9f92a9c15458479d52a5e"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/vo/TableGroups.as",
+      "bytes": 12106,
+      "sha256": "76708b23a740344b60a18dbc7b6d90c4e1961a8da7002c8dc83006f599fd3761"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/renderer/TableGroupCellRenderer.as",
+      "bytes": 8382,
+      "sha256": "fd90cd1aebc3ee43337bb2878af65fa79ff15ae4c87714e68e79923583be13a6"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/TableGroupList.as",
+      "bytes": 2245,
+      "sha256": "b80dd2656e0c3448f0788976829e4afbfcfa1691c329300f4ee6d16ebf2863e4"
+    }
+  ],
+  "observed": [
+    "TableGroups.addTable groups by TableInfo.tableTypeID,not by individual table ID",
+    "TableGroup.addTable retains tableType and gameType;id equals tableTypeID",
+    "Group playerLength sums Tables.playerLength plus featured subgroups;playingPlayerLength and tableLength are separate",
+    "Renderer uses playerLength normally,playingPlayerLength for featured;maxPlayers and defaultBuyIn from table type",
+    "Featured aggregation is conditional useOneFeaturedTab and uses synthetic id -1;not universal"
+  ],
+  "pending": [
+    "Recover Tables.playerLength semantics before deciding inclusion of seated/sitting-out/reserved players",
+    "Local host has normalized rule fingerprints,not native operator tableTypeID;mapping must remain an explicit local policy",
+    "Actual Group list merge/selection/polling/sort/preview/Join integration and regression remain to implement"
+  ]
+}
