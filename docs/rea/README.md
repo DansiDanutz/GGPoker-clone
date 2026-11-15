@@ -90,3 +90,5 @@ Testele browser cer Chrome și pachetul local de referință,folosesc date tempo
 - [Cash lobby selected-table controls](cash-lobby-controls.md): source-backed Open/Join/Wait/Cancel and own-account queue integration.
 
 - [Selected-table native button skins](lobby-button-skins.md): actual GlobalButton art, font initialization and pointer states.
+
+- [Manual selected-table Join confirmation](lobby-join-confirmation.md): actual HomeMediator/ReserveSeat3104/CheckTakeSeat chain and explicit local purchase.

@@ -1403,3 +1403,5 @@ Automatic Get Chips live PR225: native OnSitOut4009 first own low-stack cash tra
 Cash lobby controls live PR227: native TablePreview Open/Join/Wait/Cancel gating uses existing own-account FIFO and private status; no public waiting identities or debit. Real pointer/FIFO/queue-cap/503/restart/explicit offered buy-in/full next-hand payout passed in source and installed runtime; Auto Buy-In startup ordering also corrected. [REA evidence](docs/rea/cash-lobby-controls.md).
 
 Selected-table button skins live PR229: source GlobalButton red/gray PNGs,shadow,nine-slice,Latin font19,height37,hover/down/disabled states reuse existing art. Eight exact-head checks passed, including source/installed pointer states, queue/payout and five-computer journeys; [REA contract](docs/rea/lobby-button-skins.md).
+
+Manual selected-table Join candidate: native reserve-on-open intent now reaches existing buy-in confirmation with Auto Buy-In off; Open remains spectator and Group View unchanged. Escape/no debit,one reservation,one explicit120purchase,URL cleanup and two-hand720/reconnect source/installed gate pending. [REA evidence](docs/rea/lobby-join-confirmation.md).
