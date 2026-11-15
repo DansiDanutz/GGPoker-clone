@@ -8,7 +8,9 @@
     "com/nsus/iron/table/view/component/tablemenu/autofold/AutoFoldContents.as": "50ca1fe0e7676c957976ec1234a1e7f6d7c32e2e27adeb1b61d78a4cd2a9d213",
     "com/nsus/iron/table/view/component/tablemenu/autofold/AutoFoldView3D.as": "13075c344d7640db89e281f977a87136183a178fed8f48cd07db3df811d05e8e",
     "com/nsus/iron/table/services/callback/OnAskAction.as": "0e9fa3babc13849f2ecde3e6ee79d906c9ee08282e79920660a8abc841d76c10",
-    "com/nsus/iron/table/services/callback/OnHoleCards.as": "45cd9d8f459aba7b015801376b8939bfa22dc877ba8bfda1f70708f269ec5175"
+    "com/nsus/iron/table/services/callback/OnHoleCards.as": "45cd9d8f459aba7b015801376b8939bfa22dc877ba8bfda1f70708f269ec5175",
+    "com/nsus/iron/table/view/component/tablemenu/autofold/AutoFoldRangeTable.as": "947a7f9324bc3df6c0c43d49267fd5bcd4cc22002c7f94f129068a46f6d8f3dc",
+    "com/nsus/iron/table/view/component/tablemenu/autofold/AutoFoldRangeItem.as": "1504a0fb7581dd53f1c6f9c84cf7455a92ecbcb972c440d6befb281962fd90bb"
   },
   "items": [
     {
@@ -1091,5 +1093,32 @@
   "defaultButton": true,
   "defaultBlinds": true,
   "defaultRate": 50,
-  "delaySeconds": 1
+  "delaySeconds": 1,
+  "matrix": {
+    "rows": 13,
+    "columns": 13,
+    "cell": [
+      44,
+      44
+    ],
+    "pitch": 48,
+    "extent": [
+      620,
+      620
+    ],
+    "cellEllipseDiameter": 4,
+    "unselectedColor": "#019813",
+    "selectedColor": "#404040",
+    "crossColor": "#626262",
+    "crossWidth": 4,
+    "fontSize": 26,
+    "labelSelected": "#cccccc",
+    "labelUnselected": "#ffffff",
+    "minimumSelected": 1,
+    "additionGuard": "floor(selectedItemRate) >= 96 before adding",
+    "rateThresholdRange": [
+      1,
+      95
+    ]
+  }
 }
