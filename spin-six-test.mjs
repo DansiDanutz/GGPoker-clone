@@ -1,0 +1,25 @@
+import assert from 'node:assert/strict';
+import {spinSixConfiguration,spinSixOutcome,spinSixBlindLevel} from './engine/spin-six.mjs';
+import {startHand,act,options} from './engine/table.mjs';
+import {rank5} from './engine/hand.mjs';
+const configuration={mode:'local-practice',seats:6,buyIn:101,smallBlinds:[5,10,20,50],clock:{actionSeconds:12,freeTimeChipSecondsPerUnit:15,maxTimeChipsPerAction:1},outcomes:[
+ {multiplier:12,frequency:25000000,prizeShares:[50,30,20],startingChips:300,timeBankCards:2,noDealing:false,unit:'hands',interval:10},
+ {multiplier:4,frequency:75000000,prizeShares:[100],startingChips:300,timeBankCards:1,noDealing:false,unit:'minutes',interval:1}
+]};
+const original=structuredClone(configuration),change=fn=>{const c=structuredClone(configuration);fn(c);return c};
+assert.deepEqual(spinSixConfiguration(configuration),configuration);
+for(const c of [null,[],{},change(c=>c.seats=3),change(c=>c.buyIn=1.5),change(c=>c.extra=true),change(c=>delete c.clock),change(c=>c.clock=Object.create(c.clock)),change(c=>c.smallBlinds=[5,5]),change(c=>c.smallBlinds=[10,5]),change(c=>c.smallBlinds=[5,,20]),change(c=>c.smallBlinds=[Number.MAX_SAFE_INTEGER]),change(c=>c.outcomes=[]),change(c=>c.outcomes[1].frequency--),change(c=>c.outcomes[1].multiplier=12),change(c=>c.outcomes[0].multiplier=Number.MAX_SAFE_INTEGER),change(c=>c.outcomes[0].prizeShares=[50,30]),change(c=>c.outcomes[0].prizeShares=[100,,]),change(c=>c.outcomes[0].prizeShares=[20,20,20,10,10,10,10]),change(c=>c.outcomes[0].noDealing=true),change(c=>c.outcomes[0].interval=.5),change(c=>c.outcomes[0].unit='seconds'),change(c=>c.outcomes[1].timeBankCards=0),change(c=>c.clock.maxTimeChipsPerAction=2)])assert.throws(()=>spinSixConfiguration(c),e=>e.status===400);
+for(const [ticket,multiplier]of [[0,12],[24999999,12],[25000000,4],[99999999,4]]){const row=spinSixOutcome(configuration,ticket);assert.equal(row.seats,6);assert.equal(row.multiplier,multiplier);assert.equal(row.prizes.length,6);assert.equal(row.prizes.reduce((a,b)=>a+b),row.prizePool);assert.equal(row.prizePool,101*multiplier);assert.equal(row.startingChips,300);assert.equal(row.noDealing,false)}
+assert.deepEqual(spinSixOutcome(configuration,0).prizes,[606,364,242,0,0,0]);
+assert.deepEqual(spinSixOutcome(configuration,99999999).prizes,[404,0,0,0,0,0]);
+for(const ticket of [-1,100000000,.5,'0',null])assert.throws(()=>spinSixOutcome(configuration,ticket),RangeError);
+for(const [multiplier,clock,level]of [[12,{startedAt:1000,now:1000,completedHands:9},1],[12,{startedAt:1000,now:1000,completedHands:10},2],[4,{startedAt:1000,now:60999,completedHands:100},1],[4,{startedAt:1000,now:61000,completedHands:0},2],[4,{startedAt:1000,now:0,completedHands:100},1],[12,{startedAt:0,now:0,completedHands:Number.MAX_SAFE_INTEGER},4]]){const actual=spinSixBlindLevel(configuration,multiplier,clock);assert.equal(actual.level,level);assert.equal(actual.smallBlind,configuration.smallBlinds[level-1]);assert.equal(actual.bigBlind,2*actual.smallBlind)}
+assert.throws(()=>spinSixBlindLevel(configuration,7,{startedAt:0,now:0,completedHands:0}),RangeError);assert.throws(()=>spinSixBlindLevel(configuration,4,{startedAt:0,now:0,completedHands:.5}),RangeError);
+const copy=spinSixConfiguration(configuration);copy.smallBlinds[0]=99;copy.outcomes[0].prizeShares[0]=1;assert.deepEqual(configuration,original,'Validated rules must not alias caller arrays');
+// Independent five-card enumeration checks the actual six-seat engine payout.
+const compare=(a,b)=>{for(let i=0;i<Math.max(a.length,b.length);i++)if((a[i]||0)!==(b[i]||0))return (a[i]||0)-(b[i]||0);return 0};
+function score(cards){let high=null;for(let a=0;a<3;a++)for(let b=a+1;b<4;b++)for(let c=b+1;c<5;c++)for(let d=c+1;d<6;d++)for(let e=d+1;e<7;e++){const rank=rank5([cards[a],cards[b],cards[c],cards[d],cards[e]]);if(!high||compare(rank,high)>0)high=rank}return high}
+const outcome=spinSixOutcome(configuration,0),level=spinSixBlindLevel(configuration,outcome.multiplier,{startedAt:0,now:0,completedHands:0}),hand=startHand(Array(6).fill(outcome.startingChips),level.bigBlind,0);
+for(let n=0;!hand.end&&n<12;n++){const o=options(hand);act(hand,o.raise?'raise':o.due?'call':'check',o.raise?o.max:undefined)}
+assert.ok(hand.end);assert.equal(hand.board.length,5);assert.equal(hand.stacks.reduce((a,b)=>a+b),1800);const ranks=hand.hands.map(cards=>score([...cards,...hand.board]));let winners=[0];for(let i=1;i<6;i++){const order=compare(ranks[i],ranks[winners[0]]);if(order>0)winners=[i];else if(order===0)winners.push(i)}const expected=Array(6).fill(0),ordered=Array.from({length:6},(_,i)=>(hand.button+i+1)%6).filter(i=>winners.includes(i));for(const seat of winners)expected[seat]=Math.floor(1800/winners.length);for(let i=0;i<1800%winners.length;i++)expected[ordered[i]]++;assert.deepEqual(hand.end.payouts,expected);assert.deepEqual(configuration,original);
+console.log('PASS explicit local six-seat Spin model:strict complete rules/100M boundaries/no 3-Max defaults,exact six-place rounding,minute/hand levels/final cap,isolated inputs and independent1800-chip full hand; registration/bank/UI still gated');
