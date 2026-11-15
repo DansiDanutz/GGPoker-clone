@@ -6,6 +6,7 @@ Aceasta este versiunea publică a fișelor detaliate. Explică aspectul,controal
 
 | Fișă | Acoperire |
 |---|---|
+| [Grafica Group](cash-group-row.md) | PR245:cinci coloane,badge/indicator originale,șase stăriJoin,drag-away și masă închisă |
 | [Group Hold’em](cash-group-aggregation.md) | PR243:agregare reală după reguli,total jucători,buy-in implicit,selecție Group/Table și limite grafice |
 | [Group BuyIn/Advanced](cash-group-funding.md) | PR239:1–6mese finanțate atomic,preferințe,retry fără debit dublu,ferestre și restart |
 | [Group Info](cash-group-info.md) | PR241:popup364×526,texte/fonturi/cadru native și închidere fără debit |
@@ -33,7 +34,7 @@ Aceasta este versiunea publică a fișelor detaliate. Explică aspectul,controal
 
 ## Starea curentă și proveniența
 
-PR243 este instalat după17verificări pe60d1160e5b18f746e5d1c3e6309ebf5335fb7c2d. Mesele Hold’em cu aceleași reguli apar într-un singur grup,cu total real de jucători și buy-in implicit;intrarea Group folosește aceeași identitate. Au trecut două mese finanțate/retry,cinci computere,două mâini/payout/restart,manual Join/HUD,Auto Buy-In și șase sesiuni cu all-in inegal/fold/jetoane neacoperite/înlocuire. Datele live ale proprietarului rămân identice. Tipurile operatorului,agregarea featured și prezentarea nativă completă a rândului/listelor rămân separate de politica locală. HTML/inventarele generate sunt încă216;aceste fișe Markdown sunt actualizate243.
+PR245 este instalat după12verificări pe8ac0baff499040b8a245f3b99ed5b76899f052ce. Rândul Group folosește ramura nativă fără promoții,badge56×20,indicator80×36 și stările originaleJoin,cu click/drag-away/închis-redeschis verificate. Fluxul real Group/manual/Auto Buy-In și șase sesiuni cu all-in inegal/fold/uncalled return/payout/restart/înlocuire au trecut. Datele proprietarului rămân identice. Nativeplayerlist/footer,promotions/featured și comparația fizicăAIR rămân incomplete. HTML/inventaregenerate216;fișeleMarkdown actualizate245.
 
 Checkpoint istoric:
 

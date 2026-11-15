@@ -4,7 +4,7 @@ This project is a local play-money application under active development. It is n
 
 ## Current verified release
 
-PR243 adds native-derived ordinary Hold’em Group aggregation on top of PR239 multi-table entry and PR241 preference Info.17exact-head checks passed,including actual funded windows,manual/Auto Buy-In and six-session unequal-all-in/fold/return/payout/restart/replacement flows. Installed runtime127files/art1352;all6ownerfiles15496bytes unchanged. [Detailed contract and gaps](docs/rea/cash-group-aggregation.md). Native Group row graphics/promotion/player-list presentation and full-app physical/motion/sound fidelity remain incomplete.
+PR245 adds native-derived ordinary Group row graphics/Join states to the existing real aggregation/funding/Info flow.12exact-head checks passed,including pointer/closed-group guards,actual funded windows,manual/Auto Buy-In and six-session unequal-all-in/fold/return/payout/restart/replacement. Installed runtime128files/art1357;all6ownerfiles15496bytes unchanged. [Detailed evidence and gaps](docs/rea/cash-group-row.md). Native Group player-list/footer,promotions/featured,absolute parent scaling and full-app physical/motion/sound fidelity remain incomplete.
 
 ## Implemented workflows
 

@@ -1,4 +1,4 @@
-# Native Hold’em Group row — candidate
+# Native Hold’em Group row — live PR245
 
 [Source/atlas/font/catalog evidence](cash-group-row-source.json) traces HoldemLobby’s ordinary five-column branch versus conditional Promotion header,TableGroupCell/Renderer,TablesSizeIcon,PlayersCount and JoinButton. Local hosted tables have no actual promotions;the provisional hosted-name Promotion cell is removed. Real representative names remain accessible labels/tooltips and individual Table View names are unchanged.
 
@@ -8,4 +8,6 @@ Join120×40 uses actual common27/28/29 while unselected,30/31/32 while selected;
 
 Header columns use source133/223/150/157/147 proportions in the existing local parent viewport. This does not establish native absolute window scaling/physical text raster or exact1.5px action anchor. Native promotions/featured conditions,Group player-list presentation/footer controls and full-app motion/sound remain incomplete. Five tiny original PNGs4612bytes are added;1352existing immutable assets are hardlinked,not recopied.
 
-RED:old six-column name/promotion row lacks native player widget. GREEN geometry/full Group funded-two-window/bots/two-hand/restart source checks passed before strengthened pointer-state assertions;final exact-head installed gate pending.
+RED:old six-column name/promotion row lacks native player widget. GREEN12exact-head checks passed on8ac0baff499040b8a245f3b99ed5b76899f052ce:installed geometry,normal/selected hover/down/full label alpha,drag-away cancellation,real row Join,closed/reopened group guards,inspected render and full Group two-window/bots/two-hand/restart/cross-room journey. Manual Join/preview/HUD,Auto Buy-In and hosted six-session unequal-all-in/fold/uncalled return/restart/replacement also passed.
+
+Guarded rollout:PR245 merged989cdeeb9bf1e43af414843306a164fe43738040;PID23806→81746,runtime128files1462143bytes at/Users/davidai/.local/share/playgg-runtime/group-row-8ac0baf,art1357files at/Users/davidai/.local/share/playgg-art/cash-group-row-candidate. All6ownerfiles15496bytes unchanged;no live gameplay writes. Backup/Users/davidai/.local/state/playgg-rollouts/pr245-qmvwihx1;QA.git/danslab-qa/pr245-evidence.json/pr245-live.json. No dependencies/worktrees/models;one small runtime snapshot plus4612newartbytes,base art hardlinked.

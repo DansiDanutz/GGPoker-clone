@@ -2,7 +2,13 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
-## Verified release baseline — PR243
+## Verified release baseline — PR245
+
+PR245 merged `989cdeeb9bf1e43af414843306a164fe43738040`;tested source `8ac0baff499040b8a245f3b99ed5b76899f052ce`. Hold’em Group now uses the native ordinary five-column branch,56×20TableSize badge,80×36original count widget,source row colors/indicator and six selected/unselected Join textures. Removed the provisional hosted-name Promotion cell;representative names remain accessible metadata. Closed Join stays gray/non-purchasing through selection/hover/down. Native promotion/featured branches,absolute parent scaling and Group player-list/footer remain incomplete.
+
+12 exact-head checks passed: syntax/catalog/HTTP/source/runtime/art review,real normal/selected hover/down/drag-away/Join/closed-reopen pointer assertions,inspected headless rendering,full installed Group/two windows/two hands/payout/restart/cross-room journey,manual Join/preview/HUD,Auto Buy-In and hosted six-session unequal-all-in/fold/uncalled-return/restart/replacement. Runtime128files1,462,143bytes;art1357files with1352immutable hardlinks plus5PNGs4,612newbytes. Guarded idlePID23806→81746;all6ownerfiles15,496bytes unchanged,no live gameplay QA. [REA/control details and remaining limits](docs/rea/cash-group-row.md). Full reconstruction remains active;older notes below are historical.
+
+## Historical release baseline — PR243
 
 PR243 merged `7e7724a1abc94f39ee9f9f9f0e54e6b46226ffaf`;tested source `60d1160e5b18f746e5d1c3e6309ebf5335fb7c2d`. Ordinary Hold’em Group View now merges tables using the exact normalized-rule identity shared with funding, sums actual member occupancy without a single-table capacity denominator and displays default buy-in. The existing public player preview includes all actual member seats;Table View retains individual tables and selection maps back to its group. Open real members support Join;closed-only groups remain closed. Native operator IDs/featured grouping/promotion cell/player-list raster remain explicit gaps.
 
@@ -1432,4 +1438,4 @@ Group aggregation REA follow-up: native rows aggregate by operator tableTypeID a
 
 Hold’em Group aggregation live PR243: one row per shared funding-rule identity,absolute actual seated total/default buy-in,all real member seats in local preview,open representative for Join and stable Table→Group selection. Native operator type IDs/featured aggregation/player-list pixels remain separate gaps. [REA contract](docs/rea/cash-group-aggregation.md).
 
-Hold’em Group row candidate: native ordinary five-column branch,56×20TableSize,80×36original player widget,source row colors/indicator and six real Join state textures replace placeholder Promotion name/gradient. Exact source/font/atlas contract in [cash-group-row.md](docs/rea/cash-group-row.md);native parent scaling/promotions/player-list/footer remain incomplete.
+Hold’em Group row live PR245: native ordinary five-column branch,56×20TableSize,80×36original player widget,source row colors/indicator and six real Join state textures replace placeholder Promotion name/gradient. Exact source/font/atlas contract in [cash-group-row.md](docs/rea/cash-group-row.md);native parent scaling/promotions/player-list/footer remain incomplete.

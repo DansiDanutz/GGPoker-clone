@@ -1,0 +1,59 @@
+{
+  "method": "REA selective headless FFDec;not AIR/private-server observation",
+  "swf": {
+    "path": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf",
+    "bytes": 41892370,
+    "sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1"
+  },
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/preview/HoldemPlayerView.as",
+      "bytes": 1454,
+      "sha256": "b44dff90569f9626ba389569933ca3fce2d701ec88fa45aa97ab2eb0574425a2"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/LobbyPlayerView.as",
+      "bytes": 17329,
+      "sha256": "7cc8635b5290bea32772f1a495969799d018b4f6892e4db26cca415c95882ad8"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/group/herder/HoldemItemSliderHeader.as",
+      "bytes": 1400,
+      "sha256": "cdfd5327c691334423ff541c68679652d30e521c9da6b47bdacf1f75a96d8f45"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/group/herder/CashGameItemSliderHeader.as",
+      "bytes": 2001,
+      "sha256": "85dbd89d844b17df0010a4775eb61e5a40b193a1c2ff94f989b37d454b71cd7d"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/group/list/HoldemPlayerList.as",
+      "bytes": 552,
+      "sha256": "d13c479b5aecd567cf67bf27eb2c70e89dbf978f17be6abd44ec36e54df17344"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/group/list/PlayerList.as",
+      "bytes": 2258,
+      "sha256": "f21fa16633b8d73217f9db39ec02d9608bc51c921c3ed18eb529eda5005975ad"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/group/list/HoldemGroupViewItem.as",
+      "bytes": 531,
+      "sha256": "71e18ddc1e9cdc795da33a07a9a54aba0c5ed0f26c66daf7de003e5b13550ab4"
+    }
+  ],
+  "observed": [
+    "HoldemLobby binds Group View to HoldemPlayerView;default sortCHIPS/order1,featuredBLINDS/order1",
+    "Ordinary header FLAG/PLAYER/TABLE_NUMBER/CHIPS widths41/107/30/62,total240;featured FLAG/PLAYER/BLINDS52/106/82",
+    "Ordinary HoldemGroupViewItem viewport240x28;rendererHoldemPlayerCellRenderer",
+    "Row CLICK selects and updates operator;DOUBLE_CLICK calls viewProfile\u2192SmartHudPlayerData from actual GroupViewItemVo\u2192SHOW_SMART_HUD",
+    "Selected guest operator OPEN;selected user VIEW_PROFILE+OPEN;unselected normal guest/user JOIN_TABLE unless actual waiting-state branch",
+    "OPEN dispatches actual selected GroupViewItemVo.tableId;not a synthetic seat or buy-in command"
+  ],
+  "pending": [
+    "Recover actual renderer/cell/operator geometry and source assets before implementing",
+    "Determine sortOrder1 semantics from comparator;do not guess ascending/descending",
+    "Local public data has member room/seat/account name/chips;no country/operator table number;do not fabricate them",
+    "Existing Group preview is local Player/Seat/Chips projection;native player-list/footer not yet reconstructed"
+  ]
+}
