@@ -2,9 +2,9 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
-## Verified release baseline — PR225
+## Verified release baseline — PR227
 
-PR225 merged as `0f3d75c7a7a7fd73bff30c83543598f4954f58c8`, tested source `2c14216b8f11ecf376ff9850a0fcfdc9873686e9`,19exact-head checks. First applied own low-stack cash pause offers Get Chips through the existing dialog; no automatic debit, poll/reload replay or tournament exposure. Ordinary/Short Deck, funded-seat and tournament browser flows pass on source and installed runtime. Runtime121files/1,405,875bytes; six owner files15,496bytes preserved. PR223 Rabbit motion correction remains included. Older candidate statements below are historical.
+PR227 merged as `258edea73576d5cba0141d004e188612a77cb284`, tested source `1c0d8ca34bef451e27bfbc7e9793906fa120df77`,14exact-head checks. Selected cash Table View uses actual own Open/Join/Wait/Cancel gates and existing FIFO with no public waiting identities/debit. Two-account cap/error/restart/explicit60buy-in/next-hand660-chip payout, existing waiting-list780-chip journey and delayed-module Auto Buy-In/five-computer two-hand720-chip journey pass on source and installed runtime. A pre-existing PR225 startup race was reproduced and corrected; failed first-head evidence retained. Runtime121files/1,408,342bytes; six owner files15,496bytes preserved. Older candidate statements below are historical.
 
 ## Released checkpoint — PR221
 
@@ -1400,4 +1400,4 @@ Rabbit motion lifecycle live PR223: REA local peel path retained; reproduced red
 
 Automatic Get Chips live PR225: native OnSitOut4009 first own low-stack cash transition opens existing Add Chips dialog, excluding catch-up, observer, chat, tournament and Rush. Escape/poll/reload preserve wallet; explicit funding/next-deal uses existing guards. Nineteen exact-head checks passed and guarded rollout preserved owner data; [REA evidence](docs/rea/automatic-get-chips.md).
 
-Cash lobby controls candidate: native TablePreview Open/Join/Wait/Cancel gating uses existing own-account FIFO and private status; no public waiting identities or debit. Real pointer/restart/503/explicit offered buy-in/full next hand gate pending. [REA evidence](docs/rea/cash-lobby-controls.md).
+Cash lobby controls live PR227: native TablePreview Open/Join/Wait/Cancel gating uses existing own-account FIFO and private status; no public waiting identities or debit. Real pointer/FIFO/queue-cap/503/restart/explicit offered buy-in/full next-hand payout passed in source and installed runtime; Auto Buy-In startup ordering also corrected. [REA evidence](docs/rea/cash-lobby-controls.md).
