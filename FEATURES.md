@@ -1419,3 +1419,5 @@ Group View REA audit: native Join is a separate login/funds/max-blind guarded tw
 
 
 Group entry live PR239: [REA and API contract](docs/rea/cash-group-funding.md). Native-derived412×494 BuyIn/Advanced dialog with19original control crops drives real wallet/count/amount/preferences and1–6 funded equal-rule Hold’em tables.22exact-head checks passed, including lost-response replay at zero balance, two playable windows, five computers/two hands/payout/restart/reconnect, cross-room conservation and previous-runtime compatibility. Runtime126/art1352 installed;6ownerfiles15496bytes unchanged. Native aggregation/all variants/window manager/physical frame/Info/motion/audio remain incomplete.
+
+Group Advanced Info candidate: REA establishes a separate364×526 popup with four native explanations/examples and outside-dismiss. Reuses original atlas44/Condensed fonts/catalogs, replacing provisional inline paragraph; pointer/Escape/no-debit and full Group hand/restart gate under verification. [Evidence](docs/rea/cash-group-info-source.json).
