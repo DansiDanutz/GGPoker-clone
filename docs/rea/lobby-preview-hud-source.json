@@ -51,5 +51,13 @@
     "Browser missing-control RED;404x582/four metrics/actual name/private note/reopen/no debit passed",
     "Historical Hands row/output selector failure reproduced unchanged on previous installed runtime; output selector corrected without changing expected value",
     "Extended source browser PASS: immediate close save, stale Group response rejected, private note/custom label/restart/new login/seat token rotation, two hands720chips, retained history detail/six players, own404x530HUD and return without purchase"
-  ]
+  ],
+  "release": {
+    "pr": 235,
+    "tested": "3eb294d3959b5d5abe7ac8bf1a581f87084e9392",
+    "merge": "0a1ad3a83e78963358c67f345dbb090bec9a85be",
+    "checks": 19,
+    "ownerDataUnchanged": true,
+    "liveGameplayWrites": false
+  }
 }

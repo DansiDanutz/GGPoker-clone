@@ -120,3 +120,6 @@ Seated six-seat tables: the native Emoji control opens the table-side Standard/D
 
 
 Preview-seat release [PR233](https://github.com/DansiDanutz/GGPoker-clone/pull/233): six-seat Hold’em Table View empty-seat controls use exact native up/down/over sprites and reserve the chosen seat through the existing confirmed buy-in. Original SWF/source/frame identities: [REA receipt](docs/rea/lobby-preview-seat-source.json). Eleven commit-bound checks include pointer states/drag-away, exact-seat cancel/purchase, invalid intent, own-seat suppression, two hands/five bots/720-chip conservation/reconnect, Auto Buy-In and waiting-list regressions. Live data unchanged; occupied-player Smart HUD and full native physical/timing parity remain pending.
+
+
+Lobby Smart HUD [PR235](https://github.com/DansiDanutz/GGPoker-clone/pull/235) is live: click an occupied six-seat Hold’em preview to open the existing native-derived HUD, private notes/labels and recorded history; actual seated accounts can view their own HUD. [REA trace, privacy rules, tests and remaining gaps](docs/rea/lobby-preview-hud.md). All19 exact-head checks passed, including two hands/five computers/restart/history and six independent hosted sessions. Local metrics are explicitly recorded table-session data; native global service/frame/timing parity remains incomplete.
