@@ -130,3 +130,5 @@ Preview artwork [PR237](https://github.com/DansiDanutz/GGPoker-clone/pull/237): 
 Group preference help [PR241](https://github.com/DansiDanutz/GGPoker-clone/pull/241): native-derived364×526 Info popup with original text/background/fonts, outside-dismiss and unchanged purchase state;installed full-hand/restart gate passed. [Evidence and limits](docs/rea/cash-group-info.md).
 
 Hold’em Group aggregation [PR243](https://github.com/DansiDanutz/GGPoker-clone/pull/243) is installed:matching-rule tables share one row with summed actual occupancy/default buy-in and all member seats in the preview.17checks include Group/manual/Auto Buy-In and hosted six-player unequal-all-in/restart/replacement workflows. [Contract and remaining visual gaps](docs/rea/cash-group-aggregation.md).
+
+Ordinary Hold’em Group graphics [PR245](https://github.com/DansiDanutz/GGPoker-clone/pull/245) are installed:five columns,original player widget,seat badge and selected/unselected Join states;closed groups cannot purchase.12checks passed. [Source/graphics/control evidence and limits](docs/rea/cash-group-row.md).
