@@ -2,6 +2,10 @@
 
 This project is a local play-money application under active development. It is not a completed 1:1 clone and does not connect to the original operator's private backend or administer real-money accounts.
 
+## Current verified release
+
+PR243 adds native-derived ordinary Hold’em Group aggregation on top of PR239 multi-table entry and PR241 preference Info.17exact-head checks passed,including actual funded windows,manual/Auto Buy-In and six-session unequal-all-in/fold/return/payout/restart/replacement flows. Installed runtime127files/art1352;all6ownerfiles15496bytes unchanged. [Detailed contract and gaps](docs/rea/cash-group-aggregation.md). Native Group row graphics/promotion/player-list presentation and full-app physical/motion/sound fidelity remain incomplete.
+
 ## Implemented workflows
 
 - Local nickname/PIN login, persistent sessions and user-provided DanGG branding.
@@ -17,7 +21,7 @@ This project is a local play-money application under active development. It is n
 
 ## Detailed source and behavior documentation
 
-The [REA functional manual](docs/rea/README.md) contains eight detailed guides. Current local table work includes the private HandRank/HUD/Stats panel, durable seat-session time and counters, and nine source-derived flop/turn draw hints. Native runtime/font/timing parity, full card choreography, button bitmaps, double-board gameplay and all-time operator statistics remain incomplete. See the guides for source limitations and the difference between current-seat statistics and room/pool HUD samples.
+The [REA functional manual](docs/rea/README.md) contains detailed guides. Current local table work includes the private HandRank/HUD/Stats panel, durable seat-session time and counters, and nine source-derived flop/turn draw hints. Native runtime/font/timing parity, full card choreography, button bitmaps, double-board gameplay and all-time operator statistics remain incomplete. See the guides for source limitations and the difference between current-seat statistics and room/pool HUD samples.
 
 ## Verification
 
