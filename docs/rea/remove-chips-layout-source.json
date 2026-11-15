@@ -1,0 +1,35 @@
+{
+  "artifact": {
+    "path": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf",
+    "sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
+    "note": "Post-export hash matches previously verified Game51 artifact identity"
+  },
+  "scope": "Two classes freshly exported headlessly with existing FFDec; three retained layout exports; static client evidence only",
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/popup-layout-source/scripts/com/nsus/iron/table/view/popup/buyin/common/BuyInStackLayout.as",
+      "bytes": 1312,
+      "sha256": "44f88b92e66ae67a749fba143b257d1ce745f0847a88f21131a5cdd64a4b65e8"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/popup-layout-source/scripts/com/nsus/iron/table/view/popup/buyin/common/BuyInStackLayoutResult.as",
+      "bytes": 400,
+      "sha256": "035b91e5282e02c0dcf4fdc1e2d9882307b671ea890cd5af22ea3e083e321e3c"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/popup/buyin/common/BuyInContentStack.as",
+      "bytes": 4360,
+      "sha256": "9348529599bcecaf349f175b2c2dc7a9a71ecec541b81b9b754692f4bdb18d1f"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/popup/buyin/BuyInPopupBase.as",
+      "bytes": 7875,
+      "sha256": "76e697396b3898b50703d45b1f5ca9e9ecfb2ff178829fec7c458e7db8f78635"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/popup/PopupBase.as",
+      "bytes": 7644,
+      "sha256": "ff7f9f116a4eb4136848476d0766b8e294853e3644c8a6c10cd02496f8c6c472"
+    }
+  ]
+}
