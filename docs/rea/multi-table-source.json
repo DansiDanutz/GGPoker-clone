@@ -1,0 +1,36 @@
+{
+  "scope": "Selective static FFDec exports; no native account/session interaction",
+  "sources": [
+    {
+      "class": "com.nsus.iron.table.controller.MoveTableCommand",
+      "path": "/Users/davidai/Sandbox/rea-tools/mtt-source/scripts/com/nsus/iron/table/controller/MoveTableCommand.as",
+      "sha256": "364bb9d3ac9da3872aee416246aa7a121ab3e2a669d7c36aed8447ab1591c23d",
+      "bytes": 1041
+    },
+    {
+      "class": "com.nsus.iron.table.services.callback.OnTableChanged",
+      "path": "/Users/davidai/Sandbox/rea-tools/mtt-source/scripts/com/nsus/iron/table/services/callback/OnTableChanged.as",
+      "sha256": "c20a8e8ccae66f342b0705d923e4ce9869b119542d1c1ce428e06e5339b296b9",
+      "bytes": 883
+    },
+    {
+      "class": "com.nsus.iron.table.services.callback.OnWaitForMoveTablePlayer",
+      "path": "/Users/davidai/Sandbox/rea-tools/mtt-source/scripts/com/nsus/iron/table/services/callback/OnWaitForMoveTablePlayer.as",
+      "sha256": "67bd6bc7a9151e4eea987b6757682167534bd7a5b912812f7fec5685a53eda61",
+      "bytes": 831
+    },
+    {
+      "class": "com.nsus.network.protocol.SessionCallback.NotifyTableChangedParameter",
+      "path": "/Users/davidai/Sandbox/rea-tools/mtt-source/scripts/com/nsus/network/protocol/SessionCallback/NotifyTableChangedParameter.as",
+      "sha256": "c246d92caebb949a6cc8318a0c9063e3611d2cbc7d769d4b9f4af1588965b555",
+      "bytes": 749
+    }
+  ],
+  "observations": [
+    "MoveTableCommand queues the provided connection through the table processor for tournaments, directly dispatches for other formats",
+    "OnTableChanged4135 synchronizes table metadata and refreshes menus; this is not evidence of balancing allocation",
+    "OnWaitForMoveTablePlayer4061 shows MOVE_TABLE_WAITING for another user",
+    "Destination selection, source/destination seat allocation and blind compensation are not established by these classes"
+  ],
+  "localPolicy": "local-idle-balance-v1; not claimed native"
+}

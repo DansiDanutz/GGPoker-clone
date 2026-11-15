@@ -1,3 +1,4 @@
+import {multiTableRegistry,multiTableRoomId} from './multi-table-registration.mjs';
 import {spinBank} from './spin-bank.mjs';
 import {ownerBackup,backupFiles} from './owner-backup.mjs';
 import {readFileSync,lstatSync,openSync,closeSync,writeFileSync,fsyncSync,renameSync,unlinkSync} from 'node:fs';
@@ -33,11 +34,13 @@ function requireIdle(directory){
   const checkRush=saved=>{const pool=saved.pool?JSON.parse(saved.pool):null;if(pool){if(!Array.isArray(pool.tables))fail('Current Rush state is unreadable');if(pool.tables.some(([,table])=>!table.settled))fail('Finish active Rush hands before restoring')}};
   const file=join(directory,'rooms.json');if(regular(file)){
    const rooms=JSON.parse(readFileSync(file));if(!Array.isArray(rooms))fail('Current rooms are unreadable');
+   const multi=multiTableRegistry(rooms.find(entry=>entry?.[0]==='local-multi-tournaments')?.[1]);
    for(const entry of rooms){
-    if(!Array.isArray(entry)||entry.length!==2||!entry[1]||typeof entry[1]!=='object')fail('Current rooms are unreadable');const r=entry[1];
+    if(!Array.isArray(entry)||entry.length!==2||!entry[1]||typeof entry[1]!=='object')fail('Current rooms are unreadable');const r=entry[1];if(entry[0]==='local-multi-tournaments'&&multiTableRegistry(r).hasActive())fail('Finish or cancel pending multi-table registrations before restoring');
     if(entry[0]==='local-spin-bank'){const bank=spinBank(r);if(bank.summary().reserved||bank.hasPendingReservations())fail('Cancel pending Spin matches before restoring')}
     if(entry[0]==='local-rush-pools'){if(Array.isArray(r)||Object.keys(r).some(k=>!['holdem','plo'].includes(k)))fail('Current Rush state is unreadable');for(const [variant,saved]of Object.entries(r)){checkRush(saved);embedded[variant]=true}}
-    if(r.hand&&!r.hand.end||r.tournament?.startedAt!=null&&r.tournament.winner==null&&!r.tournament.cancelledAt)fail('Finish active hands and tournaments before restoring');
+    if(r.multiTournament!==undefined&&(!multi.state.events.some(e=>e.id===r.multiTournament&&e.awards!==null)||!/^table-([1-9]|1[0-9]|20)$/.test(r.multiTable)||multiTableRoomId(r.multiTournament,r.multiTable)!==entry[0]))fail('Current multi-table room cannot be checked safely');
+    if(r.hand&&!r.hand.end||!r.multiTournament&&r.tournament?.startedAt!=null&&r.tournament.winner==null&&!r.tournament.cancelledAt)fail('Finish active hands and tournaments before restoring');
    }
   }
   for(const [variant,name]of [['holdem','rush.json'],['plo','rush-plo.json']])if(!embedded[variant]&&regular(join(directory,name)))checkRush(JSON.parse(readFileSync(join(directory,name))));
