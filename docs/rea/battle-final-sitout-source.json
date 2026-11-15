@@ -1,0 +1,23 @@
+{
+  "method": "REA static client sources bound to retained Game51 SWF; generic tournament applied-state callback plus explicit Battle/Rush request-response guard",
+  "sources": {
+    "/Users/davidai/Sandbox/rea-tools/global-sitout-source/scripts/com/nsus/iron/table/services/request/SetAutoActionFlags.as": "def19d8a7f73725563b1dd450434b253edcb9d8cfbe0ed5aa0683ca6d57873cd",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/controller/GlobalSitoutCommand.as": "72d21dd055a873e5e8f0cbde8748dc0491c1053595cb491219aa1ee8d5a98683",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/controller/GlobalSitInCommand.as": "0a73a1a624799fd74c6feb27a792f10ba28574af43e1aeab9e0176f72f146aa6",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/controller/SitOutCommand.as": "c82abeecef38eb0347a1e5dd3a2aa55fd7749b1611241a38326c13d64dd87a62",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/vo/TableInfo.as": "7d044be76dea95375f26aeccade14ebb8620afedec682b75e35596d578e51da6",
+    "/Users/davidai/Sandbox/rea-tools/next-blind-source/scripts/com/nsus/iron/table/services/callback/OnTourneySitOut.as": "0110c7ffc56bfe02dd9a378c14680af2c3ef3a933c4d35afb44fd893956f3936",
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1"
+  },
+  "nativeFindings": [
+    "SetAutoActionFlags special Battle path requires entry AND rushSession AND entry.isBattleRoyale",
+    "Final regular tournament path maps reserved pause to tournament flags; OnTourneySitOut4038 updates a separate applied bool idempotently",
+    "Global all-games dispatch does not generally exclude Battle category; cash-only dispatch excludes tournaments",
+    "TableInfo.isTourney includes BattleRoyale category"
+  ],
+  "localBoundaries": [
+    "Only validated fixed-account Battle final rooms are admitted to the existing tournament pause model",
+    "Qualification/Rush model and its HTTP commands remain unchanged",
+    "Existing local next-deal pause/return and500ms Check/Fold retained; private native timing remains unverified"
+  ]
+}

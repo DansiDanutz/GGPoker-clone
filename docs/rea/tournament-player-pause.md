@@ -59,3 +59,5 @@ Battle Royale final rămâne exclus din această primă rută de pauză până l
 Revizia panoului admin a reprodus status playing în loc de sitting-out pentru un jucător cu indicatorul de pauză aplicat. seatRoster include acum același indicator ca vizualizarea mesei; test RED→GREEN în tournament-player-sitout-test. QA pentru primul commit rămâne istoric; release-ul cere repetare pe ultimul commit.
 
 Candidatul PR220 conectează meniul și Deal Me In la revenirea all-games pentru conturi autentificate, corectând diferența locală curentă descrisă mai sus; [detalii și limite](all-games-pause.md). Activarea PR220 necesită QA exact-head/installed separat.
+
+Candidatul Battle final elimină numai excluderea camerei finale validate, păstrând faza Rush separată; [contract și probe](battle-final-sitout.md). Activarea cere verificarea instalabilă și exact-head.

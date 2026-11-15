@@ -2,7 +2,11 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
-## Verified release baseline — PR220
+## Verified release baseline — PR221
+
+PR221 merged as `b7b67b7906b9d50cd458185869c412ad6dc0405e`, tested source `d6ce7b96d9a7923c3aefc411b474c97447e34484`,25exact-head checks. Short Deck client-default return minimum is4×buttonBlind,ordinary cash2BB unchanged; model boundaries and both source/installed funding/restart journeys passed. Runtime121files/1,405,472bytes; six owner files15,496bytes preserved. Battle final pause follow-up below is a new candidate.
+
+## Released checkpoint — PR220
 
 PR220 merged as `e262c531ed0f5ffa9441c3cc42decf19e4365079`, tested source `bd0b04eb0114447b9e795bafd29b51eb8d34bda1`,47exact-head checks. All-games controls and Deal Me In cover existing supported cash/tournament/Spin/MTT/Rush sessions,with private scope distinct from cash-only. Runtime121files/1,405,434bytes and six owner files15,496bytes preserved. New Short Deck return-threshold correction below is not yet active.
 
@@ -1385,3 +1389,5 @@ Tournament player pause candidate (not live): desired/applied flags, mandatory b
 All-games pause candidate: atomic cash/tournament/Spin/MTT/Rush scope,private provenance,strict authenticated HTTP,rollback/restart,cash-only isolation,native header/configurable hotkey and Deal Me In connected. Source mixed browser verified360-chip payout; exact-head/installed QA and release pending. See [all-games pause](docs/rea/all-games-pause.md).
 
 Short Deck client-default return threshold candidate: fresh REA callbacks plus TableInfo/SitIn establish4×buttonBlind rather than generic2BB. Model boundary15→16,pending/restart/next-deal funds tested; owner buy-in policy unchanged. Next Blind remains disabled because examined server callbacks do not specify SB/BB ordering. See [callback evidence](docs/rea/sitout-callbacks.md).
+
+Battle final pause candidate: admit validated fixed-account finals to current/all-games tournament pause,without qualification changes. Model1200chips/300prizes/14bounty and six-browser600chips/150prizes/14bounty journeys passed,with restart,private scope,cash isolation,independent payouts and actual controls. Exact-head/installed QA and release pending; see [Battle final pause](docs/rea/battle-final-sitout.md).
