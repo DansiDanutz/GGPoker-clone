@@ -9,7 +9,7 @@ assert.equal([...counts.values()].reduce((a,b)=>a+b),1326);
 for(const [key,count]of counts)assert.equal(count,key.endsWith('s')?4:key.endsWith('o')?12:6,key);
 for(const bad of [null,[],['Ac'],['Ac','Ac'],['1c','Ad'],['Ac','AD'],['Ac','Ad','Ah'],[null,'Ad']])assert.equal(autoFoldHandKey(bad),null);
 const defaults=readAutoFoldPreferences();assert.equal(defaults.active,false);assert.equal(defaults.button,true);assert.equal(defaults.blinds,true);assert.equal(defaults.selected.length,59);assert.ok(defaults.selected.includes(items.get('72o').index));assert.ok(!defaults.selected.includes(items.get('AA').index));
-const saved={active:true,button:true,blinds:true,selected:[items.get('AKs').index]};assert.deepEqual(readAutoFoldPreferences(JSON.stringify(saved)),saved);
+const saved={active:true,button:true,blinds:true,rate:50,selected:[items.get('AKs').index]};assert.deepEqual(readAutoFoldPreferences(JSON.stringify(saved)),saved);const legacy={...saved};delete legacy.rate;assert.deepEqual(readAutoFoldPreferences(JSON.stringify(legacy)),saved);for(const rate of [0,96,'50',null])assert.equal(readAutoFoldPreferences(JSON.stringify({...saved,rate})).active,false);
 for(const bad of ['{',null,'null',JSON.stringify({...saved,active:'true'}),JSON.stringify({...saved,selected:[169]}),JSON.stringify({...saved,selected:[0,0]}),JSON.stringify({...saved,selected:[0.5]}),JSON.stringify({...saved,blinds:undefined})])assert.equal(readAutoFoldPreferences(bad).active,false);
 defaults.selected.length=0;assert.equal(readAutoFoldPreferences().selected.length,59);
 const settings={supported:true,catchUp:false,cashDropToPot:false},all={active:true,button:true,blinds:true,selected:autoFoldItems.map(i=>i.index)},game=startHand(Array(6).fill(100),4,0,'rush');
@@ -22,7 +22,7 @@ assert.equal(eligibleAutoFold(base,{...all,active:false},settings),false);
 act(game,'call');assert.equal(eligibleAutoFold(state(game,3),all,settings),false,'A player who already acted must never auto-fold');
 while(!game.end&&!game.board.length){const i=game.turn;act(game,game.price>game.bets[i]?'call':'check')}
 assert.ok(game.board.length>0);for(let i=0;i<6;i++)assert.equal(eligibleAutoFold(state(game,i),all,settings),false);
-console.log('PASS Auto Fold foundation: all1326 hole pairs/169 native classes, strict disabled recovery, position/format/catch-up/cash-drop/first-action guards; not yet enabled in UI');
+console.log('PASS Auto Fold foundation: all1326 hole pairs/169 native classes, strict disabled recovery, position/format/catch-up/cash-drop/first-action guards; pure model; browser gate is separate');
 
 assert.equal(autoFoldMatrix.length,169);assert.deepEqual(autoFoldMatrix.slice(0,13).map(i=>i.key),['AA','AKs','AQs','AJs','ATs','A9s','A8s','A7s','A6s','A5s','A4s','A3s','A2s']);assert.equal(autoFoldMatrix[13].key,'AKo');assert.equal(autoFoldMatrix[168].key,'22');
 for(let rate=1;rate<=95;rate++){const selected=autoFoldRateSelection(rate);assert.ok(selected.length>0);assert.deepEqual(selected,autoFoldMatrix.filter(i=>i.gageRate<=rate).map(i=>i.index))}

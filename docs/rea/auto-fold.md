@@ -1,8 +1,10 @@
 # Auto Fold — Rush & Cash Hold’em
 
-## Stare actuală
+## Implementare locală
 
-Regulile statice și modelul de eligibilitate sunt recuperate și testate. Funcția nu este încă activată în aplicația locală: lipsesc selectorul conectat, integrarea timerului în transport și verificarea reală în browser. Modelul timerului este testat separat, fără comenzi reale. Modulul nu este importat de runtime și nu execută pariuri sau fold-uri. Nu modifica preferințele live pe baza acestui document.
+Rush & Cash Hold’em are editorul cu169categorii, selecție prin click/drag, procent, excluderi Button/SB/BB și Apply/Cancel. Auto Fold este oprit implicit și se activează explicit, separat pentru contul autentificat. Intrarea locală este în Table settings; aceasta este o adaptare de navigare, nu o potrivire demonstrată a meniului nativ. Omaha, Battle Royale și mesele obișnuite nu primesc editorul.
+
+Controllerul este conectat la comanda Quick Fold existentă, cu identitatea și versiunea mâinii verificate. Testul cu șase sesiuni temporare execută un fold automat real și termină mâna cu ceilalți cinci, verificând independent payout-ul și1200chips după restart. Verificarea pe commit și activarea runtime-ului se consemnează separat în QA/registrul versiunilor; acest document descrie implementarea, nu declară întreaga clonă finalizată.
 
 ## Cele 169 de categorii
 
@@ -18,7 +20,7 @@ AutoFoldManager cere activarea capabilității și preferinței, fără catch-up
 
 OnAskAction verifică această eligibilitate atât la tura proprie, cât și când un alt jucător primește acțiunea și există rezervarea Quick Fold. Timerul este înlocuit per sesiune și are1secundă. La expirare, sursa verifică din nou preflop/fără acțiune/nefoldat și trimite rushFold cu tipul ales și ID-ul acțiunii. OnHoleCards folosește eligibilitatea și pentru a suprima Card Squeeze. Acesta este un contract de sursă, nu măsurare fizică a întârzierii serverului.
 
-Integrarea locală trebuie să păstreze identitatea mâinii și contului, să anuleze timerul la acțiune manuală, schimbarea selecției, logout, eroare, transfer sau reconnect și să revalideze starea înainte de trimitere. Retry-ul automat nu trebuie să foldeze mâna nouă. Controllerul pur implementează acum timerul și invalidarea, dar nu este conectat la stările/transportul aplicației.
+Integrarea locală trebuie să păstreze identitatea mâinii și contului, să anuleze timerul la acțiune manuală, schimbarea selecției, logout, eroare, transfer sau reconnect și să revalideze starea înainte de trimitere. Retry-ul automat nu trebuie să foldeze mâna nouă. Controllerul este conectat la stările și transportul aplicației, cu întrerupere la erori, acțiuni manuale și schimbări de preferințe.
 
 ## Aspect și salvare
 
@@ -32,7 +34,7 @@ readAutoFoldPreferences recuperează datele corupte într-o stare dezactivată �
 
 Testul auto-fold-test.mjs acoperă exhaustiv1326perechi/169categorii, ordinea inversă, selecțiile implicite, date corupte și poziții. Folosește motorul real pentru a verifica faptul că o acțiune proprie anterioară sau trecerea la flop oprește eligibilitatea. Aceste teste nu dovedesc un fold automat efectuat în browser.
 
-Rămân: selectorul nativ complet, procentul/drag-ul matricii, capabilitatea locală explicită, integrarea timerului/versionării și Card Squeeze, testele multi-sesiune cu payout/reconnect/restart, comparația fizică și sunetul.
+Rămân: comparația fizică, animația meniului lateral, skinul complet al tooltipului, localizarea editorului și integrarea cu eventuale Cash Drops locale. Card Squeeze rămâne indisponibil în Rush în implementarea existentă. Sunetul și temporizarea native nu sunt certificate de testele locale.
 
 ## Matricea și timerul — model verificat separat
 
@@ -42,6 +44,20 @@ AutoFoldRangeTable nu permite ștergerea ultimei celule selectate. Înaintea une
 
 Un click schimbă celula și stabilește modul pentru drag. EnterFrame continuă să aplice aceeași stare celulei curente până la mouseUp/mouseOut/releaseOutside. Ramura mouseMove din handler nu este înregistrată în addEvent; nu presupunem că hoverul singur schimbă selecția. Modelul local editAutoFoldSelection permite această pictare idempotentă și păstrează limitele.
 
-createAutoFold este un controller pur, încă neimportat în runtime. Prima citire, schimbarea contului și recuperarea după întrerupere consumă snapshotul curent; o nouă versiune de acțiune eligibilă programează1secundă. Pollurile identice nu resetează timerul. La expirare sunt verificate din nou identitatea, mâna/handVersion, preferințele, busy și eligibilitatea. Un număr de generație invalidează inclusiv callbackuri deja puse în coadă înainte de interrupt. Eșecul trimiterii oprește continuitatea și nu retrimite aceeași acțiune automat; apelantul transportului trebuie să prezinte eroarea.
+createAutoFold este controllerul folosit de editorul și transportul Rush. Prima citire, schimbarea contului și recuperarea după întrerupere consumă snapshotul curent; o nouă versiune de acțiune eligibilă programează1secundă. Pollurile identice nu resetează timerul. La expirare sunt verificate din nou identitatea, mâna/handVersion, preferințele, busy și eligibilitatea. Un număr de generație invalidează inclusiv callbackuri deja puse în coadă înainte de interrupt. Eșecul trimiterii oprește continuitatea și nu retrimite aceeași acțiune automat; apelantul transportului trebuie să prezinte eroarea.
 
 Testele cu ceas controlat au demonstrat o eroare înainte de corecție: un callback păstrat după interrupt putea trimite. Testul eșuează fără generație și trece cu ea. Sunt verificate și lipsa replay-ului, modificarea preferințelor și cazul în care mâna/contul se schimbă înainte de expirare. Aceste teste nu reprezintă încă un Auto Fold efectuat în aplicație.
+
+## Editor conectat și verificare în browser
+
+Celulele păstrează ordinea și culorile native, iar grafica originală include15cropuri pentru switch-uri, procent și Apply. Fișa auto-fold-art.json conține dimensiunile, dreptunghiurile și hashurile celor două atlase. Extractorul Swift compară RGBA după decodare. Interiorul folosește dimensiunile recuperate; ancorarea responsivă și tooltipul au încă diferențe vizuale declarate.
+
+Procentul este păstrat separat de selecție, inclusiv valoarea fracționară rezultată din celule; sliderul de prag folosește1–95. Preferințele locale vechi fără procent primesc50. Valorile corupte sunt recuperate dezactivate. Datele sunt separate pe cont; acestea nu importă preferințe din aplicația originală.
+
+Apply persistă atomic preferința localStorage și anulează deciziile vechi. O eroare păstrează draftul, afișează mesajul și permite retry sau Cancel. Cancel/Escape nu modifică preferința salvată. Dialogul blochează hotkey-urile de joc pentru controalele sale. Info arată cele patru explicații native, fără deschiderea unei pagini externe.
+
+Rush state expune numai identitatea contului deja autentificat. Comenzile UI păstrează contul capturat împreună cu versiunea; dacă autentificarea s-a schimbat, API-ul refuză cu401 înainte de mutarea poolului. Câmpul account rămâne opțional pentru clienții existenți, dar este trimis de interfața actuală. Identitatea de pe server închide editorul vechi și schimbă cheia preferinței; un draft al altui cont nu se salvează.
+
+Testul browser verifică169celule, dimensiunile44/4/620, cele15imagini decodate, Info, rata min/max prin pointer, pictarea a trei celule, protecția ultimei selecții, izolarea F1, Cancel, eroare localStorage/retry și schimbarea contului. Reload-ul și recuperarea dupăHTTP503 consumă snapshotul fără fold; numai o acțiune nouă a adversarului pornește noua decizie. Exact un POST automat este trimis cu contul corect. Un POST pentru alt cont este refuzat fără schimbarea fișierului poolului.
+
+După fold, utilizatorul temporar selectează Sit out pentru a opri rematch-ul automat al poolului; ceilalți cinci joacă până la showdown. Astfel se verifică payout-ul fără confundarea soldului liber cu chips deja așezate într-o mână nouă. Toate1200chips rămân în pool, foldatul nu primește potul, iar preferința dezactivată și plățile persistă după restart. Datele ownerului live nu sunt folosite de fixture.

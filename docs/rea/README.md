@@ -6,6 +6,9 @@ Aceasta este versiunea publică a fișelor detaliate. Explică aspectul,controal
 
 | Fișă | Acoperire |
 |---|---|
+| [Auto Fold](auto-fold.md) |169categorii native,editor,procent,poziții,timer,identitate,payout și restart |
+| [Butoane Battle](battle-action-buttons.md) | Grafica,sliderul și stările controalelor Battle Royale |
+| [Straddle](straddle-contract.md) | Contract recuperat și reguli de server încă neverificate |
 | [Bet and Muck](bet-and-muck.md) | Acțiune,cărți ascunse,condiții,eroare și ranguri |
 | [Spin & Gold](spin-configuratie-nativa.md) | Configurație,roată,blinduri,asigurare și funcții încă neactivate |
 | [Controale locale](registru-controale-locale.md) |149 controale HTML statice în8 pagini,limite și referințe sursă |
