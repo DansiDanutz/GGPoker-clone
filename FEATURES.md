@@ -2,7 +2,13 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
-## Verified release baseline — PR231
+## Verified release baseline — PR243
+
+PR243 merged `7e7724a1abc94f39ee9f9f9f0e54e6b46226ffaf`;tested source `60d1160e5b18f746e5d1c3e6309ebf5335fb7c2d`. Ordinary Hold’em Group View now merges tables using the exact normalized-rule identity shared with funding, sums actual member occupancy without a single-table capacity denominator and displays default buy-in. The existing public player preview includes all actual member seats;Table View retains individual tables and selection maps back to its group. Open real members support Join;closed-only groups remain closed. Native operator IDs/featured grouping/promotion cell/player-list raster remain explicit gaps.
+
+17 exact-head checks passed: aggregation/identity/rule separation/non-mutating HTTP reads, atomic funding/FIFO/wallet regressions, installed two-table Group entry/retry/windows/two hands/payout/restart/cross-room conservation, manual Join/preview/HUD,Auto Buy-In,four-session regression and hosted six-session unequal all-in/fold/uncalled return/restart/leave/replacement. Runtime127files1,456,847bytes;art1352reused. Guarded idle rollout PID63169→23806 preserved all6ownerfiles15,496bytes byte-for-byte;no live QA gameplay. [REA and implementation contract](docs/rea/cash-group-aggregation.md). Full reconstruction remains incomplete;older notes below are historical.
+
+## Historical release baseline — PR231
 
 PR231 merged as `e431a008aca822e79f1dc63cf7489628008749ea`, tested source `0ed32019152aeba39fcb031b9b6996fd9122101b`. Selected cash Table View Join now reserves and opens existing buy-in confirmation with Auto Buy-In off; Open/Group routes retained. Escape releases without debit/reload replay; OK buys120 once,followed by two720-chip hands/five computers/reconnect. Twelve checks passed,one duplicate source bootstrap run skipped explicitly; all mandatory functional scenarios passed on the byte-identical installed graph. Runtime121files/1,411,898bytes,art1330reused,six owner files15,496bytes unchanged. Postrelease checkout mmap corruption was recovered from verified commit blobs with backups and clean fast-forward metadata; see lobby-join-confirmation.md. Physical native popup/private operator policy remain unverified. Older notes below are historical.
 
@@ -1424,4 +1430,4 @@ Group Advanced Info live PR241: REA establishes a separate364×526 popup with fo
 
 Group aggregation REA follow-up: native rows aggregate by operator tableTypeID and sum playerLength,with separately gated featured grouping and playingPlayerLength. Four source hashes retained; local normalized-rule mapping and Tables.playerLength inclusion semantics remain to verify before implementation. [Audit](docs/rea/cash-group-aggregation-source.json).
 
-Hold’em Group aggregation candidate: one row per shared funding-rule identity,absolute actual seated total/default buy-in,all real member seats in local preview,open representative for Join and stable Table→Group selection. Native operator type IDs/featured aggregation/player-list pixels remain separate gaps. [REA contract](docs/rea/cash-group-aggregation.md).
+Hold’em Group aggregation live PR243: one row per shared funding-rule identity,absolute actual seated total/default buy-in,all real member seats in local preview,open representative for Join and stable Table→Group selection. Native operator type IDs/featured aggregation/player-list pixels remain separate gaps. [REA contract](docs/rea/cash-group-aggregation.md).

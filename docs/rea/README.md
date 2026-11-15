@@ -6,6 +6,11 @@ Aceasta este versiunea publică a fișelor detaliate. Explică aspectul,controal
 
 | Fișă | Acoperire |
 |---|---|
+| [Group Hold’em](cash-group-aggregation.md) | PR243:agregare reală după reguli,total jucători,buy-in implicit,selecție Group/Table și limite grafice |
+| [Group BuyIn/Advanced](cash-group-funding.md) | PR239:1–6mese finanțate atomic,preferințe,retry fără debit dublu,ferestre și restart |
+| [Group Info](cash-group-info.md) | PR241:popup364×526,texte/fonturi/cadru native și închidere fără debit |
+| [Join manual](lobby-join-confirmation.md) | Rezervare,confirmare buy-in,Escape și recuperare |
+| [Smart HUD din lobby](lobby-preview-hud.md) | Observator/propriul cont,note/istoric/raportări și limite private |
 | [Auto Fold](auto-fold.md) |169categorii native,editor,procent,poziții,timer,identitate,payout și restart |
 | [Butoane Battle](battle-action-buttons.md) | Grafica,sliderul și stările controalelor Battle Royale |
 | [Push Seat](push-seat.md) | PR213 local opt-in,selector nativ,rotație,rezervări,Ready,payout și restart;politici private neconfirmate |
@@ -27,6 +32,10 @@ Aceasta este versiunea publică a fișelor detaliate. Explică aspectul,controal
 | [Meniu emoji](emoji-menu.md) | Inventar nativ și componente încă netrasate |
 
 ## Starea curentă și proveniența
+
+PR243 este instalat după17verificări pe60d1160e5b18f746e5d1c3e6309ebf5335fb7c2d. Mesele Hold’em cu aceleași reguli apar într-un singur grup,cu total real de jucători și buy-in implicit;intrarea Group folosește aceeași identitate. Au trecut două mese finanțate/retry,cinci computere,două mâini/payout/restart,manual Join/HUD,Auto Buy-In și șase sesiuni cu all-in inegal/fold/jetoane neacoperite/înlocuire. Datele live ale proprietarului rămân identice. Tipurile operatorului,agregarea featured și prezentarea nativă completă a rândului/listelor rămân separate de politica locală. HTML/inventarele generate sunt încă216;aceste fișe Markdown sunt actualizate243.
+
+Checkpoint istoric:
 
 PR #36–41 au integrat Helmet în cash/Rush,coordonarea între ferestre,grafica și mișcarea reacțiilor și confirmarea Add Chips după recitirea stării. PR #41 a trecut19verificări pe889147719cabea25bdb301e8c6f99638834bd0f2. Fișele de bule text și meniu emoji separă funcțiile implementate de inventarul încă incomplet.
 
