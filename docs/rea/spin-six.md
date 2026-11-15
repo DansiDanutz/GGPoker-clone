@@ -22,7 +22,7 @@ Un rezultat este folosit pentru o mână reală în motorul Hold’em cu șase l
 
 ## Poarta pentru a deveni jucabil
 
-Modulul nu este încă importat în runtime. Lobby-ul și înscrierea6-Max rămân închise. Urmează obligatoriu:
+Modelul este acum utilizat de extensia băncii descrisă în spin-six-bank.md; activarea aplicației se verifică separat în raportul de versiune. Lobby-ul și înscrierea6-Max rămân închise. Urmează obligatoriu:
 
 - Audit și configurație owner6-Max separate de regulile3-Max; versiunea fiecărui match trebuie înghețată.
 - Rezervarea expunerii băncii față de șase buy-in-uri, asigurareX4 numai cu termeni expliciți și migrare sigură a checkpointurilor vechi.
