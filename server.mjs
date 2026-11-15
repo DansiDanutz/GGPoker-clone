@@ -106,27 +106,27 @@ http.createServer(async(req,res)=>{
   let body={};
   if(req.method==='POST'){
    if(!req.headers['content-type']?.startsWith('application/json'))return json(415,{error:'Expected JSON'});
-   let raw='';for await(const chunk of req){raw+=chunk;if(Buffer.byteLength(raw)>(op==='notes'?8192:2048))return json(413,{error:'Request too large'})}
+   let raw='';for await(const chunk of req){raw+=chunk;if(Buffer.byteLength(raw)>(['notes','preview-notes'].includes(op)?8192:2048))return json(413,{error:'Request too large'})}
    try{body=JSON.parse(raw);if(!body||typeof body!=='object'||Array.isArray(body))throw Error()}catch{return json(400,{error:'Invalid JSON'})}
   }
   if(Object.hasOwn(body,'account')){if(typeof body.account!=='string'||body.account!==account)return json(401,{error:'Signed-in account changed'});delete body.account}
   try{return json(200,rushRequest(account,op,body))}catch(e){if(e.status)return json(e.status,{error:e.message});throw e}
  }
- const match=/^\/api\/rooms\/([0-9a-f]{48})\/(watch|join|state|act|rimt-suggest|rimt-decide|spin-ready|multi-ready|ready|add-chips|remove-chips|remove-chips-option|push-seat|push-seat-cancel|leave|fill-bots|start|end-practice|chat|helmet|sit-out|sit-out-state|shuffle|time-bank|time-card-option|notes|rabbit|show-cards|waiting)$/.exec(path);
+ const match=/^\/api\/rooms\/([0-9a-f]{48})\/(watch|join|state|act|rimt-suggest|rimt-decide|spin-ready|multi-ready|ready|add-chips|remove-chips|remove-chips-option|push-seat|push-seat-cancel|leave|fill-bots|start|end-practice|chat|helmet|sit-out|sit-out-state|shuffle|time-bank|time-card-option|notes|rabbit|show-cards|waiting|preview-notes)$/.exec(path);
  if(match){
   const [,id,op]=match;
-  if(['notes','waiting'].includes(op)?!['GET','POST'].includes(req.method):req.method!==(['state','watch'].includes(op)?'GET':'POST'))return json(405,{error:'Method not allowed'});
+  if(['notes','waiting','preview-notes'].includes(op)?!['GET','POST'].includes(req.method):req.method!==(['state','watch'].includes(op)?'GET':'POST'))return json(405,{error:'Method not allowed'});
   if(req.headers.origin&&req.headers.origin!==origin)return json(403,{error:'Origin not allowed'});
-  if(['waiting','spin-ready','multi-ready','rimt-suggest','rimt-decide','remove-chips','remove-chips-option','push-seat','push-seat-cancel'].includes(op)&&req.method==='POST'&&req.headers.origin!==origin)return json(403,{error:'Local origin required'});
+  if(['preview-notes','waiting','spin-ready','multi-ready','rimt-suggest','rimt-decide','remove-chips','remove-chips-option','push-seat','push-seat-cancel'].includes(op)&&req.method==='POST'&&req.headers.origin!==origin)return json(403,{error:'Local origin required'});
   let body={};
   if(req.method==='POST'){
    if(!req.headers['content-type']?.startsWith('application/json'))return json(415,{error:'Expected JSON'});
-   let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>(op==='notes'?8192:2048))return json(413,{error:'Request too large'});chunks.push(chunk)}
+   let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>(['notes','preview-notes'].includes(op)?8192:2048))return json(413,{error:'Request too large'});chunks.push(chunk)}
    try{body=JSON.parse(Buffer.concat(chunks));if(!body||typeof body!=='object'||Array.isArray(body))throw Error()}catch{return json(400,{error:'Invalid JSON'})}
   }
   const account=localHome?playerProfile.identity(req):null;
   if(op==='chat'&&account&&!(req.headers.authorization||'').replace(/^Bearer /,'')&&req.headers.origin!==origin)return json(403,{error:'Local origin required'});
-  if((op==='waiting'||op==='join'&&body.useProfile===true)&&!account)return json(401,{error:'Sign in locally'});
+  if((['waiting','preview-notes'].includes(op)||op==='join'&&body.useProfile===true)&&!account)return json(401,{error:'Sign in locally'});
   if(op==='join'&&body.useProfile===true&&account)body.name=account;
   try{return json(200,roomRequest(id,op,(req.headers.authorization||'').replace(/^Bearer /,''),body,tables.find(t=>hostedId(t.id)===id),op==='join'&&body.useProfile!==true?null:account))}
   catch(e){if(e.status)return json(e.status,{error:e.message});throw e}

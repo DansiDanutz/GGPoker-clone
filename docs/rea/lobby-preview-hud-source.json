@@ -1,0 +1,42 @@
+{
+  "method": "Selective headless FFDec ActionScript exports; source trace, not native AIR execution",
+  "swf": {
+    "path": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf",
+    "bytes": 41892370,
+    "sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1"
+  },
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/controller/OpenSmartHudCommand.as",
+      "sha256": "d1f9c5b8f03c78ab0d412d8c6b7108385eb6a356871d3bc72bb2af7b9ccd0e9c"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/view/HomeMediator.as",
+      "sha256": "80b732a00b1f980fc12bafcf8d0eca8efdad9d51cd5e96ffa8e46b68ee7657f2"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/tourney-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/view/PreviewPlayerCell.as",
+      "sha256": "197f7337dd77c3b238f729fe54aef23092a7d34d585cb85c2905b298799a83d7"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/view/PreviewPlayerNoteButton.as",
+      "sha256": "213f35a4e1fb112bbd0eeaadc570851b453c4d8445195677725747d327b5c088"
+    }
+  ],
+  "nativeBehavior": [
+    "HomeMediator checkLogin registers SHOW_SMART_HUD and dispatches OPEN_SMARTHUD",
+    "PreviewPlayerCell selected occupied seat forwards SmartHudPlayerData",
+    "PreviewPlayerNoteButton transparent60x75 at cell(-30,-25); click sendHud; no player/VIP private ignored",
+    "OpenSmartHudCommand normal branch calls getSmartHudForNormal; other game modes use dedicated service branches"
+  ],
+  "localPolicy": [
+    "Authenticated local cookie observer; no synthetic seated token",
+    "Existing private account note store shared with seated notes; strict viewer/seat subject guards",
+    "Actual retained table-session statistics/history only, never fabricated global native service values",
+    "Own historical cards only for matching real account; observer sees public reveal history; no participant report rights without participation"
+  ],
+  "pending": [
+    "Lobby button and reuse of existing native HUD UI not implemented yet",
+    "Native normal HUD private service response and physical outer frame remain unverified"
+  ]
+}
