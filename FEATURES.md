@@ -2,11 +2,21 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
+## Verified release baseline — PR262
+
+PR262 merged `ff11e4664d229b950d9ff10ca9e1989c98467be3`; tested source `c8d720ec3a9e192db5e877e7b45576ab27ac2ce4`.
+
+Ordinary six-seat Hold’em Table View now uses the original64×46 player-information plate with recovered name/balance offsets and native Roboto10. Authenticated own names are orange,bold italic;normal local peers are white and actual practice balances gray,grouped without a literal chips suffix. Existing HUD/seat/wallet flows remain connected. All13 exact-head checks/reviews passed,including original source/atlas/font/runtime identities,actual own/peer rendering,private HUD notes,manual admission,two hands,independent payout and cold restart/reconnect. Installed capture1200×963 was compared with the saved original;no native relaunch.
+
+Runtime130files1,483,595bytes;existing1,365art files reused,no added art bytes. Guarded idle rollout PID37426→35939 preserved all six owner files(15,496bytes) byte-for-byte. Backup: `/Users/davidai/.local/state/playgg-rollouts/pr262-oioi3a0x`. No live gameplay writes. Exact parent/seat anchors,textfield metrics/truncation,country/heat/notes/operator account branches and full app timing/fidelity remain incomplete.
+
+[Detailed native plate contract](docs/rea/cash-preview-player.md).
+
 ## Native comparison baseline — PR259, surface corrected PR260
 
-The native window and isolated installed PR257 fixture were both captured at1200×963. The comparison confirms a legacy preview-background mismatch and incorrect center-label contract, and identifies remaining promotion/metadata/typography/window semantics. Native child activation occurred despite a background launch request; original was minimized and gracefully quit after read-only navigation. No real-money game action was sent. Product code remains PR257. [Findings and exact evidence scope](docs/rea/native-table-comparison.md). Raw images stay local; do not relaunch the native client in background-only work.
+The native window and isolated installed PR257 fixture were both captured at1200×963. The comparison confirms a legacy preview-background mismatch and incorrect center-label contract, and identifies remaining promotion/metadata/typography/window semantics. Native child activation occurred despite a background launch request; original was minimized and gracefully quit after read-only navigation. No real-money game action was sent. At capture time product code was PR257;PR260/PR262 resolve texture,label and plate contracts. [Findings and exact evidence scope](docs/rea/native-table-comparison.md). Raw images stay local; do not relaunch the native client in background-only work.
 
-## Verified release baseline — PR260
+## Historical release baseline — PR260
 
 PR260 merged `dda375efc44fd7fe67c6206033bbec1b144dc560`; tested source `15024c8eb88d136a1f3d44eb2220f42f74e2e408`.
 
