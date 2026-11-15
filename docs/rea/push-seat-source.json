@@ -12,7 +12,11 @@
     "com/nsus/iron/table/vo/TablePlayer.as": "a7e2398f4f903f59bcb6bd809e869ad54662da3e38c462b52cd9faeee2cb74af",
     "com/nsus/network/protocol/Session/ReservePushSeatRequest.as": "987d2fb6fc21071d8510512bcff57ca1fa625897148eb8a6a6fda7fd2aabc1e5",
     "com/nsus/network/protocol/Session/ReservePushSeatResponse.as": "c0805615fa75668ac22b51c9b8a469b08625b3a57cfd89cb2c8687011bd9453e",
-    "com/nsus/network/protocol/SessionCallback/NotifyPushSeatChangedParameter.as": "30c5735b94fd9d28c0ff80e9f1960c3ee4b4ae91683f69cd36588061c2ffc87a"
+    "com/nsus/network/protocol/SessionCallback/NotifyPushSeatChangedParameter.as": "30c5735b94fd9d28c0ff80e9f1960c3ee4b4ae91683f69cd36588061c2ffc87a",
+    "com/nsus/iron/table/TableSetting.as": "496011674f301090a9ac7a275df044ec23d1c3dd883b190ce2dde981de8b2a0c",
+    "com/nsus/iron/table/vo/PlayInfo.as": "a5b68f058b1bb97d2e8f256e9638e9905b36cc49d6eb36161649462e7b36398a",
+    "com/nsus/iron/table/services/callback/OnTakeSeat.as": "c800ce14e4356f74ae8141e913d97705b34428b10cd4df7d7373034bd1cd16f1",
+    "com/nsus/iron/table/services/callback/OnLeaveSeat.as": "890ec7d8a564f38bc1828201b979a0b0e84f9af67e4d9540af82093f328773e2"
   },
   "implementedLocally": false,
   "limitations": [

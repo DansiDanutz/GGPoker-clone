@@ -6,7 +6,7 @@ Analiză statică a SWF-ului instalat, prin export FFDec selectiv în fluxul REA
 
 TableMenu3D afișează iconul table_menu327 dacă isUserPlaying(), !playInfo.isCatchUp și userPlayer.pushSeatRemainHandCount > 0. TablePlayer și OnPushSeatItemEarned stochează valoarea primită de la server minus1. Nu rezultă din acest cod cum se câștigă dreptul sau când îl consumă serverul.
 
-TableMediator transmite numărul rămas, jucătorii și rezervările către PushSeatsView. Panoul ascunde propriul loc și orice loc rezervat; celelalte locuri, inclusiv cele ocupate, au selector. Selecția transmite indexul vizual prin SELECT_PUSH_SEAT și închide panoul. Clickul pe fundal închide fără comandă. Maparea exactă index vizual/loc fizic trebuie verificată înaintea mutării locale.
+TableMediator transmite numărul rămas, jucătorii și rezervările către PushSeatsView. Panoul ascunde propriul loc și orice loc rezervat; celelalte locuri, inclusiv cele ocupate, au selector. Selecția transmite indexul vizual prin SELECT_PUSH_SEAT și închide panoul. Clickul pe fundal închide fără comandă. Indexul trimis este locul fizic: PlayInfo.addPlayer indexează vectorul prin seatIndex, iar getPlayers/getReservedPlayers întorc vectorii fără reordonare. TableSetting.getPlayerPosition rotește numai coordonatele prin (seatIndex−userSeatIndex+N)%N. Requestul păstrează indexul fizic, nu indexul poziției desenate; PushSeatButton.seatIndex separat nu este folosit de SelectPushSeatCommand.
 
 ## Geometrie și animație
 
@@ -23,3 +23,7 @@ Callback4132 OnPushSeatReserved înregistrează SeatIndex/ReservedPlayerId și a
 ## Obligații pentru implementarea locală
 
 Rămân necunoscute arbitrarea serverului, acordarea/expirarea dreptului, ordinea și redistribuirea ocupanților, momentul mutării față de mână și tratamentul blindurilor. Nu înlocuim această funcție prin schimbarea CSS a avatarului sau prin evacuarea altui jucător. Implementarea va necesita politică locală explicită, autentificare, rezervare atomică, confirmare separată, conservarea soldurilor/tokenurilor și istoriei mâinii, rollback/restart și două cereri concurente către același loc. Backendul operatorului nu este recuperat din aceste clase.
+
+## Actualizarea ocupanților
+
+OnTakeSeat folosește NotifyTableTakeSeatParameter și actualizează PlayInfo prin addPlayer la seatIndex. Când pushSeatChanging este activ, suprimă ramuri obișnuite de intrare: verificarea inițială a utilizatorului, unele efecte/mesaje, revenirea globală Sit In și avertizarea Mandatory VPIP. Actualizează selectorii Push Seat după intrare. OnLeaveSeat elimină jucătorul după ID și delegă prezentarea către TableMediator.leaveSeat; nu conține algoritmul de redistribuire. Aceste observații confirmă că schimbarea este orchestrată prin evenimente server, nu prin permutarea locală a imaginilor. Nu dovedesc ordinea tranzacției sau politica blindurilor.
