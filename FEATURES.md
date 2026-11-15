@@ -2,7 +2,11 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
-## Verified release baseline — PR221
+## Verified release baseline — PR222
+
+PR222 merged as `a55bdcefaba182a469752c6ea408810559cc391f`, tested source `0a5f1029f1d69aaf5e8328e89ec2532105c3d5ab`,24exact-head checks. Qualified Battle finals support current/all-games pause and next-deal return,with six-browser600chips/150prizes/14bounty and model1200chips/300prizes/14bounty verification. Runtime121files/1,405,392bytes; six owner files15,496bytes preserved. Qualification pause remains separate; new Rabbit motion candidate below is not live.
+
+## Released checkpoint — PR221
 
 PR221 merged as `b7b67b7906b9d50cd458185869c412ad6dc0405e`, tested source `d6ce7b96d9a7923c3aefc411b474c97447e34484`,25exact-head checks. Short Deck client-default return minimum is4×buttonBlind,ordinary cash2BB unchanged; model boundaries and both source/installed funding/restart journeys passed. Runtime121files/1,405,472bytes; six owner files15,496bytes preserved. Battle final pause follow-up below is a new candidate.
 
@@ -1391,3 +1395,5 @@ All-games pause candidate: atomic cash/tournament/Spin/MTT/Rush scope,private pr
 Short Deck client-default return threshold candidate: fresh REA callbacks plus TableInfo/SitIn establish4×buttonBlind rather than generic2BB. Model boundary15→16,pending/restart/next-deal funds tested; owner buy-in policy unchanged. Next Blind remains disabled because examined server callbacks do not specify SB/BB ordering. See [callback evidence](docs/rea/sitout-callbacks.md).
 
 Battle final pause candidate: admit validated fixed-account finals to current/all-games tournament pause,without qualification changes. Model1200chips/300prizes/14bounty and six-browser600chips/150prizes/14bounty journeys passed,with restart,private scope,cash isolation,independent payouts and actual controls. Exact-head/installed QA and release pending; see [Battle final pause](docs/rea/battle-final-sitout.md).
+
+Rabbit motion lifecycle candidate: REA local peel path retained; reproduced reduced-motion→normal cover reopening fixed by timer/RAF completion and once-only cue. Hold’em/PLO browser coverage includes early/late interruption,own HandRank,peer privacy and reload without replay. Exact-head/installed QA pending; [evidence](docs/rea/rabbit-motion.md).

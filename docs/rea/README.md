@@ -82,3 +82,5 @@ Testele browser cer Chrome și pachetul local de referință,folosesc date tempo
 - [Sit Out callbacks and Short Deck funding](sitout-callbacks.md): fresh4009/4038protocol evidence,client4buttonBlind return threshold and still-unproven Next Blind boundary.
 
 - [Battle final player pause](battle-final-sitout.md): phase-specific current/all-games candidate,qualified stacks,real payouts/bounties and restart; qualification pause remains separate.
+
+- [Rabbit motion lifecycle](rabbit-motion.md): stale spread timer RED→GREEN,independent local peel evidence,early/late motion interruption and once-only cues; no inferred server sharing change.

@@ -59,3 +59,7 @@ Static UI files, private reference art and table audio are read asynchronously. 
 The local HandRank now evaluates an independent virtual board only after the Rabbit cover has finished peeling. Reduced motion and a restored persisted preview expose the completed view immediately. The private own preview never changes authoritative `hand.board`, recorded results, payout evaluation or another viewer's HandRank. A new hand resets readiness. Invalid or incomplete preview data falls back to the played board. Existing Omaha exact-two-hole-card rules apply.
 
 Unit checks use a fixed royal-flush preview, invalid/active/spectator guards and immutable state. Browser checks independently rank the five displayed cards before/after the preview, verify peer isolation, Hold’em/Omaha, turn reduced-motion and reload. Exact native physical animation, font and sound timing remain unverified.
+
+### Lifecycle follow-up candidate
+
+[Reduced-motion interruption repair and visibility investigation](rabbit-motion.md): local click handlers were rechecked without widening server visibility. A reproduced stale300ms timer caused an already-completed cover to close again; the candidate cancels the timer/RAF and emits one cue across early/late interruptions. Existing native normal geometry/timing and private preview boundaries remain unchanged; release QA is separate.
