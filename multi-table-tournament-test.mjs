@@ -11,7 +11,7 @@ for(;!event.summary().winner&&steps<500;steps++){
 }
 assert.ok(steps<500);const final=event.summary();assert.equal(final.tables.length,1);assert.equal(final.remaining,1);assert.deepEqual(final.players.map(p=>p.place).sort((a,b)=>a-b),Array.from({length:12},(_,i)=>i+1));assert.equal(final.prizes.reduce((n,p)=>n+p.amount,0),300);assert.deepEqual(final.prizes.filter(p=>p.amount).map(p=>p.amount).sort((a,b)=>b-a),allPaid?[27,27,27,27,24,24,24,24,24,24,24,24]:[150,90,60]);assert.ok(transfers>0);assert.throws(()=>event.begin(final.tables[0].id,final.tables[0].number+1));
 const corrupt=event.snapshot();corrupt.events.find(e=>e.op==='finish').after[0]++;assert.throws(()=>multiTableTournament(corrupt));assert.throws(()=>multiTableTournament({...initial,configuration:{...configuration,rankingPolicy:'native'}}));
-console.log('PASS actual12-player/two-table tournament:idle-only transfers,global12places,3600chips,configured300prizes,strict finish guards,once-only receipts and journal restart; no HTTP/wallet/UI integration yet');
+console.log('PASS actual12-player/two-table tournament:idle-only transfers,global12places,3600chips,configured300prizes,strict finish guards,once-only receipts and journal restart; parent-model scope only; app integration tracked separately');
 
 assert.throws(()=>multiTableTournament({...initial,entries:entries.slice(0,7),configuration:{...configuration,prizeShares:[30,20,10,10,10,10,5,5]}}));
 assert.throws(()=>multiTableTournament({...initial,entries:[...entries.slice(1),entries[1]]}));assert.throws(()=>multiTableTournament({...initial,events:Array(1)}));assert.throws(()=>multiTableTournament({...initial,configuration:{...configuration,prizeShares:[100,...Array(1)]}}));

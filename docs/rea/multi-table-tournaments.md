@@ -20,10 +20,10 @@ The pure planner clones its inputs. Only idle source and destination tables can 
 
 ## Remaining end-to-end work
 
-This module is not yet imported into the runtime. It does not create an MTT, debit registration, start child tables, persist a parent event, rank eliminations globally, transfer authenticated browser sessions, pay prizes or provide an owner/player event interface. These are required next integration steps; a passing planner test does not mean multi-table hosting is playable. Native rebalance/blind/operator rules and pixel/audio timing remain unverified. Existing single-table and Spin3/6-Max flows remain active independently.
+The draft runtime now imports this planner through the funded registry and parent coordinator below. Child table creation, live hand scheduling, authenticated browser migration and owner/player event screens are still missing. These are required next integration steps; a passing planner test does not mean multi-table hosting is playable. Native rebalance/blind/operator rules and pixel/audio timing remain unverified. Existing single-table and Spin3/6-Max flows remain active independently.
 
 
-## Parent tournament coordinator (not yet served)
+## Parent tournament coordinator (draft integration)
 
 `engine/multi-table-tournament.mjs` now coordinates7–120funded entrant records across six-slot tables using the seating planner. Its input is a version1journal: immutable entries, explicit configuration and begin/finish events. Initial seating uses registration order round-robin, a declared local rule. Configuration requires both `local-idle-balance-v1` and `local-settlement-order-v1`, entry cost and positive whole prize percentages totalling100. It does not claim native initial random seating, cross-table simultaneity or blind compensation.
 
@@ -38,3 +38,24 @@ The shared exact-prize allocator now exposes `tournamentPrizeAmounts` for1–100
 ### Required integration boundary
 
 Only the existing authoritative room engine may call finish. No player/owner HTTP body may supply final stacks/dealer as a result. Server integration must atomically persist parent journal, child private hands, account registrations/entry debits and once-only final wallet awards. On restore, match active child initial stacks/identities/hand numbers against the parent receipts before enabling play. Preserve private history and invalidate/migrate old room tokens during reassignment. Owner creation, authenticated registration, child-room scheduling, browser migration and player/admin UI remain required; this parent model alone is not a playable app MTT.
+
+
+## Funded registry and HTTP registration (draft only)
+
+`multi-table-registration.mjs` stores version1events with immutable explicit settings, a monotonic derived revision, registration attempts/cancellations, the parent journal and final awards. Event IDs are48hex characters; capacity7–120, starting stack1–1M, play-credit entry0–1M, even big blind2–1M, level1–3600seconds and action5–300seconds are validated. Policy names and prize percentages are mandatory. These are local configuration limits, not native defaults.
+
+The final funded registration allocates the complete field and journal in the same transaction as its wallet debit. Retrying an active entry does not charge again. Cancellation is idempotent before allocation; a cancelled account can re-register through a new recorded attempt. Allocation freezes the field. Free events do not create artificial entry/refund/prize cash transfers. Parent models are rebuilt/validated once on load and cached for reads, avoiding full journal replay on every lobby poll.
+
+`cash-wallet.mjs` now records `multi-entry`, `multi-refund`, `multi-prize` receipts and separate cumulative `multiSpent`, `multiReturned`, `multiPrizes` totals. Registry validation recomputes exact expected totals across every event and compares all wallet accounts, including orphan-counter detection. Finished parent prizes are credited once; zero awards produce no cash receipt. Cashier labels describe these transactions and treat entries as debits.
+
+`rooms.mjs` persists registry and wallets in the same existing atomic packed JSON transaction, rolls both back after failed writes or prize overflow, and checks the registry on load. `local-multi-tournaments` is a reserved unique storage key. Pending/free/allocated events count as active and block restoration both through the server activity guard and direct restore service. Completed/all-cancelled events do not remain active.
+
+Owner GET/POST `/api/owner-multi-tournaments` uses the existing loopback-only owner-key/origin/JSON/16KB guards and idempotent creation/audit handling. Authenticated GET `/local/multi-tournaments` returns public settings/parent standings and only that account’s registration record. POST `/local/multi-tournaments/<id>/register` or `/cancel` accepts exactly the signed-in account, with same-origin/JSON/1KB limits. No endpoint accepts final stacks, dealer index, placement or a finish operation. Internal hand callbacks remain trusted server-engine output only.
+
+### Verification and limits
+
+`multi-table-wallet-test.mjs` uses12actual local cash-wallet accounts and real Hold’em engine hands through the internal parent callbacks. It verifies cancel/rejoin, exact300-credit escrow, failed final-entry write rollback, failed finish/prize-write rollback, a prize overflow after earlier awards with full rollback, once-only award retries,120,000total credits after settlement, free-field unchanged wallets, low funds, duplicate identity, private cloned views, cold parent/ledger reopen and semantic corruption rejection for counters/revision/entries/awards. Direct restoration is rejected while registration is active.
+
+`multi-table-http-test.mjs` starts/stops a real temporary server and creates12independent authenticated profile/cookie sessions. Owner creation, player registration, cancellation/rejoin, duplicate retry, full field allocation, wallet totals and process restart pass. Account spoofing, foreign origins, extra result fields and finish routes are rejected. Existing cash/owner/tournament/Rush wallet, Spin and restore regressions pass.
+
+The HTTP test stops before child gameplay; the financial test holds its card-engine games separately from the registry. Neither proves durable private child hands, cross-table card/session migration, rendered MTT controls or a playable app MTT. Those remain the next required integration steps, and draftPR205 must not be merged/deployed before the complete journey passes. LivePR206 remains unchanged.
