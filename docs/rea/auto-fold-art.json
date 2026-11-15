@@ -1,5 +1,5 @@
 {
-  "method": "Original15 atlas crops; decoded RGBA equality asserted by extract-auto-fold.swift",
+  "method": "Original18 atlas crops; decoded RGBA equality asserted by extract-auto-fold.swift; close uses native alpha as CSS mask with source ColorTransform color",
   "files": [
     {
       "file": "native-autofold-apply-down.png",
@@ -254,6 +254,57 @@
       "size": [
         16,
         28
+      ]
+    },
+    {
+      "file": "native-autofold-help-bg.png",
+      "bytes": 1244,
+      "sha256": "ba4e572fe910093fef10b090c48d5008414e6ec76bf40f44e3c1fa520da37730",
+      "atlas": "init_lobby/desktop_assets",
+      "frame": "lobby_popup0044",
+      "rectangle": {
+        "x": 282,
+        "y": 3509,
+        "w": 60,
+        "h": 60
+      },
+      "size": [
+        60,
+        60
+      ]
+    },
+    {
+      "file": "native-autofold-close-up.png",
+      "bytes": 320,
+      "sha256": "c3a1885feb2c3a84db6eef1543ad647d5f796aa9dbd2b20642e789dfe99a4d8e",
+      "atlas": "init_lobby/desktop_assets",
+      "frame": "lobby_option0000",
+      "rectangle": {
+        "x": 4083,
+        "y": 2871,
+        "w": 11,
+        "h": 11
+      },
+      "size": [
+        11,
+        11
+      ]
+    },
+    {
+      "file": "native-autofold-close-over.png",
+      "bytes": 261,
+      "sha256": "a31df1d707e9249053881d63ac983767a2550c1b51c8d7a49d90d7e7259803cb",
+      "atlas": "init_lobby/desktop_assets",
+      "frame": "lobby_option0001",
+      "rectangle": {
+        "x": 4083,
+        "y": 2884,
+        "w": 11,
+        "h": 11
+      },
+      "size": [
+        11,
+        11
       ]
     }
   ],
