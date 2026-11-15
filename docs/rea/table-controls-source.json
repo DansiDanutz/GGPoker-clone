@@ -312,8 +312,16 @@
     "limits": [
       "Avatar10000 unavailable without dynamic avatar provider",
       "Native block timer/private server cooldown not reproduced; local API errors/retry retained",
-      "Local menu closes after confirmed send to preserve retry; AIR hide/frame timings not established",
+      "Local menu closes after confirmed send to preserve retry, then holds shown position200ms; physical AIR/frame timings remain unverified",
       "Latin English catalog only; full source localization pending"
-    ]
+    ],
+    "hide": {
+      "seconds": 0.2,
+      "fromX": 0,
+      "toX": 0,
+      "visibleUntilComplete": true,
+      "immediate": "hide(false), identity/permission/pagehide safety and reduced-motion adaptation",
+      "interruption": "show cancels the old hide; old completion must not hide the new show"
+    }
   }
 }
