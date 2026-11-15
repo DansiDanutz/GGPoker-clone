@@ -59,7 +59,7 @@ http.createServer(async(req,res)=>{
   let raw='';for await(const chunk of req){raw+=chunk;if(Buffer.byteLength(raw)>512)return json(413,{error:'Request too large'})}
   let body;try{body=JSON.parse(raw);if(!body||Array.isArray(body)||typeof body!=='object'||Object.keys(body).some(k=>!['account',...(path==='/local/cash-leave'?['leaving']:[])].includes(k))||Object.keys(body).length!==(path==='/local/cash-leave'?2:1)||typeof body.account!=='string'||path==='/local/cash-leave'&&typeof body.leaving!=='boolean')throw Error()}catch{return json(400,{error:'Expected the current account'})}
   if(body.account!==account)return json(401,{error:'Signed-in account changed'});
-  return json(200,path==='/local/cash-leave'?roomRequest.leaveCash(account,body.leaving):path.endsWith('sit-out')?roomRequest.pauseCash(account):roomRequest.resumeCash(account));
+  const result=path==='/local/cash-leave'?roomRequest.leaveCash(account,body.leaving):path.endsWith('sit-out')?roomRequest.pauseCash(account):roomRequest.resumeCash(account);if(path!=='/local/cash-leave')for(const request of Object.values(rushRequests))request.reload();return json(200,result);
  }
  const multiRoute=/^\/local\/multi-tournaments(?:\/([a-f0-9]{48})\/(register|cancel))?$/.exec(path);
  if(localHome&&multiRoute){

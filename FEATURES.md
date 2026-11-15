@@ -2,7 +2,11 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
-## Current released checkpoint — PR213
+## Current released checkpoint — PR215
+
+PR215 merged as `7c545d980fcbbb94d825c0dbf414280aa2102dcb`, tested source `342e7abb21e2f5ccfbbc50abac058948136ec098`. Live runtime121files/1,397,738bytes; native Sit Out header icon/state/anchor verified with11exact-head checks. Six owner files/15,496bytes preserved, no live QA hands. Art1330files shares1329immutable prior resources, adding only817bytePNG and manifest storage. Earlier release/candidate notes are historical. New all-cash Rush work below is not yet released.
+
+## Released checkpoint — PR213
 
 PR213 merged as `97ce1ac471fcc01db5f57119292e525c46b4d57d`; exact tested source `4973b65a7ab43afb0177cd859e4dff70e52c8f01`. Live runtime `push-seat-4973b65`:121files/1,396,199bytes, private art1329files/208,848,660bytes.28exact-head checks passed, including three-account Push Seat and one-human/five-computer journeys in both source and restricted installed runtime. Six owner files/15,496bytes remained identical on activation. Push Seat is opt-in for hosted Hold’em/PLO4/5/6; rotation, pending reservation protection, private identity, payout barrier, Ready and restart are tested. Native physical rendering/audio, entitlement earning, arbitration and blind compensation are not certified; local policies are explicit. Earlier candidate notes below are historical, not current release status. See [Push Seat](docs/rea/push-seat.md).
 
@@ -1351,3 +1355,5 @@ Push Seat follow-up candidate:source-backed bottom-row entry62×62 atx29+visible
 Automatic seat admission candidate:shared reservedSeats list now drives first-free selection, so a pending Push Seat interval is skipped rather than incorrectly refusing entry while other seats remain. New RED→GREEN test covers4/5admission,explicit blocked seat/no debit,restart,full denial,cancel restoration,committed-blind conservation and waiting-seat once-only cashout. Waiting/buy-in/position/sparse-cash/PushSeat model regressions PASS. Not released.
 
 Cash Sit Out header candidate:active HeaderSitOutButton→TableWindowHeaderDetail→TableWindowMediator→TableMediator→SitOutMenuView traced by selective FFDec exports,distinct from legacySitOutButton3D. Nativecommon0317private817bytecrop/decodedRGBAverified;36×26header mask with sourcegray/white/hover/open/downstates replaces58×24text trigger. RED→GREEN full authenticatedcashmenu pointer/keyboard/pause/return/restart/503 journey;existinghistoryartunchanged. Full nativewindowheaderlayout/physicalpixels/audio/nextblindpolicy remain unverified.
+
+Global cash/Rush candidate:five new native command/manager exports distinguish cash vs all-games scope and support existing Rush cash inclusion. Shared atomic checkpoint extends pause/resume to existing funded Holdem/PLO Rush;private scope,local override,queued return only from paused,idempotence/rollback/restart,no hand/wallet mutation,zero-balance explicit rebuy,no future-session inheritance. RED→GREEN models and mixed header/settings/hotkey browser pass,including resumed Rush hands/payout1200per format. Tourney/Spin all-games,Short Deck,next-blind/private timers remain incomplete. See docs/rea/global-cash-rush.md.

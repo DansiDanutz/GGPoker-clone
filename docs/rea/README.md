@@ -9,6 +9,7 @@ Aceasta este versiunea publică a fișelor detaliate. Explică aspectul,controal
 | [Auto Fold](auto-fold.md) |169categorii native,editor,procent,poziții,timer,identitate,payout și restart |
 | [Butoane Battle](battle-action-buttons.md) | Grafica,sliderul și stările controalelor Battle Royale |
 | [Push Seat](push-seat.md) | PR213 local opt-in,selector nativ,rotație,rezervări,Ready,payout și restart;politici private neconfirmate |
+| [Pauză cash + Rush](global-cash-rush.md) | Scope existent,atomicitate,coadă,override,finanțare,payout și restart;limite all-games |
 | [Cash Sit Out](cash-sitout-menu.md) | Pauză curentă/globală,meniul nativ,route header/grafică/stări și limite next-blind |
 | [Straddle](straddle-contract.md) | Contract recuperat și reguli de server încă neverificate |
 | [Bet and Muck](bet-and-muck.md) | Acțiune,cărți ascunse,condiții,eroare și ranguri |
