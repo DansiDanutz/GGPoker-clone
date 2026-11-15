@@ -42,7 +42,7 @@ Model/HTTP tests cover two tables, other-account isolation, unchanged hand and w
 
 ## Insufficient stack on return
 
-Retained `TableInfo.dealMeInMin` defaults to2×bigBlind for ordinary two-blind games when no operator override exists. Other native branches use4×buttonBlind or2×thirdBlind; those formats/overrides are not introduced here. `SitIn.onRequest` opens OPEN_GET_CHIPS below that threshold for normal Hold’em/Omaha.
+Retained `TableInfo.dealMeInMin` defaults to2×bigBlind for ordinary two-blind games when no operator override exists. The native button-blind branch uses4×buttonBlind; the current candidate applies it to hosted Short Deck. The2×thirdBlind branch and operator overrides are not introduced. See [callback evidence](sitout-callbacks.md). `SitIn.onRequest` opens OPEN_GET_CHIPS below that threshold for normal Hold’em/Omaha.
 
 The local room store publishes the ordinary default minimum and a private funding-required flag. A seated paused player below it cannot clear pause through the direct API; global return skips that seat and returns only that account’s required-funding room/minimum/balance. Other eligible cash seats can still return. No wallet is debited by this operation. Confirmed pending chips count toward the next-hand minimum.
 
