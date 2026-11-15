@@ -60,12 +60,53 @@
   ],
   "verification": [
     "RED original sidebarx844.816 instead of844 and old232.776 preview width.",
-    "GREEN source parent/header/page,real HUD/manual admission/empty-seat targets,exact source seat/marker origins and real heads-up passed;installed exact-head and expanded responsive checks pending."
+    "GREEN source parent/header/page,real HUD/manual admission/empty-seat targets,exact source seat/marker origins and real heads-up passed;PR266 all14 installed exact-head checks/reviews passed,including expanded responsive and Group/Table rounds,before merge/rollout."
   ],
   "remaining": [
     "Native Group View parent calibration and tab artwork/font equivalence.",
     "Full app outer stage/window/color profile/text raster and other screens.",
     "Country/heat/private-note/operator role branches;native animation/audio timing.",
     "900x700 proportional policy is tested locally;no native900x700 capture is claimed."
-  ]
+  ],
+  "release": {
+    "mergeCommit": "480b5aefdfdf4e3a7144fff71f44c872c54db273",
+    "pr": 266,
+    "sourceCommit": "12e1c62b87872ae7ad690e3147f172ea9851b021",
+    "oldPid": 99093,
+    "newPid": 22223,
+    "backup": "/Users/davidai/.local/state/playgg-rollouts/pr266-i67elkw8",
+    "runtimeDirectory": "/Users/davidai/.local/share/playgg-runtime/parent-frame-12e1c62",
+    "artDirectory": "/Users/davidai/.local/share/playgg-art/cash-preview-surface-candidate",
+    "runtimeFiles": 130,
+    "artFiles": 1365,
+    "ownerFiles": 6,
+    "ownerBytes": 15496,
+    "ownerDataUnchanged": true,
+    "liveGameplayWrites": false
+  },
+  "afterCapture": {
+    "file": "clone-parent-frame-installed.png",
+    "sha256": "1163fc4466bc20f3f957f1f0cc88659b50b0a2edddaa4a60c90da809a17aff5f",
+    "width": 1200,
+    "height": 963,
+    "privateArtifactOnly": true
+  },
+  "unchangedListMetrics": [
+    "catalog",
+    "columns",
+    "row",
+    "counter"
+  ],
+  "nextTabEvidence": {
+    "source": {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/tab/LobbyDetailViewTabButton.as",
+      "sha256": "54f20158459ef4cd27002d9005a2bd5eae1e92bf975fe1983475f2a0d5c5c2ed"
+    },
+    "findings": [
+      "Left normal/selected atlas lobby83/84;right85/86;all frame18x18;scale9 Rectangle8,8,2,2.",
+      "Label Roboto14,x5,width button-10,height button;defaulty0/color10066329,hovery0/color11119017,downy2/color6908265,selected disabledy0/white.",
+      "Selected native tab enabled=false;actual CHANGE_TAB_TYPE remains the semantic action."
+    ],
+    "implementationStatus": "Source recovered;native tab art/font/state parity not implemented by PR266."
+  }
 }

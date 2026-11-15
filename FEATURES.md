@@ -2,7 +2,17 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
-## Verified release baseline — PR264
+## Verified release baseline — PR266
+
+PR266 merged `480b5aefdfdf4e3a7144fff71f44c872c54db273`; tested source `12e1c62b87872ae7ad690e3147f172ea9851b021`.
+
+The ordinary Hold’em Table View parent is calibrated to the original1200×963 native reference and recovered source dimensions. Actual preview is approximately(843.985,185)/241×376;Open(856.032,571)/216.891×38;Wait y619. The existing list/counter geometry is unchanged. All14 exact-head checks/reviews passed,including source/capture/runtime/art identities,1200parent/header/control geometry,900×700 proportional resize/restore,real HUD/admission/sparse heads-up,Group/Table/Wait/Cancel/buy-in replay,two hands,independent payouts,cold restart and cross-room conservation. No native relaunch.
+
+Runtime130files1,485,462bytes;existing1,365art files reused,no added art bytes. Guarded idle rollout PID99093→22223 preserved all six owner files(15,496bytes) byte-for-byte. Backup `/Users/davidai/.local/state/playgg-rollouts/pr266-i67elkw8`. No live gameplay writes. Group parent/native tab art,font/color-profile/full-app timing fidelity remain incomplete.
+
+[Native parent frame evidence](docs/rea/cash-preview-parent.md).
+
+## Historical release baseline — PR264
 
 PR264 merged `8b49cac367e82e80a34aabe05160d3939ef2c69a`; tested source `7a64a4770baa9ba1cfce8e1bd97c4b5b37832e16`.
 
