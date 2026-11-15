@@ -71,10 +71,10 @@
     "CheckTakeSeat uses connection.isJoinTable plus tempAutoJoinVo.isAutoBuyIn and nonzero chosen amount; play-money amount is not currency-exchanged; BalanceSetting builds wallet values then TAKE_SEAT, otherwise buy-in popup path"
   ],
   "notImplemented": [
-    "Group aggregation and normal Group buy-in popup",
-    "Atomic local multi-table selection/funding and view lifecycle",
-    "Preferences with real locally measured matching; no fabricated operator matching thresholds",
-    "Ticket/currency branches depend on actual local feature support"
+    "Native absolute outer-frame/Mac skin/physical raster/Info popup wording not compared at same-size native runtime",
+    "Native table-group aggregation and all game variants not complete",
+    "Automatic native multiwindow behavior differs when browser blocks popups;real-click recovery verified",
+    "Exact counter/page/hover easing and native sound timing remain unverified"
   ],
-  "next": "Connect real Group BuyIn/Advanced UI to tested local atomic funding API; add matching preferences with actual measured inputs and explicit unknown native thresholds; verify multiple live browser tables, game/payout/reconnect"
+  "next": "Finalize exact-head installed Group dialog/matching/funding/window recovery/two-hand/cross-room QA and guarded release; then native group aggregation and physical/motion parity"
 }
