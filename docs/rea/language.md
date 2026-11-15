@@ -77,3 +77,7 @@ The retained CircleGraphView.HudDescriptionButton.setType assigns its second arg
 The local spans now bind visible text and explanatory title separately, with an equivalent aria-description. Catalog updates replace only marked captions/attributes. Source labels are92×36 at24px (CircleGraph scale2) with autoScale; local labels shrink to their available width, refit after translation/repaint/resize/font load, and retain numeric outputs. Browser title bubbles supply the hover explanation; their styling and delay do not claim native tooltip parity.
 
 The six-player hand fixture verifies French metric text/PFR explanation, Romanian Hands, identical statistic values and a long-label fit boundary. The four-session AoF reservation fixture verifies native French LIMITES/ATS/PASSE/FTA/HANDS, FTA explanation and unknown metric values, with identical hand state before continuing to payout128 and restart. Broader native physical/font/tooltip timing and full application parity remain open.
+
+## Waiting list
+
+TableWaiting/ButtonType explicit keys now bind the Join/Cancel button, count titles and First/Second/Third/Fourth suffixes. Counts remain numeric, separated from the translated suffix; long captions fit316px. InitFont establishes Roboto Condensed for the default Latin branch. EN/RO cross-window verification preserves button/focus and queue/hand state without poll text repaint; see waiting-list.md and waiting-list-source.json. This does not establish full application translation or Asian font coverage.
