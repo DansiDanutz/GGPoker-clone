@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import {openRooms} from './rooms.mjs';
+import {mkdtempSync,rmSync,readFileSync,writeFileSync} from 'node:fs';import {join} from 'node:path';import {tmpdir} from 'node:os';
+const dir=mkdtempSync(join(tmpdir(),'spin-six-entry-')),file=join(dir,'rooms.json'),id='e'.repeat(48);
+const configuration={mode:'local-practice',seats:6,buyIn:5000,smallBlinds:[5,10,20],clock:{actionSeconds:12,freeTimeChipSecondsPerUnit:15,maxTimeChipsPerAction:1},outcomes:[{multiplier:12,frequency:25000000,prizeShares:[50,30,20],startingChips:300,timeBankCards:1,noDealing:false,unit:'hands',interval:10},{multiplier:4,frequency:75000000,prizeShares:[100],startingChips:300,timeBankCards:1,noDealing:false,unit:'minutes',interval:1}]};
+const names=['Alice','Bob','Carol','Dave','Erin','Frank'];
+try{let rooms=openRooms(file,()=>0,true);rooms.fundSpinBank({sequence:1,amount:30000,reason:'Six-seat fixture capital'});const enter=name=>rooms.registerSpin({id,buyIn:5000,account:name,configuration});
+for(const [i,name]of names.entries()){assert.equal(enter(name).registered,i+1);assert.equal(rooms.wallet(name).available,5000);const saved=readFileSync(file);assert.deepEqual(enter(name),rooms.spinRegistration(id,name));assert.deepEqual(readFileSync(file),saved);rooms=openRooms(file,()=>0,true)}
+assert.equal(rooms.spinBank().reserved,30000);assert.equal(rooms.spinBank().available,0);const full=readFileSync(file);assert.throws(()=>enter('Grace'),e=>e.status===409);assert.deepEqual(readFileSync(file),full);assert.equal(rooms.wallet('Grace').available,10000);
+for(const name of names)rooms.cancelSpinRegistration(id,name);rooms=openRooms(file,()=>0,true);assert.equal(rooms.spinBank().reserved,0);assert.equal(rooms.spinBank().available,30000);for(const name of names)assert.equal(rooms.wallet(name).available,10000);
+const shortFile=join(dir,'short.json'),short=openRooms(shortFile,()=>0,true);short.fundSpinBank({sequence:1,amount:29999,reason:'Insufficient exposure fixture'});const untouched=readFileSync(shortFile);assert.throws(()=>short.registerSpin({id,buyIn:5000,account:'Alice',configuration}),e=>e.status===409);assert.deepEqual(readFileSync(shortFile),untouched);assert.equal(short.wallet('Alice').available,10000);assert.equal(short.spinBank().reserved,0);
+const mismatch=structuredClone(configuration);mismatch.buyIn=10000;assert.throws(()=>rooms.registerSpin({id:'f'.repeat(48),buyIn:5000,account:'Alice',configuration:mismatch}),e=>e.status===400);
+const snapshot=new Map(JSON.parse(full));snapshot.get('local-spin-bank').reservations[0].configuration.smallBlinds[0]=6;const corrupt=join(dir,'corrupt.json');writeFileSync(corrupt,JSON.stringify([...snapshot]));assert.throws(()=>openRooms(corrupt,()=>0,true),/Spin/);
+console.log('PASS six real local wallet entries: six-seat capacity, exact hold/debits, retry, per-entry restart, refund conservation and bank/config identity');
+}finally{rmSync(dir,{recursive:true,force:true})}

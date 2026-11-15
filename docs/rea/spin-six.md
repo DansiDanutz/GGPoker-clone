@@ -31,3 +31,37 @@ Modelul este acum utilizat de extensia băncii descrisă în spin-six-bank.md; a
 - Prezentarea nativă6-Max: poziții, praguri10/50, rezultate/congratulations și verificare în browsere separate.
 
 Nu declarăm Spin6-Max funcțional în aplicație înaintea acestui traseu complet. Runtime-ul activ și datele proprietarului nu sunt modificate de acest model neconectat.
+
+
+## Owner rule persistence — working-tree integration
+
+`spin-rules.mjs` accepts complete explicit six-seat configurations at the existing local practice stakes (5000/10000). These stakes are a local product restriction, not evidence of native six-seat configuration. Rule identity is `(buyIn,seats)`; version-1 three-seat checkpoints remain accepted and saving the first six-seat rule upgrades to version 2. Mixed snapshots preserve both audits. The top-level clock must equal the six-seat configuration clock.
+
+The player `/api/spin` response and existing queue deliberately select only three-seat rules until six-seat registration/table integration is complete. A pending three-seat registration does not block saving independent six-seat rules at the same stake; updating its own three-seat rules remains blocked. No live activation in this step.
+
+Verification: `spin-six-rules-test.mjs` covers same-stake coexistence, immutable legacy configuration, duplicate retries, conflicting clocks, migration, corrupted checkpoints, persistent room reload, unchanged-file rejection and queue isolation. Existing rules/queue model and HTTP tests pass. Full six-account registration and playable tournament are still outstanding.
+
+
+### Funded six-account entry escrow — working tree
+
+The internal room registration API now accepts the explicit six-seat configuration, validates its buy-in, caps active entrants at six, and reserves six-seat bank exposure before debiting each real local cash-wallet account. Checkpoint validation cross-checks the complete bank configuration against the registration, not just the stake. Cancel/refund reuses the existing atomic ledger. Three-seat behavior remains unchanged.
+
+`spin-six-entry-test.mjs` verifies six separate funded accounts, exactly-once registration/debit, a cold reload after each entry, seventh-account rejection without mutation, six refunds and exact capital restoration, insufficient bank capital without debit, contradictory buy-in rejection, and tampered reservation configuration rejection. This is room/wallet integration, not six authenticated browser sessions. Drawing a six-seat match is still explicitly gated until its table, ready barrier, blind clock, results and presentation use six-seat rules throughout. No live activation or complete playable six-seat claim.
+
+Regression run: entry, atomic-entry, draw, table, settlement, rules, rules-HTTP, queue, queue-HTTP, six-rules, six-bank and six-entry tests all passed; syntax and diff checks passed. Public player registration remains three-seat only.
+
+
+### Six-seat table integration — supersedes the internal draw gate above
+
+Internal six-seat registrations now feed the playable Hold’em tournament. The room retains the exact funded configuration; checkpoint validation checks it against both entry and bank snapshots. The ready barrier uses the actual room seat count, so the sixth confirmation starts the first hand. Blind progression uses only the explicit six-seat ladder and clock. Six finishing places come from the actual tournament and drive once-only bank/wallet settlement. Prize shares use the configured integers, preserving exact rounding rather than reconstructing percentages from rounded payouts.
+
+`spin-six-table-test.mjs` plays a complete tournament with six local account/token identities, reloads the room after every action, checks 1800-chip conservation and all six finishing places, verifies exact wallet payouts and total capital conservation, rejects premature manual settlement and nonparticipants, and tests rollback of the final ready confirmation and every action when persistence fails. A changed room configuration is rejected on reload. Fourteen targeted model/room/HTTP regressions passed; the strengthened table test passed afterward. This does not yet prove six separate browser UI sessions, native graphics/sound timing or public 6-Max queue behavior.
+
+The eight-segment wheel is returned only for an explicit eight-outcome configuration. Other complete local practice configurations remain playable through the internal API without inventing extra wheel outcomes. Public six-seat presentation and owner forms still require integration before activation.
+
+
+### Authenticated six-seat queue — working tree
+
+Player queue commands accept explicit `seats:6`; omitted seats retain the established three-seat behavior. Format is part of the operation identity, and a retry cannot switch formats. Rules are matched by stake plus format, using owner revisions, and the sixth entry atomically draws the outcome, settles X4 insurance and creates the six-seat room. `GET /local/spin?seats=6` discovers only six-seat rules; the default still returns three-seat rules. Invalid/duplicate format parameters reject with 400. Existing account/origin protections apply unchanged.
+
+`spin-six-queue-test.mjs` verifies six matched entries, failed sixth-write rollback, exact X4 insurance awards, immutable format identity, replay and cold restart. `spin-six-queue-http-test.mjs` uses six independently authenticated cookie/token sessions on a temporary HTTP server: discovers explicit rules, checks origin/account rejection, registers all six, restarts before ready completion, plays a complete 1800-chip tournament, verifies six unique places and exact wallet/insurance/bank conservation, then restarts and verifies balances again. The latest ten-test regression run including existing three-seat HTTP/table/insurance flows passed. These are HTTP sessions, not rendered browser windows; public six-seat UI/owner forms and native graphics/audio comparison remain outstanding. No live activation.

@@ -66,7 +66,7 @@ http.createServer(async(req,res)=>{
   if(req.method==='POST'&&req.headers.origin!==origin)return json(403,{error:'Local origin required'});
   const account=playerProfile.identity(req);if(!account)return json(401,{error:'Sign in locally'});
   if(!cashWalletsEnabled)return json(503,{error:'Local practice mode is disabled'});
-  if(req.method==='GET')return json(200,{account,rules:roomRequest.spinRules().stakes,registrations:roomRequest.spinQueue(account)});
+  if(req.method==='GET'){const query=new URL(req.url,origin).searchParams,format=query.get('seats')??'3';if([...query.keys()].some(k=>k!=='seats')||query.getAll('seats').length>1||!['3','6'].includes(format))return json(400,{error:'Choose a three-seat or six-seat Spin format'});return json(200,{account,rules:roomRequest.spinRules(Number(format)).stakes,registrations:roomRequest.spinQueue(account)})}
   if(!req.headers['content-type']?.startsWith('application/json'))return json(415,{error:'Expected JSON'});
   let raw='';for await(const chunk of req){raw+=chunk;if(Buffer.byteLength(raw)>1024)return json(413,{error:'Request too large'})}
   let body;try{body=JSON.parse(raw);if(!body||Array.isArray(body)||typeof body!=='object')throw Error()}catch{return json(400,{error:'Invalid JSON'})}
