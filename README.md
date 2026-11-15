@@ -107,7 +107,7 @@ At a table, the chat icon opens a separate chat window; the gear opens settings 
 Showdown update: six-seat WIN uses the recovered original46-frame effect and preserves visible card identifiers. Verification scope and remaining native timing/placement gaps: [native WIN report](home-art/rea/native-win-verification.json).
 
 
-Chip Shuffle: Table settings → Shuffle chips starts the original-frame cosmetic effect; press again to stop. Wheel over the chips controls it. The Chip Shuffle preference disables your own effect while retaining other players’ animations, following the recovered client rule. Tests: `node chip-shuffle-test.mjs`, `node network-browser-test.mjs --shuffle-settings`, and `node network-browser-test.mjs --hosted`. Scope and remaining native sound/placement gaps: home-art/rea/chip-shuffle-table-verification.json.
+Chip Shuffle: The chip icon at the lower left of your seated six-seat table starts the original-frame cosmetic effect; press again to stop. Wheel over the chips controls it. The Chip Shuffle preference disables your own effect while retaining other players’ animations, following the recovered client rule. Tests: `node chip-shuffle-test.mjs`, `node network-browser-test.mjs --shuffle-settings`, and `node network-browser-test.mjs --hosted`. Scope and remaining native sound/placement gaps: home-art/rea/chip-shuffle-table-verification.json.
 
 
 Chip Shuffle now uses the original embedded Up/Combine/Other sounds in preview, at your seat and across sessions. They follow recovered frame triggers and stop with remote animation. Audio source/verification: home-art/rea/chip-shuffle-audio-verification.json. Native phase/mixing and physical speaker output remain unverified.

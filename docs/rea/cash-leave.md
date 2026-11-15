@@ -29,3 +29,9 @@ Server release can occur while a client is still showing a longer multi-pot/runo
 - network-browser-test --cash-global-leave uses two windows of the same authenticated account, trusted mouse activation, two full all-in hands, independently conserved360chips per table, payout-before-seat-removal presentation, exact wallet cash-outs, receipt retries and cold restart. The test profile uses a valid account identifier; an initial spaced fixture name was rejected by existing profile validation, which remains unchanged.
 
 All tests use temporary data and muted headless Chrome. Native menu geometry, native physical pixels/sound, native leave penalties, next-blind scheduling and global Rush/tournament rules remain open.
+
+## Confirmarea plecării în timpul unei plăți vizuale
+
+O plecare explicită poate fi acceptată de server cât animațiile award încă rulează în browser, mai ales într-un tab temporar inactiv. Interfața păstrează confirmarea left/cashOut până la încheierea animației. Dacă următorul poll cu vechiul token primește401, acea confirmare deja primită este finalizată înainte de tratarea expirării: tokenul este eliminat și suma exactă rămâne afișată. Nu este calculat un nou payout și nu este repetată creditarea serverului.
+
+Regresia cu șase sesiuni a demonstrat anterior dispariția confirmării și eroarea Join this room first după două mâini și restart, deși seat-ul fusese eliberat corect. Testul păstrează verificarea exactă Practice cash-out înainte de a așeza înlocuitorul și verifică bilanțul mâinii următoare. Fluxul account-wide cu receipt recuperabil și prezentarea normală payout-before-release rămân verificate separat.

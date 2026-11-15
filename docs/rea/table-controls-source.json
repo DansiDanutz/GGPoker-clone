@@ -1,0 +1,104 @@
+{
+  "method": "Selected current installed SWF source exports and original atlas decoded pixel comparison; art remains private",
+  "sources": {
+    "com/nsus/iron/table/view/component/TableMenu3D.as": "c4e04e9e22aaabb21c77b088ecc678250405b9c4ec2a53a699935f78e55b8853",
+    "com/nsus/iron/table/view/component/tablemenu/TableEtcMenu3D.as": "f4fc0c68fd210e7916964628be89e6f28f3b04a68152e44e3827549f2a6e4c39",
+    "com/nsus/iron/table/view/component/tablemenu/SideGameGroupView3D.as": "73afd558399bfd2d34da88efa72e647fa89cd875c40c7d1c374f3de2c930eab6",
+    "com/nsus/iron/table/TableMediator.as": "a17c9da4b16339a65a8329e0329c52dff7f7fb6072474da02ef6379c1359d4f5",
+    "com/nsus/iron/table/view/component/tablemenu/TableSocialMenu3D.as": "27a4fa33204a21771f3df58b0fb5f2d9f48c7cc7a627edba239655d2465888c7"
+  },
+  "art": [
+    {
+      "frame": "table_menu0419",
+      "file": "native-shuffle-control-enabled.png",
+      "rectangle": {
+        "x": 3492,
+        "y": 2402,
+        "w": 124,
+        "h": 124
+      },
+      "sha256": "be63757770a7935ea7e9a8bcd2e34fe5807e88c3061a2fecb2796ac74a4ce797",
+      "bytes": 20613,
+      "display": [
+        62,
+        62
+      ]
+    },
+    {
+      "frame": "table_menu0420",
+      "file": "native-shuffle-control-disabled.png",
+      "rectangle": {
+        "x": 3061,
+        "y": 2405,
+        "w": 124,
+        "h": 124
+      },
+      "sha256": "3c96f442216fb89e8b2bc9e332a348624070e79e45d7911bfa038d8a423b37aa",
+      "bytes": 14500,
+      "display": [
+        62,
+        62
+      ]
+    },
+    {
+      "frame": "table_menu0426",
+      "file": "native-table-social-chat.png",
+      "rectangle": {
+        "x": 1311,
+        "y": 2081,
+        "w": 150,
+        "h": 150
+      },
+      "sha256": "1fa1e4783efc5ae0421dcd38f61043fcf31df6183d28b2888989862b99c1deb3",
+      "bytes": 14088,
+      "display": [
+        68,
+        68
+      ]
+    }
+  ],
+  "geometry": {
+    "menuBaseX": 9,
+    "sideGroupIconLeft": 20,
+    "xWithoutSideGroupOrSpectatorChat": 29,
+    "y": "viewPort.height - 90",
+    "slot": [
+      62,
+      62
+    ],
+    "gap": 8
+  },
+  "control": {
+    "action": "CLICK_CHIP_SHUFFLE_BUTTON",
+    "inactiveIcon": 420,
+    "activeIcon": 419,
+    "secondClick": "reset own shuffle and menu state",
+    "end": "clear active menu state",
+    "preferenceOff": "hide trigger/reset own effect; remote effects continue"
+  },
+  "limits": [
+    "Local control is ordinary six-seat only; Rush shuffle transport not implemented",
+    "Side-game group/panic/spectator chat offsets not claimed complete",
+    "Full row/physical AIR pixels and speaker phase remain unverified"
+  ],
+  "socialChat": {
+    "group": [
+      625,
+      963
+    ],
+    "chatOffset": [
+      -70,
+      0
+    ],
+    "display": [
+      68,
+      68
+    ],
+    "localPosition": [
+      555,
+      963
+    ],
+    "branch": "ordinary seated, emoji present in native row; no SnapCam/no Helmet/no panic",
+    "limit": "Full social row/backplate/mute eligibility not reconstructed; existing local chat access preserved"
+  }
+}
