@@ -20,4 +20,4 @@
 #catalog.nativeCashOperator[data-mode=holdem][data-view=group] #groups [aria-pressed=true] .rowAction:hover{border-image-source:url('/home-art/native-autofold-apply-over.png')}
 #catalog.nativeCashOperator[data-mode=holdem][data-view=group] #groups [aria-pressed=true] .rowAction:active{border-image-source:url('/home-art/native-tourney-entry-down.png')}
 
-#catalog.nativeCashOperator[data-mode=holdem][data-view=group] #groups .rowAction[data-join-open=false]{border-image-source:url('/home-art/native-tourney-entry-disabled.png');color:#999}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=group] #groups [aria-pressed] .rowAction[data-join-open=false]{border-image-source:url('/home-art/native-tourney-entry-disabled.png');color:#999}
