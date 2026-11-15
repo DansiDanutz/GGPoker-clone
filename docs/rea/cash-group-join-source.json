@@ -1,0 +1,46 @@
+{
+  "method": "Selective headless FFDec AS exports and existing sprite crop decoded-RGBA readback; not AIR execution",
+  "swf": {
+    "path": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf",
+    "bytes": 41892370,
+    "sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1"
+  },
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/TableGroupCell.as",
+      "sha256": "6a5919668e749a5c0c4c4d6251b9c52d19b0c9e596c6d1b6aca5071a90d95b64"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/controller/CheckAutoJoinTableCommand.as",
+      "sha256": "ea20095520fbe9a85a6629c904a9bfdee25aa7e97caf8a809f09b440e6c1f619"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/controller/AutoJoinTableCommand.as",
+      "sha256": "3c5572174fffa4a13c03ca0de584794ea19e447a88815428e84f76406164238c"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/popup/NewGroupViewJoinPopup.as",
+      "sha256": "c5b00c2aabe2e9530c32c9b4ab879b2da2c9675131c2bda294710b0b3652c299"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/vo/AutoJoinVo.as",
+      "sha256": "d2dd8a9afd25c03e627a164a219cc765f7d26f75fb000d54d181d37f77b63501"
+    }
+  ],
+  "nativeContract": [
+    "TableGroupCell Join dispatches AUTO_JOIN_TABLE",
+    "HomeMediator login gate -> CHECK_AUTO_JOIN tableGroup,useTicket:false",
+    "CheckAutoJoin max-blind/funds/tickets guards -> OPEN_GROUP_VIEW_JOIN_POPUP",
+    "Popup has BuyIn and Advanced pages, Join/Cancel/Close; Join persists preferences and creates AutoJoinVo",
+    "AutoJoinVo includes tableCount,buyInAmount,stackType,playerStyleType,gameSpeedType,locationType,ticket/currency flags,isAutoBuyIn:true",
+    "Table count initial1; default cap6, GGPDE4; further waiting/config/funds/ticket limits; max0 disables Join",
+    "Advanced defaults indices stack1/style1/speed1/location0; choices Short/Average/Deep, Tight/Normal/Loose, Slow/Normal/Fast, Random/Nearby"
+  ],
+  "notImplemented": [
+    "Group aggregation and normal Group buy-in popup",
+    "Atomic local multi-table selection/funding and view lifecycle",
+    "Preferences with real locally measured matching; no fabricated operator matching thresholds",
+    "Ticket/currency branches depend on actual local feature support"
+  ],
+  "next": "Trace normal JoinCashGame request/service payload and popup layout; implement entire local group join flow rather than redirecting to spectator table"
+}

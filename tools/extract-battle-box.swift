@@ -19,6 +19,11 @@ func extract(_ relative:String,_ entries:[(String,String,Int,Int)],_ prefix:Stri
  let receipt:[String:Any] = ["method":"StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding","sources":[atlas.path:hash(try Data(contentsOf:atlas)),metadata.path:hash(try Data(contentsOf:metadata))],"files":records]
  try JSONSerialization.data(withJSONObject:receipt,options:[.prettyPrinted,.sortedKeys]).write(to:out.appendingPathComponent("rea/"+receiptName+".json"))
 }
+if CommandLine.arguments.contains("--lobby-preview-markers") {
+ try extract("init_lobby/desktop_assets.png",[("lobby_preview0014","dealer",20,21),("lobby_preview0015","small-blind",24,25),("lobby_preview0016","big-blind",24,25)],"native-tourney-preview-","lobby-preview-marker-atlas")
+ print("PASS native lobby3markers: exact decoded RGBA")
+ exit(0)
+}
 if CommandLine.arguments.contains("--lobby-preview-seat") {
  try extract("init_lobby/desktop_assets.png",[("lobby_preview0017","up",55,55),("lobby_preview0018","down",55,55),("lobby_preview0019","over",55,55)],"native-lobby-preview-seat-","lobby-preview-seat-atlas")
  print("PASS native preview seat3 sprites: exact decoded RGBA")

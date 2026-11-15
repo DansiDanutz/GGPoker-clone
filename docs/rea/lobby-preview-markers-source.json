@@ -1,0 +1,72 @@
+{
+  "method": "Selective headless FFDec AS exports and existing sprite crop decoded-RGBA readback; not AIR execution",
+  "swf": {
+    "path": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf",
+    "bytes": 41892370,
+    "sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1"
+  },
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/view/TableViewComponent.as",
+      "sha256": "792163a5f4f406507da45a337f3b9b7dc9f66f2c8759e583b5c25c610a0e5f3e"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/position/TablePreviewPositionData.as",
+      "sha256": "67a86d783f5667271410c80da678c59ab559899f4372b18c8eb0919554724c84"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/position/TablePreviewSixPositionData.as",
+      "sha256": "b643a7506a0abf33237a5f12013d10c3e886ef3eeaddae728b286bdb7eda9770"
+    }
+  ],
+  "atlas": {
+    "files": [
+      {
+        "bytes": 1321,
+        "file": "native-tourney-preview-dealer.png",
+        "frame": "lobby_preview0014",
+        "height": 21,
+        "rgbaExact": true,
+        "sha256": "8ad8afec38701b66a4a9c2b438f469ecf2ea902d4f86cfbebadc9248ef152fea",
+        "width": 20
+      },
+      {
+        "bytes": 1345,
+        "file": "native-tourney-preview-small-blind.png",
+        "frame": "lobby_preview0015",
+        "height": 25,
+        "rgbaExact": true,
+        "sha256": "404f728b5cc2c8a29342f364598ab7707df61f5519a06109139abbf1f9cf719d",
+        "width": 24
+      },
+      {
+        "bytes": 1320,
+        "file": "native-tourney-preview-big-blind.png",
+        "frame": "lobby_preview0016",
+        "height": 25,
+        "rgbaExact": true,
+        "sha256": "7edb6a635b065a9b509a333134485ac32049c8b9313bd638b5d4fd9469c7e082",
+        "width": 24
+      }
+    ],
+    "method": "StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding",
+    "sources": {
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+    }
+  },
+  "native": [
+    "TableViewComponent uses lobby_preview14Dealer/15SB/16BB",
+    "Sprites remain intrinsic20x21/24x25/24x25; tableScale1.08 multiplies positions, not marker sizes",
+    "Dealer gets (+2,+2) before tableScale; SB/BB use exact base positions"
+  ],
+  "implementation": [
+    "Use existing immutable native-tourney-preview dealer/SB/BB sprites from same atlas frames",
+    "Keep real room dealer/blind seat data and rotation; remove approximate circular gradients",
+    "Existing percentage anchors and local seat rotation are retained and NOT claimed source-exact"
+  ],
+  "pending": [
+    "Absolute native parent geometry/seat-index rotation and dealer offset not yet applied",
+    "Group View popup/multitable/preference matching still separate incomplete flow"
+  ]
+}
