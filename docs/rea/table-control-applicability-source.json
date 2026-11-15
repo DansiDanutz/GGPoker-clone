@@ -1,0 +1,91 @@
+{
+  "scope": "Selective static shipped-client FFDec exports,not native UI interaction or private server recovery",
+  "sources": [
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/control-contracts-source/scripts/com/nsus/iron/data/Brand.as",
+      "bytes": 16289,
+      "sha256": "52025295482c1f97db06c68052c1633202452cb5a57cd844f92c8070b602822d"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/control-contracts-source/scripts/com/nsus/iron/table/view/component/TableMenu3D.as",
+      "bytes": 93839,
+      "sha256": "c4e04e9e22aaabb21c77b088ecc678250405b9c4ec2a53a699935f78e55b8853"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/control-contracts-source/scripts/com/nsus/iron/table/controller/JoinSimilarTableCommand.as",
+      "bytes": 528,
+      "sha256": "3f58bc716015a9f7da4c911fa53a5f2a39a40e99feb587a767df4d851763bd1a"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/control-contracts-source/scripts/com/nsus/iron/table/controller/TopupCommand.as",
+      "bytes": 7113,
+      "sha256": "045b9e9a20946957c65d4e2c56ae957c60c83b9f0ffea3508192d3fd290874db"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/control-contracts-source/scripts/com/nsus/iron/utils/TableHelper.as",
+      "bytes": 3215,
+      "sha256": "2993091497997a89b4bbb6e3cd05564d2aac5bc5d30a63be523ebba8e6591d31"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/control-contracts-source/scripts/com/nsus/iron/table/vo/TableInfo.as",
+      "bytes": 65400,
+      "sha256": "7d044be76dea95375f26aeccade14ebb8620afedec682b75e35596d578e51da6"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/control-contracts-source/scripts/com/nsus/iron/table/view/popup/buyin/UnifiedRemoveChipsPopup.as",
+      "bytes": 19915,
+      "sha256": "b17f01b950c76ffb01547b616241ff3152be2f310379c51ad609bfb18a3142e1"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/control-contracts-source/scripts/com/nsus/iron/table/controller/SetAofAutoRemoveChipOptionCommand.as",
+      "bytes": 964,
+      "sha256": "21ab33973521d7f02e7e969fe24f3d15507752b1559ca0ab830465247951e684"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/control-contracts-source/scripts/com/nsus/iron/table/controller/AutoRemoveChipCommand.as",
+      "bytes": 1421,
+      "sha256": "bba391ea22f2a5d6cd3ace90419dc6641481657ce563090771ab8fe62d873e87"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/control-contracts-source/scripts/com/nsus/iron/table/controller/SendRemoveChipsSetCommand.as",
+      "bytes": 1343,
+      "sha256": "bf52c43e7a5af7eef112076886b2427da52ca6760034f129817feaf8e965aaf8"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/control-contracts-source/scripts/com/nsus/iron/table/services/request/SetRemoveChips.as",
+      "bytes": 1276,
+      "sha256": "49aa8739f19e3b435f9e91acec22163ccefe15754b427f16df06f0cdde9cdecf"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/control-contracts-source/scripts/com/nsus/iron/table/services/request/CashOut.as",
+      "bytes": 1109,
+      "sha256": "d39de16e2cb39919ab4f393b80cb484db3bd982823d02a9cff54c755acb153ad"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/control-contracts-source/scripts/com/nsus/network/protocol/Session/CashOutRequest.as",
+      "bytes": 748,
+      "sha256": "3a13993174081c2209f23611d8ae9b579d5154193199275e96006ebb4e814b13"
+    }
+  ],
+  "observations": {
+    "joinSimilar": "Brand.isNoOpponentSelection = Brandy.isGermanUser OR is2AceBrand; account/table/format/playing/VIP guards also apply. PLAYGG.RO display alias is GGPRO user AND GGPCOM. German-user predicate not observed for current account.",
+    "removeChips": "Server table-type EnableRemoveChips flag; TableHelper derives maximum removable balance minus minBuyIn (AoF uses minRemoveChip),with native raw-unit thresholds. Manual CashOut3123 is distinct from RemoveChipsToBB3505 persistent option."
+  },
+  "unknowns": [
+    "Current original account German-user predicate and live table EnableRemoveChips values",
+    "Native post-hand cash-out scheduling/authorization/automatic-removal arbitration",
+    "Physical native popup/fonts/animation/audio parity",
+    "Native raw amount units must not be equated with local whole play chips"
+  ],
+  "artifact": {
+    "file": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf",
+    "sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
+    "bytes": 41892370
+  },
+  "export": {
+    "provider": "FFDec26.4.0",
+    "selection": "13explicitclasses",
+    "artifactUnchangedDuringExport": true,
+    "retainedExportDifferences": []
+  }
+}

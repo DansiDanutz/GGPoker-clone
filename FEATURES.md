@@ -1311,3 +1311,6 @@ MTT pause presentation now reuses the native-source ordinary-tournament presente
 
 
 MTT finite-bank candidate: explicit opt-in owner bank/hot-limit fields reuse the shared clock and native-source control; legacy events remain disabled. Actor/account/action-bound strict requests, no paid toggles/wallet charge/refills, elapsed spending, exact remaining-bank carry on table moves, bounded checkpoint clock validation and failed-write rollback. New unit guards/corruption/restart test, full seven-player actual-room transfer/payout test and rendered owner-form/native-button/restart-to-winner(2100chips/175credits) pass. Not yet released; exact-head QA and physical native comparison remain open.
+
+
+REA table-control applicability: newly inspected Brand predicate proves JoinSimilarTable is conditional on German-user/2Ace state, not a universal PLAYGG.RO control; actual account predicate remains unobserved. Remove Chips separates immediate CashOut3123 from automatic RemoveChipsToBB3505, with server table permission, balance-minus-minimum bounds and distinct AoF behavior. Thirteen source hashes and integration requirements recorded in docs/rea/table-control-applicability.md. No unsupported control was enabled; no native/live-account interaction occurred.
