@@ -1,0 +1,25 @@
+{
+  "method": "REA static client contract from retained FFDec exports and bound SWF; no AIR/private server execution",
+  "sources": {
+    "/Users/davidai/Sandbox/rea-tools/global-sitout-source/scripts/com/nsus/iron/helper/GlobalSitoutManager.as": "67ea5b942ac5c5f03038fcc25f9ad03b17a6c02f55c1e82585cacea07ef641a9",
+    "/Users/davidai/Sandbox/rea-tools/global-sitout-source/scripts/com/nsus/iron/controller/SetGlobalSitoutCommand.as": "35be65c355fc7045b0819f2a4429332e74b55bd3a7cc0914f82ad4b853a373e4",
+    "/Users/davidai/Sandbox/rea-tools/global-sitout-source/scripts/com/nsus/iron/table/controller/SelectSitoutMenuCommand.as": "6c53c6e2e3df9749afb39de504956fe88e2c0bf8ac92a9cfe812c41991df585e",
+    "/Users/davidai/Sandbox/rea-tools/global-sitout-source/scripts/com/nsus/iron/table/services/request/SetAutoActionFlags.as": "def19d8a7f73725563b1dd450434b253edcb9d8cfbe0ed5aa0683ca6d57873cd",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/controller/GlobalSitoutCommand.as": "72d21dd055a873e5e8f0cbde8748dc0491c1053595cb491219aa1ee8d5a98683",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/controller/GlobalSitInCommand.as": "0a73a1a624799fd74c6feb27a792f10ba28574af43e1aeab9e0176f72f146aa6",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/controller/SitOutCommand.as": "c82abeecef38eb0347a1e5dd3a2aa55fd7749b1611241a38326c13d64dd87a62",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/controller/SitInCommand.as": "28f24276219110c4ceaa9ff0478beea30fb9436347296f81d7717de16bd7a0bc",
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1"
+  },
+  "nativeFindings": [
+    "isAll and IsGlobalAutoAction differ from cash isGlobal",
+    "All-games dispatch admits tournament/Spin while cash dispatch excludes them",
+    "Per-table reservation overrides reservedAllTables",
+    "Resume-all clears reservations; cash return excludes tournament/Spin"
+  ],
+  "localPolicy": [
+    "Operations apply atomically to existing account-bound supported seated rooms and registered Rush entries",
+    "New sessions do not inherit a prior operation; native future-session server policy remains unverified",
+    "Battle finals,next-blind and global UI integration remain incomplete in this candidate"
+  ]
+}

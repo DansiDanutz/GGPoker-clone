@@ -12,7 +12,7 @@ export function openRush(file,variant='holdem',avatarFor=()=>0,notes,walletStore
  let entries=[],pool=null,version=0,knownTables=new Set();
  // Cosmetic leases stay in memory so a restart cannot replay a shuffle.
  const shuffles=new Map();
- function restore(saved){entries=saved.entries;if(!Array.isArray(entries)||entries.some(p=>p?.sitOutAllCash!==undefined&&(p.sitOutAllCash!==true||p.bot)||p?.helmet!==undefined&&typeof p.helmet!=='boolean'||p?.left!==undefined&&p.left!==true||p?.walletFunded!==undefined&&(p.walletFunded!==true||p.bot||p.left||!walletStore)))throw Error('Invalid Rush helmet state');version=saved.version;pool=saved.pool?rushPool(entries,4,saved.pool,variant):null;knownTables=new Set(pool?.tables.keys()||[])}
+ function restore(saved){entries=saved.entries;if(!Array.isArray(entries)||entries.some(p=>p?.sitOutAllCash!==undefined&&(p.sitOutAllCash!==true||p.bot)||p?.sitOutAllGames!==undefined&&(p.sitOutAllGames!==true||p.bot||p.left||!p.paused||p.sitOutAllCash)||p?.helmet!==undefined&&typeof p.helmet!=='boolean'||p?.left!==undefined&&p.left!==true||p?.walletFunded!==undefined&&(p.walletFunded!==true||p.bot||p.left||!walletStore)))throw Error('Invalid Rush helmet state');version=saved.version;pool=saved.pool?rushPool(entries,4,saved.pool,variant):null;knownTables=new Set(pool?.tables.keys()||[])}
  try{restore(walletStore?.read(variant)??JSON.parse(readFileSync(file,'utf8')))}catch(e){if(e.code!=='ENOENT')throw e}
  const avatars=ids=>ids.map(id=>entries.some(p=>p.id===id&&p.bot)?null:avatarFor(id));
  const subject=id=>noteSubject(entries.find(p=>p.id===id)?.bot?{bot:true,noteId:'rush:'+variant+':'+id}:{account:id});
@@ -22,7 +22,7 @@ export function openRush(file,variant='holdem',avatarFor=()=>0,notes,walletStore
   if(entry){
    if(!entry.left&&(!player||player.table!==null||player.balance>0))return;
    if(pool)pool.adjustBalance(id,200);
-   delete entry.left;delete entry.sitOutAllCash;entry.paused=false;entry.queued=false;
+   delete entry.left;delete entry.sitOutAllCash;delete entry.sitOutAllGames;entry.paused=false;entry.queued=false;
    if(walletStore&&!entry.bot){entry.walletFunded=true;transfers.push({account:id,delta:-200})}return;
   }
   if(entries.length>=100)fail(409,'Pool full');
@@ -60,7 +60,7 @@ export function openRush(file,variant='holdem',avatarFor=()=>0,notes,walletStore
   let result=null;
   if(previous){const [tableId,t]=previous,seat=t.ids.indexOf(id),{deck,hands,reservedChecks,...game}=t.game;result={table:tableId,me:seat,names:t.ids,avatars:avatars(t.ids),hand:{...game,hands:visibleCards(t.game,seat)}}}
   const noteTable=table||previous?.[1],noteTableID=table?player.table:previous?.[0],noteSeat=noteTable?.ids.indexOf(id);
-  return {account:id,variant,version,shuffles:table?table.ids.flatMap((name,seat)=>{const event=shuffles.get(name);return event?.table===player.table&&Date.now()-event.at<2450?[{seat,at:event.at}]:[]}):[],walletSupported:!!walletStore,...(walletStore&&!entries.some(p=>p.id===id&&p.bot)?{walletAvailable:walletStore.summary(id).available}:{}),walletFunded:entries.some(p=>p.id===id&&p.walletFunded===true&&!p.left),buyIn:200,canLeave:entries.some(p=>p.id===id&&!p.left)&&!table&&![...(pool?.tables.values()||[])].some(t=>!t.settled&&t.ids.includes(id)),helmet:entries.some(p=>p.id===id&&p.helmet===true),helmets:(table?.ids||previous?.[1].ids||[]).map(name=>entries.some(p=>p.id===name&&p.helmet===true)),paused:entries.some(p=>p.id===id&&p.paused===true),sitOutAllCash:entries.some(p=>p.id===id&&!p.left&&p.paused===true&&p.sitOutAllCash===true),noteTable:noteTableID??null,hudVersion:pool?[...pool.tables.values()].filter(t=>t.settled).length:0,...(noteTable?{noteSubjects:noteTable.ids.map((id,i)=>i===noteSeat?null:subject(id))}:{}),avatars:table?avatars(table.ids):[],queued:entries.some(p=>p.id===id&&p.queued),handVersion:table?player.table+':'+table.game.history.length:null,registered:entries.some(p=>p.id===id&&!p.left),population:entries.filter(p=>!p.left).length,waiting:pool?[...pool.players].filter(([id,p])=>p.table===null&&p.balance>0&&eligible().includes(id)).length:entries.length,table:player?.table||null,balance:player?.balance??(entries.some(p=>p.id===id&&!p.left)?200:0),me,names:table?.ids||[],hand,result,legal:table?.game.turn===me&&!table.game.end?options(table.game):null};
+  return {account:id,variant,version,shuffles:table?table.ids.flatMap((name,seat)=>{const event=shuffles.get(name);return event?.table===player.table&&Date.now()-event.at<2450?[{seat,at:event.at}]:[]}):[],walletSupported:!!walletStore,...(walletStore&&!entries.some(p=>p.id===id&&p.bot)?{walletAvailable:walletStore.summary(id).available}:{}),walletFunded:entries.some(p=>p.id===id&&p.walletFunded===true&&!p.left),buyIn:200,canLeave:entries.some(p=>p.id===id&&!p.left)&&!table&&![...(pool?.tables.values()||[])].some(t=>!t.settled&&t.ids.includes(id)),helmet:entries.some(p=>p.id===id&&p.helmet===true),helmets:(table?.ids||previous?.[1].ids||[]).map(name=>entries.some(p=>p.id===name&&p.helmet===true)),paused:entries.some(p=>p.id===id&&p.paused===true),sitOutAllGames:entries.some(p=>p.id===id&&!p.left&&p.paused===true&&p.sitOutAllGames===true),sitOutAllCash:entries.some(p=>p.id===id&&!p.left&&p.paused===true&&p.sitOutAllCash===true),noteTable:noteTableID??null,hudVersion:pool?[...pool.tables.values()].filter(t=>t.settled).length:0,...(noteTable?{noteSubjects:noteTable.ids.map((id,i)=>i===noteSeat?null:subject(id))}:{}),avatars:table?avatars(table.ids):[],queued:entries.some(p=>p.id===id&&p.queued),handVersion:table?player.table+':'+table.game.history.length:null,registered:entries.some(p=>p.id===id&&!p.left),population:entries.filter(p=>!p.left).length,waiting:pool?[...pool.players].filter(([id,p])=>p.table===null&&p.balance>0&&eligible().includes(id)).length:entries.length,table:player?.table||null,balance:player?.balance??(entries.some(p=>p.id===id&&!p.left)?200:0),me,names:table?.ids||[],hand,result,legal:table?.game.turn===me&&!table.game.end?options(table.game):null};
  }
  function hud(id,viewer){
   const records=[...(pool?.tables||[])].filter(([,t])=>t.settled&&t.ids.includes(id)),stats={hands:records.length,wins:0,pfrHands:0,preflopRaises:0,stealOpportunities:0,stealRaises:0,threeBetOpportunities:0,threeBets:0,flopsSeen:0,showdowns:0,showdownWins:0,voluntary:records.every(([,t])=>typeof t.game.vpip?.[t.ids.indexOf(id)]==='boolean')?0:null};
@@ -105,7 +105,7 @@ export function openRush(file,variant='holdem',avatarFor=()=>0,notes,walletStore
    if(op==='join'){
     register(id,false,transfers);
    }else if(op==='leave'){
-    if(!current.canLeave)fail(409,'Finish all Rush hands before leaving');const entry=entries.find(p=>p.id===id),balance=current.balance;if(pool)pool.adjustBalance(id,-balance);if(entry.walletFunded)transfers.push({account:id,delta:balance});entry.left=true;entry.paused=true;entry.queued=false;delete entry.sitOutAllCash;delete entry.walletFunded;
+    if(!current.canLeave)fail(409,'Finish all Rush hands before leaving');const entry=entries.find(p=>p.id===id),balance=current.balance;if(pool)pool.adjustBalance(id,-balance);if(entry.walletFunded)transfers.push({account:id,delta:balance});entry.left=true;entry.paused=true;entry.queued=false;delete entry.sitOutAllCash;delete entry.sitOutAllGames;delete entry.walletFunded;
    }else if(op==='fill-bots'){
     if(!current.registered||current.table)fail(409,'Join the pool and wait before adding computers');
     for(let i=1;i<=11;i++)register('Computer '+i,true);
@@ -113,9 +113,9 @@ export function openRush(file,variant='holdem',avatarFor=()=>0,notes,walletStore
    }else{
     if(!current.registered||op!=='sit-out'&&!pool?.players.has(id))fail(409,'Join the pool; six players are needed');
     const entry=entries.find(p=>p.id===id);
-    if(op==='sit-out'){if(typeof body.paused!=='boolean')fail(400,'Choose a sit-out state');entry.paused=body.paused;entry.queued=false;delete entry.sitOutAllCash}
-    if(op==='cancel-queue'){delete entry.sitOutAllCash;if(current.table)fail(409,'Finish the current hand first');entry.queued=false;entry.paused=true}
-    if(op==='deal'){delete entry.sitOutAllCash;entry.paused=false;entry.queued=pool.deal(id,eligible())===null}
+    if(op==='sit-out'){if(typeof body.paused!=='boolean')fail(400,'Choose a sit-out state');entry.paused=body.paused;entry.queued=false;delete entry.sitOutAllCash;delete entry.sitOutAllGames}
+    if(op==='cancel-queue'){delete entry.sitOutAllCash;delete entry.sitOutAllGames;if(current.table)fail(409,'Finish the current hand first');entry.queued=false;entry.paused=true}
+    if(op==='deal'){delete entry.sitOutAllCash;delete entry.sitOutAllGames;entry.paused=false;entry.queued=pool.deal(id,eligible())===null}
     if(op==='act'){
      if(body.reserved!==undefined&&typeof body.reserved!=='boolean')fail(400,'Invalid reserved action flag');
      const table=pool.tables.get(current.table),g=table.game,seat=table.ids.indexOf(id),board=g.board.length;pool.move(id,body.action,body.target);

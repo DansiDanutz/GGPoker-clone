@@ -2,7 +2,11 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
-## Verified release baseline — PR217
+## Verified release baseline — PR219
+
+PR219 merged as `07f0535cd9d55274835bac9d52f609a52f20f3b0`, tested source `824c51bd714d8df377dbef2e4a814be0c8e5faac`,33exact-head checks. Individual tournament/Spin/MTT pause is active with forced bets/cards retained,local500ms Check/Fold,next-deal return,identity-preserving moves and owner status. Runtime121files/1,402,560bytes; six owner files15,496bytes unchanged. All-games global follow-up below remains candidate.
+
+## Released checkpoint — PR217
 
 PR217 merged as `640f16dd15c286864ca152ffbc3b4dc09103c48f`, tested source `b5a7eab53f35830d0e21222b689679ef70dacede`. All23exact-head checks passed. Short Deck next-hand pause/status/return and supported cash scope are active; Rabbit remains independently gated on request and restore. Runtime121files/1,399,768bytes; six owner files15,496bytes unchanged. Native forced-bet/return policy and physical pixel/audio parity remain unverified. See [Short Deck pause](docs/rea/shortdeck-sitout.md).
 
@@ -1373,3 +1377,5 @@ Short Deck review:reproduced unsupported rabbitShown checkpoint accepted after c
 Tournament/Spin player pause investigation: native separate flags, request3128, global cash versus all-games and return paths are documented in [tournament player pause](docs/rea/tournament-player-pause.md). This is evidence and acceptance scope, not an implemented feature.
 
 Tournament player pause candidate (not live): desired/applied flags, mandatory blinds/cards, local500ms Check/Fold, next-deal return, MTT identity/automatic Ready, Spin3/6 payouts, rollback/restart and three-context browser verified. All-games/global return and next-blind remain incomplete; see tournament-player-pause guide.
+
+All-games pause backend candidate: atomic cash/tournament/Spin/MTT/Rush scope,private provenance,strict authenticated HTTP,rollback/restart and cash-only isolation tested; not connected to UI or deployed. See [all-games pause](docs/rea/all-games-pause.md).
