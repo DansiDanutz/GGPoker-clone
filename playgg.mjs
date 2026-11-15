@@ -1,3 +1,4 @@
+import {installLobbyPlayerHud} from './lobby-player-hud.mjs';
 import {installBattleLobby} from './battle-lobby.mjs';
 import {installBattleRules} from './battle-rules.mjs';
 import {languageCode,languageCatalog,languageText,installTableLanguage} from './native-language.mjs';
@@ -11,6 +12,7 @@ import {updateElement,avatarSource,tableThemes,tableTheme,feltColours,feltColour
 const settingsWindow=new URLSearchParams(location.search).get('panel')==='settings';
 const requirePlayer=new URLSearchParams(location.search).has('player'),identity=await fetch('/local/me');
 const player=identity.ok?await identity.json():null,journey=!!player;
+const lobbyHud=installLobbyPlayerHud();
 if(requirePlayer&&!player){location.replace('/launch.html');throw Error('Sign in locally')}
 import {carouselIndex} from './playgg-carousel.mjs';
 const $=id=>document.getElementById(id);
@@ -200,7 +202,7 @@ function navigate(p){
  if(p.id==='settings'){$('homeSettings').hidden=!$('homeSettings').hidden;return}
 
  if(['holdem','plo','shortdeck','aof','rush','tournaments','battle'].includes(p.id)){catalog(p.id);return}
- if(p.id==='poker'||p.id==='navhome'){spinUI?.close();$('catalog').hidden=true;size();feed.scrollTop=0;return}
+ if(p.id==='poker'||p.id==='navhome'){lobbyHud.select(null);spinUI?.close();$('catalog').hidden=true;size();feed.scrollTop=0;return}
  if(p.id==='collapse'){collapsed=!collapsed;for(const id of ['usd','pd','td','tickets'])$(id).hidden=collapsed,$(id).style.display=collapsed?'none':'';for(const id of ['collapse','cash','prop','rewards','promo'])$(id).style.transform=collapsed?'translateY(-137px)':'';return}
  if(p.id==='floatingAsk'||p.id==='ask'){ $('assistantPane').hidden=false;$('question').focus() }
 }
@@ -243,6 +245,7 @@ display(6);
 
 let catalogRequest=0,battleRulesView,battleLobbyView;
 function catalog(mode){
+ lobbyHud.select(null);
  battleRulesView?.destroy();battleRulesView=null;battleLobbyView?.destroy();battleLobbyView=null;spinUI?.close();
  const request=++catalogRequest;$('viewSwitch').hidden=false;$('groups').hidden=false;
  const tournament=mode==='tournaments',pane=$('catalog'),list=$('groups'),detailsRoot=$('details');pane.dataset.mode=mode;pane.classList.remove('nativeCashOperator');pane.hidden=false;size();list.replaceChildren();
@@ -407,13 +410,14 @@ function cashCatalog(request,mode){
    }));
    b.onclick=e=>{if(selected!==i)waitingError='';selected=i;render();refreshWaiting();list.children[i].focus();if(e.target.classList.contains('rowAction')&&r.open)location.assign(joinHref(r))};return b}));
   updateElement(list,nextList);
-  if(!t){updateElement(previewRoot,preview);$('details').textContent='No matching hosted tables';join.removeAttribute('href');$('joinTable').hidden=true;join.textContent='No table selected';return}
+  if(!t){lobbyHud.select(null);updateElement(previewRoot,preview);$('details').textContent='No matching hosted tables';join.removeAttribute('href');$('joinTable').hidden=true;join.textContent='No table selected';return}
+  lobbyHud.select(!group&&mode==='holdem'&&t.capacity===6?t:null);
   const own=waitingRoom===t.room?waiting:null;
   if(group){const line=(...v)=>{const e=node('div','','line');e.append(...v.map(x=>node('span',x)));preview.append(e)};
    line('Player','Seat','Chips');if(t.seats){t.seats.forEach((p,i)=>{if(p)line(p.name,i+1,p.stack)});if(!t.occupied)line('No players seated','—','—')}else line('Occupied seats',t.occupied??'—','—');
   }else{preview.append(node('div',(t.minBuyIn!==undefined&&t.minBuyIn!==t.maxBuyIn?'Buy-in Range\n'+t.minBuyIn+'–'+t.maxBuyIn:'Buy-in\n'+t.stack)+' chips','oval'));const nativePreview=mode==='holdem'&&t.capacity===6,positions=nativePreview?[[50,85.7],[17.6,64.2],[18.4,34],[50,9.2],[83.3,33.7],[83.7,64.4]]:t.capacity===6?[[50,85],[18,65],[18,34],[50,17],[82,34],[82,65]]:[[50,85],[19,50],[50,17],[81,50]];positions.forEach(([x,y],i)=>{const name=t.seats?(t.seats[i]?.name||'Open seat'):'Seat '+(i+1),s=node('span',nativePreview?'':name,'seatlabel');if(t.seats?.[i]){
  if(t.capacity===6){const avatar=node('span','','previewAvatar');avatar.setAttribute('role','img');avatar.setAttribute('aria-label','Avatar for '+t.seats[i].name);if(Number.isInteger(t.seats[i].avatar)||typeof t.seats[i].avatar==='string'){avatar.style.backgroundImage='url('+avatarSource(t.seats[i].avatar)+')';avatar.style.backgroundSize='cover';avatar.style.backgroundPosition='center'}else avatar.style.backgroundPosition=(i*20)+'% center';s.prepend(avatar)}
- if(!nativePreview)s.append(node('small',t.seats[i].stack+' chips'))}if(nativePreview&&t.seats?.[i]){const plate=node('span','','previewPlate'),label=node('span',name,'previewName');label.title=name;plate.append(label);if(t.seats?.[i])plate.append(node('small',t.seats[i].stack+' chips'));s.append(plate)}if(nativePreview&&!t.seats?.[i]&&t.open&&!t.reservedSeats?.includes(i)&&(!journey||own&&!own.seated&&!own.position)&&(!own?.offer||own.offer.seat===i)){const button=node('button','','nativePreviewSeat');button.type='button';button.dataset.seat=i;button.setAttribute('aria-label','Take seat '+(i+1));button.onclick=()=>location.assign(journey?joinHref(t,true,i):'/launch.html');s.append(button)}s.style.left=x+'%';s.style.top=y+'%';preview.append(s)})}
+ if(!nativePreview)s.append(node('small',t.seats[i].stack+' chips'))}if(nativePreview&&t.seats?.[i]){const plate=node('span','','previewPlate'),label=node('span',name,'previewName');label.title=name;plate.append(label);if(t.seats?.[i])plate.append(node('small',t.seats[i].stack+' chips'));s.append(plate);const button=node('button','','nativePreviewPlayer');button.type='button';button.dataset.seat=i;button.setAttribute('aria-label','Open player HUD for '+name);button.onclick=()=>journey?lobbyHud.open(t,i):location.assign('/launch.html');s.append(button)}if(nativePreview&&!t.seats?.[i]&&t.open&&!t.reservedSeats?.includes(i)&&(!journey||own&&!own.seated&&!own.position)&&(!own?.offer||own.offer.seat===i)){const button=node('button','','nativePreviewSeat');button.type='button';button.dataset.seat=i;button.setAttribute('aria-label','Take seat '+(i+1));button.onclick=()=>location.assign(journey?joinHref(t,true,i):'/launch.html');s.append(button)}s.style.left=x+'%';s.style.top=y+'%';preview.append(s)})}
   if(!group&&mode==='holdem'&&t.positions){const spots=[[50,68.5],[35.6,64.2],[36.8,42.6],[50,26.4],[63.2,42.6],[64.4,64.2]];for(const [key,label]of [['dealer','D'],['smallBlind','SB'],['bigBlind','BB']]){const seat=t.positions[key];if(!Number.isInteger(seat)||!spots[seat])continue;const marker=node('span',label,'previewPosition '+(key==='dealer'?'dealerPosition':'blindPosition'));marker.dataset.seat=seat;marker.setAttribute('role','img');marker.setAttribute('aria-label',(key==='dealer'?'Dealer':key==='smallBlind'?'Small blind':'Big blind')+' · '+(t.seats?.[seat]?.name||'Seat '+(seat+1)));marker.style.left=spots[seat][0]+'%';marker.style.top=spots[seat][1]+'%';if(key==='smallBlind'&&seat===t.positions.dealer)marker.style.left=(spots[seat][0]+10)+'%';preview.append(marker)}}
   updateElement(previewRoot,preview);
   $('details').textContent=t.name+' · '+stakes+' · practice chips'+(waitingRoom===t.room&&waiting?.offer?' · Seat available — Open to confirm buy-in':'')+(waitingError?' · '+waitingError:'');const label=!group?'Open':t.open?'Join Table':'Registration closed';if(join.firstElementChild?.textContent!==label)join.replaceChildren(node('span',label));if(t.open||!group)join.href=group?joinHref(t):t.href;else join.removeAttribute('href');join.onclick=()=>{if(group&&t.open)join.href=joinHref(t)};
