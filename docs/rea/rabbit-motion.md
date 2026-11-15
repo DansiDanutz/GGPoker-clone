@@ -1,6 +1,6 @@
 # Rabbit Hunt: oprirea completă a animației și investigarea vizibilității
 
-Stare: candidat după test RED→GREEN pe sursă; validarea exact-head/instalabilă urmează. Live rămâne PR222. Dovezile AS/Pcode/SWF sunt în rabbit-motion-source.json; nu este o execuție AIR sau o comparație fizică nouă.
+Stare: integrat și activ prin PR223. Cele13verificări exact-head au trecut, inclusiv Hold’em/PLO pe sursă și pachet instalabil; restarturile sunt izolate. Dovezile AS/Pcode/SWF sunt în rabbit-motion-source.json; nu este o execuție AIR sau o comparație fizică nouă.
 
 ## Ce confirmă REA
 
@@ -25,3 +25,7 @@ Duratele și geometria normală300ms/200ms rămân neschimbate. Nu sunt schimbat
 Scenariul existent păstrează trei contexte izolate, control real de pointer/Enter/hotkey, dimensiuni850/1196, exactitatea runout-ului, cue-urile single/double și payouturi neschimbate360jetoane. Extensia testează întreruperea atât în spread, cât și în peel, revenirea preferinței la false, lipsa oricărei reînchideri, un singur cue și lipsa replay-ului după reload sau noi schimbări ale preferinței. Verifică HandRank propriu, independența celeilalte sesiuni și izolarea spectatorului. Se rulează pentru Hold’em și PLO; PLO păstrează exact două cărți proprii în evaluare.
 
 Audio este măsurat în Chrome headless mut prin semnătura bufferului și numărul de starturi, fără difuzoare. Nu afirmăm paritate fizică de sunet/pixeli, suport double-board jucabil sau o politică de broadcast a serverului privat. Aceste limite rămân în obiectivul integral.
+
+## Activare locală
+
+Guarded idle rollout PID94131→99734; runtime /Users/davidai/.local/share/playgg-runtime/rabbit-motion-45628ce,121files/1405511bytes; existing1330art resources reused. Backup /Users/davidai/.local/state/playgg-rollouts/pr223-aw8frt47. All six owner files/15496bytes unchanged, no live gameplay QA writes. Served rabbit-view.mjs equals installed bytes. Evidence .git/danslab-qa/pr223-evidence.json and pr223-live.json.
