@@ -1,3 +1,5 @@
+import {ownerBackup} from './owner-backup.mjs';
+import {restoreOwnerBackup} from './owner-restore.mjs';
 import assert from 'node:assert/strict';
 import {openRooms} from './rooms.mjs';
 import {mkdtempSync,rmSync,readFileSync,writeFileSync} from 'node:fs';import {join} from 'node:path';import {tmpdir} from 'node:os';
@@ -13,3 +15,6 @@ const mismatch=structuredClone(configuration);mismatch.buyIn=10000;assert.throws
 const snapshot=new Map(JSON.parse(full));snapshot.get('local-spin-bank').reservations[0].configuration.smallBlinds[0]=6;const corrupt=join(dir,'corrupt.json');writeFileSync(corrupt,JSON.stringify([...snapshot]));assert.throws(()=>openRooms(corrupt,()=>0,true),/Spin/);
 console.log('PASS six real local wallet entries: six-seat capacity, exact hold/debits, retry, per-entry restart, refund conservation and bank/config identity');
 }finally{rmSync(dir,{recursive:true,force:true})}
+
+const zeroDir=mkdtempSync(join(tmpdir(),'spin-six-zero-capital-')),zeroFile=join(zeroDir,'rooms.json');
+try{const low=structuredClone(configuration);low.outcomes=[{...low.outcomes[1],frequency:100000000}];let zero=openRooms(zeroFile,()=>0,true);zero.registerSpin({id,buyIn:5000,account:'Alice',configuration:low});zero=openRooms(zeroFile,()=>0,true);assert.equal(zero.spinRegistration(id,'Alice').registered,1);assert.equal(zero.spinBank().sequence,0);assert.equal(zero.spinBank().reserved,0);assert.equal(zero.hasActivePlay(),true);const archive=ownerBackup(zeroDir,'POST',undefined,[]);assert.throws(()=>restoreOwnerBackup(zeroDir,archive.id,[],()=>openRooms(zeroFile,()=>0,true)),e=>e.status===409);zero.cancelSpinRegistration(id,'Alice');zero=openRooms(zeroFile,()=>0,true);assert.equal(zero.wallet('Alice').available,10000);assert.equal(zero.hasActivePlay(),false);const recovered=restoreOwnerBackup(zeroDir,archive.id,[],()=>openRooms(zeroFile,()=>0,true)).loaded;assert.equal(recovered.wallet('Alice').available,5000);assert.equal(recovered.hasActivePlay(),true);recovered.cancelSpinRegistration(id,'Alice');assert.equal(recovered.wallet('Alice').available,10000);console.log('PASS zero-exposure six-seat entry preserves unfunded bank reservation/refund through restart');}finally{rmSync(zeroDir,{recursive:true,force:true})}
