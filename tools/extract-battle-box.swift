@@ -19,6 +19,11 @@ func extract(_ relative:String,_ entries:[(String,String,Int,Int)],_ prefix:Stri
  let receipt:[String:Any] = ["method":"StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding","sources":[atlas.path:hash(try Data(contentsOf:atlas)),metadata.path:hash(try Data(contentsOf:metadata))],"files":records]
  try JSONSerialization.data(withJSONObject:receipt,options:[.prettyPrinted,.sortedKeys]).write(to:out.appendingPathComponent("rea/"+receiptName+".json"))
 }
+if CommandLine.arguments.contains("--cash-group-players") {
+ try extract("init_lobby/desktop_assets.png",[("common0133","selected",10,10),("lobby_preview0034","sort",8,4)],"native-cash-group-player-","cash-group-players-atlas")
+ print("PASS native Group2playerassets exact decoded RGBA")
+ exit(0)
+}
 if CommandLine.arguments.contains("--cash-group-row") {
  try extract("init_lobby/desktop_assets.png",[("lobby0959","players-bg",48,36),("lobby0846","players-icon",24,24),("common0277","indicator",4,8),("common0028","join-over",20,40),("common0029","join-down",20,40)],"native-cash-group-","cash-group-row-atlas")
  print("PASS native Group5rowassets exact decoded RGBA")

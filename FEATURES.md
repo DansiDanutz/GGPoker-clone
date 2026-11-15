@@ -1439,3 +1439,5 @@ Group aggregation REA follow-up: native rows aggregate by operator tableTypeID a
 Hold’em Group aggregation live PR243: one row per shared funding-rule identity,absolute actual seated total/default buy-in,all real member seats in local preview,open representative for Join and stable Table→Group selection. Native operator type IDs/featured aggregation/player-list pixels remain separate gaps. [REA contract](docs/rea/cash-group-aggregation.md).
 
 Hold’em Group row live PR245: native ordinary five-column branch,56×20TableSize,80×36original player widget,source row colors/indicator and six real Join state textures replace placeholder Promotion name/gradient. Exact source/font/atlas contract in [cash-group-row.md](docs/rea/cash-group-row.md);native parent scaling/promotions/player-list/footer remain incomplete.
+
+Group player-list candidate: native240×23header/237×28rows,actual room/seat/chips,descending/toggled sort,Profile/double-click private HUD/notes and actual Open without new seat/debit. Departure clears selection;country/operatorNo. and own/partner/note/live paint remain incomplete. [Contract](docs/rea/cash-group-players.md).
