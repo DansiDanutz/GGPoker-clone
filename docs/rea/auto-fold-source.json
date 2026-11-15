@@ -18,7 +18,15 @@
     "com/nsus/iron/table/view/component/TableMenu3D.as": "c4e04e9e22aaabb21c77b088ecc678250405b9c4ec2a53a699935f78e55b8853",
     "com/nsus/iron/table/view/component/tablemenu/TableSideMenu3D.as": "d7f9e41c707d2a635e79d3b53a2ee761921646e27c8406392211547a2e0a53f9",
     "com/nsus/lib/base/Ease.as": "fb54a8c5d923e95bbe6acf9d1d8360790630b8db3e617e3ee41e8ea1db0bb481",
-    "com/nsus/iron/table/view/popup/gameinfo/newinfo/NewGameInfoView.as": "50bbebeef00e53200f177adec143589060d69319bd6bd53c77f5b028235b639c"
+    "com/nsus/iron/table/view/popup/gameinfo/newinfo/NewGameInfoView.as": "50bbebeef00e53200f177adec143589060d69319bd6bd53c77f5b028235b639c",
+    "com/nsus/iron/table/view/popup/gameinfo/newinfo/NewGameInfoTitle.as": "867a44701ceefadcb3ec54e20176331c437022d09750b4835149676d6f41af44",
+    "com/nsus/iron/table/view/popup/gameinfo/newinfo/NewGameInfoNormalLabel.as": "ddaa9bfeabe70add8ef8de0dc1ffd2939583e3bbcf12e54e6840ca7b8cd5d71e",
+    "com/nsus/iron/table/view/popup/gameinfo/newinfo/NewGameInfoDot.as": "4db975e60c677f200ad4e5f7dd6c136c6b3ab7334f9770be19cd439756119c65",
+    "com/nsus/iron/components/display/button/specific/option/CloseOptionButton.as": "93be79d2bf32cf758bb21df53bb30a9f1c9c31d813560b0a69d29145c52e9ec4",
+    "com/nsus/iron/table/asset/StageAssets.as": "e993e9ebfc32e1214162109e9af1eb3eef98e2cf6cbf6d7fb0ce1be4e3f0b0a3",
+    "com/nsus/iron/Setting.as": "7711ac87c7729456e36920529ca5adc88529d50409c095833da862de50c8c854",
+    "com/nsus/iron/tasks/InitFont.as": "d3831e2c3816f4adf93ed7d1bec21a55f47661bbe138da2eb66a471866df9465",
+    "com/nsus/iron/components/display/text/UniqueLabel.as": "ebf2dfc4abce2a7de077b31af397d056ceb526f52b132cc09610b9c1fc1e5803"
   },
   "items": [
     {
@@ -1151,5 +1159,55 @@
     "backgroundWidth": 750,
     "infoButtonClick": "show, not toggle",
     "infoReleaseOutside": "hide help; retain editor for clicks within table menu"
+  },
+  "informationStyle": {
+    "scale": 2,
+    "width": 328,
+    "background": "lobby_popup44;60x60;scale9Grid20,20,20,20",
+    "padding": [
+      24,
+      28,
+      33,
+      28
+    ],
+    "title": {
+      "size": 20,
+      "bold": true,
+      "color": 2913714,
+      "alignment": "center"
+    },
+    "label": {
+      "size": 14,
+      "color": 263172,
+      "x": 15,
+      "width": 257,
+      "spacing": 12
+    },
+    "dot": {
+      "x": 3,
+      "y": 10,
+      "radius": 2.5,
+      "color": 2913714
+    },
+    "close": {
+      "frames": [
+        0,
+        1,
+        0
+      ],
+      "size": [
+        16,
+        16
+      ],
+      "right": 15,
+      "y": 15,
+      "color": 12829635,
+      "atlas": "lobby_option"
+    },
+    "fonts": "useRoboto=true\u2192Setting.getRobotoFont\u2192InitFont Roboto/Roboto Bold; existing installed native regular/bold reused",
+    "limits": [
+      "AIR TextField gutter/line metrics not physically calibrated",
+      "non-Latin script font branches and localization not yet integrated"
+    ]
   }
 }

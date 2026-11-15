@@ -34,7 +34,7 @@ readAutoFoldPreferences recuperează datele corupte într-o stare dezactivată �
 
 Testul auto-fold-test.mjs acoperă exhaustiv1326perechi/169categorii, ordinea inversă, selecțiile implicite, date corupte și poziții. Folosește motorul real pentru a verifica faptul că o acțiune proprie anterioară sau trecerea la flop oprește eligibilitatea. Aceste teste nu dovedesc un fold automat efectuat în browser.
 
-Rămân: comparația fizică, animația meniului lateral, skinul complet al tooltipului, localizarea editorului și integrarea cu eventuale Cash Drops locale. Card Squeeze rămâne indisponibil în Rush în implementarea existentă. Sunetul și temporizarea native nu sunt certificate de testele locale.
+Rămân: comparația fizică, măsurarea liniilor de text în AIR, localizarea editorului și integrarea cu eventuale Cash Drops locale. Card Squeeze rămâne indisponibil în Rush în implementarea existentă. Sunetul și temporizarea native nu sunt certificate de testele locale.
 
 ## Matricea și timerul — model verificat separat
 
@@ -50,7 +50,7 @@ Testele cu ceas controlat au demonstrat o eroare înainte de corecție: un callb
 
 ## Editor conectat și verificare în browser
 
-Celulele păstrează ordinea și culorile native, iar grafica originală include15cropuri pentru switch-uri, procent și Apply. Fișa auto-fold-art.json conține dimensiunile, dreptunghiurile și hashurile celor două atlase. Extractorul Swift compară RGBA după decodare. Interiorul folosește dimensiunile recuperate; ancorarea responsivă și tooltipul au încă diferențe vizuale declarate.
+Celulele păstrează ordinea și culorile native, iar grafica originală include18cropuri pentru switch-uri, procent, Apply, fundalul explicațiilor și închidere. Fișa auto-fold-art.json conține dimensiunile, dreptunghiurile și hashurile celor două atlase. Extractorul Swift compară RGBA după decodare. Interiorul folosește dimensiunile recuperate; ancorarea și skinul explicațiilor urmează clasele native recuperate mai jos; metricile fizice ale textului rămân necalibrate.
 
 Procentul este păstrat separat de selecție, inclusiv valoarea fracționară rezultată din celule; sliderul de prag folosește1–95. Preferințele locale vechi fără procent primesc50. Valorile corupte sunt recuperate dezactivate. Datele sunt separate pe cont; acestea nu importă preferințe din aplicația originală.
 
@@ -58,7 +58,7 @@ Apply persistă atomic preferința localStorage și anulează deciziile vechi. O
 
 Rush state expune numai identitatea contului deja autentificat. Comenzile UI păstrează contul capturat împreună cu versiunea; dacă autentificarea s-a schimbat, API-ul refuză cu401 înainte de mutarea poolului. Câmpul account rămâne opțional pentru clienții existenți, dar este trimis de interfața actuală. Identitatea de pe server închide editorul vechi și schimbă cheia preferinței; un draft al altui cont nu se salvează.
 
-Testul browser verifică169celule, dimensiunile44/4/620, cele15imagini decodate, Info, rata min/max prin pointer, pictarea a trei celule, protecția ultimei selecții, izolarea F1, Cancel, eroare localStorage/retry și schimbarea contului. Reload-ul și recuperarea dupăHTTP503 consumă snapshotul fără fold; numai o acțiune nouă a adversarului pornește noua decizie. Exact un POST automat este trimis cu contul corect. Un POST pentru alt cont este refuzat fără schimbarea fișierului poolului.
+Testul browser verifică169celule, dimensiunile44/4/620, cele18imagini decodate, Info, rata min/max prin pointer, pictarea a trei celule, protecția ultimei selecții, izolarea F1, Cancel, eroare localStorage/retry și schimbarea contului. Reload-ul și recuperarea dupăHTTP503 consumă snapshotul fără fold; numai o acțiune nouă a adversarului pornește noua decizie. Exact un POST automat este trimis cu contul corect. Un POST pentru alt cont este refuzat fără schimbarea fișierului poolului.
 
 După fold, utilizatorul temporar selectează Sit out pentru a opri rematch-ul automat al poolului; ceilalți cinci joacă până la showdown. Astfel se verifică payout-ul fără confundarea soldului liber cu chips deja așezate într-o mână nouă. Toate1200chips rămân în pool, foldatul nu primește potul, iar preferința dezactivată și plățile persistă după restart. Datele ownerului live nu sunt folosite de fixture.
 
@@ -68,6 +68,18 @@ TableMenu3D setează AutoFoldView3D pe RIGHT_SIDE și y=viewPort.height−1112. 
 
 Nu inventăm o glisare de închidere: hide din clasa de bază are aceeași coordonată inițială și țintă, iar AutoFoldView3D elimină conținutul imediat după super.hide. Timpii reali de compoziție AIR rămân neobservați.
 
-Butonul Info nativ arată explicația la fiecare click, fără toggle; ReleaseOutSide o ascunde. În implementare, click în editor în afara explicației o închide fără a pierde draftul. Clickul pe explicație sau pe închidere o ascunde. Skinul complet NewGameInfoView, localizarea și măsurarea fonturilor AIR rămân de potrivit.
+Butonul Info nativ arată explicația la fiecare click, fără toggle; ReleaseOutSide o ascunde. În implementare, click în editor în afara explicației o închide fără a pierde draftul. Clickul pe explicație sau pe închidere o ascunde. Skinul NewGameInfoView este acum recuperat conform secțiunii următoare; localizarea și măsurarea fonturilor AIR rămân de potrivit.
 
 Testul browser măsoară cinci poziții ale animației, inclusiv capetele și progresul cubic la25/50/75%, durata200ms, ancora720 și resize în850×650/1196×929. Verifică și preferința reduced motion și comportamentul repetării/închiderii Info. Este dovadă de contract static și execuție locală, nu comparație fizică frame cu frame cu AIR.
+
+## Grafica explicațiilor și fonturile
+
+NewGameInfoView folosește lobby_popup44: crop60×60 cu scale9Grid20/20/20/20. După scala2 din Information, panoul are656lățime totală, margini de nine-patch40, padding sus48/stânga56/dreapta56/jos66. Fundalul nativ este păstrat; nu mai este înlocuit printr-un dreptunghi alb cu bordură gri.
+
+NewGameInfoTitle folosește20bold,#2c75b2,centrat; scala2 produce40px. Label folosește14normal,#040404,offsetx15 și lățime257 în coordonate native. Blocurile au12unități între ele, deci24locale. Punctul NewGameInfoDot are centru3/10 și rază2,5; local rezultă un cerc10×10 la1/15 față de rând. Titlul și conținutul sunt separate prin16unități, local32.
+
+StageAssets.getLabel transmite ultimul argument în model.useRoboto. UniqueLabel→Setting.getDefaultFont→getRobotoFont și InitFont confirmă Roboto/Roboto Bold pentru textul latin al explicațiilor. Sunt refolosite fonturile native deja instalate, fără descărcări. Alte alfabete au ramuri separate, care nu sunt demonstrate prin testul în engleză.
+
+CloseOptionButton folosește lobby_option0 up/down și1 hover, redimensionate16×16; la scala2 sunt32×32, la30de marginea dreaptă și sus. ColorTransform.color=#c3c3c3 înlocuiește RGB și păstrează alpha. CSS mask folosește alpha imaginilor originale și acea culoare constantă; nu înmulțește greșit RGB și nu desenează simbolul× dintr-un font.
+
+Testul browser încarcă cele18imagini, fonturile regular/bold și verifică geometria, culorile, nine-patch-ul, punctele și măștile up/hover/down prin pointer real. Red-green a demonstrat diferențele față de vechiul panou alb. Fluxul păstrează apoi editorul, foldul automat, payout-ul independent și restartul. Dreptunghiul scale9 și alpha provin din resurse, dar line-height/gutter și înălțimea finală a TextFieldului AIR necesită comparație fizică; geometria declarată nu dovedește paritate completă de rasterizare.
