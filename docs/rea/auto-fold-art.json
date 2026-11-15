@@ -1,0 +1,266 @@
+{
+  "method": "Original15 atlas crops; decoded RGBA equality asserted by extract-auto-fold.swift",
+  "files": [
+    {
+      "file": "native-autofold-apply-down.png",
+      "bytes": 1240,
+      "sha256": "c1bc80211ec329afd8510b4efe397b8be4fa11c603a9c7c55749501d41e98fac",
+      "atlas": "init_lobby/desktop_assets",
+      "frame": "common0032",
+      "rectangle": {
+        "x": 2727,
+        "y": 3353,
+        "w": 20,
+        "h": 40
+      },
+      "size": [
+        20,
+        40
+      ]
+    },
+    {
+      "file": "native-autofold-apply-over.png",
+      "bytes": 1303,
+      "sha256": "455075070c8d1107b096c88c8c164dbe3d875707efed5a7430f649b007762036",
+      "atlas": "init_lobby/desktop_assets",
+      "frame": "common0031",
+      "rectangle": {
+        "x": 3628,
+        "y": 3347,
+        "w": 20,
+        "h": 40
+      },
+      "size": [
+        20,
+        40
+      ]
+    },
+    {
+      "file": "native-autofold-apply-up.png",
+      "bytes": 1297,
+      "sha256": "7e38e700b90363fb3f804a3b6699925f4cf5dc0a861f6c87a05397d8d2511ae8",
+      "atlas": "init_lobby/desktop_assets",
+      "frame": "common0030",
+      "rectangle": {
+        "x": 1017,
+        "y": 3243,
+        "w": 20,
+        "h": 40
+      },
+      "size": [
+        20,
+        40
+      ]
+    },
+    {
+      "file": "native-autofold-info.png",
+      "bytes": 1487,
+      "sha256": "41d3d0a4212c6faf28725e743fb3c17a9455d7c89bb35a888e1b73ee851ed9d1",
+      "atlas": "after_lobby/desktop_table_assets",
+      "frame": "table_menu0349",
+      "rectangle": {
+        "x": 3500,
+        "y": 3434,
+        "w": 40,
+        "h": 40
+      },
+      "size": [
+        40,
+        40
+      ]
+    },
+    {
+      "file": "native-autofold-minus-down.png",
+      "bytes": 3099,
+      "sha256": "9b88ef87129a6d1d1bc0e3c99d85e0137ceab223bd6a410e9f71588a117fc054",
+      "atlas": "after_lobby/desktop_table_assets",
+      "frame": "table_menu0344",
+      "rectangle": {
+        "x": 2061,
+        "y": 3386,
+        "w": 48,
+        "h": 48
+      },
+      "size": [
+        48,
+        48
+      ]
+    },
+    {
+      "file": "native-autofold-minus-over.png",
+      "bytes": 3127,
+      "sha256": "6f89cc7c0dde81796d60934945e1664e983cf4de6658ede825c809cef8ba310b",
+      "atlas": "after_lobby/desktop_table_assets",
+      "frame": "table_menu0343",
+      "rectangle": {
+        "x": 1339,
+        "y": 3370,
+        "w": 48,
+        "h": 48
+      },
+      "size": [
+        48,
+        48
+      ]
+    },
+    {
+      "file": "native-autofold-minus-up.png",
+      "bytes": 3120,
+      "sha256": "69f7da180f81dcd8e804c049cb27f4e3c4e0e3a2136f3bcd660b46fb400f81f9",
+      "atlas": "after_lobby/desktop_table_assets",
+      "frame": "table_menu0342",
+      "rectangle": {
+        "x": 57,
+        "y": 3366,
+        "w": 48,
+        "h": 48
+      },
+      "size": [
+        48,
+        48
+      ]
+    },
+    {
+      "file": "native-autofold-off.png",
+      "bytes": 2990,
+      "sha256": "c48fccd481e67c340c6345df84d8abd93742c7f97fb35074dbd7b05cd2ba9b58",
+      "atlas": "after_lobby/desktop_table_assets",
+      "frame": "table_menu0356",
+      "rectangle": {
+        "x": 1515,
+        "y": 3178,
+        "w": 88,
+        "h": 40
+      },
+      "size": [
+        88,
+        40
+      ]
+    },
+    {
+      "file": "native-autofold-on.png",
+      "bytes": 3223,
+      "sha256": "b3a644eada9c364f6ba6a3271979083cc8a28b6ee62d8fdc088ae5b1edb70914",
+      "atlas": "after_lobby/desktop_table_assets",
+      "frame": "table_menu0355",
+      "rectangle": {
+        "x": 2372,
+        "y": 2662,
+        "w": 88,
+        "h": 40
+      },
+      "size": [
+        88,
+        40
+      ]
+    },
+    {
+      "file": "native-autofold-plus-down.png",
+      "bytes": 3207,
+      "sha256": "47b2a42466bbbc8dbc1f24865685e3344666b35850ad4250b676f315e4f6119b",
+      "atlas": "after_lobby/desktop_table_assets",
+      "frame": "table_menu0347",
+      "rectangle": {
+        "x": 283,
+        "y": 3388,
+        "w": 48,
+        "h": 48
+      },
+      "size": [
+        48,
+        48
+      ]
+    },
+    {
+      "file": "native-autofold-plus-over.png",
+      "bytes": 3241,
+      "sha256": "af1727e396d91bcb9bec59b5617e878eb225625d6945ce433dc343cd29ad1250",
+      "atlas": "after_lobby/desktop_table_assets",
+      "frame": "table_menu0346",
+      "rectangle": {
+        "x": 171,
+        "y": 3388,
+        "w": 48,
+        "h": 48
+      },
+      "size": [
+        48,
+        48
+      ]
+    },
+    {
+      "file": "native-autofold-plus-up.png",
+      "bytes": 3222,
+      "sha256": "9b967fc685057a0416de0044375814770fe123e3a1ad52e6024e27c3f8e03dc2",
+      "atlas": "after_lobby/desktop_table_assets",
+      "frame": "table_menu0345",
+      "rectangle": {
+        "x": 2931,
+        "y": 3387,
+        "w": 48,
+        "h": 48
+      },
+      "size": [
+        48,
+        48
+      ]
+    },
+    {
+      "file": "native-autofold-rate-back.png",
+      "bytes": 181,
+      "sha256": "c7896d471b20617386d24c28353d300a3fe6d73b49bae43a3218e56477b54a24",
+      "atlas": "after_lobby/desktop_table_assets",
+      "frame": "table_menu0352",
+      "rectangle": {
+        "x": 950,
+        "y": 534,
+        "w": 16,
+        "h": 4
+      },
+      "size": [
+        16,
+        4
+      ]
+    },
+    {
+      "file": "native-autofold-rate-fill.png",
+      "bytes": 191,
+      "sha256": "a968a5fca886ac857e344eca935bd9255d546528b5269c843933c315bedd1884",
+      "atlas": "after_lobby/desktop_table_assets",
+      "frame": "table_menu0353",
+      "rectangle": {
+        "x": 968,
+        "y": 534,
+        "w": 16,
+        "h": 4
+      },
+      "size": [
+        16,
+        4
+      ]
+    },
+    {
+      "file": "native-autofold-rate-thumb.png",
+      "bytes": 896,
+      "sha256": "c5fe9b61e314ff6646894740126d774cbfd60d149063c95e8aad00c26a4fb5c5",
+      "atlas": "after_lobby/desktop_table_assets",
+      "frame": "table_menu0354",
+      "rectangle": {
+        "x": 620,
+        "y": 546,
+        "w": 16,
+        "h": 28
+      },
+      "size": [
+        16,
+        28
+      ]
+    }
+  ],
+  "sources": {
+    "after_lobby/desktop_table_assets.json": "9e00ce78028f67e6b0ad7c770c0c65519bde01943c209f860f8dd58e930d5c29",
+    "after_lobby/desktop_table_assets.png": "6bf5b733a31f0de22cbe9d578c93a9c081e314fc97840838dc72145d07d26b65",
+    "init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+    "init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+  }
+}

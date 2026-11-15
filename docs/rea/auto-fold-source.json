@@ -10,7 +10,11 @@
     "com/nsus/iron/table/services/callback/OnAskAction.as": "0e9fa3babc13849f2ecde3e6ee79d906c9ee08282e79920660a8abc841d76c10",
     "com/nsus/iron/table/services/callback/OnHoleCards.as": "45cd9d8f459aba7b015801376b8939bfa22dc877ba8bfda1f70708f269ec5175",
     "com/nsus/iron/table/view/component/tablemenu/autofold/AutoFoldRangeTable.as": "947a7f9324bc3df6c0c43d49267fd5bcd4cc22002c7f94f129068a46f6d8f3dc",
-    "com/nsus/iron/table/view/component/tablemenu/autofold/AutoFoldRangeItem.as": "1504a0fb7581dd53f1c6f9c84cf7455a92ecbcb972c440d6befb281962fd90bb"
+    "com/nsus/iron/table/view/component/tablemenu/autofold/AutoFoldRangeItem.as": "1504a0fb7581dd53f1c6f9c84cf7455a92ecbcb972c440d6befb281962fd90bb",
+    "com/nsus/iron/table/view/popup/gameinfo/newinfo/NewGameInfoData.as": "a4620aa2b18e13dbc53c0140e301a72b599b41675e56daa3c70d61ef0d31fd67",
+    "com/nsus/iron/table/view/popup/gameinfo/newinfo/NewGameInfoType.as": "2a641d4c9a5078396f9449764ba4adeaacafdce2f8b444aa89bc64f07df02907",
+    "com/nsus/iron/components/display/button/GlobalButton.as": "eb82ad01852703c14d475d837cb3ffe1785c7f1e624afb81b00caa980762f329",
+    "com/nsus/iron/components/display/button/ButtonColor.as": "6102ebf3300a6933f077b5d5b2e7c061a5f11054139cea95417f9353daf0db7c"
   },
   "items": [
     {
@@ -1120,5 +1124,11 @@
       1,
       95
     ]
-  }
+  },
+  "informationKeys": [
+    "AutoFoldRange",
+    "AutoFoldSettings",
+    "AutoFoldDependingOn",
+    "AutoFoldCashDrop"
+  ]
 }

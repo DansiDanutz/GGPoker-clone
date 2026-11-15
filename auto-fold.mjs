@@ -178,8 +178,8 @@ export function autoFoldHandKey(cards){
  return high[0]+low[0]+(high[0]===low[0]?'':high[1]===low[1]?'s':'o');
 }
 export function readAutoFoldPreferences(raw){
- const defaults={active:false,button:true,blinds:true,selected:[...defaultSelected]};
- try{const p=JSON.parse(raw);if(!p||!['active','button','blinds'].every(k=>typeof p[k]==='boolean')||!Array.isArray(p.selected)||p.selected.length>169||new Set(p.selected).size!==p.selected.length||!p.selected.every(i=>Number.isInteger(i)&&i>=0&&i<169))return defaults;return {active:p.active,button:p.button,blinds:p.blinds,selected:[...p.selected]}}catch{return defaults}
+ const defaults={active:false,button:true,blinds:true,rate:50,selected:[...defaultSelected]};
+ try{const p=JSON.parse(raw);if(!p||p.rate!==undefined&&(!Number.isFinite(p.rate)||p.rate<1||p.rate>95)||!['active','button','blinds'].every(k=>typeof p[k]==='boolean')||!Array.isArray(p.selected)||p.selected.length>169||new Set(p.selected).size!==p.selected.length||!p.selected.every(i=>Number.isInteger(i)&&i>=0&&i<169))return defaults;return {active:p.active,button:p.button,blinds:p.blinds,rate:p.rate??50,selected:[...p.selected]}}catch{return defaults}
 }
 export function eligibleAutoFold(state,prefs,{supported=false,catchUp=true,cashDropToPot=true}={}){
  const g=state?.hand,me=state?.me;
