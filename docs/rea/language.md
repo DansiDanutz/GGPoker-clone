@@ -81,3 +81,7 @@ The six-player hand fixture verifies French metric text/PFR explanation, Romania
 ## Waiting list
 
 TableWaiting/ButtonType explicit keys now bind the Join/Cancel button, count titles and First/Second/Third/Fourth suffixes. Counts remain numeric, separated from the translated suffix; long captions fit316px. InitFont establishes Roboto Condensed for the default Latin branch. EN/RO cross-window verification preserves button/focus and queue/hand state without poll text repaint; see waiting-list.md and waiting-list-source.json. This does not establish full application translation or Asian font coverage.
+
+## Auto Fold editor
+
+The source title/help/position/limit/button/switch keys now use the shared catalog loader. Native title-relative Info placement and fixed-width autoScale bounds are maintained without replacing a dirty matrix or applying preferences. Cross-window French/Romanian/English tests preserve selection/rate/hand/cell/focus and suppress repeated poll text rewrites; see auto-fold-language.md. Local validation errors are not source-localized.
