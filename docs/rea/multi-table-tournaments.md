@@ -1,5 +1,14 @@
 # Multi-table tournament hosting — local reconstruction
 
+## Release status — PR205 installed
+
+The functional implementation described below is merged in `30ab81e45a4ff8667f3cdcd9d50f4c62c3bcbf16` and installed locally from tested source `e5cc06f35e7c747ba0dc054e70e2a21652b1bc6f`. The two Git trees are identical. Runtime `mtt-release-e5cc06f` contains116files/1,353,687bytes and reuses1323existing art files. All six owner data files (15,496bytes) were preserved byte-for-byte during guarded activation; gameplay QA used temporary data only.
+
+Forty checks were recorded for the exact source before merge:37automated commands, syntax/runtime/native-source hashes, a restricted installed12-session owner-to-player pause/restart/resume-to-winner journey, and focused review. Both `qa-record` and `qa-check` passed. Local evidence: `.git/danslab-qa/pr205-e5cc06f35e7c/evidence.json` and `.git/danslab-qa/pr205-live.json`; central report copies: `Raport-REA/pr205-qa.json` and `Raport-REA/pr205-live.json`.
+
+Owner cancellation/refunds, shared pause/resume and native-source pause notices are included in this release. Earlier headings and pending statements are chronological implementation checkpoints. Remaining limitations include native physical pixel/font/audio comparison, private native balancing/operator policies, snapshot transitions missed between polls, configured MTT time-bank rules and broader native feature coverage. A functional release does not establish full1-to-1 parity.
+
+
 ## Current integration state — 15 November 2026
 
 Draft205 now includes funded registration, actual child rooms, authenticated seats and ready barrier, atomic private deals, real betting/settlement, idle physical reseating, account-bound old-token redirects and subsequent hands. A seeded seven-account test plays the real rooms to a winner: seven final places, 2,100 chips and 175 credits paid once. It tests showdown delay, active-peer isolation, failed-action/transfer write rollback and cold file reopen throughout. A separate 12-session HTTP test verifies a real server stop/boot during a private hand.
