@@ -1,0 +1,265 @@
+{
+  "method": "REA selective headless FFDec ActionScript exports plus exact atlas decoded-RGBA crops and source font branch trace; not AIR execution",
+  "swf": {
+    "path": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf",
+    "bytes": 41892370,
+    "sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1"
+  },
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/table/view/popup/buyin/renew/RenewBalanceSelector.as",
+      "sha256": "8c87fa007269507a6cb63043ebb5b1726b0094258c92a8c4f01e90b0c095fee0"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/table/view/popup/buyin/renew/RenewNumberOfTablesItem.as",
+      "sha256": "8a62eaeee24825b2ca313eeb2c38dbe1ec8a802635fd4148b75b31fbd4e2ee00"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/table/view/popup/buyin/result/BuyInResultView.as",
+      "sha256": "e07b624df13c6218759b4efb3bfe45d90cedb4b619aae740ead17b18879566ff"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/table/view/popup/buyin/renew/RenewBalanceInput.as",
+      "sha256": "62bdff60d121e06c062aa241da7134cbcc26a771ebd711b34788eceb709c0f9f"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/table/view/popup/buyin/renew/RenewBalanceSelectButton.as",
+      "sha256": "10d05d3443d090eda23c23af8724eb0e215cab049fe451f07ee44deda9a79ca3"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/table/view/popup/Popup.as",
+      "sha256": "4b9e900a9c9d1d83acb3f4104b2dd97605d5a8e3d5cada6cabefee18bb459fd1"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/table/view/popup/PopupBase.as",
+      "sha256": "ff7f9f116a4eb4136848476d0766b8e294853e3644c8a6c10cd02496f8c6c472"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/components/display/button/window/WindowCloseButton.as",
+      "sha256": "cebb279fedf50491d05f81077a0e19e9e5f2112e54f26ec88817ef1955620d1c"
+    }
+  ],
+  "fontSources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/GlobalButton.as",
+      "sha256": "eb82ad01852703c14d475d837cb3ffe1785c7f1e624afb81b00caa980762f329"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/text/UniqueLabel.as",
+      "sha256": "ebf2dfc4abce2a7de077b31af397d056ceb526f52b132cc09610b9c1fc1e5803"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/asset/StageAssets.as",
+      "sha256": "e993e9ebfc32e1214162109e9af1eb3eef98e2cf6cbf6d7fb0ce1be4e3f0b0a3"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/Setting.as",
+      "sha256": "7711ac87c7729456e36920529ca5adc88529d50409c095833da862de50c8c854"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/tasks/InitFont.as",
+      "sha256": "d3831e2c3816f4adf93ed7d1bec21a55f47661bbe138da2eb66a471866df9465"
+    }
+  ],
+  "atlas": {
+    "files": [
+      {
+        "bytes": 174,
+        "file": "native-cash-group-line-back.png",
+        "frame": "lobby_popup0338",
+        "height": 4,
+        "rgbaExact": true,
+        "sha256": "082ec55e3ea14d35ad8f26d9cb86a08f78b25249e6ffbf48e8daffa314afdaec",
+        "width": 10
+      },
+      {
+        "bytes": 174,
+        "file": "native-cash-group-line-fill.png",
+        "frame": "lobby_popup0339",
+        "height": 4,
+        "rgbaExact": true,
+        "sha256": "9eb7c15a802ccc7f4f66dc37f20fa05f1eed9eb0203c3270e53328e90dfc42e1",
+        "width": 10
+      },
+      {
+        "bytes": 2734,
+        "file": "native-cash-group-thumb.png",
+        "frame": "lobby_popup0340",
+        "height": 32,
+        "rgbaExact": true,
+        "sha256": "0258f43090774e73e1e671f817e9305d2022a3fe04ab086c0a925d9afeeb5b59",
+        "width": 32
+      },
+      {
+        "bytes": 612,
+        "file": "native-cash-group-minmax-up.png",
+        "frame": "lobby_popup0342",
+        "height": 32,
+        "rgbaExact": true,
+        "sha256": "2ef155e92cf2aee8c59ed906c259a5da37e40706c567df76cdc070d04a1ebab8",
+        "width": 32
+      },
+      {
+        "bytes": 636,
+        "file": "native-cash-group-minmax-over.png",
+        "frame": "lobby_popup0343",
+        "height": 32,
+        "rgbaExact": true,
+        "sha256": "d2498e53c1bb76e337f97da8ae33b31272973a3fc4e53a9fbc49aa607877c54a",
+        "width": 32
+      },
+      {
+        "bytes": 593,
+        "file": "native-cash-group-minmax-down.png",
+        "frame": "lobby_popup0344",
+        "height": 32,
+        "rgbaExact": true,
+        "sha256": "f128f96811049a2e5598d7d3c22407efbd59d254d0cf1d0632432ba756b4d27a",
+        "width": 32
+      },
+      {
+        "bytes": 544,
+        "file": "native-cash-group-choice.png",
+        "frame": "lobby_popup0345",
+        "height": 32,
+        "rgbaExact": true,
+        "sha256": "3a9da52693df5f0f36254fc6b30e674806677ae0697a216c3a3d9c6fba2300e5",
+        "width": 40
+      },
+      {
+        "bytes": 801,
+        "file": "native-cash-group-choice-active.png",
+        "frame": "lobby_popup0347",
+        "height": 32,
+        "rgbaExact": true,
+        "sha256": "3ba02bc99db4b8d52da20eb15866dd3269f13243e63a241fdf5d5721acc64990",
+        "width": 40
+      },
+      {
+        "bytes": 423,
+        "file": "native-cash-group-back.png",
+        "frame": "lobby_popup0349",
+        "height": 24,
+        "rgbaExact": true,
+        "sha256": "3e328d3a6d867c34a55b9817af415dff3372854278033615b00fec77e6b549b5",
+        "width": 24
+      },
+      {
+        "bytes": 215,
+        "file": "native-cash-group-minus-up.png",
+        "frame": "lobby_popup0350",
+        "height": 24,
+        "rgbaExact": true,
+        "sha256": "17f874ab43b3c3faf209ebd2a85494df40c50af37075527ab00a1573b4ddc543",
+        "width": 24
+      },
+      {
+        "bytes": 215,
+        "file": "native-cash-group-minus-over.png",
+        "frame": "lobby_popup0351",
+        "height": 24,
+        "rgbaExact": true,
+        "sha256": "c5246d4adbde70ffb5ff4757f732acc178d96d70f1460121e1a27c2267051b21",
+        "width": 24
+      },
+      {
+        "bytes": 228,
+        "file": "native-cash-group-minus-down.png",
+        "frame": "lobby_popup0352",
+        "height": 24,
+        "rgbaExact": true,
+        "sha256": "245df94769724ce12e1ba01e671b1435485c4e64d27b32f4b4d20e4778fa6873",
+        "width": 24
+      },
+      {
+        "bytes": 254,
+        "file": "native-cash-group-plus-up.png",
+        "frame": "lobby_popup0353",
+        "height": 24,
+        "rgbaExact": true,
+        "sha256": "edadb298d7141c33c6301a7b64ade919dd72f8b09fd03314ec7f421262576631",
+        "width": 24
+      },
+      {
+        "bytes": 254,
+        "file": "native-cash-group-plus-over.png",
+        "frame": "lobby_popup0354",
+        "height": 24,
+        "rgbaExact": true,
+        "sha256": "510a08bbf4cd3c9f1cc611f6e8aa6b4a986b115dd937b495e025594668a7c81a",
+        "width": 24
+      },
+      {
+        "bytes": 268,
+        "file": "native-cash-group-plus-down.png",
+        "frame": "lobby_popup0355",
+        "height": 24,
+        "rgbaExact": true,
+        "sha256": "87343e3d7daa7f2430cf9100970535bd65b280212014fdcf65b8dfbad6da7c83",
+        "width": 24
+      },
+      {
+        "bytes": 543,
+        "file": "native-cash-group-close-up.png",
+        "frame": "common0006",
+        "height": 32,
+        "rgbaExact": true,
+        "sha256": "908ef2274e95b148e66dbd7cfd6dd10b55200e8c658ae581c6d2c8c1e052bdf5",
+        "width": 32
+      },
+      {
+        "bytes": 386,
+        "file": "native-cash-group-close-over.png",
+        "frame": "common0007",
+        "height": 32,
+        "rgbaExact": true,
+        "sha256": "8ce956201720041795fe476d6c5ec32a156ad6f35188915571fe08e2826caa85",
+        "width": 32
+      },
+      {
+        "bytes": 536,
+        "file": "native-cash-group-close-down.png",
+        "frame": "common0008",
+        "height": 32,
+        "rgbaExact": true,
+        "sha256": "3ea289d308f2be22e443d55dbfca0ecaed77ef89d0516fb74727dfdb577d3bac",
+        "width": 32
+      },
+      {
+        "bytes": 578,
+        "file": "native-cash-group-info.png",
+        "frame": "common0274",
+        "height": 16,
+        "rgbaExact": true,
+        "sha256": "5d0509bbd778850ca73aa8439e9037940f7a36724298485a4a97832c9dfffe20",
+        "width": 16
+      }
+    ],
+    "method": "StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding",
+    "sources": {
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+    }
+  },
+  "verifiedContract": [
+    "Ordinary viewport412x494; BuyIn/Advanced pages horizontally412 apart,nominal0.2s easeOut",
+    "Title(20,48);balance(40,120);range rowy176;counter(40,228);Advanced(40,288);total(40,331);Join(40,414)/Cancel(216,414),both156x40",
+    "AdvancedBack(12,12);title(40,48);wallet(40,79);ticketsy119;liney155;heading(40,173),info16px+3gap;stack/style/speed/location rows204/269/334/399,buttons32high25belowtitle",
+    "Choices345/347 with25,6,5,20 scale9; amount controls342/344/343; counter350/352/351 and353/355/354;slider338/339/thumb340;back349;info common274",
+    "getLabel fifth useRoboto=true and GlobalButton seventh true select Roboto; bold selects RobotoBold,not RobotoCondensed;numeric input explicitly uses Setting.robotoFont/bold18",
+    "Default WindowClose common6/7/8,16px glyph in24px hit area;hover nominal0.3s rotation-180"
+  ],
+  "localPolicies": [
+    "Measured stack/VPIP/hand pace;equal-weight normalized distances,normal targets observed median;unknown samples unranked when all unknown",
+    "Nearby keeps same-Mac stable order;Random varies equal-score ties;no fabricated geolocation",
+    "Group command replay retained through lost response,zero balance and readiness changes;definite4xx clears uncommitted intent",
+    "Browser popup-blocked tables get real clickable in-app links;no browser security flags disabled and no token URLs",
+    "Missing local cash-ticket/currency branches shown unavailable;information explains local matching rather than claiming native private thresholds"
+  ],
+  "pending": [
+    "Native absolute outer-frame/Mac skin/physical raster/Info popup wording not compared at same-size native runtime",
+    "Native table-group aggregation and all game variants not complete",
+    "Automatic native multiwindow behavior differs when browser blocks popups;real-click recovery verified",
+    "Exact counter/page/hover easing and native sound timing remain unverified"
+  ]
+}

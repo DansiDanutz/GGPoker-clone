@@ -1,3 +1,4 @@
+import {installCashGroupDialog} from './cash-group-dialog.mjs';
 import {installLobbyPlayerHud} from './lobby-player-hud.mjs';
 import {installBattleLobby} from './battle-lobby.mjs';
 import {installBattleRules} from './battle-rules.mjs';
@@ -12,7 +13,7 @@ import {updateElement,avatarSource,tableThemes,tableTheme,feltColours,feltColour
 const settingsWindow=new URLSearchParams(location.search).get('panel')==='settings';
 const requirePlayer=new URLSearchParams(location.search).has('player'),identity=await fetch('/local/me');
 const player=identity.ok?await identity.json():null,journey=!!player;
-const lobbyHud=installLobbyPlayerHud();
+const lobbyHud=installLobbyPlayerHud(),cashGroupJoin=installCashGroupDialog();
 if(requirePlayer&&!player){location.replace('/launch.html');throw Error('Sign in locally')}
 import {carouselIndex} from './playgg-carousel.mjs';
 const $=id=>document.getElementById(id);
@@ -408,7 +409,7 @@ function cashCatalog(request,mode){
     }
     return node('span',x,j===0?'chip':group&&j===(mode==='shortdeck'?4:5)?'rowAction':'');
    }));
-   b.onclick=e=>{if(selected!==i)waitingError='';selected=i;render();refreshWaiting();list.children[i].focus();if(e.target.classList.contains('rowAction')&&r.open)location.assign(joinHref(r))};return b}));
+   b.onclick=e=>{if(selected!==i)waitingError='';selected=i;render();refreshWaiting();list.children[i].focus();if(e.target.classList.contains('rowAction')&&r.open){if(mode==='holdem'&&journey)void cashGroupJoin.open(r).catch(error=>{waitingError=error.message;render()});else location.assign(joinHref(r))}};return b}));
   updateElement(list,nextList);
   if(!t){lobbyHud.select(null);updateElement(previewRoot,preview);$('details').textContent='No matching hosted tables';join.removeAttribute('href');$('joinTable').hidden=true;join.textContent='No table selected';return}
   lobbyHud.select(!group&&mode==='holdem'&&t.capacity===6?t:null);
@@ -421,7 +422,7 @@ function cashCatalog(request,mode){
   // shortcut: percentage anchors retain local seat rotation; replace after native parent viewport verification.
   if(!group&&mode==='holdem'&&t.positions){const spots=[[50,68.5],[35.6,64.2],[36.8,42.6],[50,26.4],[63.2,42.6],[64.4,64.2]];for(const [key,label]of [['dealer','D'],['smallBlind','SB'],['bigBlind','BB']]){const seat=t.positions[key];if(!Number.isInteger(seat)||!spots[seat])continue;const marker=node('span',label,'previewPosition '+(key==='dealer'?'dealerPosition':'blindPosition'));marker.dataset.seat=seat;marker.dataset.position=key;marker.setAttribute('role','img');marker.setAttribute('aria-label',(key==='dealer'?'Dealer':key==='smallBlind'?'Small blind':'Big blind')+' · '+(t.seats?.[seat]?.name||'Seat '+(seat+1)));marker.style.left=spots[seat][0]+'%';marker.style.top=spots[seat][1]+'%';if(key==='smallBlind'&&seat===t.positions.dealer)marker.style.left=(spots[seat][0]+10)+'%';preview.append(marker)}}
   updateElement(previewRoot,preview);
-  $('details').textContent=t.name+' · '+stakes+' · practice chips'+(waitingRoom===t.room&&waiting?.offer?' · Seat available — Open to confirm buy-in':'')+(waitingError?' · '+waitingError:'');const label=!group?'Open':t.open?'Join Table':'Registration closed';if(join.firstElementChild?.textContent!==label)join.replaceChildren(node('span',label));if(t.open||!group)join.href=group?joinHref(t):t.href;else join.removeAttribute('href');join.onclick=()=>{if(group&&t.open)join.href=joinHref(t)};
+  $('details').textContent=t.name+' · '+stakes+' · practice chips'+(waitingRoom===t.room&&waiting?.offer?' · Seat available — Open to confirm buy-in':'')+(waitingError?' · '+waitingError:'');const label=!group?'Open':t.open?'Join Table':'Registration closed';if(join.firstElementChild?.textContent!==label)join.replaceChildren(node('span',label));if(t.open||!group)join.href=group?joinHref(t):t.href;else join.removeAttribute('href');join.onclick=event=>{if(group&&t.open){if(mode==='holdem'&&journey){event.preventDefault();void cashGroupJoin.open(t).catch(error=>{waitingError=error.message;render()})}else join.href=joinHref(t)}};
   const seatLink=$('joinTable'),full=t.occupied+(t.reservedSeats?.length||0)>=(t.capacity||6),queued=own?.position>0;
   seatLink.hidden=group||!!own?.seated||journey&&!own||full&&!queued&&(own?.count??t.waitingCount??0)>=(t.capacity||6);seatLink.onkeydown=null;seatLink.onclick=null;for(const attribute of ['role','tabindex','aria-disabled'])seatLink.removeAttribute(attribute);
   const action=queued?'cancel':full?'join':null;const seatLabel=queued?'Cancel Waiting':full?'Wait':t.open?'Join':'Registration closed';if(seatLink.firstElementChild?.textContent!==seatLabel)seatLink.replaceChildren(node('span',seatLabel));

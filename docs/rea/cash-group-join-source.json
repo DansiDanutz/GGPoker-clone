@@ -49,6 +49,10 @@
     {
       "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/vo/TempAutoJoinVo.as",
       "sha256": "b5a18ce7ecf4d1c4510f4ff5e1f31968343087131b3b9c27df8f65a4c4912daf"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/controller/CheckTakeSeatCommand.as",
+      "sha256": "c756f911a199e245dedec74fee602fa69a88f59fa4477ee629f10fbf017ee5cc"
     }
   ],
   "nativeContract": [
@@ -63,13 +67,14 @@
     "Async request1411 sends TableTypeId/TableCount/StackType/PlayerStyleType/GameSpeedType/LocationType/TicketIds, not buyInAmount",
     "ACK response only Result/LeaveTablePenaltyInfo; actual selection is a separate OnCashGameReady callback",
     "Ready callback receives real Table/SeatIndex/JoinType/Token and opens TableConnection with reserved seat; Join sets isJoinTable=true",
-    "TempAutoJoinVo retains client isAutoBuyIn/buyInAmount/isFirstCDollar/useTicket settings"
+    "TempAutoJoinVo retains client isAutoBuyIn/buyInAmount/isFirstCDollar/useTicket settings",
+    "CheckTakeSeat uses connection.isJoinTable plus tempAutoJoinVo.isAutoBuyIn and nonzero chosen amount; play-money amount is not currency-exchanged; BalanceSetting builds wallet values then TAKE_SEAT, otherwise buy-in popup path"
   ],
   "notImplemented": [
-    "Group aggregation and normal Group buy-in popup",
-    "Atomic local multi-table selection/funding and view lifecycle",
-    "Preferences with real locally measured matching; no fabricated operator matching thresholds",
-    "Ticket/currency branches depend on actual local feature support"
+    "Native absolute outer-frame/Mac skin/physical raster/Info popup wording not compared at same-size native runtime",
+    "Native table-group aggregation and all game variants not complete",
+    "Automatic native multiwindow behavior differs when browser blocks popups;real-click recovery verified",
+    "Exact counter/page/hover easing and native sound timing remain unverified"
   ],
-  "next": "Trace TempAutoJoinVo consumption in post-ready CheckTakeSeat, then implement real local Group popup/multi-table atomic funding/matching; private server thresholds must be explicit unknowns, never fabricated"
+  "next": "Finalize exact-head installed Group dialog/matching/funding/window recovery/two-hand/cross-room QA and guarded release; then native group aggregation and physical/motion parity"
 }
