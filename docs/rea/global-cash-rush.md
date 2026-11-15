@@ -27,3 +27,7 @@ rush.mjs validează tipul markerului, îl elimină la override/rebuy/leave și n
 RED changed1în loc de3 a reprodus omisiunea Rush; RED a reprodus și pornirea nedorită a unui pool deja activ și refuzul anulării înainte de șase jucători. GREEN verifică o masă obișnuită+Rush Hold’em+PLO, idempotence, rollback, cold restart, private scope, ceilalți jucători, mâini/portofel neschimbate, quick-fold fără rematch, coadă după revenire, două mâini Rush cu payout/conservare1200jetoane pe format, override local, lipsă fonduri fără debit, rebuy explicit, checkpoint corupt și marker inactiv legacy. Sesiunile nou create nu moștenesc cererea veche.
 
 Scenariul headless --cash-sitout --cash-sitout-account --cash-sitout-menu --cash-sitout-rush folosește conturi temporare și server separat. A trecut headerul din masa obișnuită și din Rush, ambele pooluri, global pause/resume, override, hotkey configurat, restart, geometrie,503retry, glyph-uri și Deal Me In. Regresiile pentru portofel/Rush cashout și fundare au trecut. Candidatul nu este încă activat live și nu certifică pixelii sau sunetul AIR.
+
+## Candidat ulterior: Short Deck
+
+[Short Deck cash Sit Out](shortdeck-sitout.md) adaugă separat acest format la eligibilitatea cash și globală. Nota de limitare Short Deck de mai sus descrie checkpointul inițial PR216; all-games pentru turnee/Spin și next-blind rămân deschise.

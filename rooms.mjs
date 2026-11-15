@@ -95,8 +95,8 @@ function step(room,action,target){
 }
 function timeCardEvent(room,automatic=false){return {type:'time-card-used',seat:room.hand.turn,street:room.hand.board.length,afterAction:room.hand.history.length,sequence:room.actionClock.cardsUsed-1,seconds:room.settings.freeTimeChipSecondsPerUnit,...(automatic?{automatic:true}:{})}}
 function expireClock(room,now){if(room.hand?.runoutPending)return;while(autoTimeCard(room,now)){room.hand.historyEvents??=[];room.hand.historyEvents.push(timeCardEvent(room,true));room.version++}if(now>=room.deadline)step(room,room.hand.variant==='aof'||options(room.hand).due?'fold':'check')}
-function cashSitOut(r){return !!r?.settings&&!r.tournament&&[undefined,'holdem','plo','plo5','plo6'].includes(r.settings.variant)}
-function rabbitEligible(r,me){const g=r?.hand,p=r?.players[me];return !!(cashSitOut(r)&&p&&g?.end&&[0,3,4].includes(g.board.length)&&g.hands[me]?.length&&g.hudSubjects?.[me]===noteSubject(p))}
+function cashSitOut(r){return !!r?.settings&&!r.tournament&&[undefined,'holdem','plo','plo5','plo6','shortdeck'].includes(r.settings.variant)}
+function rabbitEligible(r,me){const g=r?.hand,p=r?.players[me];return !!(cashSitOut(r)&&r.settings.variant!=='shortdeck'&&p&&g?.end&&[0,3,4].includes(g.board.length)&&g.hands[me]?.length&&g.hudSubjects?.[me]===noteSubject(p))}
 function hasHandBalance(r,i){return !!(r.hand&&r.players[i]&&(r.hand.hands[i].length||r.hand.sittingOut?.[i]&&r.hand.hudSubjects?.[i]===noteSubject(r.players[i])))}
 function cashBalance(r,i){
  if(!r.players[i])return 0;
