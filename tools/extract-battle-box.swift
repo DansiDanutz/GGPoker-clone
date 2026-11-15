@@ -19,6 +19,11 @@ func extract(_ relative:String,_ entries:[(String,String,Int,Int)],_ prefix:Stri
  let receipt:[String:Any] = ["method":"StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding","sources":[atlas.path:hash(try Data(contentsOf:atlas)),metadata.path:hash(try Data(contentsOf:metadata))],"files":records]
  try JSONSerialization.data(withJSONObject:receipt,options:[.prettyPrinted,.sortedKeys]).write(to:out.appendingPathComponent("rea/"+receiptName+".json"))
 }
+if CommandLine.arguments.contains("--cash-group-row") {
+ try extract("init_lobby/desktop_assets.png",[("lobby0959","players-bg",48,36),("lobby0846","players-icon",24,24),("common0277","indicator",4,8),("common0028","join-over",20,40),("common0029","join-down",20,40)],"native-cash-group-","cash-group-row-atlas")
+ print("PASS native Group5rowassets exact decoded RGBA")
+ exit(0)
+}
 if CommandLine.arguments.contains("--cash-group-controls") {
  try extract("init_lobby/desktop_assets.png",[("lobby_popup0338","line-back",10,4),("lobby_popup0339","line-fill",10,4),("lobby_popup0340","thumb",32,32),("lobby_popup0342","minmax-up",32,32),("lobby_popup0343","minmax-over",32,32),("lobby_popup0344","minmax-down",32,32),("lobby_popup0345","choice",40,32),("lobby_popup0347","choice-active",40,32),("lobby_popup0349","back",24,24),("lobby_popup0350","minus-up",24,24),("lobby_popup0351","minus-over",24,24),("lobby_popup0352","minus-down",24,24),("lobby_popup0353","plus-up",24,24),("lobby_popup0354","plus-over",24,24),("lobby_popup0355","plus-down",24,24),("common0006","close-up",32,32),("common0007","close-over",32,32),("common0008","close-down",32,32),("common0274","info",16,16)],"native-cash-group-","cash-group-controls-atlas")
  print("PASS native Group19controls exact decoded RGBA")

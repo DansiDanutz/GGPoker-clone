@@ -1,0 +1,323 @@
+{
+  "method": "REA selective headless FFDec source/font/atlas inspection;not AIR execution",
+  "swf": {
+    "path": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf",
+    "bytes": 41892370,
+    "sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1"
+  },
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/renderer/TableGroupCellRenderer.as",
+      "bytes": 8382,
+      "sha256": "fd90cd1aebc3ee43337bb2878af65fa79ff15ae4c87714e68e79923583be13a6"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/renderer/CashGameGroupCellPlayersCount.as",
+      "bytes": 1930,
+      "sha256": "7428854d16c74c5f2e2443d31533b43c710a3dc1053b6e501a878f5a1d192094"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/renderer/TablesSizeIcon.as",
+      "bytes": 2181,
+      "sha256": "442ee771730855290a86059f0f88a5630c741cf6a0ec9398f73012cef62aceb5"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/utils/applySlice9Grid.as",
+      "bytes": 1001,
+      "sha256": "4d030b550dd3ecce8e8886962ea1dc83fa0c3a9d0322dac080559484b3f34d1c"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/TableListGameTypeIndicator.as",
+      "bytes": 1010,
+      "sha256": "e140f3697f21707078e0221133cecb3ace09dd5ae892b93daa98df59436900eb"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/vo/CashGameTypeColor.as",
+      "bytes": 5832,
+      "sha256": "71b90d7c16314f6710219dd45dbf57b0319105e084a349ba10fe64dc84d3b6ea"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/HoldemLobby.as",
+      "bytes": 4283,
+      "sha256": "0c2fb4bf06b214feacbf945799565720efc13033cfd066c42b94246693d7e6fd"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/GameLobbyGroupView.as",
+      "bytes": 9028,
+      "sha256": "29629caa7791df7757091b872a8111fc5e1223c8cf1022ea98bc3c8024851589"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/ListCell.as",
+      "bytes": 13575,
+      "sha256": "13df1fbb2be8b84c52e22d1d06900cec540d9b6cd198e085bfe0dbf7928deeab"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/JoinButton.as",
+      "bytes": 3214,
+      "sha256": "12b35dc4fa2fe95d9048d0aea1b583d747f115b8d0498a7da7c6861b43669bbd"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/components/display/StageNinePatchImage.as",
+      "bytes": 3933,
+      "sha256": "3c20e2a08213b52a831f4365e4aa1dd176e54a271cf59d414a689a7fe465e5b0"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/TableGroupCell.as",
+      "bytes": 11168,
+      "sha256": "6a5919668e749a5c0c4c4d6251b9c52d19b0c9e596c6d1b6aca5071a90d95b64"
+    }
+  ],
+  "fontSources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/GlobalButton.as",
+      "sha256": "eb82ad01852703c14d475d837cb3ffe1785c7f1e624afb81b00caa980762f329"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/text/UniqueLabel.as",
+      "sha256": "ebf2dfc4abce2a7de077b31af397d056ceb526f52b132cc09610b9c1fc1e5803"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/asset/StageAssets.as",
+      "sha256": "e993e9ebfc32e1214162109e9af1eb3eef98e2cf6cbf6d7fb0ce1be4e3f0b0a3"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/Setting.as",
+      "sha256": "7711ac87c7729456e36920529ca5adc88529d50409c095833da862de50c8c854"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/tasks/InitFont.as",
+      "sha256": "d3831e2c3816f4adf93ed7d1bec21a55f47661bbe138da2eb66a471866df9465"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/LabelButton.as",
+      "sha256": "5e9cc08b2489e890d5684b9edb2b9b11e452d1ffdb991850f1edc0f83cade197"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/lib/components/Button.as",
+      "sha256": "005aff16f04b263bfd0550ea73d919275afba37703e4ae36a55dcdbcae62b107"
+    }
+  ],
+  "atlas": {
+    "files": [
+      {
+        "bytes": 1252,
+        "file": "native-cash-group-players-bg.png",
+        "frame": "lobby0959",
+        "height": 36,
+        "rgbaExact": true,
+        "sha256": "33c3f5738d4e12c9c39ad99614320979dd378ebf5e8651d26a180e66eb1279a1",
+        "width": 48
+      },
+      {
+        "bytes": 710,
+        "file": "native-cash-group-players-icon.png",
+        "frame": "lobby0846",
+        "height": 24,
+        "rgbaExact": true,
+        "sha256": "fbb39188e07622023b62bbdae54f2f61f915e8aa9c1f9d37a96b73e48712da4d",
+        "width": 24
+      },
+      {
+        "bytes": 214,
+        "file": "native-cash-group-indicator.png",
+        "frame": "common0277",
+        "height": 8,
+        "rgbaExact": true,
+        "sha256": "af44339c67256df1656fc6c0c09769abecf03a1713bf8aa5940185fa3858c5d0",
+        "width": 4
+      },
+      {
+        "bytes": 1246,
+        "file": "native-cash-group-join-over.png",
+        "frame": "common0028",
+        "height": 40,
+        "rgbaExact": true,
+        "sha256": "427c2e215d2e885386d3184c3b255165d7a137f87ea4c73f4b3d731bdce0ee9b",
+        "width": 20
+      },
+      {
+        "bytes": 1190,
+        "file": "native-cash-group-join-down.png",
+        "frame": "common0029",
+        "height": 40,
+        "rgbaExact": true,
+        "sha256": "02ca41edcafdb78bf3f55df1e7cdee2ffabcb09948e7cce45306d1680e47e56e",
+        "width": 20
+      }
+    ],
+    "method": "StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding",
+    "sources": {
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+    }
+  },
+  "reusedJoinFrames": [
+    {
+      "file": "native-tourney-entry-disabled.png",
+      "frame": "common0027",
+      "sha256": "030304f3237ef9007022ab7e150b9dff8a7dbf4f52a2c59978958d62c2f3cac3"
+    },
+    {
+      "file": "native-tourney-entry-up.png",
+      "frame": "common0030",
+      "sha256": "7e38e700b90363fb3f804a3b6699925f4cf5dc0a861f6c87a05397d8d2511ae8"
+    },
+    {
+      "file": "native-autofold-apply-over.png",
+      "frame": "common0031",
+      "sha256": "455075070c8d1107b096c88c8c164dbe3d875707efed5a7430f649b007762036"
+    },
+    {
+      "file": "native-tourney-entry-down.png",
+      "frame": "common0032",
+      "sha256": "c1bc80211ec329afd8510b4efe397b8be4fa11c603a9c7c55749501d41e98fac"
+    }
+  ],
+  "catalog": {
+    "path": "home-art/native-language-en.json",
+    "sha256": "105ca0f0b73a82369ba6d06a8b6d4a87b8adaa87fe8cb9716fcc1b3631eaa93e",
+    "strings": {
+      "LabelTableMax": "{0}-Max",
+      "TableSize": "Table Size",
+      "LabelStakes": "Stakes",
+      "MobileTrTableBuyIn": "Buy-in",
+      "HoldemTourneyGeneralTableListLabelPlayers": "Players",
+      "LabelAction": "Action",
+      "LobbyButtonJoinTable": "Join"
+    }
+  },
+  "contract": {
+    "viewport": [
+      810,
+      60
+    ],
+    "gap": 4,
+    "ordinaryColumns": [
+      133,
+      223,
+      150,
+      157,
+      147
+    ],
+    "promotionColumns": [
+      140,
+      103,
+      173,
+      120,
+      127,
+      147
+    ],
+    "promotionCondition": "hasPromotion OR hasRedEnvelope OR hasHalloween;local none",
+    "normalAnchors": {
+      "tableSize": [
+        39,
+        20,
+        56,
+        20
+      ],
+      "stakes": [
+        133,
+        1,
+        223,
+        60
+      ],
+      "buyIn": [
+        356,
+        1,
+        150,
+        60
+      ],
+      "players": [
+        545,
+        12,
+        80,
+        36
+      ],
+      "join": [
+        675,
+        10,
+        120,
+        40
+      ]
+    },
+    "tableSize": {
+      "fill": "#12c012 at0.1",
+      "label": [
+        2,
+        2,
+        52,
+        12,
+        "boldRoboto",
+        "#12c012"
+      ],
+      "roundRectRadius": 4
+    },
+    "players": {
+      "frame": "lobby0959",
+      "slice": [
+        18,
+        23,
+        17,
+        24
+      ],
+      "icon": [
+        12,
+        9,
+        20,
+        20
+      ],
+      "label": [
+        27,
+        9,
+        48,
+        14,
+        "regularRoboto",
+        "#46fe00"
+      ]
+    },
+    "join": {
+      "unselected": [
+        27,
+        28,
+        29
+      ],
+      "selected": [
+        30,
+        31,
+        32
+      ],
+      "slice": [
+        20,
+        9,
+        19,
+        10
+      ],
+      "label": [
+        2,
+        1,
+        116,
+        40,
+        17,
+        "regularRoboto",
+        "#fefefe"
+      ],
+      "downAlpha": 1,
+      "hoverMultiplier": 1
+    },
+    "rowColors": {
+      "up": "#242424",
+      "over": "#2f2f2f",
+      "selected": "#3c1616"
+    }
+  },
+  "localPolicy": [
+    "No local promotion metadata exists:use ordinary five-column branch;do not fabricate operator promotions",
+    "Keep real representative name in accessible label/tooltip;no visible fake promotion name",
+    "Local practice retains reference Holdem cash green indicator presentation;native operator play-money-branding flag unavailable"
+  ],
+  "limits": [
+    "Header/row column proportions normalized into existing local viewport;native parent scaling and1.5px Join anchor difference unverified",
+    "Native physical AIR text/pixel rendering/absolute window geometry not compared",
+    "Native featured/promotion/admin policies,Group player-list display and footer controls remain incomplete"
+  ]
+}

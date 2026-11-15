@@ -395,14 +395,18 @@ function cashCatalog(request,mode){
   pane.dataset.view=view;$('groupView').setAttribute('aria-pressed',String(group));$('tableView').setAttribute('aria-pressed',String(!group));
   columns.replaceChildren(...(group?['Promotion',mode==='plo'?'Games':'Table Size','Stakes','Buy-in','Players','Action']:['Table Name','Stakes','Buy-in','Players','Wait','AvgPot','VPIP%','H/hr']).map(x=>node('span',x)));
   if(!group&&mode==='aof')columns.replaceChildren(...['Table Name','Games','Stakes','Buy-in','Players','Wait','AvgPot','All-in %','H/hr'].map(x=>node('span',x)));
+  if(group&&mode==='holdem')columns.replaceChildren(...['Table Size','Stakes','Buy-in','Players','Action'].map(x=>node('span',x)));
   if(group&&mode==='shortdeck')columns.replaceChildren(...['Promotion','Stakes','Buy-in','Players','Action'].map(x=>node('span',x)));
   updateElement($('columns'),columns);
   nextList.replaceChildren(...rows.map((r,i)=>{const b=node('button',''),n=r.occupied,stake=mode==='shortdeck'?r.blind+' ('+r.blind+')':r.blind/2+' / '+r.blind,stack=r.minBuyIn!==undefined&&r.minBuyIn!==r.maxBuyIn?r.minBuyIn+'–'+r.maxBuyIn:r.stack??'30–100';
    const cells=group?[r.name,mode==='plo'?r.mode.toUpperCase().replace(/(\d)/,'-$1'):(r.capacity||4)+'-Max',stake,mode==='holdem'?r.stack:stack,n===null?'—':mode==='holdem'?String(n):n+'/'+(r.capacity||4),r.open?'Join':'Closed']:[r.name,stake,stack,n===null?'—':n+'/'+(r.capacity||4),r.waitingCount??0,r.avgPot??'—',r.vpip==null?'—':r.vpip+'%','—'];
-   if(group&&mode==='shortdeck')cells.splice(1,1);
+   if(group&&mode==='shortdeck')cells.splice(1,1);if(group&&mode==='holdem')cells.shift();
    if(mode==='aof'){if(group)cells[1]='Hold’em';else{cells.splice(1,0,'Hold’em');cells[7]=r.allInPercent==null?'—':r.allInPercent+'%'}}
 
    b.setAttribute('aria-label',r.name);if(group&&r.groupId){b.dataset.groupId=r.groupId;b.dataset.tableCount=r.members.length;b.title=r.members.length+' matching hosted tables'}b.setAttribute('aria-pressed',String(i===selected));b.append(...cells.map((x,j)=>{
+    if(group&&mode==='holdem'&&j===0){const badge=node('span','','nativeGroupSize'),text=node('span',x,'nativeGroupSizeText');text.dataset.nativeLabel='LabelTableMax';text.dataset.nativeValues=JSON.stringify([r.capacity||6]);badge.append(text);return badge}
+    if(group&&mode==='holdem'&&j===3){const count=node('span','','nativeGroupPlayers'),icon=node('i',''),label=node('span',x,'nativeGroupPlayerCount');icon.setAttribute('aria-hidden','true');count.append(icon,label);count.setAttribute('aria-label',x+' seated players in this group');return count}
+    if(group&&mode==='holdem'&&j===4){const action=node('span','','rowAction'),label=node('span',x);action.dataset.joinOpen=String(r.open);action.setAttribute('aria-disabled',String(!r.open));if(r.open)label.dataset.nativeLabel='LobbyButtonJoinTable';action.append(label);return action}
     if(!group&&mode!=='aof'&&j===3&&Number.isInteger(n)){
       const seats=node('span','','seatBlocks'),capacity=r.capacity||6;
       seats.setAttribute('role','img');seats.setAttribute('aria-label',n+' of '+capacity+' seats occupied');seats.title=n+' / '+capacity+' players';
@@ -410,7 +414,7 @@ function cashCatalog(request,mode){
     }
     return node('span',x,j===0?'chip':group&&j===(mode==='shortdeck'?4:5)?'rowAction':'');
    }));
-   b.onclick=e=>{if(selected!==i)waitingError='';selected=i;render();refreshWaiting();list.children[i].focus();if(e.target.classList.contains('rowAction')&&r.open){if(mode==='holdem'&&journey)void cashGroupJoin.open(r).catch(error=>{waitingError=error.message;render()});else location.assign(joinHref(r))}};return b}));
+   b.onclick=e=>{if(selected!==i)waitingError='';selected=i;render();refreshWaiting();list.children[i].focus();if(e.target.closest('.rowAction')&&r.open){if(mode==='holdem'&&journey)void cashGroupJoin.open(r).catch(error=>{waitingError=error.message;render()});else location.assign(joinHref(r))}};return b}));
   updateElement(list,nextList);
   if(!t){lobbyHud.select(null);updateElement(previewRoot,preview);$('details').textContent='No matching hosted tables';join.removeAttribute('href');$('joinTable').hidden=true;join.textContent='No table selected';return}
   lobbyHud.select(!group&&mode==='holdem'&&t.capacity===6?t:null);
