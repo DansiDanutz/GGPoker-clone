@@ -1,5 +1,11 @@
 # Multi-table tournament hosting — local reconstruction
 
+## Current integration state — 15 November 2026
+
+Draft205 now includes funded registration, actual child rooms, authenticated fixed seats and ready barrier, atomic first private deals, real betting actions and parent settlement derived only from the actual finished hand. A 12-session HTTP test stops/boots the server during a private hand, recovers the same cards, plays a complete folded hand and verifies that its active peer remains untouched. The seven-account room test also settles an all-in hand, cold-reopens during actions and verifies final-action write rollback plus 2,100-chip conservation.
+
+**Still incomplete:** physical reseating, next hands, reconnect redirects after transfers, full owner/player MTT screens and end-to-end tournament payout through real rooms. The parent planner can already record transfers, but those are not yet applied to physical child rooms. Completed hands remain visible in their original seats; no incoming player is assigned an old private hand. The live PR206 runtime remains unchanged. Earlier sections below describe their historical implementation stages; this paragraph is the current status.
+
 ## Evidence and scope
 
 Four selective FFDec exports from the installed IronDesktop.swf are hashed in [source receipt](multi-table-source.json). `MoveTableCommand.execute` receives a `TableConnection`, assigns `tableFacade.nextConnection`, and uses a processor Task before dispatching OPEN_TABLE for tournaments. The non-tournament branch dispatches directly. This proves client transition sequencing in that method, not the private allocation/balancing algorithm or an after-hand guarantee.
@@ -85,3 +91,11 @@ Test nou: `multi-table-rooms-test.mjs`; regresii financiare/HTTP MTT, Spin șase
 `multi-table-deal-test.mjs` verifică șapte jucători la mese de patru și trei: bariera de conectare, eșecul scrierii ambelor mâini, retry, 2.100 de jetoane conservate și lipsa unei taxe suplimentare. Avansarea ceasului comun cu șase intervale produce blindul plafonat 640 la ambele mese. După redeschidere, fiecare token vede exact cele două cărți proprii; spectatorul nu vede nicio carte privată. Sunt respinse nepotrivirile de număr, stack inițial, total, blind, cărți duplicate sau structură deck/hands invalidă. Recuperarea este verificată prin redeschiderea modelului de fișier, nu printr-un test nou de browser sau kill/restart server în timpul mâinii.
 
 Coordonatorul oferă o copie a receiptului curent pentru validare fără a începe o mână nouă. Acțiunile de joc, finish autoritar și mutările rămân neconectate și blocate la nivelul comenzilor camerelor MTT. Acest pas nu reprezintă un turneu jucabil complet.
+
+## Betting and authoritative finish
+
+`multi-ready` requires a valid local profile, the account-bound seat token, local Origin and the current version when marking a new ready slot. Only after every assigned account at every initial table is seated and ready does the same persistence transaction begin all child hands. Extra result fields are rejected; the client cannot send after-stacks or awards.
+
+All MTT room requests take a complete registry/rooms/wallet rollback snapshot. On an actual settled room hand, the parent receives the saved hand number, final stacks and dealer exactly once. Failed persistence restores the last action and parent finish together. Generic single-table winners and auto-deals are suppressed for these children; global status comes from the parent in the response's `multi` field. A complete showdown and a folded-hand payout have been verified at the room layer, with the active peer unchanged. New cards and transfers remain pending.
+
+Tests: `multi-table-hand-test.mjs`, extended `multi-table-http-test.mjs`; registry/child/deal/wallet, Spin six-seat, single-table wallet and restore regressions pass. HTTP scope includes actual server stop/boot during private play. No rendered browser MTT acceptance journey has passed yet.
