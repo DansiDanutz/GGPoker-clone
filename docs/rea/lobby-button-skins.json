@@ -1,0 +1,53 @@
+{
+  "method": "REA retained Game51 GlobalButton/LabelButton/ButtonColor/Setting plus operator source; reuse existing immutable art, no new extraction",
+  "sources": {
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/ButtonColor.as": "6102ebf3300a6933f077b5d5b2e7c061a5f11054139cea95417f9353daf0db7c",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/GlobalButton.as": "eb82ad01852703c14d475d837cb3ffe1785c7f1e624afb81b00caa980762f329",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/lib/components/Button.as": "005aff16f04b263bfd0550ea73d919275afba37703e4ae36a55dcdbcae62b107",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/utils/applySlice9Grid.as": "4d030b550dd3ecce8e8886962ea1dc83fa0c3a9d0322dac080559484b3f34d1c",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/LabelButton.as": "5e9cc08b2489e890d5684b9edb2b9b11e452d1ffdb991850f1edc0f83cade197",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/text/UniqueLabel.as": "ebf2dfc4abce2a7de077b31af397d056ceb526f52b132cc09610b9c1fc1e5803",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/asset/StageAssets.as": "e993e9ebfc32e1214162109e9af1eb3eef98e2cf6cbf6d7fb0ce1be4e3f0b0a3",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/Setting.as": "7711ac87c7729456e36920529ca5adc88529d50409c095833da862de50c8c854",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/tasks/InitFont.as": "d3831e2c3816f4adf93ed7d1bec21a55f47661bbe138da2eb66a471866df9465"
+  },
+  "operatorSources": "cash-lobby-controls-source.json",
+  "reusedArt": {
+    "native-tourney-entry-up.png": "7e38e700b90363fb3f804a3b6699925f4cf5dc0a861f6c87a05397d8d2511ae8",
+    "native-tourney-entry-down.png": "c1bc80211ec329afd8510b4efe397b8be4fa11c603a9c7c55749501d41e98fac",
+    "native-tourney-entry-disabled.png": "030304f3237ef9007022ab7e150b9dff8a7dbf4f52a2c59978958d62c2f3cac3",
+    "native-tourney-entry-shadow.png": "c6ed7b7adc42d6fce9f37531dde954eef4a23cec0725d6b2c029a1124ac0395b",
+    "native-note-button-gray-up.png": "da79636d9aa131b795158c827955a6c689319b70be33c7fdb3393e5c9eea3d16",
+    "native-note-button-gray-down.png": "02b605bdb7fff01bd56ad5ab5c6432beddad815134b873407ab5c1620bd23617",
+    "native-action-roboto-condensed.ttf": "18d0126c5b6279862627fce250efd93c9c0256d6c78aaea0f21b0352b138aa48"
+  },
+  "contract": {
+    "open": "DARK_GRAY common27/29",
+    "joinWaitCancel": "RED common30/32",
+    "hover": "up texture with1.3brightness/nominal0.2s; over28/31 unused by constructor",
+    "label": "19px,useRoboto=false; InitFont sets Latin default Roboto Condensed,2Ace/Korean exception excluded",
+    "bodySlices": [
+      20,
+      9,
+      19,
+      10
+    ],
+    "shadow": {
+      "slice": 15,
+      "x": -5,
+      "y": 5,
+      "widthDelta": 10,
+      "heightDelta": 5
+    },
+    "downLabelAlpha": 0.5,
+    "disabled": "common27,whole opacity1,equal RGB average matrix,label alpha0.5",
+    "height": 37
+  },
+  "limits": [
+    "Captured outer placement/width retained with source37px control height; parent absolute geometry and physical pixels not fully established",
+    "Native Tween easing/font rasterization and speaker timing unverified",
+    "Group/Rush/tournament controls untouched"
+  ]
+}

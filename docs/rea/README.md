@@ -88,3 +88,5 @@ Testele browser cer Chrome și pachetul local de referință,folosesc date tempo
 - [Automatic Get Chips on applied cash pause](automatic-get-chips.md): native first-transition/default threshold, existing dialog, no implicit debit and no reload replay.
 
 - [Cash lobby selected-table controls](cash-lobby-controls.md): source-backed Open/Join/Wait/Cancel and own-account queue integration.
+
+- [Selected-table native button skins](lobby-button-skins.md): actual GlobalButton art, font initialization and pointer states.

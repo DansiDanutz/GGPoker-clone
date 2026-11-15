@@ -245,7 +245,7 @@ let catalogRequest=0,battleRulesView,battleLobbyView;
 function catalog(mode){
  battleRulesView?.destroy();battleRulesView=null;battleLobbyView?.destroy();battleLobbyView=null;spinUI?.close();
  const request=++catalogRequest;$('viewSwitch').hidden=false;$('groups').hidden=false;
- const tournament=mode==='tournaments',pane=$('catalog'),list=$('groups'),detailsRoot=$('details');pane.dataset.mode=mode;pane.hidden=false;size();list.replaceChildren();
+ const tournament=mode==='tournaments',pane=$('catalog'),list=$('groups'),detailsRoot=$('details');pane.dataset.mode=mode;pane.classList.remove('nativeCashOperator');pane.hidden=false;size();list.replaceChildren();
  $('joinTable').hidden=true;$('takeSeat').onkeydown=null;for(const attribute of ['role','tabindex','aria-disabled'])$('takeSeat').removeAttribute(attribute);$('takeSeat').onclick=null;$('eventLobby').onclick=null;$('takeSeat').textContent='Join table';pane.removeAttribute('data-view');$('catalogName').textContent=tournament?'Tournaments':mode==='plo'?'PLO':mode==='shortdeck'?'Short Deck · local rules':mode==='aof'?'All-In or Fold':'Hold’em';
  $('eventSearchLabel').hidden=!tournament;
  $('eventFilter').hidden=mode==='battle';$('eventLobby').hidden=mode==='battle';
@@ -371,7 +371,7 @@ function rushCatalog(request){
  refresh();
 }
 function cashCatalog(request,mode){
- const pane=$('catalog'),list=$('groups'),previewRoot=$('preview'),join=$('takeSeat');
+ const pane=$('catalog'),list=$('groups'),previewRoot=$('preview'),join=$('takeSeat');pane.classList.add('nativeCashOperator');
  const joinHref=t=>{const url=new URL(t.href,location.href);if(journey&&localStorage.getItem('river-auto-buyin')==='1')url.searchParams.set('autojoin','1');return url.href};
  const rows=[];
  let view='group',selected=0,filter='all',hosted=[],waiting=null,waitingRoom=null,waitingBusy=false,waitingError='',waitingRead=0;
@@ -415,10 +415,10 @@ function cashCatalog(request,mode){
  if(!nativePreview)s.append(node('small',t.seats[i].stack+' chips'))}if(nativePreview){const plate=node('span','','previewPlate'),label=node('span',name,'previewName');label.title=name;plate.append(label);if(t.seats?.[i])plate.append(node('small',t.seats[i].stack+' chips'));s.append(plate)}s.style.left=x+'%';s.style.top=y+'%';preview.append(s)})}
   if(!group&&mode==='holdem'&&t.positions){const spots=[[50,68.5],[35.6,64.2],[36.8,42.6],[50,26.4],[63.2,42.6],[64.4,64.2]];for(const [key,label]of [['dealer','D'],['smallBlind','SB'],['bigBlind','BB']]){const seat=t.positions[key];if(!Number.isInteger(seat)||!spots[seat])continue;const marker=node('span',label,'previewPosition '+(key==='dealer'?'dealerPosition':'blindPosition'));marker.dataset.seat=seat;marker.setAttribute('role','img');marker.setAttribute('aria-label',(key==='dealer'?'Dealer':key==='smallBlind'?'Small blind':'Big blind')+' · '+(t.seats?.[seat]?.name||'Seat '+(seat+1)));marker.style.left=spots[seat][0]+'%';marker.style.top=spots[seat][1]+'%';if(key==='smallBlind'&&seat===t.positions.dealer)marker.style.left=(spots[seat][0]+10)+'%';preview.append(marker)}}
   updateElement(previewRoot,preview);
-  $('details').textContent=t.name+' · '+stakes+' · practice chips'+(waitingRoom===t.room&&waiting?.offer?' · Seat available — Open to confirm buy-in':'')+(waitingError?' · '+waitingError:'');join.textContent=!group?'Open':t.open?'Join Table':'Registration closed';if(t.open||!group)join.href=group?joinHref(t):t.href;else join.removeAttribute('href');join.onclick=()=>{if(group&&t.open)join.href=joinHref(t)};
+  $('details').textContent=t.name+' · '+stakes+' · practice chips'+(waitingRoom===t.room&&waiting?.offer?' · Seat available — Open to confirm buy-in':'')+(waitingError?' · '+waitingError:'');const label=!group?'Open':t.open?'Join Table':'Registration closed';if(join.firstElementChild?.textContent!==label)join.replaceChildren(node('span',label));if(t.open||!group)join.href=group?joinHref(t):t.href;else join.removeAttribute('href');join.onclick=()=>{if(group&&t.open)join.href=joinHref(t)};
   const seatLink=$('joinTable'),own=waitingRoom===t.room?waiting:null,full=t.occupied+(t.reservedSeats?.length||0)>=(t.capacity||6),queued=own?.position>0;
   seatLink.hidden=group||!!own?.seated||journey&&!own||full&&!queued&&(own?.count??t.waitingCount??0)>=(t.capacity||6);seatLink.onkeydown=null;seatLink.onclick=null;for(const attribute of ['role','tabindex','aria-disabled'])seatLink.removeAttribute(attribute);
-  const action=queued?'cancel':full?'join':null;seatLink.textContent=queued?'Cancel Waiting':full?'Wait':t.open?'Join':'Registration closed';
+  const action=queued?'cancel':full?'join':null;const seatLabel=queued?'Cancel Waiting':full?'Wait':t.open?'Join':'Registration closed';if(seatLink.firstElementChild?.textContent!==seatLabel)seatLink.replaceChildren(node('span',seatLabel));
   if(waitingBusy||!t.open&&!queued){seatLink.removeAttribute('href');seatLink.setAttribute('aria-disabled','true');seatLink.onclick=e=>e.preventDefault()}
   else if(action){seatLink.href='#';seatLink.setAttribute('role','button');seatLink.onclick=e=>{e.preventDefault();changeWaiting(t,action)};seatLink.onkeydown=e=>{if(e.key===' '){e.preventDefault();seatLink.click()}}}
   else seatLink.href=journey?joinHref(t):'/launch.html';

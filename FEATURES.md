@@ -1401,3 +1401,5 @@ Rabbit motion lifecycle live PR223: REA local peel path retained; reproduced red
 Automatic Get Chips live PR225: native OnSitOut4009 first own low-stack cash transition opens existing Add Chips dialog, excluding catch-up, observer, chat, tournament and Rush. Escape/poll/reload preserve wallet; explicit funding/next-deal uses existing guards. Nineteen exact-head checks passed and guarded rollout preserved owner data; [REA evidence](docs/rea/automatic-get-chips.md).
 
 Cash lobby controls live PR227: native TablePreview Open/Join/Wait/Cancel gating uses existing own-account FIFO and private status; no public waiting identities or debit. Real pointer/FIFO/queue-cap/503/restart/explicit offered buy-in/full next-hand payout passed in source and installed runtime; Auto Buy-In startup ordering also corrected. [REA evidence](docs/rea/cash-lobby-controls.md).
+
+Selected-table button skin candidate: source GlobalButton red/gray PNGs,shadow,nine-slice,Latin font19,height37,hover/down/disabled states reuse existing art. Real queue/payout and exact-head installed gate pending; [REA contract](docs/rea/lobby-button-skins.md).
