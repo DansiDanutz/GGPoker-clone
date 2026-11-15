@@ -291,7 +291,10 @@ function applyState(data){
  const deferWin=previous&&previous.number===data.number&&previous.hand&&!previous.hand.end&&data.hand?.end&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&data.hand.end.payouts.some((n,i)=>n>data.hand.end.returns[i]);
  const street=matchMedia('(prefers-reduced-motion: reduce)').matches?null:streetPlan(previous,data);
  if(deferWin){winHand=data.number;payoutSoundHand=data.number;soundedPots.clear();runoutPlan=showdownPlan(previous,data);boardSounds.clear()}else if(street){runoutPlan=street;boardSounds.clear()}else if(previous?.number!==data.number||!data.hand||!data.hand.end&&!runoutPlan?.street){winHand=null;payoutSoundHand=null;soundedPots.clear();runoutPlan=null;boardSounds.clear()}
- state=data;if(chatOnly){renderChat();renderSeatReactions();renderSeatAvatars();renderShuffles();playerNotes.refresh()}else render();reconcileSqueeze(previous);renderReserved();playCues(cues.filter(name=>!(deferWin&&name==='WinPot')&&!((deferWin||street)&&runoutPlan&&name==='Board')))
+ state=data;if(chatOnly){renderChat();renderSeatReactions();renderSeatAvatars();renderShuffles();playerNotes.refresh()}else render();
+ // OnSitOut4009 offers funding only on a new own low-stack cash pause, never catch-up.
+ if(!chatWindow&&previous?.sitOutSupported&&data.sitOutSupported&&data.me!=null&&previous.me===data.me&&previous.names[data.me]===data.names[data.me]&&!previous.sittingOut?.[data.me]&&data.sittingOut?.[data.me]&&data.seatBalances[data.me]<data.returnMinimum)openAddChips();
+ reconcileSqueeze(previous);renderReserved();playCues(cues.filter(name=>!(deferWin&&name==='WinPot')&&!((deferWin||street)&&runoutPlan&&name==='Board')))
 }
 
 async function request(op,body={}){
