@@ -1,0 +1,32 @@
+{
+  "method": "REA selective headless FFDec export from current Game51 SWF plus matching retained client sources; no AIR or private server execution",
+  "freshExports": {
+    "files": 4,
+    "bytes": 7816
+  },
+  "sources": {
+    "/Users/davidai/Sandbox/rea-tools/next-blind-source/scripts/com/nsus/iron/table/services/callback/OnSitOut.as": "50bf51a780d6afb486c3488b37688c6d65cdbb212f9f2a9427775ffff4b0d952",
+    "/Users/davidai/Sandbox/rea-tools/next-blind-source/scripts/com/nsus/iron/table/services/callback/OnTourneySitOut.as": "0110c7ffc56bfe02dd9a378c14680af2c3ef3a933c4d35afb44fd893956f3936",
+    "/Users/davidai/Sandbox/rea-tools/next-blind-source/scripts/com/nsus/network/protocol/SessionCallback/NotifyTourneySitOutParameter.as": "d7fd9268ff282e4129c192ea33e01d0d59b76c44846f04bdaee47c6e054eca6b",
+    "/Users/davidai/Sandbox/rea-tools/next-blind-source/scripts/com/nsus/network/protocol/SessionCallback/NotifyTableSitOutParameter.as": "25c6788b31a781d0128c85e1f93c0109d0a28371c2ef4e4850bc7b32956d6ff7",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/vo/TableInfo.as": "7d044be76dea95375f26aeccade14ebb8620afedec682b75e35596d578e51da6",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/services/request/SitIn.as": "f9136543ecb9ab0868e3481e93dcaa2fc2a62314cae55af7532e33b609314ca4",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/display/sitoutmenu/SitOutHelper.as": "f40d07ce323dc02100758f53fd6da2babf96a7e0774bba6e3d63a1f90e707a78",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/services/callback/OnBlindsPosted.as": "3facee6339a511c38bfe4617ad10e1e26ea9e3eb0b6f98234197767dea581905",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/network/enum/ESitOutTriggerType.as": "9a54e067da1ee2b5855f41c100cb64fe02623501beaea974f882772d7f5ca31e",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/network/enum/EAutoActionFlag.as": "30743b06c858ba711d4aeea28f77970a03e56707b961a0b941cbe1d85780720a",
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1"
+  },
+  "findings": [
+    "Native request3128 sets next-blind flags but examined callbacks4009/4038 confirm applied state without specifying SB/BB boundary",
+    "OnBlindsPosted4018 consumes posted blind payload; no next-blind scheduling policy in that method",
+    "TableInfo.isHoldem includes SixPlusHoldem; dealMeInMin prefers positive operator override,otherwise4buttonBlind,2thirdBlind,2bigBlind",
+    "SitIn3108 normal Holdem/Omaha opens Get Chips below dealMeInMin instead of sending sitIn; OnSitOut4009 also prompts below default threshold when not catch-up",
+    "Local Short Deck uses existing blind value as its live button blind; apply native client default4times this value,not generic2BB"
+  ],
+  "limits": [
+    "Private operator override,third-blind configuration and native posted-blind trigger timing not implemented",
+    "Next-blind remains disabled; enum label is not evidence for BB versus SB policy",
+    "Native catch-up timing,physical pixels/audio and server acceptance remain unverified"
+  ]
+}

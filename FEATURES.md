@@ -2,7 +2,11 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
-## Verified release baseline — PR219
+## Verified release baseline — PR220
+
+PR220 merged as `e262c531ed0f5ffa9441c3cc42decf19e4365079`, tested source `bd0b04eb0114447b9e795bafd29b51eb8d34bda1`,47exact-head checks. All-games controls and Deal Me In cover existing supported cash/tournament/Spin/MTT/Rush sessions,with private scope distinct from cash-only. Runtime121files/1,405,434bytes and six owner files15,496bytes preserved. New Short Deck return-threshold correction below is not yet active.
+
+## Released checkpoint — PR219
 
 PR219 merged as `07f0535cd9d55274835bac9d52f609a52f20f3b0`, tested source `824c51bd714d8df377dbef2e4a814be0c8e5faac`,33exact-head checks. Individual tournament/Spin/MTT pause is active with forced bets/cards retained,local500ms Check/Fold,next-deal return,identity-preserving moves and owner status. Runtime121files/1,402,560bytes; six owner files15,496bytes unchanged. All-games global follow-up below remains candidate.
 
@@ -1379,3 +1383,5 @@ Tournament/Spin player pause investigation: native separate flags, request3128, 
 Tournament player pause candidate (not live): desired/applied flags, mandatory blinds/cards, local500ms Check/Fold, next-deal return, MTT identity/automatic Ready, Spin3/6 payouts, rollback/restart and three-context browser verified. All-games/global return and next-blind remain incomplete; see tournament-player-pause guide.
 
 All-games pause candidate: atomic cash/tournament/Spin/MTT/Rush scope,private provenance,strict authenticated HTTP,rollback/restart,cash-only isolation,native header/configurable hotkey and Deal Me In connected. Source mixed browser verified360-chip payout; exact-head/installed QA and release pending. See [all-games pause](docs/rea/all-games-pause.md).
+
+Short Deck client-default return threshold candidate: fresh REA callbacks plus TableInfo/SitIn establish4×buttonBlind rather than generic2BB. Model boundary15→16,pending/restart/next-deal funds tested; owner buy-in policy unchanged. Next Blind remains disabled because examined server callbacks do not specify SB/BB ordering. See [callback evidence](docs/rea/sitout-callbacks.md).

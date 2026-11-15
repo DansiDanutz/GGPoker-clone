@@ -118,7 +118,7 @@ function cashBalance(r,i){
 }
 function seatChangeWaiting(r){return !r.hand&&r.pushSeatAppliedHand===r.number&&r.number>0}
 function cashReady(r){return !r.tournament&&(r.hand?.end||seatChangeWaiting(r))&&r.players.every((p,i)=>!p||p.sitOutNextHand||r.ready[i])}
-function returnMinimum(r){return (r.settings?.blind||4)*2}
+function returnMinimum(r){return (r.settings?.blind||4)*(r.settings?.variant==='shortdeck'?4:2)}
 function returnNeedsChips(r,i){return !!(r.hand?.sittingOut?.[i]&&hasHandBalance(r,i)&&Math.max(cashBalance(r,i)+(r.players[i].addChips?.amount||0),r.players[i].topUpTo||0)<returnMinimum(r))}
 function setCashPause(r,me,paused,allCash=false,allGames=false){
  const p=r.players[me];if(!paused&&returnNeedsChips(r,me))fail(409,'Add chips before returning to this table');if(!!p.sitOutNextHand===paused&&!!p.sitOutAllCash===(paused&&allCash)&&!!p.sitOutAllGames===(paused&&allGames))return false;

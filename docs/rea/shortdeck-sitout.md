@@ -25,3 +25,5 @@ Testul generic de apăsare F2 presupunea Call cu sumă. Sursa ActionButton confi
 ## Revizie de restaurare
 
 Revizia a reprodus un checkpoint Short Deck cu rabbitShown care era acceptat după lărgirea categoriei cash. rabbitSupported păstrează acum lista de formate Rabbit anterior verificate și este comun atât afișării/cererii, cât și validării la încărcare. RED missing-exception→GREEN; nici un câmp Rabbit Short Deck nu este acceptat implicit la restaurare. QA pentru primul commit de candidat este istoric și trebuie repetat pe noul head.
+
+Follow-up candidat: sursa TableInfo.dealMeInMin și SitIn confirmă default4×buttonBlind pentru SixPlusHoldem normal cash. returnMinimum local2×blind este corectat la4×blind în acest candidat; [dovezi și limite](sitout-callbacks.md). Însemnările anterioare despre politica2BB locală sunt istorice; serverul privat/override-urile nu sunt certificate.

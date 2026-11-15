@@ -78,3 +78,5 @@ Testele browser cer Chrome și pachetul local de referință,folosesc date tempo
 - [Tournament/Spin player pause investigation](tournament-player-pause.md): native flags/global scope/return, current gaps and release acceptance; not yet implemented.
 
 - [All-games pause candidate](all-games-pause.md): atomic mixed-format backend and HTTP; UI/release pending.
+
+- [Sit Out callbacks and Short Deck funding](sitout-callbacks.md): fresh4009/4038protocol evidence,client4buttonBlind return threshold and still-unproven Next Blind boundary.
