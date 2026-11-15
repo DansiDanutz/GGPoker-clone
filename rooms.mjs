@@ -680,19 +680,21 @@ rules=spinRules(rooms.get('local-spin-rules'));rooms.delete('local-spin-rules');
     }
     return {started};
   };
-  request.applyMultiTournamentSeating=id=>bankTransaction(()=>{
+  const applyMultiSeating=(id,wait=false)=>{
     const event=multi.summary(id);if(!event.tournament)fail(409,'Wait for the funded field');
     const all=multi.layout(id),people=new Map(),oldSlots=new Map();
     for(const t of all){const r=rooms.get(multiTableRoomId(id,t.id));r.players.forEach((p,i)=>{if(p){people.set(p.account,p);oldSlots.set(p.account,{room:r,seat:i})}})}
     const next=event.tournament.tables,targets=new Map();for(const t of next)t.seats.forEach((p,seat)=>{if(p)targets.set(p.id,{room:multiTableRoomId(id,t.id),seat})});
-    for(const t of all){const r=rooms.get(multiTableRoomId(id,t.id)),ids=(next.find(n=>n.id===t.id)?.seats??Array(6).fill(null)).map(p=>p?.id??null);if(!isDeepStrictEqual(ids,r.multiAccounts)&&r.hand&&(!r.hand.end||Date.now()<r.hand.settledAt+3000))fail(409,'Wait for the affected showdown to finish')}
+    for(const t of all){const r=rooms.get(multiTableRoomId(id,t.id)),ids=(next.find(n=>n.id===t.id)?.seats??Array(6).fill(null)).map(p=>p?.id??null);if(!isDeepStrictEqual(ids,r.multiAccounts)&&r.hand&&(!r.hand.end||Date.now()<r.hand.settledAt+3000)){if(wait)return {changed:0,pending:true};fail(409,'Wait for the affected showdown to finish')}}
     let changed=0;for(const t of all){const roomId=multiTableRoomId(id,t.id),r=rooms.get(roomId),ids=(next.find(n=>n.id===t.id)?.seats??Array(6).fill(null)).map(p=>p?.id??null);if(isDeepStrictEqual(ids,r.multiAccounts))continue;
       for(const p of r.players)if(p){const target=targets.get(p.account),old=oldSlots.get(p.account);if(!target||target.room!==roomId||target.seat!==old.seat){r.multiDepartures??=[];r.multiDepartures=r.multiDepartures.filter(d=>d.account!==p.account);r.multiDepartures.push({account:p.account,digest:p.digest})}}
       if(r.hand){r.multiPreviousHand={number:r.number,button:r.hand.button,bigBlindSeat:r.hand.bigBlindSeat,variant:r.hand.variant};r.hand=null;delete r.actionClock;delete r.deadline}
       r.players=ids.map((a,i)=>{const p=people.get(a);if(!p)return null;const old=oldSlots.get(a);return old.room===r&&old.seat===i?p:{...p,digest:digest(randomBytes(32).toString('hex'))}});r.multiAccounts=ids;r.ready.fill(false);r.host=r.players.findIndex(Boolean);r.version++;changed++;
     }
     multi.applyLayout(id);return {changed};
-  });
+  };
+  request.applyMultiTournamentSeating=id=>bankTransaction(()=>applyMultiSeating(id));
+  request.tickMulti=()=>bankTransaction(()=>{for(const e of multi.state.events)if(e.checkpoint){for(const t of multi.layout(e.id)){const r=rooms.get(multiTableRoomId(e.id,t.id));if(r.hand&&!r.hand.end&&Date.now()>=r.deadline)expireClock(r,Date.now());if(r.hand?.end&&!multi.hand(e.id,t.id)?.finish)multi.finish(e.id,t.id,r.number,r.hand.stacks,r.hand.button,wallet)}applyMultiSeating(e.id,true);startMultiHands(e.id,true)}});
   request.startMultiTournamentHands=id=>bankTransaction(()=>startMultiHands(id));
   request.beginMultiTournamentHand=(id,tableId,number)=>bankTransaction(()=>multi.begin(id,tableId,number));
   request.finishMultiTournamentHand=(id,tableId,number,after,button)=>bankTransaction(()=>multi.finish(id,tableId,number,after,button,wallet));
