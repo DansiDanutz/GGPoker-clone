@@ -372,7 +372,7 @@ function rushCatalog(request){
 }
 function cashCatalog(request,mode){
  const pane=$('catalog'),list=$('groups'),previewRoot=$('preview'),join=$('takeSeat');pane.classList.add('nativeCashOperator');
- const joinHref=t=>{const url=new URL(t.href,location.href);if(journey&&localStorage.getItem('river-auto-buyin')==='1')url.searchParams.set('autojoin','1');return url.href};
+ const joinHref=(t,reserve=false)=>{const url=new URL(t.href,location.href);if(journey&&reserve)url.searchParams.set('join','1');if(journey&&localStorage.getItem('river-auto-buyin')==='1')url.searchParams.set('autojoin','1');return url.href};
  const rows=[];
  let view='group',selected=0,filter='all',hosted=[],waiting=null,waitingRoom=null,waitingBusy=false,waitingError='',waitingRead=0;
  async function refreshWaiting(){
@@ -421,7 +421,7 @@ function cashCatalog(request,mode){
   const action=queued?'cancel':full?'join':null;const seatLabel=queued?'Cancel Waiting':full?'Wait':t.open?'Join':'Registration closed';if(seatLink.firstElementChild?.textContent!==seatLabel)seatLink.replaceChildren(node('span',seatLabel));
   if(waitingBusy||!t.open&&!queued){seatLink.removeAttribute('href');seatLink.setAttribute('aria-disabled','true');seatLink.onclick=e=>e.preventDefault()}
   else if(action){seatLink.href='#';seatLink.setAttribute('role','button');seatLink.onclick=e=>{e.preventDefault();changeWaiting(t,action)};seatLink.onkeydown=e=>{if(e.key===' '){e.preventDefault();seatLink.click()}}}
-  else seatLink.href=journey?joinHref(t):'/launch.html';
+  else seatLink.href=journey?joinHref(t,true):'/launch.html';
 
  }
  $('groupView').onclick=()=>{view='group';render()};$('tableView').onclick=()=>{view='table';render();refreshWaiting()};render();

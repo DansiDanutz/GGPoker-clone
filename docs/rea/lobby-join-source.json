@@ -1,0 +1,88 @@
+{
+  "method": "REA targeted Game51 FFDec headless exports and matching retained sources; no AIR/original-account execution",
+  "swf_sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
+  "sources": {
+    "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/Poker.as": {
+      "sha256": "6d05e3d661ff4c5d601d8eaa6c571ebb283ec481d4aa66619f66c6801afea99c",
+      "bytes": 121104
+    },
+    "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/LobbyWindowMediator.as": {
+      "sha256": "1650b622a8f263d3ac7e95b96b313ae73e42295b9dad109a16a016718aa8c5c1",
+      "bytes": 45036
+    },
+    "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/view/HomeMediator.as": {
+      "sha256": "80b732a00b1f980fc12bafcf8d0eca8efdad9d51cd5e96ffa8e46b68ee7657f2",
+      "bytes": 140374
+    },
+    "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/view/PokerMediator.as": {
+      "sha256": "94b1e06891e342ac5b2c0406eecf2738e9bab100b213371d61e99cbaa6458570",
+      "bytes": 804
+    },
+    "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/controller/AutoJoinTableCommand.as": {
+      "sha256": "3c5572174fffa4a13c03ca0de584794ea19e447a88815428e84f76406164238c",
+      "bytes": 10230
+    },
+    "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/controller/CheckAutoJoinTableCommand.as": {
+      "sha256": "ea20095520fbe9a85a6629c904a9bfdee25aa7e97caf8a809f09b440e6c1f619",
+      "bytes": 3371
+    },
+    "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/table/controller/CheckReserveSeatCommand.as": {
+      "sha256": "119c490cbe1d379118c1eed57e6d5a39551fb531dd6d33eb8ef93444001f6623",
+      "bytes": 1753
+    },
+    "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/controller/OpenTableCommand.as": {
+      "sha256": "d4790ade9b5acede7bc362638979d12505cf176571c48c3e9a0795c21614641b",
+      "bytes": 26943
+    },
+    "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/TablePreview.as": {
+      "sha256": "25c20c082c462be6f379074b964d480e9d331545cf4593ad20ac5bd2fcb25ad1",
+      "bytes": 10326
+    },
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/TableFacade.as": {
+      "sha256": "72cef0015576eb7ee874d23bab84f4d17227064b6c054f53ccdd4fc77845fcb2",
+      "bytes": 43063
+    },
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/controller/ReserveSeatRequestCommand.as": {
+      "sha256": "05e894ff5c1a40cc6cb6c19e646860ed18f7302c7fce069ed39cfa42a8e8b6d6",
+      "bytes": 5842
+    },
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/services/request/ReserveSeat.as": {
+      "sha256": "3452358d0226367421c587b5acf89ccca29e8566cf31d333f5574411a6009b8a",
+      "bytes": 2919
+    },
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/services/callback/OnReserveSeat.as": {
+      "sha256": "8f1235b4a97619f8d9fd1c20f3ad8d6b246b720f1c6b235a8474452ed7a3043d",
+      "bytes": 702
+    },
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/controller/CheckTakeSeatCommand.as": {
+      "sha256": "c756f911a199e245dedec74fee602fa69a88f59fa4477ee629f10fbf017ee5cc",
+      "bytes": 16870
+    }
+  },
+  "freshThisTask": {
+    "files": 7,
+    "bytes": 322672
+  },
+  "inventory": {
+    "path": "/Users/davidai/Sandbox/rea-tools/game51-classes.txt",
+    "sha256": "0b0dbf1396f5be50bcbcbab6eacfc20c593af05661f3d37c34b2bfbae9bb7bcf",
+    "bytes": 509754
+  },
+  "chain": [
+    "TablePreview JOIN_TABLE emits actual table",
+    "HomeMediator login guards and JOIN_TABLE create connection,reserveSeatWhenOpened=true,OPEN_TABLE; explicit seat-index path also retained",
+    "TableFacade getter and CHECK_RESERVE_SEAT; CheckReserveSeatCommand requests RESERVE_SEAT when no own player and reserve flag",
+    "ReserveSeat3104 success records own reservation and emits CHECK_TAKE_SEAT",
+    "CheckTakeSeatCommand ordinary cash branches between explicit auto preference/group auto amount TAKE_SEAT and POPUP_OPEN_BUY_IN otherwise"
+  ],
+  "negativeBoundaries": [
+    "OpenTableCommand alone does not consume JOIN_TABLE",
+    "Poker registry AUTO_JOIN_TABLE/CheckAutoJoin use group/matchmaking flows and are not substituted for selected-table Join",
+    "VIP/regional/ticket/ratholing/private-server rules are not recreated from these ordinary play-money gates"
+  ],
+  "limits": [
+    "No native physical popup comparison, exact reservation time or server seat arbitration proof",
+    "Group View matchmaking remains separate",
+    "Local single-tab navigation and30s reservation policy remain explicit local adapter behavior"
+  ]
+}
