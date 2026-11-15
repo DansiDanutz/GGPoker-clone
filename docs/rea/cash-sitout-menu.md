@@ -1,5 +1,7 @@
 # Cash sit-out menu
 
+Actualizare candidat PR220: headerul folosește acum domeniul nativ all-games prin SitOutAllNow/SitOutAllTableNB; comanda cash-only rămâne separată în setări/hotkey. Marcajul checked all provine numai din sitOutAllGames. Dovezi și limite în [all-games pause](all-games-pause.md). Notele de mai jos păstrează implementarea istorică cash a etapelor anterioare.
+
 ## Native evidence and limits
 
 The retained FFDec static exports of SitOutMenuView/SitOutList/MenuItem, SitOutType, SitOutHelper, SitOutCommand, TableHeaderDropdown and EAutoActionFlag establish the menu interior, selection logic and separate hand/blind flags. Source hashes and the original common0301 sprite are retained privately in `cash-sitout-menu-source-audit.json`. SWF is unsupported by the REA native provider; this is the existing static fallback, not observed native execution.

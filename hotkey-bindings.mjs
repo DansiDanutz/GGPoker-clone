@@ -2,7 +2,7 @@ export const hotkeyActions=Object.freeze([
  ['fold','Fold',[112]],['call','Check / Call',[113]],['raise','Bet / Raise',[114]],
  ...[1,2,3,4].map(i=>['preset'+i,'Select amount '+i,[17,48+i]]),
  ['allIn','All-In',[]],...[1,2,3,4].map(i=>['bet'+i,'Select amount and bet '+i,[]]),
- ['newHand','New hand',[]],['toggleUnits','Switch chip display',[]],['sitOut','Sit out next hand',[]],['sitOutAllCash','Sit out all cash game tables on next hand',[]],['rabbit','Rabbit Hunt',[]],['timeBank','Time bank',[]],['lastHands','Hand history',[]],['addChips','Add Chips',[]],
+ ['newHand','New hand',[]],['toggleUnits','Switch chip display',[]],['sitOut','Sit out next hand',[]],['sitOutAllCash','Sit out all cash game tables on next hand',[]],['sitOutAllGames','Sit-out all tables Now',[]],['rabbit','Rabbit Hunt',[]],['timeBank','Time bank',[]],['lastHands','Hand history',[]],['addChips','Add Chips',[]],
  ['runItOnce','Run It Once',[]],['runItTwice','Run It Twice',[]],['runItThreeTimes','Run It Three Times',[]],
  ['showLeft','Show left card',[]],['showRight','Show right card',[]],['showAll','Show all cards',[]]
 ].map(([id,label,keys])=>Object.freeze({id,label,keys:Object.freeze(keys)})));
@@ -23,5 +23,5 @@ export function assignHotkey(bindings,id,keys,replace=false){
  if(!hotkeyActions.some(a=>a.id===id)||!valid(keys))throw Error('Choose a supported key combination');const result=structuredClone(bindings),next=[...keys].sort((a,b)=>a-b),conflict=next.length&&hotkeyActions.find(a=>a.id!==id&&result[a.id]?.join(',')===next.join(','));if(conflict&&!replace)throw Object.assign(Error('Key already assigned to '+conflict.label),{conflict:conflict.id});if(conflict)result[conflict.id]=[];result[id]=next;return result;
 }
 
-export const hotkeyGroup=id=>(id.startsWith("show")||["runItOnce","runItTwice","runItThreeTimes"].includes(id))?"options":["toggleUnits","sitOut","sitOutAllCash","rabbit","timeBank","lastHands","addChips"].includes(id)?"functions":"table";
+export const hotkeyGroup=id=>(id.startsWith("show")||["runItOnce","runItTwice","runItThreeTimes"].includes(id))?"options":["toggleUnits","sitOut","sitOutAllCash","sitOutAllGames","rabbit","timeBank","lastHands","addChips"].includes(id)?"functions":"table";
 export function readHotkeyGroups(raw){const result={table:true,functions:true,options:true};try{const saved=JSON.parse(raw);if(saved&&typeof saved==="object"&&!Array.isArray(saved))for(const id of Object.keys(result))if(typeof saved[id]==="boolean")result[id]=saved[id]}catch{}return result}

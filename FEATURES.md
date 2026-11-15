@@ -1378,4 +1378,4 @@ Tournament/Spin player pause investigation: native separate flags, request3128, 
 
 Tournament player pause candidate (not live): desired/applied flags, mandatory blinds/cards, local500ms Check/Fold, next-deal return, MTT identity/automatic Ready, Spin3/6 payouts, rollback/restart and three-context browser verified. All-games/global return and next-blind remain incomplete; see tournament-player-pause guide.
 
-All-games pause backend candidate: atomic cash/tournament/Spin/MTT/Rush scope,private provenance,strict authenticated HTTP,rollback/restart and cash-only isolation tested; not connected to UI or deployed. See [all-games pause](docs/rea/all-games-pause.md).
+All-games pause candidate: atomic cash/tournament/Spin/MTT/Rush scope,private provenance,strict authenticated HTTP,rollback/restart,cash-only isolation,native header/configurable hotkey and Deal Me In connected. Source mixed browser verified360-chip payout; exact-head/installed QA and release pending. See [all-games pause](docs/rea/all-games-pause.md).

@@ -1,10 +1,10 @@
-# Comenzi globale pentru toate jocurile — candidat backend
+# Comenzi globale pentru toate jocurile — candidat de release
 
-Stare: modelul și HTTP sunt implementate și testate în branchul candidat; UI și pachetul instalabil nu sunt încă validate. Serviciul live rămâne PR219. Nu prezentăm ruta nouă drept funcționalitate disponibilă în meniul live.
+Stare: modelul, HTTP și UI sunt implementate și testate pe sursă; QA exact-head și pachetul instalabil urmează înainte de release. Serviciul live rămâne PR219. Nu prezentăm ruta nouă drept funcționalitate disponibilă în meniul live.
 
 ## Contract nativ REA
 
-Cele nouă identități de artefacte sunt în all-games-pause-source.json. SelectSitoutMenuCommand separă isAll/isGlobalAutoAction de isGlobal cash. GlobalSitoutCommand permite turnee/Spin în ramura all-games, dar le exclude în ramura cash. GlobalSitInCommand păstrează aceeași distincție și excluderile sale. GlobalSitoutManager preferă rezerva per-masă celei all-tables; revenirea globală golește rezervele. Acest contract static nu certifică execuția AIR, temporizarea serverului sau moștenirea pe mese viitoare.
+Cele13identități de artefacte native/derivate sunt în all-games-pause-source.json. SelectSitoutMenuCommand separă isAll/isGlobalAutoAction de isGlobal cash. GlobalSitoutCommand permite turnee/Spin în ramura all-games, dar le exclude în ramura cash. GlobalSitInCommand păstrează aceeași distincție și excluderile sale. GlobalSitoutManager preferă rezerva per-masă celei all-tables; revenirea globală golește rezervele. Acest contract static nu certifică execuția AIR, temporizarea serverului sau moștenirea pe mese viitoare.
 
 ## Implementarea locală
 
@@ -22,8 +22,16 @@ all-games-pause-test.mjs pune în pauză atomic șase sesiuni: cash, turneu, Spi
 
 all-games-pause-http-test.mjs folosește server temporar și cookie-uri separate: method/Origin/identitate/body bounds, salvare eșuată și retry, mâna curentă și portofelul identice, restart de proces și revenire numai cash care lasă turneul în pauză.
 
-## Ce mai trebuie înainte de release
+## Interfață și verificări de browser
 
-Meniul trebuie să trimită all-games folosind cheile native, fără să redea o alegere cash ca all-games. Setarea/hotkey-ul cash existent trebuie păstrate separat; Deal Me In trebuie conectat la domeniul nativ all-games pentru conturile autentificate. Sunt necesare browser mixt cash+turneu+Rush, controale reale de pointer și tastatură, retry503, restart, payout după revenire și repetarea scenariilor pe pachetul instalabil. QA exact-head, merge și activare nu au avut loc pentru acest candidat.
+Headerul folosește cheile originale SitOutAllNow și SitOutAllTableNB în cash și turnee; turneul păstrează trei rânduri560×224, cash patru560×288. allTables din modelul meniului este alimentat numai de sitOutAllGames, nu de sitOutAllCash. Alegerea globală doar cash apare drept selecție curentă în header, conform flagului isGlobalAutoAction separat din client; nu este etichetată ca all-games.
 
-Battle final, next-blind, politica serverului pentru sesiuni viitoare și comparația fizică de pixeli/audio rămân neimplementate sau neverificate. Acest backend este o etapă a obiectivului integral, nu un substitut pentru paritatea1-la-1.
+Setările păstrează separat butonul cash și adaugă butonul pentru toate jocurile; textele de revenire sunt copy local explicit, nu o captură certificată a panoului nativ. Acțiunea configurabilă sitOutAllGames este în categoria functions, fără combinație implicită locală; aceasta nu afirmă o valoare implicită recuperată din aplicația originală. sitOutAllCash și bindingurile existente sunt păstrate. Deal Me In autentificat trimite all-games return; un guest trimite numai revenirea proprie pe masă. Cerințele de finanțare cash/Rush și erorile sunt păstrate; nu se cumpără automat jetoane.
+
+Scenariul --all-games-pause folosește trei contexte izolate și patru sesiuni ale aceluiași cont: cash, turneu și Rush Hold’em/PLO. Pointerul real și hotkey-ul H configurat verifică ambele scope-uri, checkboxurile corecte, blocarea categoriei functions, retry503, mâinile și portofelul identice la solicitare, restartul serverului, Deal Me In pe toate jocurile și un payout cash independent cu360jetoane. Testul a detectat că deschiderea setărilor înainte ca operația precedentă să elibereze controlul era anulată de închiderea programată; așteaptă acum butonul reactivat, deschide panoul și verifică hit-testul real înainte de click. Nu se înlocuiește pointerul cu apel direct al handlerului.
+
+Scenariul cash/Rush existent a fost actualizat să verifice domeniul all-games al headerului și al Deal Me In. Hotkey-ul cash G rămâne verificat separat și se anulează prin controlul cash, fără a folosi o alegere all-games drept alias.
+
+QA exact-head, pachetul instalabil, merge și activare sunt încă necesare pentru candidat. Battle final, next-blind, politica serverului pentru sesiuni viitoare și comparația fizică de pixeli/audio rămân neimplementate sau neverificate. Acest release intermediar nu substituie obiectivul integral1-la-1.
+
+Testul de formate --all-games verifică separat Spin3/6 până la winner și MTT7 cu mutări între mese: proveniența globală rămâne legată de cont, se șterge la revenirea locală și nu modifică plățile sau conservarea fondurilor.

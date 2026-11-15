@@ -9,7 +9,11 @@
     "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/controller/GlobalSitInCommand.as": "0a73a1a624799fd74c6feb27a792f10ba28574af43e1aeab9e0176f72f146aa6",
     "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/controller/SitOutCommand.as": "c82abeecef38eb0347a1e5dd3a2aa55fd7749b1611241a38326c13d64dd87a62",
     "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/controller/SitInCommand.as": "28f24276219110c4ceaa9ff0478beea30fb9436347296f81d7717de16bd7a0bc",
-    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1"
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/component/SitOutMenuView.as": "af787b9e6c94bca8e5ebf46610697cc549a00c0dccd7333aae37dd257fc7131d",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/display/SitOutType.as": "4e3cff4f543d667274ee71dfda88c42cb3298413836579dc4c5232748bc443f3",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/stage/component/SitOutView.as": "e104abf3a1a4f10c45458f9529e664d1e2d83ecbf3bfcb76fb116c4248006be0",
+    "/Users/davidai/Documents/ChatGPT/REA/GGPoker/home-art/native-language-en.json": "105ca0f0b73a82369ba6d06a8b6d4a87b8adaa87fe8cb9716fcc1b3631eaa93e"
   },
   "nativeFindings": [
     "isAll and IsGlobalAutoAction differ from cash isGlobal",
@@ -20,6 +24,8 @@
   "localPolicy": [
     "Operations apply atomically to existing account-bound supported seated rooms and registered Rush entries",
     "New sessions do not inherit a prior operation; native future-session server policy remains unverified",
-    "Battle finals,next-blind and global UI integration remain incomplete in this candidate"
+    "Native header all-games and cash-only settings remain separate; configured all-games hotkey has no default local assignment",
+    "Authenticated Deal Me In returns supported existing game sessions; guests use current-table return",
+    "Battle finals and next-blind remain incomplete"
   ]
 }
