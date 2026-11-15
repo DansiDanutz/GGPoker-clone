@@ -33,8 +33,13 @@
     "GREEN cash-group-catalog-test.mjs includes all four ordering priorities, stable ties, no input mutation and original aggregation cases"
   ],
   "remaining": [
-    "Keyboard integration and headless browser assertions pending",
+    "Exact-head installed browser QA and release pending",
     "No release or live runtime change yet; live remains PR249",
     "Native same-size physical raster, animation and sound timing unverified"
+  ],
+  "implementation": [
+    "Hold\u2019em Group View: ArrowUp/Down clamp at first/last real row and scroll selection into view",
+    "Enter dispatches the same ordinary group action as double click; both open existing authenticated Group confirmation, no automatic funding",
+    "Handler scoped to current visible catalog and actual row focus; modal forms, other catalogs and Table View remain outside this handler"
   ]
 }
