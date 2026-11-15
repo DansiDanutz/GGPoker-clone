@@ -211,7 +211,7 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
   if(r?.multiTournament){
     if(typeof account==='string')account=account.toLowerCase();
     if(table)fail(409,'Multi-table rules cannot be replaced');
-    if(!['join','state','watch','summary','act'].includes(op))fail(409,'Multi-table command is not connected yet');
+    if(!['join','state','watch','summary','act','chat','notes','helmet','shuffle','show-cards'].includes(op))fail(409,'Multi-table command is not connected yet');
     if(!account)fail(401,'Sign in locally');
     if(op==='join'){const seat=r.multiAccounts.indexOf(account);if(seat<0)fail(403,'This account is not assigned to this table');if(body.seat!==undefined&&body.seat!==seat)fail(409,'Take your assigned tournament seat');body={...body,seat}}
     if(op==='act'&&Object.keys(body).some(k=>!['version','action','target','reserved'].includes(k)))fail(400,'Only a betting action is accepted');

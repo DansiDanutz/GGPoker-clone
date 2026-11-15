@@ -277,9 +277,9 @@ async function request(op,body={}){
  const headers={'Content-Type':'application/json'};if(token)headers.Authorization='Bearer '+token;
  let endpoint=rushMode?'/api/rush/'+rushPoolKind+'/'+op:'/api/rooms/'+room+'/'+op;
  if(battleMode){const command=op==='join'?'register':op;if(!['state','register','cancel','deal','act','quick-fold','final-room'].includes(command))throw Error('This Battle Royale control is not available yet');endpoint='/api/battle/'+encodeURIComponent(battleEvent||'')+'/'+command;body=command==='register'?{}:command==='cancel'?{revision:body.version??state?.version}:{revision:body.version??state?.version,session:state?.battleSession,...(['act','quick-fold'].includes(command)?{table:state?.table}:{}),...(command==='act'?{action:body.action,...(body.target===undefined?{}:{target:body.target})}:{})}}
- const res=await fetch(endpoint,{method:op==='state'?'GET':'POST',headers,body:op==='state'?undefined:JSON.stringify(body),cache:'no-store',...(op==='helmet'||op==='chat'||op==='spin-ready'?{signal:AbortSignal.timeout(5000)}:{})});
+ const res=await fetch(endpoint,{method:op==='state'?'GET':'POST',headers,body:op==='state'?undefined:JSON.stringify(body),cache:'no-store',...(op==='helmet'||op==='chat'||op==='spin-ready'||op==='multi-ready'?{signal:AbortSignal.timeout(5000)}:{})});
  let data=await res.json();
- if(!res.ok){if(op==='state'&&res.status===401&&pendingCashDeparture){finishCashDeparture(pendingCashDeparture);return}if(rushMode&&res.status===409&&op!=='state')await request('state');if(res.status===401||res.status===404){sessionStorage.removeItem(key);token=null;state=null;render()}throw Error(data.error)}
+ if(!res.ok){if(res.status===401&&state?.multi&&op!=='state'&&op!=='join'){await request('state');if(op==='multi-ready')return;throw Error('Table session refreshed; action was not repeated.')}if(op==='state'&&res.status===401&&pendingCashDeparture){finishCashDeparture(pendingCashDeparture);return}if(rushMode&&res.status===409&&op!=='state')await request('state');if(res.status===401||res.status===404){sessionStorage.removeItem(key);token=null;state=null;render()}throw Error(data.error)}
  if((data.moved||data.eliminated)&&document.querySelector('.award'))return;
  if(data.moved){
   if(!/^[a-f0-9]{48}$/.test(data.room)||!/^[a-f0-9]{48}$/.test(data.multi?.id))throw Error('Invalid tournament destination');
