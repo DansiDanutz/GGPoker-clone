@@ -6,6 +6,7 @@ import {installRimtPanel} from './rimt-panel.mjs';
 import {installSpinWheelScene} from './spin-wheel-scene.mjs';
 import {installTournamentResult} from './tournament-result.mjs';
 import {installCashSitOutMenu} from './cash-sitout-menu.mjs';
+import {installPushSeat} from './push-seat-ui.mjs';
 import {hotkeyActions,readHotkeys,keyCodes,keyCaption,readHotkeyGroups,hotkeyGroup} from './hotkey-bindings.mjs';
 import {installPlayerNotes,historyPng} from './player-note-ui.mjs';
 import {bestFiveFocus} from './engine/hand.mjs';
@@ -280,7 +281,7 @@ function applyState(data){
  bountyScene.observe(chatWindow?null:data,room+':'+token+':'+data.me);
  const sameSeats=state&&state.me===data.me&&JSON.stringify(state.names)===JSON.stringify(data.names);
  // Native OnWinners resumes the event processor only after all payout callbacks.
- if(!chatWindow&&!rushMode&&state&&state.me===data.me&&state.names[state.me]===data.names?.[data.me]&&state.hand?.end&&(data.hand&&data.number>state.number||!data.hand&&data.number===state.number)&&(document.querySelector('.award')||bountyScene.blocking(state.number))){if(!pendingHand||data.version>=pendingHand.version)pendingHand=data;bountyScene.refresh();return}
+ if(!chatWindow&&!rushMode&&state&&state.me!=null&&data.me!=null&&state.names[state.me]===data.names?.[data.me]&&state.hand?.end&&(data.hand&&data.number>state.number||!data.hand&&data.number===state.number)&&(document.querySelector('.award')||bountyScene.blocking(state.number))){if(!pendingHand||data.version>=pendingHand.version)pendingHand=data;bountyScene.refresh();return}
  if(pendingHand&&sameSeats&&data.number===state.number&&data.version<=pendingHand.version)return;
  pendingHand=null;if(state&&!sameSeats)clearPayout();
  pendingVoluntary=voluntaryReveals(state,data);
@@ -610,7 +611,9 @@ function renderShowCards(g){
 }
 const spinWheelScene=installSpinWheelScene(document.querySelector('.felt'),()=>chatWindow?null:state,()=>operate('spin-ready'),playCues,seat=>{const pos=seatPosition(seat),p=(capacity()===6?sixPositions:threePositions)[pos];return {x:p.x,y:p.y+(pos===0?-50:60)*p.scale,scale:p.scale}},room);
 const rimtPanel=installRimtPanel(document.querySelector('.felt'),()=>chatWindow?null:state,(op,body)=>operate(op,body));
+const pushSeatUI=installPushSeat(()=>chatWindow||rushMode?null:state,operate,i=>sixPositions[seatPosition(i)]);
 function render(){
+ pushSeatUI.refresh();
  rimtPanel.update();
  spinWheelScene.update();
  updateTournamentAnnounce();
@@ -672,6 +675,7 @@ if(!keepActions){refreshBetEditor=null;for(const child of [...$('actions').child
  if(state?.leaveNextHand)$('status').textContent+=' · Leaving after this hand';if(lastCashOut!==null)$('status').textContent+=' · Practice cash-out: '+lastCashOut+' chips';return}
  if(!state){$('status').textContent=lastCashOut===null?'Take a seat to join the room.':'Practice cash-out: '+lastCashOut+' chips. Take a seat to join again.';return}
  if(t?.cancelledAt){$('status').textContent='Event cancelled: insufficient registrations for the payout structure. Entry returned: '+(t.refunds?.[state.me]||0)+' play credits.';return}
+ if(!g&&state.seatChangeWaiting){$('status').textContent='Seats updated · prepare the next hand.';btn('Leave table',()=>operate('leave'));if(!state.ready[state.me]){const empty=cashBalance()===0&&!state.pendingAdd;btn(empty?'Add Chips':'Ready for next hand',()=>empty?openAddChips():operate('ready',topUpRequest(null,settings)))}else $('status').textContent+=' Waiting for other players.';return}
  if(!g){$('status').textContent=(t?.startsAt?'Scheduled '+new Date(t.startsAt).toLocaleString()+' · minimum '+Math.max(2,(t.prizeShares||[100]).length)+' players · ':'')+(t?'Prize pool '+t.pool+' credits · Registration open (':'Waiting for '+capacity()+' players (')+state.names.filter(Boolean).length+'/'+capacity()+').';if(state.spin)$('status').textContent='Matched practice Spin · Waiting for registered players ('+state.names.filter(Boolean).length+'/'+capacity()+').';if(state.canStart)btn('Start hand with '+state.names.filter(Boolean).length+' players',()=>operate('start'));if(state.canFill)btn('Fill empty seats with computers',()=>operate('fill-bots'));if(!state.spin)btn(t?'Withdraw registration':'Leave seat',()=>operate('leave'));return}
  if(g.end&&g.canShowCards)renderShowCards(g);
  if(t?.winner!=null){$('status').textContent='Tournament winner: '+state.names[t.winner]+' · Prize: '+t.prizes[t.winner]+' practice credits.';if((t.prizeShares||[100]).length>1)$('status').textContent+=' Paid: '+t.prizes.flatMap((n,i)=>n?[state.names[i]+' '+n]:[]).join('; ');$('status').textContent+=' Your place: '+(t.finishes?.[state.me]??'unavailable')+' · Your prize: '+t.prizes[state.me]+' practice credits.';return}

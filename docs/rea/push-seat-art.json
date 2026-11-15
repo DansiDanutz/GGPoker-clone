@@ -1,0 +1,106 @@
+{
+  "method": "Existing Swift/CoreGraphics atlas crop; all six decoded PNGs equal source-crop pixels; no raster generation or GUI/account commands",
+  "files": [
+    {
+      "file": "native-push-seat-control.png",
+      "frame": "table_menu0327",
+      "rectangle": {
+        "x": 3551,
+        "y": 3053,
+        "w": 70,
+        "h": 70
+      },
+      "bytes": 4826,
+      "sha256": "2a47a0059da62ad2960296fcfc249fefcc044906a4438a225cff7bd12b6a20ce"
+    },
+    {
+      "file": "native-push-seat-select.png",
+      "frame": "table0348",
+      "rectangle": {
+        "x": 247,
+        "y": 1495,
+        "w": 184,
+        "h": 184
+      },
+      "bytes": 13088,
+      "sha256": "44c6b401720c32c2cff3aa9514984db0a161f20fdc72b82e3e67aae46ffd3a2b"
+    },
+    {
+      "file": "native-push-seat-arrow.png",
+      "frame": "table0349",
+      "rectangle": {
+        "x": 457,
+        "y": 2846,
+        "w": 90,
+        "h": 90
+      },
+      "bytes": 10071,
+      "sha256": "5001e9ad3d6002db79a52e5b45fe22058e784b3d12327ec5fe200a6415fc0699"
+    },
+    {
+      "file": "native-push-seat-info-bg.png",
+      "frame": "table0350",
+      "rectangle": {
+        "x": 1248,
+        "y": 3465,
+        "w": 30,
+        "h": 30
+      },
+      "bytes": 350,
+      "sha256": "bc9554dee2409a65af614d4d28ad264e9664be6a2d2397f0f9ed977ce784baff"
+    },
+    {
+      "file": "native-push-seat-info-side.png",
+      "frame": "table0351",
+      "rectangle": {
+        "x": 3445,
+        "y": 3469,
+        "w": 30,
+        "h": 30
+      },
+      "bytes": 308,
+      "sha256": "0de88cc9f7f57aed396456b861f771f779ff35f3e27275ce67420332d66c77c5"
+    },
+    {
+      "file": "native-push-seat-info-icon.png",
+      "frame": "table0352",
+      "rectangle": {
+        "x": 3710,
+        "y": 2854,
+        "w": 78,
+        "h": 100
+      },
+      "bytes": 8756,
+      "sha256": "817e75498ab1222693b576115ed0d4ecc933399ae736be02e1137fb319162a83"
+    }
+  ],
+  "english": {
+    "Throwablesexpire": "expires in {0} hands",
+    "PushSeatSelecting": "Select the seat you want to move to.",
+    "PushSeatInfo": "You will be moved after the current hand and all relevant players will shift a seat counter-clockwise.",
+    "PushSeatSelected": "You will be moved after the current hand.",
+    "PushSeatReserved": "{0} has used Push Seat, and players have been moved accordingly.",
+    "PushSeatAlreadyReserved": "Another player has already used Push Seat. You may use it next hand.",
+    "PushSeatNotAllowedReservedSeat": "Seat has been reserved by a new player. Please choose a different seat"
+  },
+  "arrowMotion": {
+    "downMs": 700,
+    "upMs": 700,
+    "containerX": 92,
+    "fromY": 82,
+    "toY": 102,
+    "easing": "piecewise cubic combine(t^3,(t-1)^3+1)"
+  },
+  "sources": {
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/after_lobby/desktop_table_assets.json": "9e00ce78028f67e6b0ad7c770c0c65519bde01943c209f860f8dd58e930d5c29",
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/after_lobby/desktop_table_assets.png": "6bf5b733a31f0de22cbe9d578c93a9c081e314fc97840838dc72145d07d26b65",
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/languages/string_table.json": "c0ce0735b46095e36594f9be9f81fac6d9be1136a1dd23e60defc71fd9f7b665",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/asset/StageAssets.as": "e993e9ebfc32e1214162109e9af1eb3eef98e2cf6cbf6d7fb0ce1be4e3f0b0a3",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/component/tablemenu/TableEtcMenu3D.as": "f4fc0c68fd210e7916964628be89e6f28f3b04a68152e44e3827549f2a6e4c39",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/lib/base/Ease.as": "fb54a8c5d923e95bbe6acf9d1d8360790630b8db3e617e3ee41e8ea1db0bb481",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/vo/NoticeType.as": "b2d943b26314d713eed2fbacc8d060cdea1c6c0e5c0d6c2a7072187c38d70730",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/services/request/ReservePushSeat.as": "516e157efc7154c03e313448ea7247b191efbfd249819ac76461af4264d2fb44",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/stage/component/PushSeatsView.as": "35a1f665d09b26c55e3cdc53c866ea32899114c6d09710c2b056043ce7e1dff4"
+  },
+  "localReservationPolicy": "One pending or applied Push Seat per table/hand, inferred from ErrorAlreadyReserved -> PUSH_SEAT_OTHER_PLAYER_RESERVED -> PushSeatAlreadyReserved EN; private server arbitration not directly observed."
+}
