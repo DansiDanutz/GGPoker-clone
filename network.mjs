@@ -197,14 +197,21 @@ function reconcileSqueeze(previous){
 squeezeEnabled.onchange=()=>{localStorage.setItem('river-card-squeeze',squeezeEnabled.checked?'1':'0');if(!squeezeEnabled.checked)stopSqueeze()};
 addEventListener('storage',e=>{if(e.storageArea===localStorage&&(e.key===null||e.key==='river-card-squeeze')){squeezeEnabled.checked=localStorage.getItem('river-card-squeeze')!=='0';if(!squeezeEnabled.checked)stopSqueeze()}});
 const selfShuffleArt=element('div','chipShuffleArt');selfShuffleArt.setAttribute('role','img');selfShuffleArt.setAttribute('aria-label','Your chip shuffle');document.querySelector('.felt').append(selfShuffleArt);
+document.body.append($('shuffleChips'));$('shuffleChips').classList.add('nativeShuffleControl');
 const shufflePreferences=()=>readChipShuffle(localStorage.getItem('river-chip-shuffle'));
 let shuffleReady=false;const shuffleAtlas=new Image();shuffleAtlas.src='/home-art/native-chip-shuffle.png';shuffleAtlas.decode().then(()=>{shuffleReady=true;renderShuffles()}).catch(()=>{});
 const selfShuffle=createChipShuffle(selfShuffleArt,shufflePreferences,active=>{$('shuffleChips').disabled=!shuffleReady||!shufflePreferences().enabled||state?.me==null;$('shuffleChips').setAttribute('aria-pressed',String(active));$('shuffleChips').textContent=active?'Stop shuffling':'Shuffle chips'},playCues);
 const shuffleSeen=new Map(),remoteShuffles=new Map();let shuffleInitialized=false;
 function positionShuffle(art,seat,other=false){const portrait=document.querySelector('.seat[data-seat="'+seat+'"] .portrait');if(!portrait)return;const p=portrait.getBoundingClientRect(),f=document.querySelector('.felt').getBoundingClientRect(),scale=p.width/192*(other ? 0.6 : 1);Object.assign(art.style,{left:(p.left-f.left+p.width/2-69*scale)+'px',top:(p.top-f.top+p.height/2+15*p.width/192-(other?50:95)*scale)+'px',width:145*scale+'px',height:165*scale+'px'})}
 function stopRemote(seat){const entry=remoteShuffles.get(seat);if(entry){entry.stopSound?.();cancelAnimationFrame(entry.raf);entry.art.remove();remoteShuffles.delete(seat)}}
+function positionTableControls(){
+ const r=document.querySelector('.felt').getBoundingClientRect(),k=r.width/1700,shuffle=$('shuffleChips'),chat=$('openChat'),seated=!chatWindow&&!rushMode&&capacity()===6&&state?.me!=null;
+ Object.assign(shuffle.style,{left:(r.left+29*k)+'px',top:(r.bottom-90*k)+'px',transform:'scale('+k+')'});chat.classList.toggle('nativeSeatedChat',seated);
+ Object.assign(chat.style,seated?{left:(r.left+555*k)+'px',top:(r.top+963*k)+'px',transform:'scale('+k+')'}:{left:'',top:'',transform:''});
+}
+addEventListener('resize',positionTableControls);addEventListener('scroll',positionTableControls,true);addEventListener('focus',positionTableControls);
 function renderShuffles(){
- const allowed=!chatWindow&&!rushMode&&capacity()===6,p=shufflePreferences();$('chipShuffleEnabled').checked=p.enabled;$('shuffleChips').hidden=!allowed||state?.me==null;$('shuffleChips').disabled=!shuffleReady||!p.enabled||state?.me==null;
+ positionTableControls();const allowed=!chatWindow&&!rushMode&&capacity()===6,p=shufflePreferences();$('chipShuffleEnabled').checked=p.enabled;$('shuffleChips').hidden=!allowed||!p.enabled||state?.me==null;$('shuffleChips').disabled=!shuffleReady||!p.enabled||state?.me==null;
  if(!allowed||!p.enabled||state?.me==null)selfShuffle.stop();else positionShuffle(selfShuffleArt,state.me);
  if(!allowed)for(const seat of remoteShuffles.keys())stopRemote(seat);
  if(!state){for(const seat of remoteShuffles.keys())stopRemote(seat);shuffleSeen.clear();shuffleInitialized=false;return}
@@ -272,7 +279,7 @@ async function request(op,body={}){
  if(battleMode){const command=op==='join'?'register':op;if(!['state','register','cancel','deal','act','quick-fold','final-room'].includes(command))throw Error('This Battle Royale control is not available yet');endpoint='/api/battle/'+encodeURIComponent(battleEvent||'')+'/'+command;body=command==='register'?{}:command==='cancel'?{revision:body.version??state?.version}:{revision:body.version??state?.version,session:state?.battleSession,...(['act','quick-fold'].includes(command)?{table:state?.table}:{}),...(command==='act'?{action:body.action,...(body.target===undefined?{}:{target:body.target})}:{})}}
  const res=await fetch(endpoint,{method:op==='state'?'GET':'POST',headers,body:op==='state'?undefined:JSON.stringify(body),cache:'no-store',...(op==='helmet'||op==='chat'||op==='spin-ready'?{signal:AbortSignal.timeout(5000)}:{})});
  let data=await res.json();
- if(!res.ok){if(rushMode&&res.status===409&&op!=='state')await request('state');if(res.status===401||res.status===404){sessionStorage.removeItem(key);token=null;state=null;render()}throw Error(data.error)}
+ if(!res.ok){if(op==='state'&&res.status===401&&pendingCashDeparture){finishCashDeparture(pendingCashDeparture);return}if(rushMode&&res.status===409&&op!=='state')await request('state');if(res.status===401||res.status===404){sessionStorage.removeItem(key);token=null;state=null;render()}throw Error(data.error)}
  if(battleMode&&op==='final-room'){if(!/^[a-f0-9]{48}$/.test(data.room)||!/^[a-f0-9]{64}$/.test(data.issued))throw Error('Invalid final table session');sessionStorage.setItem('river-seat:'+data.room,data.issued);location.assign('/network.html?player&mode=tournament&from=home&battleFinal='+encodeURIComponent(battleEvent)+'#'+data.room);return}
  if(battleMode){data=battleTableState(data);const stageCues=stageAudio.observe(data,document.hidden||chatWindow);if(stageCues.length){const current=stageAudio.lease();void playCues(stageCues,()=>current()&&!document.hidden)}}
  else if(rushMode){

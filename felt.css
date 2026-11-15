@@ -561,3 +561,7 @@ html[data-battle-actions=true] #actions .nativeRushBetStrip input[type=range]::-
 html[data-battle-actions=true] #actions .nativeRushBetStrip input[type=range]::-webkit-slider-thumb{width:67px;height:80px;margin-top:-34.5px;background-image:url('/home-art/native-reserved-battle-bet-thumb.png')}
 
 #actions .nativeRushBetStrip input[type=range]{touch-action:none}
+
+/* Source coordinates; body portals stay above the footer and never steal one another's hit area. */
+body #shuffleChips.nativeShuffleControl{position:fixed;width:62px;height:62px;min-width:0;margin:0;padding:0;border:0;border-radius:0;background:transparent url('/home-art/native-shuffle-control-disabled.png') center/100% 100% no-repeat;font-size:0;filter:none;z-index:10;transform-origin:0 0}body #shuffleChips.nativeShuffleControl[aria-pressed=true]{background-image:url('/home-art/native-shuffle-control-enabled.png')}body #shuffleChips.nativeShuffleControl:hover,body #shuffleChips.nativeShuffleControl:active{filter:none}body #shuffleChips.nativeShuffleControl:focus-visible{outline:2px solid #ddd;outline-offset:2px}
+body #openChat.nativeSeatedChat{position:fixed;bottom:auto;width:68px;height:68px;min-width:0;margin:0;padding:0;border:0;border-radius:0;background:transparent url('/home-art/native-table-social-chat.png') center/100% 100% no-repeat;transform-origin:0 0;filter:none}
