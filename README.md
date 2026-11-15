@@ -126,3 +126,5 @@ Lobby Smart HUD [PR235](https://github.com/DansiDanutz/GGPoker-clone/pull/235) i
 
 
 Preview artwork [PR237](https://github.com/DansiDanutz/GGPoker-clone/pull/237): Dealer/SB/BB now use original atlas frames at their intrinsic sizes; two-hand real position rotation/payout/reconnect passed. [Pixel/source proof and remaining geometry limits](docs/rea/lobby-preview-markers.md). [Group join REA contract](docs/rea/cash-group-join-source.json) documents the separate multi-table buy-in/preferences/async-ready flow. [PR239](https://github.com/DansiDanutz/GGPoker-clone/pull/239) now implements the local Hold’em BuyIn/Advanced dialog, real1–6-table atomic funding, measured matching and retry recovery;22checks and guarded installation passed. [Contract, evidence and remaining fidelity gaps](docs/rea/cash-group-funding.md).
+
+Group preference help [PR241](https://github.com/DansiDanutz/GGPoker-clone/pull/241): native-derived364×526 Info popup with original text/background/fonts, outside-dismiss and unchanged purchase state;installed full-hand/restart gate passed. [Evidence and limits](docs/rea/cash-group-info.md).
