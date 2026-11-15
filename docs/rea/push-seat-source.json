@@ -1,0 +1,22 @@
+{
+  "method": "Selected installed SWF FFDec static exports in REA workflow; no account requests or AIR execution",
+  "sources": {
+    "com/nsus/iron/table/stage/component/PushSeatsView.as": "35a1f665d09b26c55e3cdc53c866ea32899114c6d09710c2b056043ce7e1dff4",
+    "com/nsus/iron/table/controller/SelectPushSeatCommand.as": "527671c25801d14e2a1e1c6db507d3737812f787f3d780b766ecaedca4cbb183",
+    "com/nsus/iron/table/services/request/ReservePushSeat.as": "516e157efc7154c03e313448ea7247b191efbfd249819ac76461af4264d2fb44",
+    "com/nsus/iron/table/services/callback/OnPushSeatChanged.as": "8dc171809eedb747cedd95c3b7cf7361ee7304de42d12707a665fd4ab284aa0a",
+    "com/nsus/iron/table/services/callback/OnPushSeatReserved.as": "8e27d89ac1d20cfa013df9edbd2d1e076a4d1457812fe758fd71b72053cfff2d",
+    "com/nsus/iron/table/services/callback/OnPushSeatReservedCanceled.as": "52014fb6332b036b80099aefe1d45ca478e1b27d099065104b35e6b8ec7fa4e0",
+    "com/nsus/iron/table/services/callback/OnPushSeatItemEarned.as": "f6d4f9ba19513e1885970473b3fc35230d0cf1a74ed9c3baad92492c1ece70ec",
+    "com/nsus/iron/table/view/component/TableMenu3D.as": "c4e04e9e22aaabb21c77b088ecc678250405b9c4ec2a53a699935f78e55b8853",
+    "com/nsus/iron/table/vo/TablePlayer.as": "a7e2398f4f903f59bcb6bd809e869ad54662da3e38c462b52cd9faeee2cb74af",
+    "com/nsus/network/protocol/Session/ReservePushSeatRequest.as": "987d2fb6fc21071d8510512bcff57ca1fa625897148eb8a6a6fda7fd2aabc1e5",
+    "com/nsus/network/protocol/Session/ReservePushSeatResponse.as": "c0805615fa75668ac22b51c9b8a469b08625b3a57cfd89cb2c8687011bd9453e",
+    "com/nsus/network/protocol/SessionCallback/NotifyPushSeatChangedParameter.as": "30c5735b94fd9d28c0ff80e9f1960c3ee4b4ae91683f69cd36588061c2ffc87a"
+  },
+  "implementedLocally": false,
+  "limitations": [
+    "No private server arbitration, entitlement or physical AIR timing proof",
+    "Occupied-seat selection does not establish displacement algorithm"
+  ]
+}
