@@ -2,7 +2,13 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
-## Verified release baseline — PR245
+## Verified release baseline — PR247
+
+PR247 merged `6e2abd86252b2c04c8ab3492e000a37e2ad21899`;tested source `bb492dfa42f7de0b84b8dc91c40ba814ee84c0c3`. Group player list now uses native-derived240×23header/237×28rows and source-proven descending/toggled sorting over actual member rooms/seats/stacks. Selection exposes Profile/Open;double-click and Profile reuse authenticated own/other HUD/private notes/history. Open reaches the actual selected table without join/autojoin or a new debit. Departure/group/view changes clear invalid selection;changed names reject delayed HUD reads. Country/operator numbers and native account/note/live paint remain incomplete.
+
+16 exact-head checks passed: model identities/duplicate names/sort/nonmutation,HTTP private viewer/notes/cards/report guards,source/runtime/art review,installed own+observer HUD/private-note save/reopen/actual Open/departure,two funded windows/two hands/payout/restart/cross-room conservation,manual Join/preview/HUD,Auto Buy-In and hosted six-session unequal-all-in/fold/uncalled return/restart/replacement,plus inspected headless rendering. Runtime130files1,471,350bytes;art1359files1357hardlinks+2PNGs448newbytes. Guarded idlePID81746→85800;all6ownerfiles15,496bytes unchanged,no live gameplay QA. [REA/control details and remaining limits](docs/rea/cash-group-players.md). Full reconstruction remains active;older notes below are historical.
+
+## Historical release baseline — PR245
 
 PR245 merged `989cdeeb9bf1e43af414843306a164fe43738040`;tested source `8ac0baff499040b8a245f3b99ed5b76899f052ce`. Hold’em Group now uses the native ordinary five-column branch,56×20TableSize badge,80×36original count widget,source row colors/indicator and six selected/unselected Join textures. Removed the provisional hosted-name Promotion cell;representative names remain accessible metadata. Closed Join stays gray/non-purchasing through selection/hover/down. Native promotion/featured branches,absolute parent scaling and Group player-list/footer remain incomplete.
 
@@ -1440,4 +1446,4 @@ Hold’em Group aggregation live PR243: one row per shared funding-rule identity
 
 Hold’em Group row live PR245: native ordinary five-column branch,56×20TableSize,80×36original player widget,source row colors/indicator and six real Join state textures replace placeholder Promotion name/gradient. Exact source/font/atlas contract in [cash-group-row.md](docs/rea/cash-group-row.md);native parent scaling/promotions/player-list/footer remain incomplete.
 
-Group player-list candidate: native240×23header/237×28rows,actual room/seat/chips,descending/toggled sort,Profile/double-click private HUD/notes and actual Open without new seat/debit. Departure clears selection;country/operatorNo. and own/partner/note/live paint remain incomplete. [Contract](docs/rea/cash-group-players.md).
+Group player-list live PR247: native240×23header/237×28rows,actual room/seat/chips,descending/toggled sort,Profile/double-click private HUD/notes and actual Open without new seat/debit. Departure clears selection;country/operatorNo. and own/partner/note/live paint remain incomplete. [Contract](docs/rea/cash-group-players.md).

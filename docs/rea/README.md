@@ -6,6 +6,7 @@ Aceasta este versiunea publică a fișelor detaliate. Explică aspectul,controal
 
 | Fișă | Acoperire |
 |---|---|
+| [Jucători Group și operator](cash-group-players.md) | PR247:locuri reale,sortare,Profile/HUD/note private,Open fără debit,plecare/restart și metadate necunoscute |
 | [Grafica Group](cash-group-row.md) | PR245:cinci coloane,badge/indicator originale,șase stăriJoin,drag-away și masă închisă |
 | [Group Hold’em](cash-group-aggregation.md) | PR243:agregare reală după reguli,total jucători,buy-in implicit,selecție Group/Table și limite grafice |
 | [Group BuyIn/Advanced](cash-group-funding.md) | PR239:1–6mese finanțate atomic,preferințe,retry fără debit dublu,ferestre și restart |
@@ -34,7 +35,7 @@ Aceasta este versiunea publică a fișelor detaliate. Explică aspectul,controal
 
 ## Starea curentă și proveniența
 
-PR245 este instalat după12verificări pe8ac0baff499040b8a245f3b99ed5b76899f052ce. Rândul Group folosește ramura nativă fără promoții,badge56×20,indicator80×36 și stările originaleJoin,cu click/drag-away/închis-redeschis verificate. Fluxul real Group/manual/Auto Buy-In și șase sesiuni cu all-in inegal/fold/uncalled return/payout/restart/înlocuire au trecut. Datele proprietarului rămân identice. Nativeplayerlist/footer,promotions/featured și comparația fizicăAIR rămân incomplete. HTML/inventaregenerate216;fișeleMarkdown actualizate245.
+PR247 este instalat după16verificări pebb492dfa42f7de0b84b8dc91c40ba814ee84c0c3. Lista Group folosește jucători/locuri/mese reale,sortare nativă,Profile/dublu-click→HUD/note private șiOpen→masa selectată fără loc/debit suplimentar. Plecarea golește selecția. Au trecut Group/two-window/două mâini/payout/restart,manualJoin/HUD,AutoBuyIn șișasesesiuni separate. Datele proprietarului rămân identice. Country/operatorNo./own/partner/note/live paint și comparația fizicăAIR rămân incomplete. HTML/inventaregenerate216;fișeMarkdown247.
 
 Checkpoint istoric:
 
