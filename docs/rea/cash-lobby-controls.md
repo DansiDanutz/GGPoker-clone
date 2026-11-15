@@ -33,3 +33,5 @@ Patru exporturi selective suplimentare, cu hashuri în operatorSources: LobbyDet
 ## Normal Join follow-up
 
 OpenTableCommand a fost exportat selectiv și legat prin hash în `openTableFollowup`. Metoda openTable coordonează subscription/prepareTable; căutarea literală JOIN_TABLE în această clasă este negativă. Aceasta nu identifică registry-ul notificationului și nu demonstrează comportamentul de seat. Nu am extins automat normal Join fără Auto Buy-In din această dovadă parțială. Urmează registrarea/callerul și tipul conexiunii, cu test explicit de confirmare fără debit înainte de OK.
+
+Normal Join follow-up resolved in PR231: [actual handler/reservation/confirmation chain](lobby-join-confirmation.md). HomeMediator sets reserveSeatWhenOpened for selected Join; ReserveSeat3104 success reaches CheckTakeSeat and its explicit auto-versus-popup branches. The earlier OpenTable-only negative search remains historical, not the current unresolved state.

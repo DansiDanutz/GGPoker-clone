@@ -2,9 +2,9 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
-## Verified release baseline — PR229
+## Verified release baseline — PR231
 
-PR229 merged as `0648c3f0318cb0bd17fb94a113e1fba524a81f94`, tested source `c6d15b1624dd649761ac2e86bfa3f595c53d215f`,eight exact-head checks. Cash Table View uses native red/gray GlobalButton skins/shadow/slices,37px height,19px Latin Roboto Condensed and source hover/down/disabled states. Real pointer/drag-away/disabled/waiting/FIFO/restart/explicit buy-in/independent660payout and Auto Buy-In/five-computer two-hand720/reconnect pass on source and installed runtime. Runtime121files/1,411,754bytes; art1330reused; six owner files15,496bytes preserved. Absolute parent geometry, physical AIR pixels/raster/Tween timing remain unverified. Older candidate notes below are historical.
+PR231 merged as `e431a008aca822e79f1dc63cf7489628008749ea`, tested source `0ed32019152aeba39fcb031b9b6996fd9122101b`. Selected cash Table View Join now reserves and opens existing buy-in confirmation with Auto Buy-In off; Open/Group routes retained. Escape releases without debit/reload replay; OK buys120 once,followed by two720-chip hands/five computers/reconnect. Twelve checks passed,one duplicate source bootstrap run skipped explicitly; all mandatory functional scenarios passed on the byte-identical installed graph. Runtime121files/1,411,898bytes,art1330reused,six owner files15,496bytes unchanged. Postrelease checkout mmap corruption was recovered from verified commit blobs with backups and clean fast-forward metadata; see lobby-join-confirmation.md. Physical native popup/private operator policy remain unverified. Older notes below are historical.
 
 ## Released checkpoint — PR221
 
@@ -1404,4 +1404,4 @@ Cash lobby controls live PR227: native TablePreview Open/Join/Wait/Cancel gating
 
 Selected-table button skins live PR229: source GlobalButton red/gray PNGs,shadow,nine-slice,Latin font19,height37,hover/down/disabled states reuse existing art. Eight exact-head checks passed, including source/installed pointer states, queue/payout and five-computer journeys; [REA contract](docs/rea/lobby-button-skins.md).
 
-Manual selected-table Join candidate: native reserve-on-open intent now reaches existing buy-in confirmation with Auto Buy-In off; Open remains spectator and Group View unchanged. Escape/no debit,one reservation,one explicit120purchase,URL cleanup and two-hand720/reconnect source/installed gate pending. [REA evidence](docs/rea/lobby-join-confirmation.md).
+Manual selected-table Join live PR231: native reserve-on-open intent now reaches existing buy-in confirmation with Auto Buy-In off; Open remains spectator and Group View unchanged. Escape/no debit,one reservation,one explicit120purchase,URL cleanup and two-hand720/reconnect verified; manual/auto/queue full installed flows pass,source-bootstrap duplicate documented separately. [REA evidence](docs/rea/lobby-join-confirmation.md).
