@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import {mkdtempSync,readFileSync,writeFileSync,rmSync,mkdirSync,rmdirSync} from 'node:fs';
+import {tmpdir} from 'node:os';import {join} from 'node:path';import {openRooms} from './rooms.mjs';
+const dir=mkdtempSync(join(tmpdir(),'multi-rooms-')),file=join(dir,'rooms.json'),id='d'.repeat(48),settings={capacity:12,startingStack:300,entryCost:25,prizeShares:[100],blind:10,levelSeconds:60,actionSeconds:12,seatingPolicy:'local-idle-balance-v1',rankingPolicy:'local-settlement-order-v1'};
+try{let rooms=openRooms(file,()=>0,true);rooms.createMultiTournament({id,name:'Child rooms',settings});for(let i=0;i<11;i++)rooms.registerMultiTournament(id,'human'+i);
+const before=readFileSync(file);mkdirSync(file+'.tmp');assert.throws(()=>rooms.registerMultiTournament(id,'human11'));rmdirSync(file+'.tmp');assert.deepEqual(readFileSync(file),before);assert.equal(rooms.multiTournament(id).registered,11);
+rooms.registerMultiTournament(id,'human11');const event=rooms.multiTournament(id),tables=event.tournament.tables;let saved=new Map(JSON.parse(readFileSync(file)));for(const t of tables){const r=saved.get(t.room);assert.ok(r,'Allocation must create the actual child room');assert.equal(r.multiTournament,id);assert.equal(r.multiTable,t.id);assert.equal(r.players.length,6);assert.equal(r.tournament.entry,0);assert.equal(r.tournament.startedAt,event.startedAt)}
+const tokens=[];for(let i=0;i<12;i++){const account='human'+i,t=tables[i%2],seat=Math.floor(i/2);assert.throws(()=>rooms(t.room,'join',null,{name:account,seat:(seat+1)%6},undefined,account),e=>e.status===409);const v=rooms(t.room,'join',null,{name:account},undefined,account);assert.equal(v.me,seat);assert.equal(v.hand,null);assert.equal(rooms.wallet(account).available,9975);tokens.push(v.issued)}
+assert.throws(()=>rooms(tables[0].room,'join',null,{name:'Intruder'},undefined,'intruder'),e=>e.status===403);
+assert.throws(()=>rooms(tables[0].room,'state',tokens[0],{},undefined,'human2'),e=>e.status===401);
+assert.throws(()=>rooms(tables[0].room,'fill-bots',tokens[0],{},undefined,'human0'),e=>e.status===409);
+const bytes=readFileSync(file);rooms=openRooms(file,()=>0,true);assert.deepEqual(readFileSync(file),bytes);for(let i=0;i<12;i++){const v=rooms(tables[i%2].room,'state',tokens[i],{},undefined,'human'+i);assert.equal(v.me,Math.floor(i/2));assert.equal(v.hand,null)}
+for(const mutate of [m=>m.delete(tables[0].room),m=>m.get(tables[0].room).multiAccounts.reverse(),m=>m.get(tables[0].room).settings.blind++,m=>m.get(tables[0].room).players[0].account='intruder']){const m=new Map(JSON.parse(bytes));mutate(m);const bad=join(dir,'bad.json');writeFileSync(bad,JSON.stringify([...m]));assert.throws(()=>openRooms(bad,()=>0,true),/multi-table/i)}
+console.log('PASS real MTT child allocation, atomic last-entry rollback, fixed authenticated seats, no second debit, cold token recovery and corrupt-room rejection; dealing/migration remain pending');
+}finally{rmSync(dir,{recursive:true,force:true})}

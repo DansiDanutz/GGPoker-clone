@@ -67,3 +67,13 @@ Registrul salvează `startedAt` la ultima înscriere necesară. Anularea/reînsc
 Fiecare masă din rezumat primește un identificator de cameră de 48 de caractere hexazecimale, derivat prin SHA-256 din domeniul versionat, eveniment și identificatorul mesei. Astfel nu este necesar un registru redundant de legături și identitatea rămâne aceeași la restart și la începerea unei mâini. Acesta este un identificator public, nu token de acces. Camerele efective și autorizarea lor nu sunt încă create de acest pas; existența câmpului `room` nu dovedește că masa poate fi deschisă. La crearea efectivă rămâne obligatorie verificarea coliziunii cu camere existente.
 
 Verificare: `node multi-table-registration-test.mjs` acoperă momentul alocării, retry, checkpoint reopen, identități distincte între mese/evenimente, stabilitate după begin și respingerea ceasurilor invalide. Suitele financiare și HTTP cu restart trec în continuare. Nicio modificare în runtime-ul live PR206.
+
+## Camere efective și locuri autentificate — draft
+
+Ultima înscriere creează acum toate camerele de șase locuri în aceeași tranzacție cu registrul și portofelul. Limita de camere și coliziunile de identitate opresc întreaga operație. Fiecare cameră reține evenimentul, masa și distribuția inițială a conturilor; configurația, identitatea, ceasul și locurile sunt validate la redeschidere. Ștergerea sau modificarea unei camere alocate face checkpointul invalid.
+
+Un cont alocat poate intra numai pe locul său, fără o a doua taxă de intrare. Tokenul trebuie să aparțină contului autentificat; recuperarea sesiunii folosește mecanismul existent de rotație. Cele 12 locuri și tokenurile au fost verificate după redeschiderea fișierului. Eșecul scrierii la ultima înscriere păstrează cele 11 înscrieri și banii anteriori.
+
+Distribuirea cărților, ready-barrier, transferurile și interfața MTT sunt încă neconectate. În acest stadiu camerele acceptă numai join/state/watch/summary; comenzile de joc sunt respinse explicit. Validarea refuză mâini injectate în acest checkpoint intermediar. Activitatea financiară este controlată de turneul părinte, iar o mână reală neîncheiată blochează întotdeauna restaurarea. O cameră asociată unui eveniment absent/neîncheiat sau cu identitate neconformă nu poate ocoli verificarea de restaurare.
+
+Test nou: `multi-table-rooms-test.mjs`; regresii financiare/HTTP MTT, Spin șase locuri, turneu simplu și restaurare model/HTTP. Testul financiar verifică acum și restaurarea unui turneu complet încheiat. Aceste dovezi nu echivalează cu un turneu multi-masă jucabil în browser.
