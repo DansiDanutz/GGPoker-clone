@@ -108,5 +108,11 @@
     "Dynamic native balances/currency/names/promotion feeds differ from deliberate local practice fixture; do not treat this as equal input or a global RMSE acceptance test",
     "Do not relaunch native client under background-only work: child self-activation was observed despite background launcher; continue from saved reference/source unless visible launch is authorized"
   ],
-  "next": "Recover native PreviewPlayerAvatar and complete preview texture/label/positions/metadata semantics before implementation; preserve existing seat/HUD/Join/payout gates"
+  "next": "Recover native PreviewPlayerAvatar and complete preview texture/label/positions/metadata semantics before implementation; preserve existing seat/HUD/Join/payout gates",
+  "extension": {
+    "pr": 260,
+    "contract": "cash-preview-surface-source.json",
+    "resolved": "Native texture selector/scale and actual buy-in label;before images/provenance unchanged",
+    "remaining": "Parent,player metadata,promotions,typography,window/timing/full-app parity incomplete"
+  }
 }

@@ -4,11 +4,11 @@ This project is a local play-money application under active development. It is n
 
 ## Current verified release
 
-PR257 adds native orange/BoldItalic Table metrics for actual authenticated seated/waiting accounts, with unchanged ordinary name/counter paint. Wait/Cancel immediately shows the confirmed count. The existing private read adds only an own-waiting boolean; unchanged room paint is retained during unrelated refreshes. All 17 exact-head checks/reviews passed, including privacy, real separate observer queue actions, two hands/payout/restart and manual Join/HUD. Runtime: 130 files, 1,481,557 bytes; art: 1,364 unchanged. All six owner files (15,496 bytes) were preserved. [Evidence and limits](docs/rea/cash-table-account.md). Full native physical/timing/operator/app parity remains incomplete.
+PR260 replaces the ordinary Hold’em preview’s legacy photo with the original 223×351 atlas surface at source scale1.08 and binds the native Buy-in Range label to actual fixed/ranged local rules. All 18 exact-head checks/reviews passed, including same-size after-capture, real controls, two hands/payout/restart and manual Join/HUD. Runtime:130files1,482,571bytes;art1,365with65,498newPNGbytes. All six owner files (15,496bytes) were preserved. [Evidence and remaining gaps](docs/rea/cash-preview-surface.md). Full native physical/timing/operator/app parity remains incomplete.
 
 ## Native reference checkpoint
 
-A fresh native window and isolated installed clone were captured at exactly1200×963. This is a real comparison, not a1:1 pass: preview texture/label, player metadata, promotions and typography still differ. The original self-activated during its requested background launch and was minimized/quit; no seat, bet, waiting or cashier action was sent. Further background-only work uses the saved captures and source. [Evidence and next implementation targets](docs/rea/native-table-comparison.md).
+A fresh native window and isolated installed clone were captured at exactly1200×963. This is a real comparison, not a1:1 pass: PR260 corrects the texture and label contract; parent bounds, player metadata, promotions and typography still require further mapping. The original self-activated during its requested background launch and was minimized/quit; no seat, bet, waiting or cashier action was sent. Further background-only work uses the saved captures and source. [Evidence and next implementation targets](docs/rea/native-table-comparison.md).
 
 ## Implemented workflows
 
