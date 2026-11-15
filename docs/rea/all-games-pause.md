@@ -35,3 +35,5 @@ Scenariul cash/Rush existent a fost actualizat să verifice domeniul all-games a
 QA exact-head, pachetul instalabil, merge și activare sunt încă necesare pentru candidat. Battle final, next-blind, politica serverului pentru sesiuni viitoare și comparația fizică de pixeli/audio rămân neimplementate sau neverificate. Acest release intermediar nu substituie obiectivul integral1-la-1.
 
 Testul de formate --all-games verifică separat Spin3/6 până la winner și MTT7 cu mutări între mese: proveniența globală rămâne legată de cont, se șterge la revenirea locală și nu modifică plățile sau conservarea fondurilor.
+
+Revizia instalabilă a candidatului c905cd8 a reprodus ștergerea mesajului503 de către operate(state), confirmată și pe sursă de aserția care așteaptă1100ms. Corecția păstrează erorile acțiunilor la refresh automat; următoarea acțiune reușită le șterge explicit. Testul verifică atât persistența peste poll-uri, cât și curățarea după retry reușit. Prima serie QA este istorică și trebuie repetată pe commitul reparat.
