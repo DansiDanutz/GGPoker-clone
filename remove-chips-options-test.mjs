@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {removeChipsOptions,removeChipsTarget} from './remove-chips-options.mjs';
+assert.deepEqual(removeChipsOptions({minBuyIn:60,maxBuyIn:240,stack:120,blind:4}),[0,20,30,40,50,60]);
+assert.deepEqual(removeChipsOptions({minBuyIn:82,maxBuyIn:99,blind:4}),[0,20],'Native floor-before-ten-step boundary');
+assert.equal(removeChipsTarget({minBuyIn:82,maxBuyIn:99,blind:4},20),84,'Request clamp separately enforces actual21BB minimum');
+assert.equal(removeChipsTarget({minBuyIn:82,maxBuyIn:99,blind:4},0),0);
+assert.deepEqual(removeChipsOptions({minBuyIn:40,maxBuyIn:4000,blind:4}).at(-1),200);
+assert.deepEqual(removeChipsOptions({stack:120,blind:4}),[0,30]);
+for(const bad of [-1,21,20.5,NaN,'20'])assert.throws(()=>removeChipsTarget({minBuyIn:60,maxBuyIn:240,blind:4},bad));
+for(const blind of [0,-1,NaN])assert.throws(()=>removeChipsOptions({stack:120,blind}));
+console.log('PASS native Remove Chips options:Off,10BB steps,200BB cap,floor boundary,separate minimum clamp,strict invalid targets');
