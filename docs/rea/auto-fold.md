@@ -2,7 +2,7 @@
 
 ## Stare actuală
 
-Regulile statice și modelul de eligibilitate sunt recuperate și testate. Funcția nu este încă activată în aplicația locală: lipsesc selectorul conectat, timerul și verificarea reală în browser. Modulul nu este importat de runtime și nu execută pariuri sau fold-uri. Nu modifica preferințele live pe baza acestui document.
+Regulile statice și modelul de eligibilitate sunt recuperate și testate. Funcția nu este încă activată în aplicația locală: lipsesc selectorul conectat, integrarea timerului în transport și verificarea reală în browser. Modelul timerului este testat separat, fără comenzi reale. Modulul nu este importat de runtime și nu execută pariuri sau fold-uri. Nu modifica preferințele live pe baza acestui document.
 
 ## Cele 169 de categorii
 
@@ -18,7 +18,7 @@ AutoFoldManager cere activarea capabilității și preferinței, fără catch-up
 
 OnAskAction verifică această eligibilitate atât la tura proprie, cât și când un alt jucător primește acțiunea și există rezervarea Quick Fold. Timerul este înlocuit per sesiune și are1secundă. La expirare, sursa verifică din nou preflop/fără acțiune/nefoldat și trimite rushFold cu tipul ales și ID-ul acțiunii. OnHoleCards folosește eligibilitatea și pentru a suprima Card Squeeze. Acesta este un contract de sursă, nu măsurare fizică a întârzierii serverului.
 
-Integrarea locală trebuie să păstreze identitatea mâinii și contului, să anuleze timerul la acțiune manuală, schimbarea selecției, logout, eroare, transfer sau reconnect și să revalideze starea înainte de trimitere. Retry-ul automat nu trebuie să foldeze mâna nouă. Aceste părți nu sunt încă implementate.
+Integrarea locală trebuie să păstreze identitatea mâinii și contului, să anuleze timerul la acțiune manuală, schimbarea selecției, logout, eroare, transfer sau reconnect și să revalideze starea înainte de trimitere. Retry-ul automat nu trebuie să foldeze mâna nouă. Controllerul pur implementează acum timerul și invalidarea, dar nu este conectat la stările/transportul aplicației.
 
 ## Aspect și salvare
 
@@ -33,3 +33,15 @@ readAutoFoldPreferences recuperează datele corupte într-o stare dezactivată �
 Testul auto-fold-test.mjs acoperă exhaustiv1326perechi/169categorii, ordinea inversă, selecțiile implicite, date corupte și poziții. Folosește motorul real pentru a verifica faptul că o acțiune proprie anterioară sau trecerea la flop oprește eligibilitatea. Aceste teste nu dovedesc un fold automat efectuat în browser.
 
 Rămân: selectorul nativ complet, procentul/drag-ul matricii, capabilitatea locală explicită, integrarea timerului/versionării și Card Squeeze, testele multi-sesiune cu payout/reconnect/restart, comparația fizică și sunetul.
+
+## Matricea și timerul — model verificat separat
+
+Matricea nativă are13×13celule de44×44 pe pas48, deci întinderea efectivă este620×620. Rândul întâi este AA,AKs,…,A2s; sub diagonală sunt variantele offsuit. Centrul în panoul720 este x50, iar y82 vine din AutoFoldContents. Celulele folosesc verde#019813 pentru păstrarea mâinii și gri#404040 cu cruce#626262 de4unități pentru fold. Textul26 este alb sau#ccc. drawRoundRect primește diametrul elipsei4, nu o rază CSS4.
+
+AutoFoldRangeTable nu permite ștergerea ultimei celule selectate. Înaintea unei adăugări, verifică floor(selectedItemRate)≥96 și o refuză dacă pragul este atins. Acesta nu este un clamp al sumei la95 și poate permite ultimei adăugări să treacă puțin de96. Suma este calculată în ordinea matricei folosind selectRate nativ. Sliderul de prag selectează toate clasele cu gageRate≤valoare, în domeniul1–95.
+
+Un click schimbă celula și stabilește modul pentru drag. EnterFrame continuă să aplice aceeași stare celulei curente până la mouseUp/mouseOut/releaseOutside. Ramura mouseMove din handler nu este înregistrată în addEvent; nu presupunem că hoverul singur schimbă selecția. Modelul local editAutoFoldSelection permite această pictare idempotentă și păstrează limitele.
+
+createAutoFold este un controller pur, încă neimportat în runtime. Prima citire, schimbarea contului și recuperarea după întrerupere consumă snapshotul curent; o nouă versiune de acțiune eligibilă programează1secundă. Pollurile identice nu resetează timerul. La expirare sunt verificate din nou identitatea, mâna/handVersion, preferințele, busy și eligibilitatea. Un număr de generație invalidează inclusiv callbackuri deja puse în coadă înainte de interrupt. Eșecul trimiterii oprește continuitatea și nu retrimite aceeași acțiune automat; apelantul transportului trebuie să prezinte eroarea.
+
+Testele cu ceas controlat au demonstrat o eroare înainte de corecție: un callback păstrat după interrupt putea trimite. Testul eșuează fără generație și trece cu ea. Sunt verificate și lipsa replay-ului, modificarea preferințelor și cazul în care mâna/contul se schimbă înainte de expirare. Aceste teste nu reprezintă încă un Auto Fold efectuat în aplicație.

@@ -188,3 +188,37 @@ export function eligibleAutoFold(state,prefs,{supported=false,catchUp=true,cashD
  if(me===g.button&&!prefs.button||[g.bigBlindSeat,(g.button+1)%6].includes(me)&&!prefs.blinds)return false;
  const key=autoFoldHandKey(g.cards?.[me]);return key!==null&&prefs.selected.includes(itemByKey.get(key));
 }
+
+const matrixRanks=[...'AKQJT98765432'];
+export const autoFoldMatrix=matrixRanks.flatMap((a,row)=>matrixRanks.map((b,col)=>autoFoldItems[itemByKey.get(row===col?a+b:row<col?a+b+'s':b+a+'o')]));
+export function autoFoldRateSelection(rate){
+ if(!Number.isInteger(rate)||rate<1||rate>95)throw Error('Invalid Auto Fold rate');
+ return autoFoldMatrix.filter(item=>item.gageRate<=rate).map(item=>item.index);
+}
+export function autoFoldSelectedRate(selected){return autoFoldMatrix.reduce((sum,item)=>sum+(selected.includes(item.index)?item.selectRate:0),0)}
+export function editAutoFoldSelection(selected,index,value){
+ if(!Array.isArray(selected)||selected.length>169||new Set(selected).size!==selected.length||!selected.every(i=>Number.isInteger(i)&&i>=0&&i<169)||!Number.isInteger(index)||index<0||index>=169||typeof value!=='boolean')throw Error('Invalid Auto Fold selection');
+ const set=new Set(selected),was=set.has(index);
+ if(was!==value&&!(was&&set.size<=1)&&!(value&&Math.floor(autoFoldSelectedRate(selected))>=96)){if(value)set.add(index);else set.delete(index)}
+ return autoFoldMatrix.filter(item=>set.has(item.index)).map(item=>item.index);
+}
+export function createAutoFold(get,send,schedule=setTimeout,cancel=clearTimeout){
+ let frame=null,identity=null,timer=null,generation=0;
+ const stop=()=>{generation++;if(timer!==null)cancel(timer);timer=null};
+ const interrupt=()=>{stop();frame=null;identity=null};
+ function observe(){
+  const current=get(),state=current?.state;
+  if(!state||typeof current.identity!=='string'||!current.identity){interrupt();return}
+  const next=JSON.stringify([state.number,state.handVersion]),catchUp=frame===null||identity!==current.identity;
+  if(!catchUp&&frame===next)return;
+  stop();frame=next;identity=current.identity;
+  if(catchUp||typeof state.handVersion!=='string'||!state.handVersion||!Number.isSafeInteger(state.number)||state.number<1||!eligibleAutoFold(state,current.prefs,current.context))return;
+  const ticket=generation,expectedIdentity=identity,expectedFrame=frame,preferences=JSON.stringify(current.prefs);
+  timer=schedule(async()=>{
+   if(ticket!==generation)return;timer=null;const latest=get();
+   if(latest?.identity!==expectedIdentity||JSON.stringify([latest.state?.number,latest.state?.handVersion])!==expectedFrame||JSON.stringify(latest.prefs)!==preferences||latest.busy||!eligibleAutoFold(latest.state,latest.prefs,latest.context))return;
+   try{if(await send()===false)interrupt()}catch{interrupt()}
+  },1000);
+ }
+ return {observe,interrupt,preferencesChanged(){interrupt();observe()},get pending(){return timer!==null}};
+}
