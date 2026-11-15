@@ -1,0 +1,66 @@
+{
+  "scope": "Eight explicitly traced control entries; remaining entries not upgraded by inference",
+  "coverage": [
+    {
+      "control": "_removeChipButton",
+      "localStatus": "Contract nativ trasat: permisiune EnableRemoveChips, CashOut3123 curent separat de ținta automată3505. Retragerea fără plecarea de la masă nu este încă activată local.",
+      "documentation": [
+        "docs/rea/table-control-applicability.md"
+      ]
+    },
+    {
+      "control": "_joinSimilarTable",
+      "localStatus": "Condiționat de Brand.isNoOpponentSelection (utilizator german sau 2Ace), cont autentificat și format/stare. Nu este un control universal PLAYGG.RO; starea concretă a contului original nu a fost interogată. Local neactivat.",
+      "documentation": [
+        "docs/rea/table-control-applicability.md"
+      ]
+    },
+    {
+      "control": "_sitOutButton.mainButton",
+      "localStatus": "Fluxuri cash locale next-hand/sit-out/return și plecare cu cash-out atomic implementate și testate. Politica nativă next-blind/missed-blind și comparația fizică rămân deschise.",
+      "documentation": [
+        "docs/rea/cash-sitout.md",
+        "docs/rea/cash-sitout-menu.md",
+        "docs/rea/cash-leave.md"
+      ]
+    },
+    {
+      "control": "\"chipShuffle\"",
+      "localStatus": "Shuffle local la cash/Rush/MTT, control și transport cu limitare/rate guard testate; paritatea fizică nativă rămâne neverificată.",
+      "documentation": [
+        "docs/rea/rush-shuffle.md",
+        "docs/rea/multi-table-tournaments.md"
+      ]
+    },
+    {
+      "control": "\"autoFold\"",
+      "localStatus": "Auto Fold local opt-in pentru Hold’em/PLO Rush: diagramă, preferințe și decizie întârziată testate. Nu certifică toate formatele sau regulile native private.",
+      "documentation": [
+        "docs/rea/auto-fold.md",
+        "docs/rea/auto-fold-direct.md"
+      ]
+    },
+    {
+      "control": "\"chat\"",
+      "localStatus": "Chat local la masă/fereastră și observatori cu autorizare și moderație testate. Acoperirea vizuală nativă integrală nu este certificată.",
+      "documentation": [
+        "docs/rea/chat-options.md",
+        "docs/rea/observer-chat.md"
+      ]
+    },
+    {
+      "control": "\"emoji\"",
+      "localStatus": "Catalogul local de emoticoane și transportul prin chat sunt implementate/testate; vezi catalogul și limitele formatelor, fără certificare fizică integrală.",
+      "documentation": [
+        "docs/rea/emoticon-catalog.md"
+      ]
+    },
+    {
+      "control": "\"helmet\"",
+      "localStatus": "Selectorul local This table/All open tables, filtrarea chatului și prezentarea Helmet sunt implementate/testate; moderarea admin este separată. Paritatea fizică rămâne deschisă.",
+      "documentation": [
+        "docs/rea/helmet-local.md"
+      ]
+    }
+  ]
+}
