@@ -1,0 +1,42 @@
+{
+  "method": "REA installed SWF selected FFDec source and original atlas crops, Swift decoded RGBA comparison",
+  "sources": {
+    "com/nsus/iron/table/view/component/TableMenu3D.as": "c4e04e9e22aaabb21c77b088ecc678250405b9c4ec2a53a699935f78e55b8853",
+    "com/nsus/iron/table/view/component/tablemenu/TableEtcMenu3D.as": "f4fc0c68fd210e7916964628be89e6f28f3b04a68152e44e3827549f2a6e4c39",
+    "com/nsus/iron/table/view/component/tablemenu/SideGameGroupView3D.as": "73afd558399bfd2d34da88efa72e647fa89cd875c40c7d1c374f3de2c930eab6"
+  },
+  "art": [
+    {
+      "file": "native-autofold-control-disabled.png",
+      "size": [
+        132,
+        132
+      ],
+      "bytes": 7424,
+      "sha256": "e25f3284b4996bd5d7effc49a0b08ce33c6f5e5f3317c72e3d789eede2349ccc"
+    },
+    {
+      "file": "native-autofold-control-enabled.png",
+      "size": [
+        132,
+        132
+      ],
+      "bytes": 11454,
+      "sha256": "002161de59b18a52fd8ab9b4e2a7f9d28499c233476b1d85f5a5e29956ff5e1c"
+    }
+  ],
+  "geometry": {
+    "slot": [
+      62,
+      62
+    ],
+    "gap": 8,
+    "originX": 29,
+    "bottomOffset": 90
+  },
+  "limits": [
+    "No local side-game group or Panic offset",
+    "Local Rush Shuffle remains unavailable; Auto Fold is first visible Etc slot",
+    "Physical AIR raster and sound timing unverified"
+  ]
+}
