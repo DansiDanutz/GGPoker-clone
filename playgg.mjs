@@ -406,7 +406,7 @@ function cashCatalog(request,mode){
    b.setAttribute('aria-label',r.name);if(group&&r.groupId){b.dataset.groupId=r.groupId;b.dataset.tableCount=r.members.length;b.title=r.members.length+' matching hosted tables'}b.setAttribute('aria-pressed',String(i===selected));b.append(...cells.map((x,j)=>{
     if(group&&mode==='holdem'&&j===0){const badge=node('span','','nativeGroupSize'),text=node('span',x,'nativeGroupSizeText');text.dataset.nativeLabel='LabelTableMax';text.dataset.nativeValues=JSON.stringify([r.capacity||6]);badge.append(text);return badge}
     if(group&&mode==='holdem'&&j===3){const count=node('span','','nativeGroupPlayers'),icon=node('i',''),label=node('span',x,'nativeGroupPlayerCount');icon.setAttribute('aria-hidden','true');count.append(icon,label);count.setAttribute('aria-label',x+' seated players in this group');return count}
-    if(group&&mode==='holdem'&&j===4){const action=node('span','','rowAction'),label=node('span',x);if(r.open)label.dataset.nativeLabel='LobbyButtonJoinTable';action.append(label);return action}
+    if(group&&mode==='holdem'&&j===4){const action=node('span','','rowAction'),label=node('span',x);action.dataset.joinOpen=String(r.open);action.setAttribute('aria-disabled',String(!r.open));if(r.open)label.dataset.nativeLabel='LobbyButtonJoinTable';action.append(label);return action}
     if(!group&&mode!=='aof'&&j===3&&Number.isInteger(n)){
       const seats=node('span','','seatBlocks'),capacity=r.capacity||6;
       seats.setAttribute('role','img');seats.setAttribute('aria-label',n+' of '+capacity+' seats occupied');seats.title=n+' / '+capacity+' players';
