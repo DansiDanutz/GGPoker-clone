@@ -2,7 +2,17 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
-## Verified release baseline — PR249
+## Verified release baseline — PR251
+
+PR251 merged `594d3199c75ad182bfe7ab09f17e38a661c17a82`; tested source `14829a494248557b381ab4c433a58f3f934a058f`.
+
+Hold’em Group View follows the recovered native descending blind, minimum buy-in, ante and seat-count order for comparable local practice groups. Up/Down changes the selected real group without wrapping; Enter and double click open the existing Group confirmation without a debit. Other forms, hidden/stale catalogs and Table View are outside this keyboard handler. Native featured/password/currency/variant metadata are not invented.
+
+All 10 exact-head checks passed, including source/runtime/art identities, catalog/HTTP/private paint, actual keyboard and pointer input, Group funding/retry/two windows, manual Join/preview/HUD, two hands with five computers, independently verified payouts, restart/reconnect and cross-room conservation. WIN coverage now measures one synchronous displayed frame before asynchronous image decoding; all glyph-overlap assertions remain. Runtime130files1,476,293bytes;art1,362files reused unchanged. Guarded idle rollout PID79331→58227 preserved all6ownerfiles15,496bytes byte-for-byte;no live gameplay QA. No new dependencies/artwork/downloads. Two small runtime snapshots were created during this task, each1,476,293bytes; previous runtimes preserved.
+
+Physical same-size native AIR comparison, animation/audio timing, operator metadata and full-app parity remain incomplete. Generated HTML/inventories remain historical PR216. [REA contract](docs/rea/cash-group-order.md).
+
+## Historical release baseline — PR249
 
 PR249 merged `7ab0db5806e447aea8634935f479767ed719a04f`; tested source `309e4f6c85211ef19f1d4f48d3e16f9c44a51b2e`. Group rows identify the current account using authenticated server me, then apply the original orange and Roboto Bold Italic. Private memo and color-only markers use the two original atlas shapes and source geometry. A lean read-only endpoint returns only marker metadata; note content, history, cards and tokens are excluded. Stale group, roster and account responses cannot repaint another context.
 
