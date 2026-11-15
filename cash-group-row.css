@@ -21,3 +21,21 @@
 #catalog.nativeCashOperator[data-mode=holdem][data-view=group] #groups [aria-pressed=true] .rowAction:active{border-image-source:url('/home-art/native-tourney-entry-down.png')}
 
 #catalog.nativeCashOperator[data-mode=holdem][data-view=group] #groups [aria-pressed] .rowAction[data-join-open=false]{border-image-source:url('/home-art/native-tourney-entry-disabled.png');color:#999}
+
+/* TableCell/Renderer ordinary Hold’em; normalized column anchors retain the existing parent viewport. */
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #groups>button{position:relative;display:block;border:0;border-radius:4px;background:#242424;color:#888;font:14px NativeGroupRow,Arial,sans-serif;height:32px;padding:0}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #groups>button:hover{background:#2f2f2f}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #groups>button[aria-pressed=true]{background:#3c1616}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #groups>button::before{content:'';position:absolute;left:0;top:0;width:4px;height:32px;background:#12c012;-webkit-mask-box-image:url('/home-art/native-cash-group-indicator.png') 4 1 3 2 fill stretch;-webkit-mask-box-image-width:4px 1px 3px 2px;pointer-events:none}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #groups>button>span{position:absolute;top:6px;height:22px;line-height:22px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #groups>button>span:nth-child(1){left:calc(100% * 8 / 810);top:5px;width:calc(100% * 166 / 810);color:#9c7cb5;font-size:15px;text-align:left}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #groups>button>span:nth-child(2){left:calc(100% * 176 / 810);width:calc(100% * 206 / 810);color:#fefefe}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #groups>button>span:nth-child(3){left:calc(100% * 382 / 810);width:calc(100% * 110 / 810);color:#fefefe}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #groups>button>span:nth-child(4){left:calc(100% * 503 / 810);top:11px;width:97px;height:9px}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #groups>button>span:nth-child(5){left:calc(100% * 608 / 810);width:calc(100% * 52 / 810)}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #groups>button>span:nth-child(6){left:calc(100% * 660 / 810);width:calc(100% * 52 / 810);text-align:right}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #groups>button>span:nth-child(7){left:calc(100% * 712 / 810);width:calc(100% * 52 / 810)}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #groups>button>span:nth-child(8){left:calc(100% * 764 / 810);width:calc(100% * 48 / 810)}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #groups .seatBlocks i{position:absolute;visibility:hidden;width:0;height:0}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #groups .seatBlocks::before,#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #groups .seatBlocks::after{content:'';position:absolute;inset:0;width:97px;height:9px;background:url('/home-art/native-cash-table-counter-empty.png') left top/97px 9px no-repeat;clip-path:inset(0 max(0px,calc(98px - var(--seat-capacity)*11px)) 0 0)}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #groups .seatBlocks::after{background-image:url('/home-art/native-cash-table-counter-filled.png');clip-path:inset(0 max(0px,calc(98px - var(--seat-occupied)*11px)) 0 0)}

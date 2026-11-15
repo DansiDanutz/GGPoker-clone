@@ -1,0 +1,114 @@
+{
+  "method": "REA selective headless FFDec + exact decoded RGBA atlas crop/readback;not native AIR runtime execution",
+  "swf": {
+    "path": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf",
+    "bytes": 41892370,
+    "sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1"
+  },
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/TableCell.as",
+      "sha256": "9536fcab4c0a6fcc869690060361f21a213675e5d5171780bc05eb15721b0847"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/renderer/TableCellRenderer.as",
+      "sha256": "5e5324aec6d8a8ff87aedc2a0f3766bd3bdcf862b293419106ada18db87f6f95"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/PlayerCounterView.as",
+      "sha256": "b76d9690c9411cf0ef55d98501f0a9d0c30b3ca86cf2c77f45fc609cd5fc19ed"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/ListCell.as",
+      "sha256": "13df1fbb2be8b84c52e22d1d06900cec540d9b6cd198e085bfe0dbf7928deeab"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/TableListGameTypeIndicator.as",
+      "sha256": "e140f3697f21707078e0221133cecb3ace09dd5ae892b93daa98df59436900eb"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/vo/CashGameTypeColor.as",
+      "sha256": "71b90d7c16314f6710219dd45dbf57b0319105e084a349ba10fe64dc84d3b6ea"
+    }
+  ],
+  "fontSources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/GlobalButton.as",
+      "sha256": "eb82ad01852703c14d475d837cb3ffe1785c7f1e624afb81b00caa980762f329"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/text/UniqueLabel.as",
+      "sha256": "ebf2dfc4abce2a7de077b31af397d056ceb526f52b132cc09610b9c1fc1e5803"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/asset/StageAssets.as",
+      "sha256": "e993e9ebfc32e1214162109e9af1eb3eef98e2cf6cbf6d7fb0ce1be4e3f0b0a3"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/Setting.as",
+      "sha256": "7711ac87c7729456e36920529ca5adc88529d50409c095833da862de50c8c854"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/tasks/InitFont.as",
+      "sha256": "d3831e2c3816f4adf93ed7d1bec21a55f47661bbe138da2eb66a471866df9465"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/LabelButton.as",
+      "sha256": "5e9cc08b2489e890d5684b9edb2b9b11e452d1ffdb991850f1edc0f83cade197"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/lib/components/Button.as",
+      "sha256": "005aff16f04b263bfd0550ea73d919275afba37703e4ae36a55dcdbcae62b107"
+    }
+  ],
+  "atlas": {
+    "files": [
+      {
+        "bytes": 418,
+        "file": "native-cash-table-counter-filled.png",
+        "frame": "lobby0089",
+        "height": 9,
+        "rgbaExact": true,
+        "sha256": "dde137769d3277f8ce08849852b28f370cf3a001d411dfb88387f9c294a95ae1",
+        "width": 97
+      },
+      {
+        "bytes": 275,
+        "file": "native-cash-table-counter-empty.png",
+        "frame": "lobby0090",
+        "height": 9,
+        "rgbaExact": true,
+        "sha256": "6842e54cd6d95e4ce62250c2eaef4cb3bf9a17432ea61551177dd1fe296ea411",
+        "width": 97
+      }
+    ],
+    "method": "StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding",
+    "sources": {
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+    }
+  },
+  "nativeContract": [
+    "Ordinary TableCell32height/bg#242424/hover#2f2f2f/selected ListCell#3c1616/radius4",
+    "TableCellRenderer uses Roboto(useRoboto true) label15 name x8 y5;14 other fields at y6;22high;name no-promotion max166;native metric columns",
+    "TableListGameTypeIndicator common277 4x8 ninepatch,tinted CashGameTypeColor HOLDEM#12c012,32height",
+    "PlayerCounterView uses lobby90 empty/lobby89 filled97x9 at503,11;native masks x-1,widthcapacity*11/occupied*11;play-money brand branch uses lobby842",
+    "Ordinary non-VIP buy-in is defaultBuyIn;stats0 display hyphen;VPIP rounded;avgpot>10000 rounded nearest1000"
+  ],
+  "localMapping": [
+    "Use existing native Roboto +indicator;twoexactcounterPNGs replace provisional CSS blocks;hidden per-seat child markers remain for accessibility/state assertions",
+    "Existing parent viewport retained;column anchors normalized to810 source width,not physical AIR raster verification",
+    "Local practice keeps reference ordinary Hold\u2019em paint;native operator play-money branding flag unavailable",
+    "Use real owner tableName,ordinary defaultstack and available avgPot/VPIP;missing metrics remain explicit unknown",
+    "Authenticated account/waiting-row orange/bolditalic and featured/private/promotion/play-money variants not mapped in this patch"
+  ],
+  "verification": [
+    "RED selected color67/24/25 versus native60/22/22",
+    "GREEN initial source-browser font/colors/32height/indicator/counter geometry/assets;final head QA pending"
+  ],
+  "remaining": [
+    "Exact-head installed browser/paint inspection/release pending",
+    "Authenticated account/waiting-row styles and counter brand branch incomplete",
+    "Physical native AIR parent/raster/autoSlice/autoScale and animation/audio timing/full-app parity unverified"
+  ]
+}

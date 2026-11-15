@@ -403,6 +403,7 @@ function cashCatalog(request,mode){
   updateElement($('columns'),columns);
   nextList.replaceChildren(...rows.map((r,i)=>{const b=node('button',''),n=r.occupied,stake=mode==='shortdeck'?r.blind+' ('+r.blind+')':r.blind/2+' / '+r.blind,stack=r.minBuyIn!==undefined&&r.minBuyIn!==r.maxBuyIn?r.minBuyIn+'–'+r.maxBuyIn:r.stack??'30–100';
    const cells=group?[r.name,mode==='plo'?r.mode.toUpperCase().replace(/(\d)/,'-$1'):(r.capacity||4)+'-Max',stake,mode==='holdem'?r.stack:stack,n===null?'—':mode==='holdem'?String(n):n+'/'+(r.capacity||4),r.open?'Join':'Closed']:[r.name,stake,stack,n===null?'—':n+'/'+(r.capacity||4),r.waitingCount??0,r.avgPot??'—',r.vpip==null?'—':r.vpip+'%','—'];
+   if(!group&&mode==='holdem'){cells[0]=r.tableName??r.name;cells[2]=r.stack;cells[5]=r.avgPot==null?'—':r.avgPot>0?(r.avgPot>10000?Math.round(r.avgPot/1000)*1000:r.avgPot):'-';cells[6]=r.vpip==null?'—':Math.round(r.vpip)?Math.round(r.vpip)+'%':'-'}
    if(group&&mode==='shortdeck')cells.splice(1,1);if(group&&mode==='holdem')cells.shift();
    if(mode==='aof'){if(group)cells[1]='Hold’em';else{cells.splice(1,0,'Hold’em');cells[7]=r.allInPercent==null?'—':r.allInPercent+'%'}}
 
@@ -412,7 +413,7 @@ function cashCatalog(request,mode){
     if(group&&mode==='holdem'&&j===4){const action=node('span','','rowAction'),label=node('span',x);action.dataset.joinOpen=String(r.open);action.setAttribute('aria-disabled',String(!r.open));if(r.open)label.dataset.nativeLabel='LobbyButtonJoinTable';action.append(label);return action}
     if(!group&&mode!=='aof'&&j===3&&Number.isInteger(n)){
       const seats=node('span','','seatBlocks'),capacity=r.capacity||6;
-      seats.setAttribute('role','img');seats.setAttribute('aria-label',n+' of '+capacity+' seats occupied');seats.title=n+' / '+capacity+' players';
+      seats.style.setProperty('--seat-capacity',capacity);seats.style.setProperty('--seat-occupied',n);seats.setAttribute('role','img');seats.setAttribute('aria-label',n+' of '+capacity+' seats occupied');seats.title=n+' / '+capacity+' players';
       for(let seat=0;seat<capacity;seat++){const block=node('i','',seat<n?'filled':'');block.setAttribute('aria-hidden','true');seats.append(block)}return seats;
     }
     return node('span',x,j===0?'chip':group&&j===(mode==='shortdeck'?4:5)?'rowAction':'');
@@ -465,7 +466,7 @@ function cashCatalog(request,mode){
    const data=(await response.json()).filter(t=>mode==='plo'?t.mode?.startsWith('plo'):['shortdeck','aof'].includes(mode)?t.mode===mode:!t.mode||t.mode==='cash'),signature=JSON.stringify(data);
    if(request!==catalogRequest||pane.hidden)return;
    if(signature!==previous){previous=signature;
-    hosted=data.map(t=>({...t,name:t.name+' · hosted',href:'network.html?from=home'+(mode!=='holdem'?'&view='+mode:'')+(journey?'&player':'')+'#'+t.room}));
+    hosted=data.map(t=>({...t,tableName:t.name,name:t.name+' · hosted',href:'network.html?from=home'+(mode!=='holdem'?'&view='+mode:'')+(journey?'&player':'')+'#'+t.room}));
     applyRows()}
    await refreshWaiting();await privatePaint.refresh();
   }catch{}
