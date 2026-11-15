@@ -21,6 +21,7 @@ let steps=0;for(;;){const t=rooms.multiTournament(id).tournament.tables.find(t=>
 }
 }finally{Date.now=realNow}
 assert.ok(rounds<500);const winner=rooms.multiTournament(id);assert.equal(winner.status,'complete');assert.equal(winner.tournament.totalChips,2100);assert.equal(new Set(winner.tournament.players.map(p=>p.place)).size,7);for(const p of winner.tournament.prizes)assert.equal(rooms.wallet(p.id).available,9975+p.amount);assert.equal(winner.tournament.prizes.reduce((n,p)=>n+p.amount,0),175);assert.equal(rooms.hasActivePlay(),false);const paid=readFileSync(file);rooms=openRooms(file,()=>0,true);assert.deepEqual(readFileSync(file),paid);assert.equal(rooms.multiTournament(id).tournament.winner,winner.tournament.winner);
+assert.throws(()=>rooms.controlMultiTournament({id,revision:winner.revision,action:'cancel'}),e=>e.status===409);assert.deepEqual(readFileSync(file),paid);
 console.log('PASS actual7-account MTT to winner: ready/next hands,all-in/fold settlement,idle transfers,showdown delay,old-token privacy,write rollbacks,cold reopen,7places,2100chips and175 once-only wallet payouts; browser UI pending');
 
 }finally{globalThis.crypto.getRandomValues=random;rmSync(dir,{recursive:true,force:true})}
