@@ -679,10 +679,17 @@ export function openRooms(file,avatarFor=()=>0,walletsEnabled=false){
   function validatePushSeats(){for(const r of rooms.values())validatePushSeatRoom(r,r.players.map((p,i)=>cashBalance(r,i)))}
   function validateCashRemovalOptions(){for(const r of rooms.values())if(r.settings?.removeChips!==undefined&&(r.settings.removeChips!==true||!cashSitOut(r)))throw Error('Invalid cash removal permission');for(const r of rooms.values())if(r.settings?.removeChips&&cashSitOut(r))for(const p of r.players)if(p?.walletFunded&&p.account&&!p.bot&&(p.removeChipsBB??0)!==wallet.removalOption(p.account,removeChipsGroup(r.settings)))throw Error('Invalid automatic removal preference link')}
   function validateCashRemovalLinks(){validateCashRemovalOptions();validatePushSeats();const entries=wallet.state.removals??[];for(const e of entries)if(!e.closed){const r=rooms.get(e.room),p=r?.players?.find(p=>p?.cashRemoval?.session===e.receipt.session);if(!p||p.account?.toLowerCase()!==e.account||!isDeepStrictEqual(p.cashRemoval,e.receipt))throw Error('Invalid cash removal seat link')}for(const [id,r]of rooms)for(const p of r.players)if(p?.cashRemoval&&!entries.some(e=>!e.closed&&e.room===id&&e.account===p.account?.toLowerCase()&&isDeepStrictEqual(e.receipt,p.cashRemoval)))throw Error('Invalid cash removal wallet link')}
+  function validGroupCommand(x){return x&&typeof x==='object'&&!Array.isArray(x)&&Object.keys(x).length===4&&typeof x.operation==='string'&&/^[a-f0-9]{48}$/.test(x.operation)&&typeof x.tableId==='string'&&/^[a-z0-9-]{1,40}$/.test(x.tableId)&&Number.isInteger(x.count)&&x.count>=1&&x.count<=6&&Number.isSafeInteger(x.buyIn)&&x.buyIn>0&&Number.isSafeInteger(x.buyIn*x.count)}
+  const cashGroups=()=>wallet.state.cashGroups===undefined?[]:wallet.state.cashGroups;
+  function validateCashGroups(){
+    const cashGroupJoins=cashGroups();
+    if(!Array.isArray(cashGroupJoins)||cashGroupJoins.length>1000||new Set(cashGroupJoins.map(r=>r?.account+':'+r?.command?.operation)).size!==cashGroupJoins.length||cashGroupJoins.some(r=>!r||Object.keys(r).length!==3||typeof r.account!=='string'||!/^[a-z0-9][a-z0-9_-]{1,19}$/.test(r.account)||!Object.hasOwn(wallet.state.accounts,r.account)||!validGroupCommand(r.command)||!Array.isArray(r.seats)||r.seats.length!==r.command.count||new Set(r.seats.map(p=>p?.room)).size!==r.seats.length||r.seats.some(p=>!p||Object.keys(p).length!==2||typeof p.room!=='string'||!/^[a-f0-9]{48}$/.test(p.room)||!Number.isInteger(p.seat)||p.seat<0||p.seat>=6)))throw Error('Invalid cash group checkpoint');
+    for(const [id,r]of rooms)if(/^[a-f0-9]{48}$/.test(id)&&Array.isArray(r?.players))r.players.forEach((p,seat)=>{if(p?.cashGroupOperation!==undefined&&(!/^[a-f0-9]{48}$/.test(p.cashGroupOperation)||!cashGroupJoins.some(row=>row.account===p.account?.toLowerCase()&&row.command.operation===p.cashGroupOperation&&row.seats.some(s=>s.room===id&&s.seat===seat))))throw Error('Invalid cash group seat link')});
+  }
   function unpack(data){
     if(!Array.isArray(data)||['local-multi-tournaments','local-battle-events','local-cash-wallets','local-rush-pools','local-spin-bank','local-spin-entries','local-spin-rules'].some(key=>data.filter(entry=>entry?.[0]===key).length>1))throw Error('Invalid cash wallet checkpoint');
     rooms=new Map(data);battleEvents=rooms.get('local-battle-events')??{};rooms.delete('local-battle-events');if(!battleEvents||typeof battleEvents!=='object'||Array.isArray(battleEvents))throw Error('Invalid Battle Royale checkpoint');if(Object.keys(battleEvents).length&&!walletsEnabled)throw Error('Battle wallet mode is required');for(const [id,event]of Object.entries(battleEvents)){readBattleEvent(event);if(event.settings.id!==id)throw Error('Invalid Battle event identity')}
-rules=spinRules(rooms.get('local-spin-rules'));rooms.delete('local-spin-rules');spinEntries=rooms.get('local-spin-entries')??[];rooms.delete('local-spin-entries');bank=spinBank(rooms.get('local-spin-bank'));rooms.delete('local-spin-bank');wallet=cashWallet(rooms.get('local-cash-wallets'));rooms.delete('local-cash-wallets');multi=multiTableRegistry(rooms.get('local-multi-tournaments'));rooms.delete('local-multi-tournaments');if(multi.state.events.length&&!walletsEnabled)throw Error('Multi-table wallet mode is required');multi.validateWallet(wallet);rushStates=rooms.get('local-rush-pools')??{};rooms.delete('local-rush-pools');
+rules=spinRules(rooms.get('local-spin-rules'));rooms.delete('local-spin-rules');spinEntries=rooms.get('local-spin-entries')??[];rooms.delete('local-spin-entries');bank=spinBank(rooms.get('local-spin-bank'));rooms.delete('local-spin-bank');wallet=cashWallet(rooms.get('local-cash-wallets'));rooms.delete('local-cash-wallets');validateCashGroups();multi=multiTableRegistry(rooms.get('local-multi-tournaments'));rooms.delete('local-multi-tournaments');if(multi.state.events.length&&!walletsEnabled)throw Error('Multi-table wallet mode is required');multi.validateWallet(wallet);rushStates=rooms.get('local-rush-pools')??{};rooms.delete('local-rush-pools');
     if(!rushStates||typeof rushStates!=='object'||Array.isArray(rushStates))throw Error('Invalid Rush wallet checkpoint');
     if(Object.keys(rushStates).length&&!walletsEnabled)throw Error('Rush wallet mode is required for funded pools');
     for(const [variant,saved]of Object.entries(rushStates))validateRush(variant,saved);for(const room of rooms.values())validateRoomRimt(room);validateSpinEntries();validateBattleFinals();validateMultiRooms();validateCashRemovalLinks();
@@ -756,6 +763,36 @@ rules=spinRules(rooms.get('local-spin-rules'));rooms.delete('local-spin-rules');
   };
   request.spinBank=()=>bank.summary();
   const bankTransaction=operation=>{if(!walletsEnabled)fail(503,'Local cash wallets are disabled');const before=JSON.stringify(packed());try{const receipt=operation();validateSpinEntries();multi.validateWallet(wallet);validateMultiRooms();const after=JSON.stringify(packed());if(after!==before){writeFileSync(file+'.tmp',after,{mode:0o600});renameSync(file+'.tmp',file)}return receipt}catch(error){unpack(JSON.parse(before));throw error}};
+  request.joinCashGroup=(name,input,entries)=>bankTransaction(()=>{
+    if(typeof name!=='string'||!name.trim())fail(401,'Sign in locally');
+    if(!validGroupCommand(input))fail(400,'Choose an operation, cash table,1-6 tables and a whole-chip buy-in');
+    const account=name.toLowerCase(),command={operation:input.operation,tableId:input.tableId,count:input.count,buyIn:input.buyIn},prior=cashGroups().find(r=>r.account===account&&r.command.operation===command.operation);
+    if(prior){
+      if(JSON.stringify(prior.command)!==JSON.stringify(command))fail(409,'Group operation changed; use a new operation');
+      if(!prior.seats.every(s=>rooms.get(s.room)?.players[s.seat]?.account?.toLowerCase()===account&&rooms.get(s.room).players[s.seat].cashGroupOperation===command.operation))fail(410,'Group seats have closed; start a new entry');
+      return {operation:command.operation,replayed:true,seats:structuredClone(prior.seats)};
+    }
+    const reference=entries.find(e=>e.table.id===command.tableId);
+    if(!reference||reference.table.mode&&reference.table.mode!=='cash')fail(404,'Choose a hosted Holdem cash group');
+    if(!reference.table.open)fail(409,'Owner closed registration');
+    if(command.buyIn<(reference.table.minBuyIn??reference.table.stack)||command.buyIn>(reference.table.maxBuyIn??reference.table.stack))fail(400,'Buy-in is outside table limits');
+    if(wallet.summary(name).available<command.count*command.buyIn)fail(409,'Not enough local play chips for all tables');
+    if(cashGroups().length>=1000)fail(409,'Local group receipt limit reached');
+    const rules=t=>{const {name,...settings}=newRoom(t,{},6,0).settings;return JSON.stringify(settings)},key=rules(reference.table),selected=[];
+    // Local policy: identical hosted rules, selected table first, then stable table IDs; private native matching thresholds are unknown.
+    const candidates=entries.filter(e=>e.table.open&&(!e.table.mode||e.table.mode==='cash')&&rules(e.table)===key).sort((a,b)=>a===reference?-1:b===reference?1:a.table.id<b.table.id?-1:a.table.id>b.table.id?1:0);
+    for(const row of candidates){
+      if(rooms.get(row.room)?.players.some(p=>p?.account?.toLowerCase()===account))continue;
+      const wait=handle(rooms,row.room,'waiting',null,{},row.table,name,avatarFor,notes,wallet),summary=handle(rooms,row.room,'summary',null,{},row.table,name,avatarFor,notes,wallet);
+      if(wait.position&&!wait.offer||summary.waitingCount&&!wait.offer)continue;
+      const seat=wait.offer?.seat??summary.seats.findIndex((p,i)=>!p&&!summary.reservedSeats.includes(i));
+      if(seat<0)continue;selected.push({...row,seat,...(wait.offer?{reservation:wait.offer.expiresAt}:{})});if(selected.length===command.count)break;
+    }
+    if(selected.length!==command.count)fail(409,'Not enough available tables in this cash group');
+    const seats=selected.map(row=>{const result=handle(rooms,row.room,'join',null,{name,useProfile:true,buyIn:command.buyIn,seat:row.seat,...(row.reservation?{reservation:row.reservation}:{})},row.table,name,avatarFor,notes,wallet);rooms.get(row.room).players[result.me].cashGroupOperation=command.operation;return {room:row.room,seat:result.me,issued:result.issued}});
+    (wallet.state.cashGroups??=[]).push({account,command,seats:seats.map(({room,seat})=>({room,seat}))});validateCashGroups();
+    return {operation:command.operation,replayed:false,seats};
+  });
   request.createMultiTournament=command=>bankTransaction(()=>multi.create(command));
   request.multiTournament=(id,name)=>multi.summary(id,name);
   request.multiTournaments=name=>multi.list(name);

@@ -49,6 +49,10 @@
     {
       "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/vo/TempAutoJoinVo.as",
       "sha256": "b5a18ce7ecf4d1c4510f4ff5e1f31968343087131b3b9c27df8f65a4c4912daf"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/controller/CheckTakeSeatCommand.as",
+      "sha256": "c756f911a199e245dedec74fee602fa69a88f59fa4477ee629f10fbf017ee5cc"
     }
   ],
   "nativeContract": [
@@ -63,7 +67,8 @@
     "Async request1411 sends TableTypeId/TableCount/StackType/PlayerStyleType/GameSpeedType/LocationType/TicketIds, not buyInAmount",
     "ACK response only Result/LeaveTablePenaltyInfo; actual selection is a separate OnCashGameReady callback",
     "Ready callback receives real Table/SeatIndex/JoinType/Token and opens TableConnection with reserved seat; Join sets isJoinTable=true",
-    "TempAutoJoinVo retains client isAutoBuyIn/buyInAmount/isFirstCDollar/useTicket settings"
+    "TempAutoJoinVo retains client isAutoBuyIn/buyInAmount/isFirstCDollar/useTicket settings",
+    "CheckTakeSeat uses connection.isJoinTable plus tempAutoJoinVo.isAutoBuyIn and nonzero chosen amount; play-money amount is not currency-exchanged; BalanceSetting builds wallet values then TAKE_SEAT, otherwise buy-in popup path"
   ],
   "notImplemented": [
     "Group aggregation and normal Group buy-in popup",
@@ -71,5 +76,5 @@
     "Preferences with real locally measured matching; no fabricated operator matching thresholds",
     "Ticket/currency branches depend on actual local feature support"
   ],
-  "next": "Trace TempAutoJoinVo consumption in post-ready CheckTakeSeat, then implement real local Group popup/multi-table atomic funding/matching; private server thresholds must be explicit unknowns, never fabricated"
+  "next": "Connect real Group BuyIn/Advanced UI to tested local atomic funding API; add matching preferences with actual measured inputs and explicit unknown native thresholds; verify multiple live browser tables, game/payout/reconnect"
 }
