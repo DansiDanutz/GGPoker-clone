@@ -19,7 +19,7 @@ Preferința Chip Shuffle rămâne în setări. Când este oprită, controlul pro
 | autoFold |429activ/428inactiv| Deschide/închide editorul; integrare Rush Hold’em în auto-fold.md; controlul local de acces rămâne în setări |
 | finalTableBetting |431| OPEN_FINAL_TABLE_BETTING; pariul pe o finală este distinct de acțiunea jucătorului din finala locală |
 | deal |430| Cerere de negociere/isMakingADealRequested, nu deal de cărți; negocierea nu este implementată |
-| pushSeat |327| PUSH_SEAT_CLICK; eligibilitatea/rolurile native necesită trasare suplimentară |
+| pushSeat |327| PUSH_SEAT_CLICK; contractul selectorului/rezervării în push-seat.md; arbitrarea serverului și integrarea locală rămân deschise |
 | splashEgg |434| Se arată doar când inventarul tagThrowable include Egg; efectul/inventarul complet nu sunt implementate |
 | splashCigar |435| Inventar Cigar; efectul/inventarul complet nu sunt implementate |
 | splashWater |437| Inventar Water; efectul/inventarul complet nu sunt implementate |
