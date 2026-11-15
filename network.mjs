@@ -582,7 +582,7 @@ function renderShowCards(g){
   const row=element('span','showCardFaces');row.style.left=(indices.length===1?112:71)+'px';for(const index of indices){const card=own[index],face=element('span','showCardFace'),rank=element('img','showRank'),suit=element('img','showSuit');rank.src='/home-art/native-show-rank-'+card[0]+'.png';suit.src='/home-art/native-show-suit-'+card[1]+'.png';rank.alt=suit.alt='';face.append(rank,suit);row.append(face)}b.append(row);
  }
 }
-const spinWheelScene=installSpinWheelScene(document.querySelector('.felt'),()=>chatWindow?null:state,()=>operate('spin-ready'),playCues,seat=>{const pos=seatPosition(seat),p=threePositions[pos];return {x:p.x,y:p.y+(pos===0?-50:60)*p.scale,scale:p.scale}},room);
+const spinWheelScene=installSpinWheelScene(document.querySelector('.felt'),()=>chatWindow?null:state,()=>operate('spin-ready'),playCues,seat=>{const pos=seatPosition(seat),p=(capacity()===6?sixPositions:threePositions)[pos];return {x:p.x,y:p.y+(pos===0?-50:60)*p.scale,scale:p.scale}},room);
 const rimtPanel=installRimtPanel(document.querySelector('.felt'),()=>chatWindow?null:state,(op,body)=>operate(op,body));
 function render(){
  rimtPanel.update();

@@ -2,10 +2,10 @@ import {spinWheelSparkles} from './spin-wheel-sparkles.mjs';
 import {spinWheelFrameLightLoop} from './spin-wheel-light.mjs';
 import {spinWheelMotion} from './spin-wheel-motion.mjs';
 export const spinWheelCues=Object.freeze({start:'SpinAndGoldSpin',high:'SNGWheelStuckHigh',low:'SNGWheelStuckLow',fireworks:'SngFireworks',out:'SNGWheelOut',bigWin:'SngBigWin',frameEffect:'SngWheelFrameEffect',frameLight:'SngWheelFrameLight',waitBase:'SngWheelBaseLight'});
-// SpinAndGoldWheelData.motionType: normal cash-award 3-Max, not ticket/WSOP or 6-Max rules.
-export function spinWheelMotionType(multiplier){if(!Number.isSafeInteger(multiplier)||multiplier<1)throw Error('Invalid Spin multiplier');return multiplier<=5?0:multiplier<=25?1:2}
-export function spinWheelPresentation(data,wheelIndex,variant,multiplier){
- const motion=spinWheelMotion(data,wheelIndex,variant),type=spinWheelMotionType(multiplier),hold=[500,4500,9500][type];let light=null,sparkles=null;let phase='spin',time=0,first=true,pose={wheel:0,arrow:0};
+// SpinAndGoldWheelData.motionType: normal cash-award 3/6-Max; ticket/WSOP use separate rules.
+export function spinWheelMotionType(multiplier,seats=3){if(!Number.isSafeInteger(multiplier)||multiplier<1||![3,6].includes(seats))throw Error('Invalid Spin multiplier');return multiplier<=(seats===6?10:5)?0:multiplier<=(seats===6?50:25)?1:2}
+export function spinWheelPresentation(data,wheelIndex,variant,multiplier,seats=3){
+ const motion=spinWheelMotion(data,wheelIndex,variant),type=spinWheelMotionType(multiplier,seats),hold=[500,4500,9500][type];let light=null,sparkles=null;let phase='spin',time=0,first=true,pose={wheel:0,arrow:0};
  const enter=next=>{phase=next;time=0};
  return {cancel(){sparkles?.cancel();light?.cancel();enter('cancelled')},tick(elapsedMs){
   if(!Number.isFinite(elapsedMs)||elapsedMs<0||!Number.isSafeInteger(Math.ceil(elapsedMs/33)))throw Error('Invalid wheel presentation elapsed time');

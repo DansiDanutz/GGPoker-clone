@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';import {spinWheelPresentation,spinWheelMotionType,spinWheelCues} from './spin-wheel-presentation.mjs';
 const data={constantVelocityMotion:{0:{wd:10,ad:0,ss:0}}};for(let i=1;i<=4;i++)data['reductionMotion0'+i]={0:{wd:20,ad:-2,ss:1},1:{wd:30,ad:0,ss:0}};
-assert.deepEqual([2,3,4,5,10,50,100,20000].map(spinWheelMotionType),[0,0,0,0,1,2,2,2]);assert.throws(()=>spinWheelMotionType(0));
+assert.deepEqual([2,3,4,5,10,50,100,20000].map(n=>spinWheelMotionType(n)),[0,0,0,0,1,2,2,2]);assert.throws(()=>spinWheelMotionType(0));
 const start=multiplier=>{const p=spinWheelPresentation(data,7,1,multiplier);let v=p.tick(0);assert.equal(v.cues[0],spinWheelCues.start);p.tick(33);v=p.tick(33);assert.equal(v.phase,'prize');return [p,v]};
 let [p,v]=start(2);assert.equal(v.wheelAlpha,1);assert.equal(p.tick(499).phase,'prize');v=p.tick(1);assert.equal(v.phase,'exit');assert.deepEqual(v.cues,[spinWheelCues.out]);v=p.tick(350);assert.equal(v.wheelAlpha,.875);assert.equal(v.wheelOffsetY,-37.5);v=p.tick(350);assert.equal(v.done,true);assert.equal(v.wheelAlpha,0);assert.deepEqual(p.tick(100).cues,[]);
 [p,v]=start(10);assert.ok(v.cues.includes(spinWheelCues.frameEffect));assert.equal(v.targetIndex,0);assert.equal(v.prizeElapsed,0);assert.equal(p.tick(4499).phase,'prize');assert.equal(p.tick(1).phase,'exit');
@@ -8,3 +8,7 @@ let [p,v]=start(2);assert.equal(v.wheelAlpha,1);assert.equal(p.tick(499).phase,'
 [p]=start(50);p.cancel();assert.equal(p.tick(100000).phase,'cancelled');assert.deepEqual(p.tick(0).sparkles,[]);assert.deepEqual(p.tick(0).cues,[]);assert.throws(()=>p.tick(-1));console.log('PASS source Spin prize phases:3-Max thresholds,500/4500/9500 holds,700ms cubic exit,8s congratulations,once-only cues andcancellation');
 
 [p,v]=start(10);v=p.tick(800);assert.ok(v.frameLight);assert.equal(v.cues.filter(c=>c===spinWheelCues.frameLight).length,1);assert.equal(p.tick(0).cues.includes(spinWheelCues.frameLight),false);p.cancel();assert.equal(p.tick(800).frameLight,null);
+
+assert.deepEqual([4,10,11,50,51].map(n=>spinWheelMotionType(n,6)),[0,0,1,1,2]);assert.throws(()=>spinWheelMotionType(10,4));
+for(const [multiplier,hold]of [[10,500],[50,4500],[51,9500]]){const p=spinWheelPresentation(data,7,1,multiplier,6);p.tick(0);p.tick(33);assert.equal(p.tick(33).phase,'prize');assert.equal(p.tick(hold-1).phase,'prize');assert.equal(p.tick(1).phase,'exit')}
+console.log('PASS native six-seat motion thresholds10/50 and corresponding prize holds');
