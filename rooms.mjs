@@ -228,7 +228,7 @@ function seatRoster(r){
  if(!r)return [];const g=r.hand,t=r.tournament,playing=!!g&&!g.end;
  return r.players.flatMap((p,seat)=>{
   if(!p)return [];
-  const status=t?.cancelledAt?'cancelled':t?.winner===seat?'winner':t?.out?.[seat]?'eliminated':playing?(!g.hands[seat]?.length||g.sittingOut?.[seat]?'sitting-out':g.folded[seat]?'folded':!g.stacks[seat]?'all-in':'playing'):g?'between-hands':t?'registered':'waiting';
+  const status=t?.cancelledAt?'cancelled':t?.winner===seat?'winner':t?.out?.[seat]?'eliminated':playing?(!g.hands[seat]?.length||g.sittingOut?.[seat]||p.tourneySittingOut?'sitting-out':g.folded[seat]?'folded':!g.stacks[seat]?'all-in':'playing'):g?'between-hands':t?'registered':'waiting';
   return [{seat,name:p.name,bot:!!p.bot,accountBound:!!p.account,subject:digest('owner:'+noteSubject(p)).slice(0,24),stack:cashBalance(r,seat),committed:playing?g.committed[seat]:0,status,acting:playing&&g.turn===seat,place:t?.finishes?.[seat]??null,prize:t?.prizes?.[seat]??null}];
  });
 }

@@ -55,3 +55,5 @@ Testele modelului acoperă Hold’em/PLO, blinduri/cărți, starea privată, aut
 Scenariul de browser cu trei contexte izolate verifică pointer real, geometria meniului, contribuția big blind a jucătorului în pauză, ascunderea opțiunilor de pariere, restartul serverului, retry503, revenirea la următorul deal și payoutul prin oracle independent. Validarea exact-head și a pachetului instalabil urmează înainte de release; comparația fizică nativă nu a fost efectuată.
 
 Battle Royale final rămâne exclus din această primă rută de pauză până la teste specifice; nu se extinde implicit eligibilitatea unui format netestat.
+
+Revizia panoului admin a reprodus status playing în loc de sitting-out pentru un jucător cu indicatorul de pauză aplicat. seatRoster include acum același indicator ca vizualizarea mesei; test RED→GREEN în tournament-player-sitout-test. QA pentru primul commit rămâne istoric; release-ul cere repetare pe ultimul commit.
