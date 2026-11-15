@@ -78,12 +78,28 @@
   ],
   "verification": [
     "RED browser measured legacy60x30 instead of native64x46.",
-    "GREEN source browser checks64x46/top32/native image/Roboto10/peer white/playmoney gray/actual120/own orange bold italic top13;private HUD notes/admission/two hands/payout/reconnect passed. Exact-head installed release QA pending.",
+    "GREEN source browser checks64x46/top32/native image/Roboto10/peer white/playmoney gray/actual120/own orange bold italic top13;private HUD notes/admission/two hands/payout/reconnect passed. PR262 all13 exact-head checks/reviews passed before merge and guarded idle rollout.",
     "Full background rectangle touches a blind marker at its transparent edge;glyph-bound range check verifies no visible name/balance text is covered."
   ],
   "remaining": [
     "Native parent viewport and clipping,exact textfield metrics/ellipsis versus autoSlice.",
     "Private note markers on the table preview,actual country/HUD data and partner/subscription semantics.",
     "Whole application fidelity and native animation/audio timing."
-  ]
+  ],
+  "release": {
+    "mergeCommit": "ff11e4664d229b950d9ff10ca9e1989c98467be3",
+    "pr": 262,
+    "sourceCommit": "c8d720ec3a9e192db5e877e7b45576ab27ac2ce4",
+    "oldPid": 37426,
+    "newPid": 35939,
+    "backup": "/Users/davidai/.local/state/playgg-rollouts/pr262-oioi3a0x",
+    "runtimeDirectory": "/Users/davidai/.local/share/playgg-runtime/player-plate-c8d720e",
+    "artDirectory": "/Users/davidai/.local/share/playgg-art/cash-preview-surface-candidate",
+    "runtimeFiles": 130,
+    "artFiles": 1365,
+    "ownerFiles": 6,
+    "ownerBytes": 15496,
+    "ownerDataUnchanged": true,
+    "liveGameplayWrites": false
+  }
 }
