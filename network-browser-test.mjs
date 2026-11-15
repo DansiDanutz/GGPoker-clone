@@ -93,11 +93,13 @@ try{
  async function watchShowAudio(c,clip='ShowCard'){await c.run("(async()=>{const ctx=new AudioContext(),sample=await ctx.decodeAudioData(await(await fetch('/table-audio/"+clip+".mp3')).arrayBuffer()),signature=b=>JSON.stringify([b.length,b.sampleRate,...Array.from({length:13},(_,i)=>b.getChannelData(0)[Math.floor(i*b.length/13)])]),expected=signature(sample);await ctx.close();window.showSounds=[];window.showStarts=[];window.showClipDuration=sample.duration;const start=AudioBufferSourceNode.prototype.start;AudioBufferSourceNode.prototype.start=function(...args){if(this.buffer&&signature(this.buffer)===expected){showSounds.push(performance.now());showStarts.push(args)}return start.apply(this,args)};document.body.click()})()",true);}
  // WIN has a large transparent canvas; test source glyph ink against actual final-frame alpha.
  async function nativeWinCoverage(c,ownHud=false){return c.run('('+async function(ownHud){
+   // Capture the displayed frame before image decoding can outlive the payout and remove WIN.
+   const snapshot=[...document.querySelectorAll(ownHud?'.seat:has(.nativeOwnHud)':'.winner')].map(seat=>({seat:Number(seat.dataset.seat),wr:seat.querySelector(ownHud?'.nativeOwnHud img':'.nativeWin').getBoundingClientRect().toJSON(),cards:[...seat.querySelectorAll('.card')].map(card=>{const s=getComputedStyle(card);return {r:card.getBoundingClientRect().toJSON(),a:parseFloat(s.rotate)*Math.PI/180,w:parseFloat(s.width),h:parseFloat(s.height),col:Math.round(parseFloat(s.getPropertyValue('--face-x'))*12/100),row:Math.round(parseFloat(s.getPropertyValue('--face-y'))*3/100),selected:card.dataset.bestFive==='1'}})}));
    const load=async url=>{const i=new Image();i.src=url;await i.decode();const canvas=document.createElement('canvas');canvas.width=i.naturalWidth;canvas.height=i.naturalHeight;const ctx=canvas.getContext('2d');ctx.drawImage(i,0,0);return {w:canvas.width,h:canvas.height,pixels:ctx.getImageData(0,0,canvas.width,canvas.height).data}},win=await load(ownHud?'/home-art/native-reserved-player-hud-bg.png':'/home-art/native-win-final.png'),front=await load(getComputedStyle(document.querySelector('.winner .card')).backgroundImage.match(/url\(["']?([^"')]+)/)[1]),tw=front.w/13,th=front.h/4,result=[];if(tw!==122||th!==162||!['two-colour','four-colour'].includes(document.documentElement.dataset.cardFront))throw Error('Coverage fixture requires native122x162 two/four-colour compositor');
-   for(const seat of document.querySelectorAll(ownHud?'.seat:has(.nativeOwnHud)':'.winner')){
-    const wr=seat.querySelector(ownHud?'.nativeOwnHud img':'.nativeWin').getBoundingClientRect();
-    for(const [index,card]of [...seat.querySelectorAll('.card')].entries()){
-     const r=card.getBoundingClientRect(),s=getComputedStyle(card),a=parseFloat(s.rotate)*Math.PI/180,w=parseFloat(s.width),h=parseFloat(s.height),col=Math.round(parseFloat(s.getPropertyValue('--face-x'))*12/100),row=Math.round(parseFloat(s.getPropertyValue('--face-y'))*3/100),parts=[];
+   for(const seat of snapshot){
+    const wr=seat.wr;
+    for(const [index,card]of seat.cards.entries()){
+     const {r,a,w,h,col,row}=card,parts=[];
      for(const [name,x0,y0,x1,y1]of [['rank',15,14,45.4,55.6],['suit',14,57,47.976,90.984]]){
       let ink=0,any=0,half=0,opaque=0,maxAlpha=0;
       for(let y=Math.ceil(y0);y<y1;y++)for(let x=Math.ceil(x0);x<x1;x++){
@@ -107,7 +109,7 @@ try{
       }
       parts.push({name,ink,any,half,opaque,maxAlpha});
      }
-     result.push({seat:Number(seat.dataset.seat),index,selected:card.dataset.bestFive==='1',parts});
+     result.push({seat:seat.seat,index,selected:card.selected,parts});
     }
    }
    return result;
