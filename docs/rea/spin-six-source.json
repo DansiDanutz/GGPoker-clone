@@ -1,0 +1,18 @@
+{
+  "method": "REA retained selected installed-SWF FFDec exports; keys relative to private REA tools cache",
+  "sources": {
+    "player-source/scripts/com/nsus/iron/vo/spinandgold/SpinAndGoldType.as": "a43a3bd9f670574f305a850a68c719b1951ce99a637872c3f3cad50da4115c30",
+    "player-source/scripts/com/nsus/network/protocol/types/tagSitAndGoType.as": "6f1425536d1b062010ebc8244f9898d361934fcd30ed0c0ad95fb1b7bb51f3cf",
+    "player-source/scripts/com/nsus/network/protocol/types/tagSpinAndGoldTypeInfo.as": "ab9e4623d2d97941412474bbb5a0513966d4bb7de9da5fa11410cf956132a53c",
+    "player-source/scripts/com/nsus/network/protocol/types/tagSitAndGoMultiplierInfo.as": "d553b9b0babb6c1d67fede40b3b8d184a2a89e714dd24e98892b8738c2359a23",
+    "player-source/scripts/com/nsus/network/protocol/types/tagSitAndGoMultiplierSet.as": "691281663e4128c68f991602783b4d774a37149f4e615981e4d0dcfeae6caaea",
+    "player-source/scripts/com/nsus/iron/table/view/popup/spinandgold/SpinAndGoldTabInfoPage.as": "92920832f67d2ef91c73df8147362f0b470bcd71198b330c983ad3f80b23639c",
+    "spin-wheel-source/scripts/com/nsus/iron/data/spinandgold/SpinAndGoldWheelData.as": "495856ea8d6be5ad1dd8b76a5f1e81e547c1107b3bdde066ec16db8a60253952"
+  },
+  "implemented": "Explicit owner-local six-seat model only; no runtime registration/bank/UI integration",
+  "nativeUnknowns": [
+    "Effective six-seat probabilities and prize/blind structures",
+    "Native live layout and physical audio cadence",
+    "Private operator insurance terms"
+  ]
+}
