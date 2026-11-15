@@ -8,7 +8,7 @@ TableEtcMenu3D are slot62×62 și8unități între controale. Iconurile table_me
 
 TableMenu3D ancorează rândul la viewPort.height−90. În ramura fără side-game group și fără BigChat de spectator, x=SideGameGroup.x9+iconLeft20=29. Controlul local folosește această ramură pentru masa administrată cu jucător așezat. Panic și grupurile de jocuri laterale au alte offseturi; nu pretindem că aceste ramuri sunt reconstruite.
 
-Preferința Chip Shuffle rămâne în setări. Când este oprită, controlul propriu este ascuns și animația proprie se oprește; animațiile celorlalți continuă. Spectatorul, chat-only, Rush și formatele locale fără șase locuri nu primesc acest control. Inițializarea atlasului poate ține controlul disabled până când resursa este disponibilă.
+Preferința Chip Shuffle rămâne în setări. Când este oprită, controlul propriu este ascuns și animația proprie se oprește; animațiile celorlalți continuă. Spectatorul, chat-only, Battle și formatele locale fără șase locuri nu primesc acest control. Rush Hold’em/PLO reutilizează controlul și efectele, cu transport local și izolare pe masă descrise în rush-shuffle.md. Inițializarea atlasului poate ține controlul disabled până când resursa este disponibilă.
 
 ## Inventarul TableEtcMenu3D
 
