@@ -59,11 +59,13 @@
     "Existing private cache reused for all ordinary Hold\u2019em Table View rooms; viewer mismatch,stale reads and malformed waiting values clear status",
     "Unchanged same-account rosters retain cached paint while other rooms/catalog change; changed/account/view contexts invalidate affected identity",
     "Reservations alone are not waiting-list membership; no nickname inference,seat grant,wallet debit or public queue names",
-    "Reuse original Roboto BoldItalic already installed; no new art/fonts/endpoints"
+    "Reuse original Roboto BoldItalic already installed; no new art/fonts/endpoints",
+    "Selected Table waiting-count label uses the confirmed private waiting reply immediately after Wait/Cancel, instead of an older public catalog count"
   ],
   "verification": [
     "RED missing getTable and undefined waiting flag, then GREEN cache/queue/auth/HTTP tests",
-    "Full source browser PASS own-room orange/font/stable selection, separate observer Wait/Cancel without seat/token/debit, two hands/payout/restart and Group conservation"
+    "Full source browser PASS own-room orange/font/stable selection, separate observer Wait/Cancel without seat/token/debit, two hands/payout/restart and Group conservation",
+    "Rendered regression: confirmed observer Wait showed column0 before public poll; add assertions1afterWait/0afterCancel and use actual private count"
   ],
   "remaining": [
     "Final exact-head installed browser/inspection/release pending",

@@ -403,7 +403,7 @@ function cashCatalog(request,mode){
   updateElement($('columns'),columns);
   nextList.replaceChildren(...rows.map((r,i)=>{const b=node('button',''),n=r.occupied,stake=mode==='shortdeck'?r.blind+' ('+r.blind+')':r.blind/2+' / '+r.blind,stack=r.minBuyIn!==undefined&&r.minBuyIn!==r.maxBuyIn?r.minBuyIn+'–'+r.maxBuyIn:r.stack??'30–100';
    const cells=group?[r.name,mode==='plo'?r.mode.toUpperCase().replace(/(\d)/,'-$1'):(r.capacity||4)+'-Max',stake,mode==='holdem'?r.stack:stack,n===null?'—':mode==='holdem'?String(n):n+'/'+(r.capacity||4),r.open?'Join':'Closed']:[r.name,stake,stack,n===null?'—':n+'/'+(r.capacity||4),r.waitingCount??0,r.avgPot??'—',r.vpip==null?'—':r.vpip+'%','—'];
-   if(!group&&mode==='holdem'){cells[0]=r.tableName??r.name;cells[2]=r.stack;cells[5]=r.avgPot==null?'—':r.avgPot>0?(r.avgPot>10000?Math.round(r.avgPot/1000)*1000:r.avgPot):'-';cells[6]=r.vpip==null?'—':Math.round(r.vpip)?Math.round(r.vpip)+'%':'-'}
+   if(!group&&mode==='holdem'){if(waitingRoom===r.room&&Number.isInteger(waiting?.count))cells[4]=waiting.count;cells[0]=r.tableName??r.name;cells[2]=r.stack;cells[5]=r.avgPot==null?'—':r.avgPot>0?(r.avgPot>10000?Math.round(r.avgPot/1000)*1000:r.avgPot):'-';cells[6]=r.vpip==null?'—':Math.round(r.vpip)?Math.round(r.vpip)+'%':'-'}
    if(group&&mode==='shortdeck')cells.splice(1,1);if(group&&mode==='holdem')cells.shift();
    if(mode==='aof'){if(group)cells[1]='Hold’em';else{cells.splice(1,0,'Hold’em');cells[7]=r.allInPercent==null?'—':r.allInPercent+'%'}}
 
