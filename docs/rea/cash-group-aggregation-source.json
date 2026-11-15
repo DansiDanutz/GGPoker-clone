@@ -25,6 +25,16 @@
       "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/TableGroupList.as",
       "bytes": 2245,
       "sha256": "b80dd2656e0c3448f0788976829e4afbfcfa1691c329300f4ee6d16ebf2863e4"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/vo/Tables.as",
+      "bytes": 10639,
+      "sha256": "4cefa5070bf9cd0ddce81d0234f83321a0e8d09999565ddf96d0198971ec3d06"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/renderer/CashGameGroupCellPlayersCount.as",
+      "bytes": 1930,
+      "sha256": "7428854d16c74c5f2e2443d31533b43c710a3dc1053b6e501a878f5a1d192094"
     }
   ],
   "observed": [
@@ -32,11 +42,14 @@
     "TableGroup.addTable retains tableType and gameType;id equals tableTypeID",
     "Group playerLength sums Tables.playerLength plus featured subgroups;playingPlayerLength and tableLength are separate",
     "Renderer uses playerLength normally,playingPlayerLength for featured;maxPlayers and defaultBuyIn from table type",
-    "Featured aggregation is conditional useOneFeaturedTab and uses synthetic id -1;not universal"
+    "Featured aggregation is conditional useOneFeaturedTab and uses synthetic id -1;not universal",
+    "Tables.playerLength sums TableInfo.playerCount over filteredList;not divided by maxPlayers",
+    "Tables.playingPlayerLength additionally requires playerCount>=1 and no password",
+    "Ordinary Group renderer uses table type defaultBuyIn rather than min/max range"
   ],
   "pending": [
-    "Recover Tables.playerLength semantics before deciding inclusion of seated/sitting-out/reserved players",
-    "Local host has normalized rule fingerprints,not native operator tableTypeID;mapping must remain an explicit local policy",
-    "Actual Group list merge/selection/polling/sort/preview/Join integration and regression remain to implement"
+    "Native operator tableTypeID is unavailable locally;shared normalized gameplay-rule SHA is an explicit local type mapping",
+    "Native featured/promotion grouping,Group player-list layout/art/scrollbar and sort controls remain incomplete",
+    "Private TableInfo.playerCount update timing/AIR raster not observed"
   ]
 }

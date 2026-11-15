@@ -764,14 +764,16 @@ rules=spinRules(rooms.get('local-spin-rules'));rooms.delete('local-spin-rules');
   };
   request.spinBank=()=>bank.summary();
   const bankTransaction=operation=>{if(!walletsEnabled)fail(503,'Local cash wallets are disabled');const before=JSON.stringify(packed());try{const receipt=operation();validateSpinEntries();multi.validateWallet(wallet);validateMultiRooms();const after=JSON.stringify(packed());if(after!==before){writeFileSync(file+'.tmp',after,{mode:0o600});renameSync(file+'.tmp',file)}return receipt}catch(error){unpack(JSON.parse(before));throw error}};
+  const cashGroupRules=t=>{const {name,...settings}=newRoom(t,{},6,0).settings;return JSON.stringify(settings)};
+  request.cashGroupId=t=>digest(cashGroupRules(t));
   function cashGroupPlan(name,tableId,entries){
     if(typeof name!=='string'||!name.trim())fail(401,'Sign in locally');
     const account=name.toLowerCase(),reference=entries.find(e=>e.table.id===tableId);
     if(!reference||reference.table.mode&&reference.table.mode!=='cash')fail(404,'Choose a hosted Holdem cash group');
     if(!reference.table.open)fail(409,'Owner closed registration');
-    const rules=t=>{const {name,...settings}=newRoom(t,{},6,0).settings;return JSON.stringify(settings)},key=rules(reference.table),selected=[];
+    const key=cashGroupRules(reference.table),selected=[];
     // Local policy: identical hosted rules, selected table first, then stable table IDs; private native matching thresholds are unknown.
-    const candidates=entries.filter(e=>e.table.open&&(!e.table.mode||e.table.mode==='cash')&&rules(e.table)===key).sort((a,b)=>a===reference?-1:b===reference?1:a.table.id<b.table.id?-1:a.table.id>b.table.id?1:0);
+    const candidates=entries.filter(e=>e.table.open&&(!e.table.mode||e.table.mode==='cash')&&cashGroupRules(e.table)===key).sort((a,b)=>a===reference?-1:b===reference?1:a.table.id<b.table.id?-1:a.table.id>b.table.id?1:0);
     for(const row of candidates){
       if(rooms.get(row.room)?.players.some(p=>p?.account?.toLowerCase()===account))continue;
       const wait=handle(rooms,row.room,'waiting',null,{},row.table,name,avatarFor,notes,wallet),summary=handle(rooms,row.room,'summary',null,{},row.table,name,avatarFor,notes,wallet);
