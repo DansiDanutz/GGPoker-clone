@@ -53,6 +53,7 @@
     "sha256": "d4790ade9b5acede7bc362638979d12505cf176571c48c3e9a0795c21614641b",
     "bytes": 26943,
     "observation": "Selective export inspected for Open versus Join trace. openTable coordinates subscription/prepareTable lifecycle; no JOIN_TABLE literal in this class. This does not resolve the JOIN_TABLE notification registration/caller or prove seat behavior.",
-    "next": "Trace notification registration and connection/open type before changing normal Join without Auto Buy-In."
+    "next": "Trace notification registration and connection/open type before changing normal Join without Auto Buy-In.",
+    "resolvedBy": "lobby-join-source.json: HomeMediator JOIN_TABLE handler plus CheckReserveSeat/ReserveSeat3104/CheckTakeSeat chain verified and implemented in PR231"
   }
 }
