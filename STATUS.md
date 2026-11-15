@@ -4,7 +4,7 @@ This project is a local play-money application under active development. It is n
 
 ## Current verified release
 
-PR245 adds native-derived ordinary Group row graphics/Join states to the existing real aggregation/funding/Info flow.12exact-head checks passed,including pointer/closed-group guards,actual funded windows,manual/Auto Buy-In and six-session unequal-all-in/fold/return/payout/restart/replacement. Installed runtime128files/art1357;all6ownerfiles15496bytes unchanged. [Detailed evidence and gaps](docs/rea/cash-group-row.md). Native Group player-list/footer,promotions/featured,absolute parent scaling and full-app physical/motion/sound fidelity remain incomplete.
+PR247 adds the native-derived Group player list,source-proven sorting and actual Profile/Open workflow to the existing Group aggregation/funding/graphics.16exact-head checks passed,including private notes/cards/viewer isolation,Open without seating/debit,departure,manual/Auto Buy-In and six-session unequal-all-in/payout/restart/replacement. Installed runtime130files/art1359;all6ownerfiles15496bytes unchanged. [Detailed contract and gaps](docs/rea/cash-group-players.md). Country/operator numbering,own/partner/note/live paint,native parent raster/operator motion/sound and featured/private waiting policies remain incomplete.
 
 ## Implemented workflows
 

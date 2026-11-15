@@ -115,7 +115,6 @@
     "Selected user operator ProfileDARK_GRAY/OpenRED,height38,gap10,width90percent;GlobalButtonRoboto18bold"
   ],
   "pending": [
-    "Final exact-head installed Profile/private note/Open/departure/manual/AutoBuyIn/six-session gate",
     "Native physical parent/raster/operator slide/sort easing/sound not observed",
     "Native country/operator-number/own/partner/note/live metadata and featured/private waiting policies incomplete"
   ],
@@ -186,5 +185,14 @@
     "Group/view/departure clears selection;sort/poll preserves logical player;changed seat name rejects delayed HUD read",
     "Country/operator number absent:unknown cells/unavailable headers/actual table-name tooltip;no fabricated flags or numbering",
     "Local integer play chips/base nickname paint;native own/partner/stream/note paint incomplete"
-  ]
+  ],
+  "release": {
+    "pr": 247,
+    "testedSource": "bb492dfa42f7de0b84b8dc91c40ba814ee84c0c3",
+    "mergeCommit": "6e2abd86252b2c04c8ab3492e000a37e2ad21899",
+    "checks": 16,
+    "runtimeFiles": 130,
+    "artFiles": 1359,
+    "ownerDataUnchanged": true
+  }
 }
