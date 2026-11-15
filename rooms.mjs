@@ -350,10 +350,14 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
     if(!table||table.mode==='tournament')fail(409,'Preview HUD requires a hosted cash table');
     if(!r)fail(404,'No seated players');
     const owner=noteSubject({account}),me=r.players.findIndex(p=>p?.account?.toLowerCase()===account.toLowerCase());
-    if(Object.keys(body).some(k=>!['viewer','seat','subject','text','color','labels','labelChanges'].includes(k)))fail(400,'Invalid preview note command');
+    if(Object.keys(body).some(k=>!['viewer','seat','subject','text','color','labels','labelChanges','report'].includes(k)))fail(400,'Invalid preview note command');
+    let reportReceipt;
     if(Object.keys(body).length){
       if(body.viewer!==owner)fail(409,'Player changed; reopen preview HUD');
-      if(body.seat!==undefined){
+      if(body.report!==undefined){
+        if(Object.keys(body).some(k=>!['viewer','report'].includes(k)))fail(400,'Save reports separately from notes');
+        reportReceipt=saveHandReport(notes,owner,id,hudHands(r,owner,owner).find(h=>h.number===body.report?.number),body.report,now);
+      }else if(body.seat!==undefined){
         if(!Number.isInteger(body.seat)||body.seat<0||body.seat>=r.players.length||body.seat===me)fail(400,'Choose another seated player');
         const target=r.players[body.seat];if(!target)fail(404,'Player has left');
         if(body.subject!==noteSubject(target))fail(409,'Seat changed; reopen preview HUD');
@@ -364,7 +368,7 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
         const {viewer,...labels}=body;saveNoteLabels(notes,owner,labels);
       }
     }
-    return {viewer:owner,me:me<0?null:me,colors:noteColors,labels:notes.getLabels(owner),statsScope:'table-session',players:r.players.flatMap((p,seat)=>p?[{seat,name:p.name,subject:noteSubject(p),avatar:p.account?avatarFor(p.account):0,stats:{...(r.hud?.[noteSubject(p)]||{hands:0,wins:0,voluntary:0})},hands:hudHands(r,noteSubject(p),owner),...notes.get(owner,noteSubject(p))}]:[])};
+    return {reportTypes,...(reportReceipt?{reportReceipt}:{}),...(me>=0?{self:{seat:me,name:r.players[me].name,subject:owner,stats:{...(r.hud?.[owner]||{hands:0,wins:0,voluntary:0})},hands:hudHands(r,owner,owner)}}:{}),viewer:owner,me:me<0?null:me,colors:noteColors,labels:notes.getLabels(owner),statsScope:'table-session',players:r.players.flatMap((p,seat)=>p?[{seat,name:p.name,subject:noteSubject(p),avatar:p.account?avatarFor(p.account):0,stats:{...(r.hud?.[noteSubject(p)]||{hands:0,wins:0,voluntary:0})},hands:hudHands(r,noteSubject(p),owner),...notes.get(owner,noteSubject(p))}]:[])};
   }
   if(op==='waiting'){
    if(typeof account!=='string'||!account.trim()||account.length>24)fail(401,'Sign in locally');if(!table||table.mode==='tournament')fail(409,'Waiting list requires a hosted cash table');

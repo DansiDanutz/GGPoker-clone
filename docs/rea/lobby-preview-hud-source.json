@@ -36,7 +36,20 @@
     "Own historical cards only for matching real account; observer sees public reveal history; no participant report rights without participation"
   ],
   "pending": [
-    "Lobby button and reuse of existing native HUD UI not implemented yet",
-    "Native normal HUD private service response and physical outer frame remain unverified"
+    "Native normal HUD private service response/global statistics unavailable; local data is labelled recorded table session",
+    "Native outer-frame physical raster and event/animation/audio timing remain unverified"
+  ],
+  "implementation": [
+    "Transparent60x75 preview player button; exact existing HUD/history component reused",
+    "Shared native-derived HUD/history CSS extracted byte-identically; unrelated felt rules unchanged",
+    "Explicit authenticated observer identity, no synthetic me/seat token; own HUD uses actual seated account",
+    "Opening another HUD flushes old note; selection epoch rejects delayed response from prior Table View",
+    "Participant hand reports reuse existing private administrator report store; nonparticipants rejected"
+  ],
+  "verification": [
+    "HTTP auth/origin/body/viewer/seat/privacy/real-folded-hand/restart/logout and participant report checks passed",
+    "Browser missing-control RED;404x582/four metrics/actual name/private note/reopen/no debit passed",
+    "Historical Hands row/output selector failure reproduced unchanged on previous installed runtime; output selector corrected without changing expected value",
+    "Extended source browser PASS: immediate close save, stale Group response rejected, private note/custom label/restart/new login/seat token rotation, two hands720chips, retained history detail/six players, own404x530HUD and return without purchase"
   ]
 }
