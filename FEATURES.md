@@ -1301,3 +1301,6 @@ MTT owner cancellation candidate: owner revision-guarded cancellation closes reg
 
 
 MTT owner shared pause/resume candidate: owner buttons use authenticated/revision-guarded commands, stop new begins, drain all current hands, persist a global paused barrier and resume without charging paused time to blinds. Optional ordered phase records preserve historical hand-blind validation and old checkpoints. Unit actual two-table hands prove120s exclusion, resumed level increase, failed-write rollback/restart, no wallet effect and cancellation precedence; HTTP guards/paused restart and twelve rendered owner/player sessions through resumed winner/payout pass. Exact-head QA and native notice/visual/audio parity remain open; livePR206 unchanged.
+
+
+MTT pause presentation now reuses the native-source ordinary-tournament presenter: reserved TABLE_PAUSE announcement/dismissal, persistent TOURNEY_PAUSED and queued finite TOURNEY_RESUMED. Six FFDec source hashes recorded without proprietary source contents. Twelve-session browser gate covers actual owner pause/request/Close/no-cancel, persistent native notice/background/source geometry/no-remount, paused restart, resume notice and paid winner. Native physical pixel/font/audio comparison and missed-between-polls event replay remain unverified.

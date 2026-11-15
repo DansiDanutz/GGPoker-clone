@@ -1,0 +1,41 @@
+{
+  "scope": "Reused selective shipped-client FFDec source exports; no native foreground or account interaction",
+  "sources": [
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/services/callback/OnTablePauseReserved.as",
+      "bytes": 850,
+      "sha256": "e67f47a71b3d1eeafa47b25a617d47e7dae786c421f656e8787dba7748e907f4"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/services/callback/OnTablePaused.as",
+      "bytes": 30601,
+      "sha256": "8c23fd274f8166c2ad174bdf440104e44742c2a48b9bed6361c23dd3bddc4d9f"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/vo/NoticeType.as",
+      "bytes": 21589,
+      "sha256": "b2d943b26314d713eed2fbacc8d060cdea1c6c0e5c0d6c2a7072187c38d70730"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/vo/NoticeDuration.as",
+      "bytes": 1388,
+      "sha256": "a33ceb51c4809f3d2e842959adf70e860233cd3109cd75337c8b218ff9532114"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/stage/component/notice/DesktopNotice.as",
+      "bytes": 9692,
+      "sha256": "98eb0f0070c948c093ddea1fc6b546c5d15bfa939d1accfc842a2ec9856f0cb1"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/stage/component/DesktopNoticeView.as",
+      "bytes": 5862,
+      "sha256": "ed1de9496f661293022af7ea978356672189c117411b628f910547e809c5b455"
+    }
+  ],
+  "implementation": "Reuse existing native announcement/pause/resume notice presenter for MTT persisted flags; no new inferred sound",
+  "limitations": [
+    "Private native operator backend unobserved",
+    "Physical native pixel/font/audio timing not verified",
+    "Polling can miss entire pause transitions between snapshots"
+  ]
+}

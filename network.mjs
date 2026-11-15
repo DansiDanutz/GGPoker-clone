@@ -50,9 +50,11 @@ function animateTournamentAnnounce(show,complete){
 function showTournamentAnnounce(){if(announcePlaying||!announceQueue)return;announceQueue--;announcePlaying=true;announceHiding=false;tournamentAnnounce.hidden=false;animateTournamentAnnounce(true,()=>{announceTimer=setTimeout(hideTournamentAnnounce,5000)})}
 function hideTournamentAnnounce(){if(!announcePlaying||announceHiding)return;announceHiding=true;clearTimeout(announceTimer);animateTournamentAnnounce(false,()=>{tournamentAnnounce.hidden=true;announcePlaying=false;announceHiding=false;showTournamentAnnounce()})}
 tournamentAnnounceClose.onclick=event=>{event.stopPropagation();hideTournamentAnnounce()};
+function tournamentPausePresentation(){const m=state?.multi,t=state?.tournament;return {exists:!!(m||t),cancelled:m?['cancelling','cancelled'].includes(m.status):!!(t?.cancelRequested||t?.cancelledAt),winner:m?m.status==='complete':t?.winner!==null,requested:m?m.pauseRequested:!!t?.pauseRequested,paused:m?m.paused:t?.pausedAt!=null}}
 function updateTournamentAnnounce(){
- const requested=!chatWindow&&!!state?.tournament?.pauseRequested;
- if(!state?.tournament||state.tournament.cancelRequested||state.tournament.cancelledAt){announceMotion?.cancel();announceMotion=null;clearTimeout(announceTimer);announceQueue=0;announcePlaying=false;announceHiding=false;tournamentAnnounce.hidden=true;announceRequested=false;return}
+ const presentation=tournamentPausePresentation();
+ const requested=!chatWindow&&presentation.requested;
+ if(!presentation.exists||presentation.cancelled){announceMotion?.cancel();announceMotion=null;clearTimeout(announceTimer);announceQueue=0;announcePlaying=false;announceHiding=false;tournamentAnnounce.hidden=true;announceRequested=false;return}
  if(requested&&!announceRequested){announceQueue++;showTournamentAnnounce()}announceRequested=requested;
 }
 matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',event=>{if(event.matches)announceMotion?.finish()});
@@ -79,8 +81,9 @@ function hideTournamentNotice(){
  clearTimeout(tournamentNoticeTimer);tournamentNoticePhase='exit';animateTournamentNotice(false,()=>{tournamentNotice.hidden=true;tournamentNoticeCurrent=null;tournamentNoticePhase='gap';tournamentNoticeTimer=setTimeout(()=>{tournamentNoticePhase='idle';showTournamentNotice()},2000)});
 }
 function updateTournamentNotice(){
- if(chatWindow||!state?.tournament||state.tournament.winner!==null||state.tournament.cancelRequested||state.tournament.cancelledAt){tournamentNoticeMotion?.cancel();tournamentNoticeMotion=null;clearTimeout(tournamentNoticeTimer);tournamentNoticeQueue=[];tournamentNoticeCurrent=null;tournamentNoticePhase='idle';observedTournamentPause=false;tournamentNotice.hidden=true;return}
- const paused=state.tournament.pausedAt!=null;if(paused===observedTournamentPause)return;observedTournamentPause=paused;
+ const presentation=tournamentPausePresentation();
+ if(chatWindow||!presentation.exists||presentation.winner||presentation.cancelled){tournamentNoticeMotion?.cancel();tournamentNoticeMotion=null;clearTimeout(tournamentNoticeTimer);tournamentNoticeQueue=[];tournamentNoticeCurrent=null;tournamentNoticePhase='idle';observedTournamentPause=false;tournamentNotice.hidden=true;return}
+ const paused=presentation.paused;if(paused===observedTournamentPause)return;observedTournamentPause=paused;
  if(!paused){tournamentNoticeQueue=[];hideTournamentNotice()}
  tournamentNoticeQueue.push(paused?'paused':'resumed');
  if(tournamentNoticeCurrent?.kind==='paused'&&tournamentNoticePhase==='hold')hideTournamentNotice();showTournamentNotice();
