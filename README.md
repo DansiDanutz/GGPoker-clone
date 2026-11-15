@@ -115,3 +115,5 @@ Chip Shuffle now uses the original embedded Up/Combine/Other sounds in preview, 
 ### Native atlas extraction
 
 `StageAssets` desktop action buttons use `after_lobby/desktop_table_assets.png` with `tools/extract-reserved-actions.swift`. Starling `Assets.current` player/chip graphics use `table_assets/table_assets_1.atf` and its ZIP metadata with `tools/extract-starling-atf.py`; their numeric frame indices are separate namespaces. Do not extract Starling frames from the desktop PNG. The Python extractor uses the existing Pillow runtime, validates ATF v2 raw DXT5, runs synthetic decoder checks, and compares each exported PNG with its decoded atlas crop. Run `--self-test` independently. Extraction evidence is `home-art/rea/starling-atlas-extraction.json`.
+
+Seated six-seat tables: the native Emoji control opens the table-side Standard/Dneg/Greg menu; selection sends a real local reaction. Helmet replaces Chat/Emoji while muted and opens the existing removal dialog. Category choices share the signed-in account preference with Chat. Evidence and remaining native-format limits: docs/rea/table-controls.md.
