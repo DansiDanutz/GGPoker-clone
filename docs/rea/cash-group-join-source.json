@@ -76,5 +76,5 @@
     "Automatic native multiwindow behavior differs when browser blocks popups;real-click recovery verified",
     "Exact counter/page/hover easing and native sound timing remain unverified"
   ],
-  "next": "Group order/keys installed PR251; Table View order/keys/OPEN_TABLE spectator installed PR253. NEXT Table View native paint/font/indicator from TableCell/TableCellRenderer/ListCell;physical/timing/operator metadata/full-app parity incomplete."
+  "next": "Table row native normal/hover/selected/Roboto/indicator/atlas counters installed PR255. NEXT actual authenticated Table View playing/waiting identity and native orange/bolditalic states;reuse private helpers where possible,never nickname inference. Operator/physical/timing/full-app parity remains incomplete."
 }

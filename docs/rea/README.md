@@ -6,6 +6,7 @@ Aceasta este versiunea publică a fișelor detaliate. Explică aspectul,controal
 
 | Fișă | Acoperire |
 |---|---|
+| [Table View:grafica și contoare](cash-table-paint.md) | PR255:font/culori/indicator native,contoare originale97×9,măști,stări și limite |
 | [Table View:ordine și deschidere](cash-table-order.md) | PR253:mese reale,priorități native,număr de jucători,săgeți,Enter/dublu clic fără debit,restart |
 | [Ordinea Group și tastatura](cash-group-order.md) | PR251:reguli native,săgeți fără wrap,Enter/dublu clic cu confirmare fără debit,teste și restart |
 | [Cont propriu și marcaje private Group](cash-group-paint.md) | PR249: identitate confirmată, font nativ, memo/culoare, protecție la răspunsuri întârziate și citire fără istoric |

@@ -4,7 +4,7 @@ This project is a local play-money application under active development. It is n
 
 ## Current verified release
 
-PR253 adds native-derived Hold’em Table View rule/player-count ordering and arrow/Enter/double-click actions. Actual room opens as spectator without seat token, reservation or debit. All10exact-head checks passed, including Group/manual Join, two hands, payouts and restart/reconnect. Runtime130files1,476,593bytes;art1362unchanged;all6ownerfiles15,496bytes preserved. [Evidence and limits](docs/rea/cash-table-order.md). Group actions/private paint remain installed. Full1:1 reconstruction remains incomplete.
+PR255 adds native-derived ordinary Table View row colors, Roboto, indicator and original97×9atlas seat counters with source masks. Actual owner names/default buy-in and available metric formatting follow source rules. All13exact-head checks/reviews passed, including rendering, two hands/payout/restart and manual Join/HUD. Runtime130files1,480,168bytes;art1364with693newPNGbytes;all6ownerfiles15,496bytes unchanged. [Evidence and explicit limits](docs/rea/cash-table-paint.md). Own/waiting-row styles and native operator/physical/timing/full-app parity remain incomplete.
 
 ## Implemented workflows
 
