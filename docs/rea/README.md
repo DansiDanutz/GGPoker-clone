@@ -6,6 +6,7 @@ Aceasta este versiunea publică a fișelor detaliate. Explică aspectul,controal
 
 | Fișă | Acoperire |
 |---|---|
+| [Cont propriu și marcaje private Group](cash-group-paint.md) | PR249: identitate confirmată, font nativ, memo/culoare, protecție la răspunsuri întârziate și citire fără istoric |
 | [Jucători Group și operator](cash-group-players.md) | PR247:locuri reale,sortare,Profile/HUD/note private,Open fără debit,plecare/restart și metadate necunoscute |
 | [Grafica Group](cash-group-row.md) | PR245:cinci coloane,badge/indicator originale,șase stăriJoin,drag-away și masă închisă |
 | [Group Hold’em](cash-group-aggregation.md) | PR243:agregare reală după reguli,total jucători,buy-in implicit,selecție Group/Table și limite grafice |
@@ -35,7 +36,7 @@ Aceasta este versiunea publică a fișelor detaliate. Explică aspectul,controal
 
 ## Starea curentă și proveniența
 
-PR247 este instalat după16verificări pebb492dfa42f7de0b84b8dc91c40ba814ee84c0c3. Lista Group folosește jucători/locuri/mese reale,sortare nativă,Profile/dublu-click→HUD/note private șiOpen→masa selectată fără loc/debit suplimentar. Plecarea golește selecția. Au trecut Group/two-window/două mâini/payout/restart,manualJoin/HUD,AutoBuyIn șișasesesiuni separate. Datele proprietarului rămân identice. Country/operatorNo./own/partner/note/live paint și comparația fizicăAIR rămân incomplete. HTML/inventaregenerate216;fișeMarkdown247.
+PR249 este instalat după 18 verificări pe `309e4f6c85211ef19f1d4f48d3e16f9c44a51b2e`. Contul propriu este identificat de server și afișat cu fontul Bold Italic și culoarea originale. Marcajele memo/culoare folosesc grafica nativă și o proiecție privată fără textul notei, istoric, cărți sau tokenuri. Au trecut testele de confidențialitate, restart, Group/manual Join/HUD/Auto Buy-In și șase sesiuni cu all-in-uri inegale, fold, returnări și înlocuire. Datele proprietarului au rămas identice. Metadata operatorului, personalizarea culorii implicite și paritatea fizică/timing rămân incomplete. HTML/inventarele generate sunt încă la216; fișele Markdown sunt actualizate249.
 
 Checkpoint istoric:
 

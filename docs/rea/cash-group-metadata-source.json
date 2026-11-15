@@ -1,0 +1,31 @@
+{
+  "method": "REA selective headless FFDec source,not native server/runtime observation",
+  "swf": {
+    "path": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf",
+    "bytes": 41892370,
+    "sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1"
+  },
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/vo/LobbyPlayersTable.as",
+      "sha256": "7752964aa3f29f4c211a843c9ad519d2575cbfa032c28867a7e9a6ee38786f33"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/vo/LobbyPlayer.as",
+      "sha256": "ffdca0a121df2cad1578509b14341227f03b0b7efbb9e4485b0c2be2953a3438"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/LobbyPlayerView.as",
+      "sha256": "7cc8635b5290bea32772f1a495969799d018b4f6892e4db26cca415c95882ad8"
+    }
+  ],
+  "observed": [
+    "LobbyPlayersTable has separate tableID and tableIndex strings;not interchangeable",
+    "LobbyPlayer.country is separately supplied player metadata;not derived from nickname or current locale",
+    "LobbyPlayerView copies tableID to GroupViewItemVo.tableId,tableIndex to tableIndex,country to countryCode;isUser compares actual userID to Account.current.id"
+  ],
+  "pending": [
+    "Recover source producer/protocol for tableIndex/country before mapping local owner-controlled fields",
+    "Do not fabricate operator numbers/flags from row order,current locale or nicknames"
+  ]
+}

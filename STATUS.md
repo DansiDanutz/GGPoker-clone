@@ -4,7 +4,7 @@ This project is a local play-money application under active development. It is n
 
 ## Current verified release
 
-PR247 adds the native-derived Group player list,source-proven sorting and actual Profile/Open workflow to the existing Group aggregation/funding/graphics.16exact-head checks passed,including private notes/cards/viewer isolation,Open without seating/debit,departure,manual/Auto Buy-In and six-session unequal-all-in/payout/restart/replacement. Installed runtime130files/art1359;all6ownerfiles15496bytes unchanged. [Detailed contract and gaps](docs/rea/cash-group-players.md). Country/operator numbering,own/partner/note/live paint,native parent raster/operator motion/sound and featured/private waiting policies remain incomplete.
+PR249 adds authenticated own-account paint and private memo/color markers to the Group player workflow. The native Bold Italic font and original note shapes are used. A lean cookie-authenticated read returns no note content, history, cards or tokens. All 18 exact-head checks passed, including privacy, restart, complete Group/manual/Auto Buy-In journeys and six hosted players. Runtime: 130 files; art: 1,362. All six owner files (15,496 bytes) remained unchanged. [Evidence and limits](docs/rea/cash-group-paint.md). Operator default-color customization, partner/live badges, country/table numbering, native physical raster and timing remain incomplete.
 
 ## Implemented workflows
 
