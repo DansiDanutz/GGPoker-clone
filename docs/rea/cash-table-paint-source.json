@@ -104,11 +104,18 @@
   ],
   "verification": [
     "RED selected color67/24/25 versus native60/22/22",
-    "GREEN initial source-browser font/colors/32height/indicator/counter geometry/assets;final head QA pending"
+    "GREEN initial source-browser font/colors/32height/indicator/counter geometry/assets;final head QA pending",
+    "PR255:13 exact-head checks/reviews passed including installed real normal/hover/selected/empty/full/default buy-in/keyboard/Join, inspected render, two hands/payout/restart and source/font/RGBA/runtime/art identities"
   ],
   "remaining": [
-    "Exact-head installed browser/paint inspection/release pending",
-    "Authenticated account/waiting-row styles and counter brand branch incomplete",
+    "Authenticated own/waiting-row orange/bolditalic and operator brand/featured/private/promotion variants incomplete",
     "Physical native AIR parent/raster/autoSlice/autoScale and animation/audio timing/full-app parity unverified"
-  ]
+  ],
+  "release": {
+    "pr": 255,
+    "testedSha": "f64f1a3759cf62ad882d73ec41bdeef789efbc2a",
+    "mergeCommit": "701575947a010093e021bfdd6ccaed44ead04a02",
+    "ownerDataUnchanged": true
+  },
+  "sourceDiagnostic": "Source-checkout WIN image complete=true/naturalWidth0 despite matching installed asset hash;not reproduced in either final installed journey;strict WIN assertions retained with HTTP diagnostics,cause unproven"
 }
