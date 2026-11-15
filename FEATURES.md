@@ -1447,3 +1447,5 @@ Hold’em Group aggregation live PR243: one row per shared funding-rule identity
 Hold’em Group row live PR245: native ordinary five-column branch,56×20TableSize,80×36original player widget,source row colors/indicator and six real Join state textures replace placeholder Promotion name/gradient. Exact source/font/atlas contract in [cash-group-row.md](docs/rea/cash-group-row.md);native parent scaling/promotions/player-list/footer remain incomplete.
 
 Group player-list live PR247: native240×23header/237×28rows,actual room/seat/chips,descending/toggled sort,Profile/double-click private HUD/notes and actual Open without new seat/debit. Departure clears selection;country/operatorNo. and own/partner/note/live paint remain incomplete. [Contract](docs/rea/cash-group-players.md).
+
+Group private paint candidate: actual authenticated me→native orange/BoldItalic;private memo/color-only original masks driven by lean read-only projection,without note content or nickname inference. Stale/account/group guards and full source Group hand/restart flow passed;installed gate pending. [Evidence](docs/rea/cash-group-paint.md).

@@ -346,11 +346,12 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
     const g=r?.hand,dealtSeats=g?.hands.flatMap((cards,i)=>cards.length?[i]:[]),smallBlind=g&&(dealtSeats.length===2?g.button:Array.from({length:capacity},(_,i)=>(g.button+i+1)%capacity).find(i=>dealtSeats.includes(i)));
     return {avgPot,vpip,capacity,...(table?.mode==='tournament'&&wallet?{accountEntryCost:r?.tournament?.entry??table.entryCost??entry}:{}),waitingCount:r?.waiting?.length||0,reservedSeats:reservedSeats(r),...(g&&g.variant!=='shortdeck'?{positions:{dealer:g.button,smallBlind,bigBlind:g.bigBlindSeat}}:{}),...(table?.mode==='aof'?{allInPercent:trackedSeats?Math.round(100*trackedAllIns.reduce((n,h)=>n+h.allIn,0)/trackedSeats):null}:{}),...(r?.tournament?{prizePool:r.tournament.pool,currentBlind:r.hand?.blind||table?.blind||4,...(r.settings?.ante?{currentAnte:r.hand?.ante||r.settings.ante}:{}),level:r.tournament.level,...(r.tournament.cancelledAt?{cancelled:true}:{})}:{}),occupied:r?.players.filter(Boolean).length||0,hand:r?.number||0,seats:Array.from({length:capacity},(_,i)=>r?.players[i]?{name:r.players[i].name,stack:cashBalance(r,i),...(r.players[i].account?{avatar:avatarFor(r.players[i].account)}:{})}:null)};
   }
-  if(op==='preview-notes'){
+  if(op==='preview-notes'||op==='preview-paint'){
     if(typeof account!=='string'||!account.trim())fail(401,'Sign in locally');
     if(!table||table.mode==='tournament')fail(409,'Preview HUD requires a hosted cash table');
     if(!r)fail(404,'No seated players');
     const owner=noteSubject({account}),me=r.players.findIndex(p=>p?.account?.toLowerCase()===account.toLowerCase());
+    if(op==='preview-paint'){if(Object.keys(body).length)fail(400,'Preview paint is read-only');return {account,me:me<0?null:me,players:r.players.flatMap((p,seat)=>{if(!p)return [];const subject=noteSubject(p),n=notes.get(owner,subject);return [{seat,name:p.name,subject,color:noteColors[n.color],hasText:n.text!==''}]})}}
     if(Object.keys(body).some(k=>!['viewer','seat','subject','text','color','labels','labelChanges','report'].includes(k)))fail(400,'Invalid preview note command');
     let reportReceipt;
     if(Object.keys(body).length){

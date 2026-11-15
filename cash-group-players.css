@@ -25,3 +25,9 @@
 @media(prefers-reduced-motion:reduce){.nativeGroupPlayerHeader [data-sort-order]::after,#catalog.nativeCashOperator[data-mode=holdem][data-view=group] :is(#groupPlayerProfile,#takeSeat){transition:none}}
 
 #catalog.nativeCashOperator[data-mode=holdem][data-view=group] #groupPlayerProfile[hidden]{display:none}
+
+@font-face{font-family:NativeGroupPlayer;src:url('/home-art/native-group-roboto-bold-italic.ttf') format('truetype');font-weight:700;font-style:italic;font-display:swap}
+.nativeGroupPlayer[data-own=true] :is(.groupPlayerName,.groupPlayerNumber,.groupPlayerChips){color:#ff8932;font-weight:700;font-style:italic}
+.nativeGroupPlayer[data-note-kind]::before{content:'';position:absolute;left:47px;top:4px;width:97px;height:20px;background:var(--group-note-color);-webkit-mask-box-image:url('/home-art/native-cash-group-note-color.png') 5 fill stretch;-webkit-mask-box-image-width:5px;pointer-events:none}
+.nativeGroupPlayer[data-note-kind=memo]::before{left:42px;width:102px;-webkit-mask-box-image-source:url('/home-art/native-cash-group-note-memo.png');-webkit-mask-box-image-slice:5 5 5 10 fill;-webkit-mask-box-image-width:5px 5px 5px 10px}
+.nativeGroupPlayer[data-note-kind] .groupPlayerName{position:relative;box-sizing:border-box;padding-left:8px;padding-right:4px}

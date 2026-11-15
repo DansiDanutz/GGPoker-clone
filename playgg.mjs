@@ -1,4 +1,4 @@
-import {cashGroupPlayerRows,renderCashGroupPlayers} from './cash-group-players.mjs';
+import {cashGroupPlayerRows,renderCashGroupPlayers,installCashGroupPaint} from './cash-group-players.mjs';
 import {cashGroupCatalog} from './cash-group-catalog.mjs';
 import {installCashGroupDialog} from './cash-group-dialog.mjs';
 import {installLobbyPlayerHud} from './lobby-player-hud.mjs';
@@ -246,9 +246,9 @@ feed.onscroll=()=>{$('thumb').style.transform='translateY('+(feed.scrollTop/(can
 const closeAsk=()=>{$('assistantPane').hidden=true;$('floatingAsk').focus()};$('closeAsk').onclick=closeAsk;document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('assistantPane').hidden)closeAsk()});document.addEventListener('keydown',e=>{if(e.key==='F2'){e.preventDefault();location.href='/home-review.html'}});
 display(6);
 
-let catalogRequest=0,battleRulesView,battleLobbyView;
+let catalogRequest=0,battleRulesView,battleLobbyView,groupPaintController;
 function catalog(mode){
- lobbyHud.select(null);$('groupPlayerProfile').hidden=true;
+ lobbyHud.select(null);groupPaintController?.select(null,null);$('groupPlayerProfile').hidden=true;
  battleRulesView?.destroy();battleRulesView=null;battleLobbyView?.destroy();battleLobbyView=null;spinUI?.close();
  const request=++catalogRequest;$('viewSwitch').hidden=false;$('groups').hidden=false;
  const tournament=mode==='tournaments',pane=$('catalog'),list=$('groups'),detailsRoot=$('details');pane.dataset.mode=mode;pane.classList.remove('nativeCashOperator');pane.hidden=false;size();list.replaceChildren();
@@ -379,6 +379,7 @@ function rushCatalog(request){
 function cashCatalog(request,mode){
  const pane=$('catalog'),list=$('groups'),previewRoot=$('preview'),join=$('takeSeat');pane.classList.add('nativeCashOperator');
  const joinHref=(t,reserve=false,seat)=>{const url=new URL(t.href,location.href);if(journey&&reserve){url.searchParams.set('join','1');if(Number.isInteger(seat))url.searchParams.set('joinSeat',String(seat))}if(journey&&localStorage.getItem('river-auto-buyin')==='1')url.searchParams.set('autojoin','1');return url.href};
+ const privatePaint=installCashGroupPaint(()=>{if(request===catalogRequest&&!pane.hidden)render()});groupPaintController=privatePaint;
  const rows=[];let playerGroup='',selectedPlayer='',playerSort='chips',playerOrder=1;
  let view='group',selected=0,filter='all',hosted=[],waiting=null,waitingRoom=null,waitingBusy=false,waitingError='',waitingRead=0;
  async function refreshWaiting(){
@@ -393,7 +394,7 @@ function cashCatalog(request,mode){
  function render(){
   const preview=previewRoot.cloneNode(false),nextList=list.cloneNode(false),columns=$('columns').cloneNode(false);preview.classList.remove('nativeGroupPlayerList');preview.style.overflowY='';
   const group=view==='group',t=rows[selected],stakes=t&&(mode==='shortdeck'?t.blind+' ('+t.blind+')':t.blind/2+' / '+t.blind);
-  const groupKey=group&&mode==='holdem'?t?.groupId||t?.room||'':'';if(playerGroup!==groupKey){playerGroup=groupKey;selectedPlayer=''}const groupPlayers=groupKey&&t?cashGroupPlayerRows(t,playerSort,playerOrder):[],picked=groupPlayers.find(p=>p.key===selectedPlayer)||null;if(!picked)selectedPlayer='';$('groupPlayerProfile').hidden=!picked||!journey;
+  const groupKey=group&&mode==='holdem'?t?.groupId||t?.room||'':'';if(playerGroup!==groupKey){playerGroup=groupKey;selectedPlayer=''}const groupPlayers=groupKey&&t?cashGroupPlayerRows(t,playerSort,playerOrder):[],picked=groupPlayers.find(p=>p.key===selectedPlayer)||null;if(!picked)selectedPlayer='';privatePaint.select(group&&mode==='holdem'?t:null,player?.name||null);$('groupPlayerProfile').hidden=!picked||!journey;
   pane.dataset.view=view;$('groupView').setAttribute('aria-pressed',String(group));$('tableView').setAttribute('aria-pressed',String(!group));
   columns.replaceChildren(...(group?['Promotion',mode==='plo'?'Games':'Table Size','Stakes','Buy-in','Players','Action']:['Table Name','Stakes','Buy-in','Players','Wait','AvgPot','VPIP%','H/hr']).map(x=>node('span',x)));
   if(!group&&mode==='aof')columns.replaceChildren(...['Table Name','Games','Stakes','Buy-in','Players','Wait','AvgPot','All-in %','H/hr'].map(x=>node('span',x)));
@@ -421,7 +422,7 @@ function cashCatalog(request,mode){
   if(!t){lobbyHud.select(null);updateElement(previewRoot,preview);$('details').textContent='No matching hosted tables';join.removeAttribute('href');$('joinTable').hidden=true;join.textContent='No table selected';return}
   lobbyHud.select(picked?.table||(!group&&mode==='holdem'&&t.capacity===6?t:null));
   const own=waitingRoom===t.room?waiting:null;
-  if(group&&mode==='holdem'){preview.style.overflowY='auto';renderCashGroupPlayers(preview,groupPlayers,selectedPlayer,playerSort,playerOrder,key=>{selectedPlayer=key;render()},key=>{if(playerSort===key)playerOrder=playerOrder===1?0:1;else playerSort=key;render()},p=>journey?lobbyHud.open(p.table,p.seat):location.assign('/launch.html'))}
+  if(group&&mode==='holdem'){preview.style.overflowY='auto';renderCashGroupPlayers(preview,groupPlayers,selectedPlayer,playerSort,playerOrder,key=>{selectedPlayer=key;render()},key=>{if(playerSort===key)playerOrder=playerOrder===1?0:1;else playerSort=key;render()},p=>journey?lobbyHud.open(p.table,p.seat):location.assign('/launch.html'),privatePaint.get)}
   else if(group){if(t.members)preview.style.overflowY='auto';const line=(...v)=>{const e=node('div','','line');e.append(...v.map(x=>node('span',x)));preview.append(e)};
    line('Player','Seat','Chips');if(t.members){for(const member of t.members)for(const [i,p]of (member.seats||[]).entries())if(p){line(p.name,i+1,p.stack);preview.lastElementChild.title=member.name}if(!t.occupied)line('No players seated','—','—')}else if(t.seats){t.seats.forEach((p,i)=>{if(p)line(p.name,i+1,p.stack)});if(!t.occupied)line('No players seated','—','—')}else line('Occupied seats',t.occupied??'—','—');
   }else{preview.append(node('div',(t.minBuyIn!==undefined&&t.minBuyIn!==t.maxBuyIn?'Buy-in Range\n'+t.minBuyIn+'–'+t.maxBuyIn:'Buy-in\n'+t.stack)+' chips','oval'));const nativePreview=mode==='holdem'&&t.capacity===6,positions=nativePreview?[[50,85.7],[17.6,64.2],[18.4,34],[50,9.2],[83.3,33.7],[83.7,64.4]]:t.capacity===6?[[50,85],[18,65],[18,34],[50,17],[82,34],[82,65]]:[[50,85],[19,50],[50,17],[81,50]];positions.forEach(([x,y],i)=>{const name=t.seats?(t.seats[i]?.name||'Open seat'):'Seat '+(i+1),s=node('span',nativePreview?'':name,'seatlabel');if(t.seats?.[i]){
@@ -458,7 +459,7 @@ function cashCatalog(request,mode){
    if(signature!==previous){previous=signature;
     hosted=data.map(t=>({...t,name:t.name+' · hosted',href:'network.html?from=home'+(mode!=='holdem'?'&view='+mode:'')+(journey?'&player':'')+'#'+t.room}));
     applyRows()}
-   await refreshWaiting();
+   await refreshWaiting();await privatePaint.refresh();
   }catch{}
   if(request===catalogRequest&&!pane.hidden)setTimeout(refreshHosted,2000)
  }

@@ -1,0 +1,153 @@
+{
+  "method": "REA selective headless FFDec/source and original RGBA crop/font export;not AIR runtime",
+  "swf": {
+    "path": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf",
+    "bytes": 41892370,
+    "sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1"
+  },
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/tourneylobby/players/player/PlayerListCellNoteImage.as",
+      "sha256": "8c3ec5b26bf54b282cc8ecede71b2def7f2444aabec53ba34a65fe34d56892e8",
+      "bytes": 2659
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/vo/GroupViewItemVo.as",
+      "sha256": "c09d81ec3e6b19651ce559c1334d9537531260e7713826b8ecd935a660b186f9",
+      "bytes": 4059
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/vo/PlayerNoteInfo.as",
+      "sha256": "e7d54a5323313ee91c8f0d5381430e335893c44ea5c581a983dc455a35eac259",
+      "bytes": 2694
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/helper/PlayerNoteManager.as",
+      "sha256": "ac52455f81da541c4fd853e1cf9464a5d5c82cb0621411e0053d6db11e1a8ad9",
+      "bytes": 18079
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/renderer/PlayerCellRenderer.as",
+      "sha256": "b8eb2dee7f3d534c9b547a0f21ffbac9055f71b6310105d4b9eeb6a9dec0314d",
+      "bytes": 5498
+    }
+  ],
+  "fontSources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/GlobalButton.as",
+      "sha256": "eb82ad01852703c14d475d837cb3ffe1785c7f1e624afb81b00caa980762f329"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/text/UniqueLabel.as",
+      "sha256": "ebf2dfc4abce2a7de077b31af397d056ceb526f52b132cc09610b9c1fc1e5803"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/asset/StageAssets.as",
+      "sha256": "e993e9ebfc32e1214162109e9af1eb3eef98e2cf6cbf6d7fb0ce1be4e3f0b0a3"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/Setting.as",
+      "sha256": "7711ac87c7729456e36920529ca5adc88529d50409c095833da862de50c8c854"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/tasks/InitFont.as",
+      "sha256": "d3831e2c3816f4adf93ed7d1bec21a55f47661bbe138da2eb66a471866df9465"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/LabelButton.as",
+      "sha256": "5e9cc08b2489e890d5684b9edb2b9b11e452d1ffdb991850f1edc0f83cade197"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/lib/components/Button.as",
+      "sha256": "005aff16f04b263bfd0550ea73d919275afba37703e4ae36a55dcdbcae62b107"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/ButtonColor.as",
+      "sha256": "6102ebf3300a6933f077b5d5b2e7c061a5f11054139cea95417f9353daf0db7c"
+    }
+  ],
+  "font": {
+    "source": {
+      "path": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/font/font.swf",
+      "sha256": "6c8245d7fc041205c4d7b3dbe850a2cf975c84b42199c1bdbe9f77783728b8c8"
+    },
+    "characterId": 13,
+    "family": "Roboto Bold Italic",
+    "export": {
+      "path": "/Users/davidai/Sandbox/rea-tools/group-own-font/13_RobotoBoldItalic_Roboto Bold Italic.ttf",
+      "sha256": "bd3486cfa701fc0072d494e84096b999e5979dcd5d2d4a2868852ba8b742eeb4"
+    },
+    "prepared": {
+      "file": "native-group-roboto-bold-italic.ttf",
+      "sha256": "2c8be0adcac37e1157fccb85dd573a24a3e36c50445226667b5ecd773d00062a",
+      "bytes": 204664
+    },
+    "method": "FFDec selectid13 font export;existing prepare-hud-font.mjs repairs duplicate U+FFFF cmap sentinel and SFNT checksums,not glyph contours"
+  },
+  "atlas": {
+    "files": [
+      {
+        "bytes": 250,
+        "file": "native-cash-group-note-color.png",
+        "frame": "lobby0536",
+        "height": 20,
+        "rgbaExact": true,
+        "sha256": "71195eefa8244865460aced95a9a8ef42328e637e06ab742154fda4a87c386f0",
+        "width": 15
+      },
+      {
+        "bytes": 450,
+        "file": "native-cash-group-note-memo.png",
+        "frame": "lobby0537",
+        "height": 20,
+        "rgbaExact": true,
+        "sha256": "25b0a99f30a5509e2e3a24b9ad273e568bc2c36e4dab7126bbb0a439de14dbb3",
+        "width": 20
+      }
+    ],
+    "method": "StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding",
+    "sources": {
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+    }
+  },
+  "nativeContract": {
+    "own": "isUser\u2192ff8932 and bold/italic for nickname/tableIndex/chips",
+    "noteVisible": "PlayerNoteInfo.note nonempty OR color !=default;constructor default white;operator-configured default not observed",
+    "color": {
+      "frame": "lobby0536",
+      "x": 6,
+      "width": "nameWidth-7",
+      "height": 20,
+      "slice": [
+        5,
+        5,
+        5,
+        5
+      ]
+    },
+    "memo": {
+      "frame": "lobby0537",
+      "x": 1,
+      "width": "nameWidth-2",
+      "height": 20,
+      "slice": [
+        5,
+        5,
+        5,
+        10
+      ]
+    },
+    "parent": "PlayerCellRenderer note x41,y4,width104;visible note shifts name+8 and reduces width12;ColorTransform.color preserves alpha"
+  },
+  "localPolicy": [
+    "Authenticated read-only preview-paint returns account/me and per-seat name/subject/color/hasText only;no memo text/history/cards/tokens",
+    "Actual me from same cookie identity;no display-name equality inference",
+    "Thin marker reads poll with existing2s catalog cadence,not a native update-timing claim",
+    "Epoch/abort/name/account guards clear stale/private marks across navigation/roster/account changes;markers grant no authority"
+  ],
+  "pending": [
+    "Final installed exact-head gate",
+    "Native own/marker physical raster/operator default-color customization/partner/live/country/table-number policies remain incomplete"
+  ]
+}
