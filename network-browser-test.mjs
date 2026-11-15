@@ -1938,6 +1938,7 @@ console.log('PASS selected-table comparison: loaded original/local images, equal
     await c.run("document.querySelector('#settings').click();document.querySelector('#openGameSettings').click();[...document.querySelectorAll('#settingsSidebar button')].find(b=>b.textContent==='Buy-in settings').click()");assert.equal(await c.run("!!document.querySelector('#autoBuyIn')"),true);
     await c.run("document.querySelector('#autoBuyIn').click();document.querySelector('#cancelChipSettings').click()");assert.equal(await c.run("localStorage.getItem('river-auto-buyin')"),null);
     await c.run("document.querySelector('#settings').click();document.querySelector('#openGameSettings').click();[...document.querySelectorAll('#settingsSidebar button')].find(b=>b.textContent==='Buy-in settings').click();document.querySelector('#autoBuyIn').click();document.querySelector('#defaultBuyIn').value='75';document.querySelector('#defaultBuyIn').dispatchEvent(new Event('input'));document.querySelector('#applyChipSettings').click()");assert.equal(await c.run("localStorage.getItem('river-auto-buyin')"),'1');
+    await c.initScript("const admissionFetch=fetch;window.fetch=(input,options)=>String(input)==='/emoticon-picker.mjs'?new Promise(resolve=>setTimeout(resolve,250)).then(()=>admissionFetch(input,options)):admissionFetch(input,options)");
    }
    await c.run("document.querySelector('#"+gameView+"').click()");
    await until(()=>c.run("!!document.querySelector('#groups button[aria-label=\"Club test · hosted\"]')"));
