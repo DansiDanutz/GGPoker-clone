@@ -1,0 +1,58 @@
+{
+  "method": "Selective headless FFDec26.4 static SWF export and existing Swift/CoreGraphics verified atlas crop; no native runtime/account execution",
+  "sources": {
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17",
+    "/Users/davidai/Sandbox/rea-tools/sitout-trigger-source/scripts/com/nsus/iron/table/view/TableWindowMediator.as": "15ef663e8f03b5d9f20ffc625d466be47898a9d9a3b644fcc86e05627640fc65",
+    "/Users/davidai/Sandbox/rea-tools/sitout-trigger-source/scripts/com/nsus/iron/table/view/display/TableMenuButton3D.as": "484f4885bad683b001b2b3e1e1508119f3a41cc439037b9fa71f4987796a13c7",
+    "/Users/davidai/Sandbox/rea-tools/sitout-trigger-source/scripts/com/nsus/iron/table/view/display/SitOutButton3D.as": "2677eac5671686a3120a47e37687badddef051fc648034baa43a1bf68e188f60",
+    "/Users/davidai/Sandbox/rea-tools/sitout-trigger-source/scripts/com/nsus/iron/components/display/window/frame/header/TableWindowHeaderDetail.as": "ec18f6bb9541f037b7d61f16c1bcf7799ce627e4759dcdd7d3d43f41109169fa",
+    "/Users/davidai/Sandbox/rea-tools/sitout-trigger-source/scripts/com/nsus/iron/components/display/button/window/HeaderSitOutButton.as": "707e93066c62ce894630388805928d0473f15b8557dd3db749d6b5b696867b38",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/TableMediator.as": "a17c9da4b16339a65a8329e0329c52dff7f7fb6072474da02ef6379c1359d4f5",
+    "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/view/component/SitOutMenuView.as": "af787b9e6c94bca8e5ebf46610697cc549a00c0dccd7333aae37dd257fc7131d"
+  },
+  "activeRoute": [
+    "HeaderSitOutButton",
+    "TableWindowHeaderDetail",
+    "TableWindowMediator.onSitOutSignalHandler",
+    "TableMediator",
+    "SitOutMenuView.showSitOutMenu"
+  ],
+  "legacyNotUsedForHeader": [
+    "SitOutButton3D",
+    "TableMenuButton3D"
+  ],
+  "atlas": {
+    "file": "init_lobby/desktop_assets",
+    "frame": "common0317",
+    "rectangle": {
+      "x": 1058,
+      "y": 3495,
+      "w": 72,
+      "h": 52
+    },
+    "rotated": false
+  },
+  "output": {
+    "file": "native-history-sitout-header.png",
+    "bytes": 817,
+    "sha256": "f2c4fa072050b15fb0bfe98b22b1e12c657352e93805db055ead5d738581fe67",
+    "pixelComparison": "decoded PNG equals original atlas crop RGBA"
+  },
+  "geometry": {
+    "width": 36,
+    "height": 26,
+    "radius": 4,
+    "normalIcon": "#999999",
+    "hoverOrDownOrOpenedIcon": "#ffffff",
+    "hoverOrOpenedBackground": "#5a5a5a",
+    "pressedWithoutOpenedBackground": "transparent",
+    "menuAnchor": "header button localToGlobal(width,height), then table globalToLocal; menuContainer.x=-560"
+  },
+  "limits": [
+    "Full native window-header layout and absolute order not reproduced",
+    "Next-blind SB/BB trigger and private policies remain unknown",
+    "Physical AIR pixels/fonts/audio not measured"
+  ]
+}
