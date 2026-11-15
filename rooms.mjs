@@ -211,9 +211,10 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
   if(r?.multiTournament){
     if(typeof account==='string')account=account.toLowerCase();
     if(table)fail(409,'Multi-table rules cannot be replaced');
-    if(!['join','state','watch','summary','act','chat','notes','helmet','shuffle','show-cards'].includes(op))fail(409,'Multi-table command is not connected yet');
+    if(!['join','state','watch','summary','act','chat','notes','helmet','shuffle','show-cards','time-bank'].includes(op))fail(409,'Multi-table command is not connected yet');
     if(!account)fail(401,'Sign in locally');
     if(op==='join'){const seat=r.multiAccounts.indexOf(account);if(seat<0)fail(403,'This account is not assigned to this table');if(body.seat!==undefined&&body.seat!==seat)fail(409,'Take your assigned tournament seat');body={...body,seat}}
+    if(op==='time-bank'&&Object.keys(body).some(k=>!['version','actionId','isPaidAction','isTimeChipToggle'].includes(k)))fail(400,'Only an authenticated finite time-bank action is accepted');
     if(op==='act'&&Object.keys(body).some(k=>!['version','action','target','reserved'].includes(k)))fail(400,'Only a betting action is accepted');
     if(token&&!r.players.some(p=>p?.account===account&&p.digest===digest(token)))fail(401,'Recover your own tournament session');
   }
@@ -568,15 +569,16 @@ export function openRooms(file,avatarFor=()=>0,walletsEnabled=false){
    const payouts=r.players.map((p,i)=>({account:p.account,place:t.finishes[i],amount:t.prizes[i]}));if(payouts.reduce((n,p)=>n+p.amount,0)!==t.pool)fail(409,'Battle prize allocation incomplete');
    for(const p of payouts)wallet.move(p.account,p.amount,'tournament-prize',e.finalRoom);e.payouts=payouts;e.revision++;readBattleEvent(e);
   }
-  const multiTableSettings=e=>({name:e.name+' · local multi-table',mode:'tournament',stack:e.settings.startingStack,blind:e.settings.blind,entryCost:0,levelSeconds:e.settings.levelSeconds,actionSeconds:e.settings.actionSeconds});
+  const multiTableSettings=e=>({name:e.name+' · local multi-table',mode:'tournament',stack:e.settings.startingStack,blind:e.settings.blind,entryCost:0,levelSeconds:e.settings.levelSeconds,actionSeconds:e.settings.actionSeconds,...(e.settings.timeBankSeconds?{timeBankSeconds:e.settings.timeBankSeconds,hotTimeSeconds:e.settings.hotTimeSeconds}:{})});
   function validateMultiRooms(){
     const expected=new Set();
     for(const e of multi.state.events)if(e.checkpoint){const count=Math.ceil(e.settings.capacity/6);for(let i=0;i<count;i++){
       const tableId='table-'+(i+1),roomId=multiTableRoomId(e.id,tableId),r=rooms.get(roomId),accounts=multi.layout(e.id)[i].seats.map(p=>p?.id??null),fresh=newRoom(multiTableSettings(e),{},6,0);expected.add(roomId);
-      if(!r||r.multiTournament!==e.id||r.multiTable!==tableId||!isDeepStrictEqual(r.multiAccounts,accounts)||!isDeepStrictEqual(r.settings,fresh.settings)||r.players.length!==6||r.tournament?.entry!==0||r.tournament.pool!==0||r.tournament.startedAt!==e.startedAt||r.players.some((p,seat)=>p&&(p.account!==accounts[seat]||p.bot||p.entryFunded!==undefined||p.walletFunded!==undefined)))throw Error('Invalid multi-table child room');
+      if(!r||r.multiTournament!==e.id||r.multiTable!==tableId||!isDeepStrictEqual(r.multiAccounts,accounts)||!isDeepStrictEqual(r.settings,fresh.settings)||r.players.length!==6||r.tournament?.entry!==0||r.tournament.pool!==0||r.tournament.startedAt!==e.startedAt||r.players.some((p,seat)=>p&&(p.account!==accounts[seat]||p.bot||p.entryFunded!==undefined||p.walletFunded!==undefined||p.timeBankMs!==undefined&&(!e.settings.timeBankSeconds||!Number.isSafeInteger(p.timeBankMs)||p.timeBankMs<0||p.timeBankMs>e.settings.timeBankSeconds*1000))))throw Error('Invalid multi-table child room');
       if(r.multiDepartures!==undefined&&(!Array.isArray(r.multiDepartures)||r.multiDepartures.length>e.settings.capacity||new Set(r.multiDepartures.map(p=>p?.account)).size!==r.multiDepartures.length||r.multiDepartures.some(p=>!p||Object.keys(p).length!==2||!e.checkpoint.entries.some(v=>v.id===p.account)||typeof p.digest!=='string'||!/^[a-f0-9]{64}$/.test(p.digest))))throw Error('Invalid multi-table departure receipt');
       if(r.multiPreviousHand!==undefined){const p=r.multiPreviousHand,prior=multi.hand(e.id,tableId);if(!p||Object.keys(p).length!==4||p.variant!=='holdem'||!Number.isSafeInteger(p.number)||p.number<1||!Number.isInteger(p.bigBlindSeat)||p.bigBlindSeat<0||p.bigBlindSeat>=6||!Number.isInteger(p.button)||p.button<0||p.button>=6||!r.hand&&(!prior?.finish||prior.number!==p.number||prior.finish.button!==p.button))throw Error('Invalid multi-table previous hand')}
       if((e.cancelledAt!==undefined||multi.summary(e.id).paused)&&r.hand&&!r.hand.end)throw Error('Invalid cancelled multi-table active hand');
+      if(e.settings.timeBankSeconds&&r.hand&&!r.hand.end){const c=r.actionClock,p=r.players[r.hand.turn],budget=p?.timeBankMs>0?p.timeBankMs:Math.min(e.settings.actionSeconds,e.settings.hotTimeSeconds)*1000;if(!c||Object.keys(c).length!==6||c.id!==`${r.number}:${r.hand.history.length}:${r.hand.turn}`||c.seat!==r.hand.turn||!Number.isSafeInteger(c.startedAt)||c.startedAt<r.hand.hudStartedAt||!Number.isSafeInteger(c.bankEnd)||c.bankEnd!==c.startedAt+budget||c.phase!==(p.timeBankMs>0?'bank':'hot')||typeof c.limitDisabled!=='boolean'||c.phase==='hot'&&c.limitDisabled||r.deadline!==(c.limitDisabled?c.bankEnd:Math.min(c.startedAt+e.settings.actionSeconds*1000,c.bankEnd)))throw Error('Invalid multi-table time bank clock')}
       if(r.hand){
         const receipt=multi.hand(e.id,tableId),g=r.hand,burns=({0:0,3:1,4:2,5:3})[g.board?.length];
         if(!Array.isArray(g.deck)||!Array.isArray(g.hands)||g.hands.length!==6||g.hands.some((h,i)=>!Array.isArray(h)||h.length!==(receipt?.begin.ids[i]?2:0))||!Array.isArray(g.board)||burns===undefined||!Number.isSafeInteger(g.hudStartedAt)||g.hudStartedAt<e.startedAt||g.blind!==blindLevel(e.startedAt+multi.pauseDuration(e.id,g.hudStartedAt),g.hudStartedAt,e.settings.levelSeconds*1000,e.settings.blind).bigBlind)throw Error('Invalid multi-table private hand');

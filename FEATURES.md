@@ -1308,3 +1308,6 @@ MTT owner shared pause/resume candidate: owner buttons use authenticated/revisio
 
 
 MTT pause presentation now reuses the native-source ordinary-tournament presenter: reserved TABLE_PAUSE announcement/dismissal, persistent TOURNEY_PAUSED and queued finite TOURNEY_RESUMED. Six FFDec source hashes recorded without proprietary source contents. Twelve-session browser gate covers actual owner pause/request/Close/no-cancel, persistent native notice/background/source geometry/no-remount, paused restart, resume notice and paid winner. Native physical pixel/font/audio comparison and missed-between-polls event replay remain unverified.
+
+
+MTT finite-bank candidate: explicit opt-in owner bank/hot-limit fields reuse the shared clock and native-source control; legacy events remain disabled. Actor/account/action-bound strict requests, no paid toggles/wallet charge/refills, elapsed spending, exact remaining-bank carry on table moves, bounded checkpoint clock validation and failed-write rollback. New unit guards/corruption/restart test, full seven-player actual-room transfer/payout test and rendered owner-form/native-button/restart-to-winner(2100chips/175credits) pass. Not yet released; exact-head QA and physical native comparison remain open.
