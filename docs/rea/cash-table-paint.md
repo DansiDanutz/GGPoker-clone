@@ -10,6 +10,6 @@ PlayerCounterView uses original lobby90empty/lobby89filled97×9 textures at sour
 
 Guarded idle rollout PID99974→47241 preserved all6ownerfiles15,496bytes byte-for-byte, no live gameplay QA. Runtime130files1,480,168bytes;art1364files with1362verified immutable hardlinks plus2PNGs693newbytes. One small runtime snapshot;no dependencies/worktrees/models/downloads. Previous runtimes and art preserved. Markdown/report updated;generated HTML/inventories remain historical PR216.
 
-Still incomplete: authenticated own/waiting-row orange/bolditalic states, native operator play-money/featured/private/promotion variants, physical parent/raster/autoSlice/autoScale, native animation/audio timing and full-app parity. Next recover/map actual authenticated playing/waiting identity; never infer it from matching nicknames.
+PR257 implements the previously missing authenticated own/waiting-row orange/bolditalic states and confirmed waiting count; see [the current account contract](cash-table-account.md). Still incomplete: native operator play-money/featured/private/promotion variants, physical parent/raster/autoSlice/autoScale, native animation/audio timing and full-app parity. Authenticated identity is now mapped by PR257; nickname inference remains prohibited.
 
 [Source/font/atlas identities](cash-table-paint-source.json).

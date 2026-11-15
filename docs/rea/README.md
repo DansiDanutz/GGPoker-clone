@@ -6,6 +6,7 @@ Aceasta este versiunea publică a fișelor detaliate. Explică aspectul,controal
 
 | Fișă | Acoperire |
 |---|---|
+| [Table View:cont autentificat și așteptare](cash-table-account.md) | PR257:identitate reală,portocaliu/font nativ,Wait/Cancel/contor,confidențialitate și actualizare fără pierderea marcajelor |
 | [Table View:grafica și contoare](cash-table-paint.md) | PR255:font/culori/indicator native,contoare originale97×9,măști,stări și limite |
 | [Table View:ordine și deschidere](cash-table-order.md) | PR253:mese reale,priorități native,număr de jucători,săgeți,Enter/dublu clic fără debit,restart |
 | [Ordinea Group și tastatura](cash-group-order.md) | PR251:reguli native,săgeți fără wrap,Enter/dublu clic cu confirmare fără debit,teste și restart |

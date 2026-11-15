@@ -4,7 +4,7 @@ This project is a local play-money application under active development. It is n
 
 ## Current verified release
 
-PR255 adds native-derived ordinary Table View row colors, Roboto, indicator and original97×9atlas seat counters with source masks. Actual owner names/default buy-in and available metric formatting follow source rules. All13exact-head checks/reviews passed, including rendering, two hands/payout/restart and manual Join/HUD. Runtime130files1,480,168bytes;art1364with693newPNGbytes;all6ownerfiles15,496bytes unchanged. [Evidence and explicit limits](docs/rea/cash-table-paint.md). Own/waiting-row styles and native operator/physical/timing/full-app parity remain incomplete.
+PR257 adds native orange/BoldItalic Table metrics for actual authenticated seated/waiting accounts, with unchanged ordinary name/counter paint. Wait/Cancel immediately shows the confirmed count. The existing private read adds only an own-waiting boolean; unchanged room paint is retained during unrelated refreshes. All 17 exact-head checks/reviews passed, including privacy, real separate observer queue actions, two hands/payout/restart and manual Join/HUD. Runtime: 130 files, 1,481,557 bytes; art: 1,364 unchanged. All six owner files (15,496 bytes) were preserved. [Evidence and limits](docs/rea/cash-table-account.md). Full native physical/timing/operator/app parity remains incomplete.
 
 ## Implemented workflows
 
