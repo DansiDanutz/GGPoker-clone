@@ -80,3 +80,5 @@ Testele browser cer Chrome și pachetul local de referință,folosesc date tempo
 - [All-games pause candidate](all-games-pause.md): atomic mixed-format backend and HTTP; UI/release pending.
 
 - [Sit Out callbacks and Short Deck funding](sitout-callbacks.md): fresh4009/4038protocol evidence,client4buttonBlind return threshold and still-unproven Next Blind boundary.
+
+- [Battle final player pause](battle-final-sitout.md): phase-specific current/all-games candidate,qualified stacks,real payouts/bounties and restart; qualification pause remains separate.

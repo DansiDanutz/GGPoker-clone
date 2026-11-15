@@ -37,3 +37,5 @@ QA exact-head, pachetul instalabil, merge și activare sunt încă necesare pent
 Testul de formate --all-games verifică separat Spin3/6 până la winner și MTT7 cu mutări între mese: proveniența globală rămâne legată de cont, se șterge la revenirea locală și nu modifică plățile sau conservarea fondurilor.
 
 Revizia instalabilă a candidatului c905cd8 a reprodus ștergerea mesajului503 de către operate(state), confirmată și pe sursă de aserția care așteaptă1100ms. Corecția păstrează erorile acțiunilor la refresh automat; următoarea acțiune reușită le șterge explicit. Testul verifică atât persistența peste poll-uri, cât și curățarea după retry reușit. Prima serie QA este istorică și trebuie repetată pe commitul reparat.
+
+Follow-up candidat: Battle finale este admis separat prin mecanismul de turneu validat; calificarea Rush rămâne exclusă. Vezi [dovezi și teste](battle-final-sitout.md). Notele anterioare privind excluderea finalei sunt istorice după activarea acestui follow-up; nu anticipăm release-ul.
