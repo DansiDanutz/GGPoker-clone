@@ -6,6 +6,7 @@ Aceasta este versiunea publică a fișelor detaliate. Explică aspectul,controal
 
 | Fișă | Acoperire |
 |---|---|
+| [Ordinea Group și tastatura](cash-group-order.md) | PR251:reguli native,săgeți fără wrap,Enter/dublu clic cu confirmare fără debit,teste și restart |
 | [Cont propriu și marcaje private Group](cash-group-paint.md) | PR249: identitate confirmată, font nativ, memo/culoare, protecție la răspunsuri întârziate și citire fără istoric |
 | [Jucători Group și operator](cash-group-players.md) | PR247:locuri reale,sortare,Profile/HUD/note private,Open fără debit,plecare/restart și metadate necunoscute |
 | [Grafica Group](cash-group-row.md) | PR245:cinci coloane,badge/indicator originale,șase stăriJoin,drag-away și masă închisă |

@@ -30,16 +30,22 @@
   "localMapping": "Current cashGroupCatalog caller is Hold\u2019em Group View only; all local groups share practice currency/type. Map blind/minBuyIn??stack/ante??0/capacity to comparable rule ordering. Do not invent operator featured/password/currency metadata. Table View remains unsorted by this change.",
   "verification": [
     "RED order assertion failed against insertion-order implementation",
-    "GREEN cash-group-catalog-test.mjs includes all four ordering priorities, stable ties, no input mutation and original aggregation cases"
+    "GREEN cash-group-catalog-test.mjs includes all four ordering priorities, stable ties, no input mutation and original aggregation cases",
+    "PR251:10 exact-head checks PASS including installed real keyboard/pointer, Group and manual Join/HUD, two hands/payout/restart/cross-room conservation"
   ],
   "remaining": [
-    "Exact-head installed browser QA and release pending",
-    "No release or live runtime change yet; live remains PR249",
-    "Native same-size physical raster, animation and sound timing unverified"
+    "Physical same-size native AIR raster, animation and sound timing unverified",
+    "Native featured/password/currency/variant metadata requires actual local authority; full-app parity incomplete"
   ],
   "implementation": [
     "Hold\u2019em Group View: ArrowUp/Down clamp at first/last real row and scroll selection into view",
     "Enter dispatches the same ordinary group action as double click; both open existing authenticated Group confirmation, no automatic funding",
     "Handler scoped to current visible catalog and actual row focus; modal forms, other catalogs and Table View remain outside this handler"
-  ]
+  ],
+  "release": {
+    "pr": 251,
+    "testedSha": "14829a494248557b381ab4c433a58f3f934a058f",
+    "mergeCommit": "594d3199c75ad182bfe7ab09f17e38a661c17a82",
+    "ownerDataUnchanged": true
+  }
 }

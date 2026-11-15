@@ -76,5 +76,5 @@
     "Automatic native multiwindow behavior differs when browser blocks popups;real-click recovery verified",
     "Exact counter/page/hover easing and native sound timing remain unverified"
   ],
-  "next": "Actual own/private-note paint installed PR249;next native Group row ordering and StageList keyboard navigation;country/tableIndex metadata requires explicit local authority,not guessed operator values;physical/timing/full-app parity remains incomplete"
+  "next": "Native comparable Group order and scoped keyboard/double-click installed PR251; next recover Hold\u2019em Table View ordering and keyboard/double-click semantics before mapping them. Operator metadata and physical/timing/full-app parity remain incomplete."
 }

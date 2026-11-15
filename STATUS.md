@@ -4,7 +4,7 @@ This project is a local play-money application under active development. It is n
 
 ## Current verified release
 
-PR249 adds authenticated own-account paint and private memo/color markers to the Group player workflow. The native Bold Italic font and original note shapes are used. A lean cookie-authenticated read returns no note content, history, cards or tokens. All 18 exact-head checks passed, including privacy, restart, complete Group/manual/Auto Buy-In journeys and six hosted players. Runtime: 130 files; art: 1,362. All six owner files (15,496 bytes) remained unchanged. [Evidence and limits](docs/rea/cash-group-paint.md). Operator default-color customization, partner/live badges, country/table numbering, native physical raster and timing remain incomplete.
+PR251 adds native-derived comparable Hold’em Group ordering and ArrowUp/Down/Enter/double-click actions. All10exact-head checks passed, including confirmation without debit, two hands, payouts and restart. Runtime130files1,476,293bytes;art1362unchanged;all6ownerfiles15,496bytes preserved. [Evidence and limits](docs/rea/cash-group-order.md). Previous PR249 account/private-note paint remains installed. Full1:1 reconstruction remains incomplete.
 
 ## Implemented workflows
 
