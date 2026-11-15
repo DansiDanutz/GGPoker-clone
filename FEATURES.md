@@ -2,6 +2,10 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
+## Current native comparison — same extent, not a parity pass
+
+The native window and isolated installed PR257 fixture were both captured at1200×963. The comparison confirms a legacy preview-background mismatch and incorrect center-label contract, and identifies remaining promotion/metadata/typography/window semantics. Native child activation occurred despite a background launch request; original was minimized and gracefully quit after read-only navigation. No real-money game action was sent. Product code remains PR257. [Findings and exact evidence scope](docs/rea/native-table-comparison.md). Raw images stay local; do not relaunch the native client in background-only work.
+
 ## Verified release baseline — PR257
 
 PR257 merged `03fa48656abc04850ecd0fa331d2ed43239e4117`; tested source `09f34fe014274c07f6f2490b2744999e7aa93c02`.

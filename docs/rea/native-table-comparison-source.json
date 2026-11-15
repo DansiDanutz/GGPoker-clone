@@ -1,0 +1,112 @@
+{
+  "method": "Actual native Cua window capture and isolated installed headless Chrome capture, identical1200x963 extent; not a pixel-parity pass",
+  "capturedAtUtc": "2026-11-15T22:25:16.704708+00:00",
+  "native": {
+    "bundle": "com.nsuslab.ncf.launcher.live.ggpcom",
+    "pidAtCapture": 74342,
+    "windowAtCapture": 16776,
+    "windowTitle": "PLAYGG.RO",
+    "launcherRequestedBackground": true,
+    "nativeChildSelfActivated": true,
+    "minimizedThenGracefullyQuit": true,
+    "terminalVerified": true,
+    "actions": [
+      "Holdem navigation",
+      "Table View navigation",
+      "List scroll only"
+    ],
+    "noSeatBetWaitOrCashierActions": true,
+    "loadedSwfPathObserved": false
+  },
+  "clone": {
+    "runtime": "/Users/davidai/.local/share/playgg-runtime/table-account-09f34fe",
+    "art": "/Users/davidai/.local/share/playgg-art/cash-table-paint-candidate",
+    "isolated": true,
+    "dimensions": [
+      1200,
+      963,
+      1
+    ],
+    "metrics": {
+      "catalog": {
+        "x": 7.023411750793457,
+        "y": 150.50167846679688,
+        "width": 1077.592041015625,
+        "height": 812.4896240234375
+      },
+      "columns": {
+        "x": 20.066890716552734,
+        "y": 302.0067138671875,
+        "width": 809.6990356445312,
+        "height": 24.08026123046875
+      },
+      "row": {
+        "x": 20.066890716552734,
+        "y": 366.22076416015625,
+        "width": 809.6990356445312,
+        "height": 32.107025146484375
+      },
+      "counter": {
+        "x": 522.867919921875,
+        "y": 377.2575378417969,
+        "width": 97.32440185546875,
+        "height": 9.030120849609375
+      },
+      "preview": {
+        "x": 848.8294677734375,
+        "y": 188.62876892089844,
+        "width": 232.7760009765625,
+        "height": 372.24078369140625
+      },
+      "open": {
+        "x": 855.8529052734375,
+        "y": 570.9030151367188,
+        "width": 217.7257080078125,
+        "height": 37.123779296875
+      },
+      "wait": {
+        "x": 855.8529052734375,
+        "y": 618.0602416992188,
+        "width": 217.7257080078125,
+        "height": 37.12371826171875
+      },
+      "nameColor": "rgb(156, 124, 181)",
+      "engaged": "false"
+    }
+  },
+  "images": {
+    "native-table-current.png": {
+      "sha256": "c3fed1862476df9f5fa3e3b518526d10d3efb5d84190e3748ac132bec3b47208",
+      "bytes": 659709,
+      "width": 1200,
+      "height": 963
+    },
+    "clone-table-same-size.png": {
+      "sha256": "777dd805031a00699b3f2408fe5293bd8c51c382beb05c050c5ac83c9e0e36d0",
+      "bytes": 416425,
+      "width": 1200,
+      "height": 963
+    }
+  },
+  "imageStorage": "Local .git/danslab-qa only; raw native account/player images not published",
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/view/TableViewComponent.as",
+      "sha256": "792163a5f4f406507da45a337f3b9b7dc9f66f2c8759e583b5c25c610a0e5f3e"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/TablePreviewContents.as",
+      "sha256": "3c7c53a260d679dca481745ecc4aa33610aeadc2ed63c504fc8abe43fd999648"
+    }
+  ],
+  "findings": [
+    "Main list/header anchors are close at this extent; no automated full pixel-diff claim",
+    "Native Holdem preview texture is lobby_preview0 (223x351), default tableScale1.08; local CSS still uses legacy standard-table-preview.png stretched to100%",
+    "Native center label always MobileBuyInRange and formats actual min/max (or equal single amount); clone currently labels Buy-in/default stack",
+    "Preview metadata/plate/avatar branches require actual source/data mapping; image differences alone do not establish whether avatar data is absent or a rendering branch differs",
+    "Native promoted rows show crown/gold names and live promotion data; local ordinary no-promotion rows are a different branch, not an accepted whole-list match",
+    "Dynamic native balances/currency/names/promotion feeds differ from deliberate local practice fixture; do not treat this as equal input or a global RMSE acceptance test",
+    "Do not relaunch native client under background-only work: child self-activation was observed despite background launcher; continue from saved reference/source unless visible launch is authorized"
+  ],
+  "next": "Recover native PreviewPlayerAvatar and complete preview texture/label/positions/metadata semantics before implementation; preserve existing seat/HUD/Join/payout gates"
+}
