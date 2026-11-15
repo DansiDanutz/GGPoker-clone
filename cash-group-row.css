@@ -54,3 +54,14 @@
 #catalog.nativeCashOperator[data-mode=holdem][data-view=table] #preview .previewPlate .previewName{position:absolute;left:0;top:14px;width:64px;color:#fff;font:10px/12px NativeGroupRow,Arial,sans-serif}
 #catalog.nativeCashOperator[data-mode=holdem][data-view=table] #preview .previewPlate small{position:absolute;left:0;top:29px;width:64px;color:#ccc;font:10px/12px NativeGroupRow,Arial,sans-serif}
 #catalog.nativeCashOperator[data-mode=holdem][data-view=table] #preview .previewPlate[data-own=true] .previewName{top:13px;color:#ff8932;font-weight:700;font-style:italic}
+
+/* Calibrate the native1200px capture frame inside the legacy1196px stage; keep the tested list frame. */
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] aside{grid-area:auto;position:absolute;left:calc(844px * 1196 / 1200 - 7px);top:-.5px;width:241px;height:calc((100% + .5px) * 1200 / 1196);padding:0;border:0;display:block;overflow:hidden;background:linear-gradient(#181818 411px,#222 411px);transform:scale(.996666666666667);transform-origin:0 0}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] aside::before{content:'';position:absolute;left:0;top:0;width:1px;height:100%;background:#404040;z-index:4;pointer-events:none}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] aside::after{content:'';position:absolute;left:0;top:411px;width:241px;height:2px;background:#383838;z-index:4;pointer-events:none}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #viewSwitch{position:absolute;left:4px;top:4px;width:234px;height:28px;margin:0}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #preview{position:absolute;left:0;top:35px;width:241px;height:376px;margin:0}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] :is(#takeSeat,#joinTable){position:absolute;left:12.05px;top:421px;width:216.9px;height:38px;margin:0}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #joinTable{top:469px}
+
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #listing{grid-column:1;grid-row:2}

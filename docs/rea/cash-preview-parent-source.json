@@ -1,0 +1,71 @@
+{
+  "method": "REA original SWF source plus saved actual1200x963 native capture;calibrate native preview coordinate frame independently of legacy1196px list stage",
+  "swf": {
+    "path": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf",
+    "bytes": 41892370,
+    "sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1"
+  },
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/NormalCashGameLobby.as",
+      "sha256": "5fb68ee3fb858b9fdc5fb47edb06c722a4cf8c698a58819851cfa6f69cc63ed1"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/CashGameLobby.as",
+      "sha256": "2c5b96c5cc4677de4d055ff8de9175816cf58a520ee8b066125b5d7f3139c2fc"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/LobbyDetailView.as",
+      "sha256": "a3cde224023f8cf91af6fdd8948142528880d6a2be56a2ac4a94abddbab8114b"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/TablePreview.as",
+      "sha256": "25c20c082c462be6f379074b964d480e9d331545cf4593ad20ac5bd2fcb25ad1"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/LobbyDetailViewOperatorBase.as",
+      "sha256": "b0e51c932eecf8f78f02b8d834fedb351c671d5830262839ae0d659ecad1655d"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/tab/LobbyDetailViewHeader.as",
+      "sha256": "0689e1320fa683764f80d08d03be653809f13843e7afb004773504a3016bb38f"
+    }
+  ],
+  "nativeCapture": {
+    "file": "native-table-current.png",
+    "sha256": "c3fed1862476df9f5fa3e3b518526d10d3efb5d84190e3748ac132bec3b47208",
+    "width": 1200,
+    "height": 963,
+    "privateArtifactOnly": true,
+    "nativeRelaunched": false
+  },
+  "sourceContract": [
+    "NormalCashGameLobby left page836;CashGameLobby total1077 => detail width241.",
+    "Detail header x4/y4,width241-7=234,height28;page container y35;root mask matches viewport.",
+    "TablePreview ordinary operator y512-136=376 with offsetY0.",
+    "Operator margin10,gap10,button height38,width90%,x5%;first button page-relative386,second434.",
+    "Absolute native1200reference frame:aside844/150,width241;header848/154,234x28;preview844/185,241x376;Open856.05/571,216.9x38;Wait856.05/619."
+  ],
+  "captureCalibration": [
+    "Native reference separator x844;header rect starts848,154;page top185;operator separator second row562;Open571 andWait619.",
+    "Native observed gap RGB24,operator background34,vertical border64 and horizontal separator56;these are captured output colors,not a recovered global renderer color transform."
+  ],
+  "localMapping": [
+    "Keep existing list/table geometry;only ordinary Holdem Table View sidebar is an independently calibrated source frame.",
+    "Legacy stage scale is viewportWidth/1196;inverse local factor1196/1200 makes native reference source pixels1:1 at1200 and proportional at other widths.",
+    "Absolute sidebar anchored to measured reference844/150;241px source width;source header/page/operator positions;full-height clipping.",
+    "Explicit grid-area reset and listing column1/row2 prevent automatic grid relocation when sidebar leaves grid flow.",
+    "Existing source seat/marker dimensions now measured in preview frame rather than legacy list frame;actual room/seat/HUD/Wait/Join callbacks retained.",
+    "No new images,fonts,dependencies,model calls,native launch or game-engine/wallet changes."
+  ],
+  "verification": [
+    "RED original sidebarx844.816 instead of844 and old232.776 preview width.",
+    "GREEN source parent/header/page,real HUD/manual admission/empty-seat targets,exact source seat/marker origins and real heads-up passed;installed exact-head and expanded responsive checks pending."
+  ],
+  "remaining": [
+    "Native Group View parent calibration and tab artwork/font equivalence.",
+    "Full app outer stage/window/color profile/text raster and other screens.",
+    "Country/heat/private-note/operator role branches;native animation/audio timing.",
+    "900x700 proportional policy is tested locally;no native900x700 capture is claimed."
+  ]
+}
