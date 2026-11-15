@@ -98,11 +98,54 @@
   ],
   "verification": [
     "RED legacy seat0x116 instead of120.96 in actual browser.",
-    "GREEN source all six origins/three marker origins,actual sparse-seat2/5 heads-up/dealer-SB priority/fold settlement240chips,HUD/empty-seat exact4/0,manual admission,two hands/payout/restart/reconnect passed;exact-head installed release checks pending."
+    "GREEN source all six origins/three marker origins,actual sparse-seat2/5 heads-up/dealer-SB priority/fold settlement240chips,HUD/empty-seat exact4/0,manual admission,two hands/payout/restart/reconnect passed;PR264 all13 exact-head installed checks/reviews passed before merge/rollout."
   ],
   "remaining": [
     "Exact outer parent bounds/clipping and native textfield metrics.",
     "Table-preview private note/country/heat HUD branches;operator role/variant/full-app parity.",
     "Native animation/audio timing."
-  ]
+  ],
+  "release": {
+    "mergeCommit": "8b49cac367e82e80a34aabe05160d3939ef2c69a",
+    "pr": 264,
+    "sourceCommit": "7a64a4770baa9ba1cfce8e1bd97c4b5b37832e16",
+    "oldPid": 35939,
+    "newPid": 99093,
+    "backup": "/Users/davidai/.local/state/playgg-rollouts/pr264-yk26x0gm",
+    "runtimeDirectory": "/Users/davidai/.local/share/playgg-runtime/seat-origins-7a64a47",
+    "artDirectory": "/Users/davidai/.local/share/playgg-art/cash-preview-surface-candidate",
+    "runtimeFiles": 130,
+    "artFiles": 1365,
+    "ownerFiles": 6,
+    "ownerBytes": 15496,
+    "ownerDataUnchanged": true,
+    "liveGameplayWrites": false
+  },
+  "nextParentEvidence": {
+    "sources": [
+      {
+        "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/NormalCashGameLobby.as",
+        "sha256": "5fb68ee3fb858b9fdc5fb47edb06c722a4cf8c698a58819851cfa6f69cc63ed1"
+      },
+      {
+        "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/CashGameLobby.as",
+        "sha256": "2c5b96c5cc4677de4d055ff8de9175816cf58a520ee8b066125b5d7f3139c2fc"
+      },
+      {
+        "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/LobbyDetailView.as",
+        "sha256": "a3cde224023f8cf91af6fdd8948142528880d6a2be56a2ac4a94abddbab8114b"
+      },
+      {
+        "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/TablePreview.as",
+        "sha256": "25c20c082c462be6f379074b964d480e9d331545cf4593ad20ac5bd2fcb25ad1"
+      }
+    ],
+    "findings": [
+      "NormalCashGameLobby setPageSize836. CashGameLobby detail.x=bg.width836,width1077-836=241.",
+      "LobbyDetailView header(4,4),width viewPort-7,height28;enabled header moves page container y35 and reduces page height35. Root mask equals viewport bounds.",
+      "TablePreview table.y0;table viewport page width and height minus operator height.",
+      "Source logical241px parent does not establish full physical pixel parity:current outer stage transform,parent padding/border and original capture/client extent still need calibration."
+    ],
+    "implementationStatus": "Evidence only;current outer parent layout not changed by PR264."
+  }
 }
