@@ -1,0 +1,93 @@
+{
+  "method": "Exact frame-only decoded RGBA readback against installed native atlas",
+  "sources": {
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+  },
+  "files": [
+    {
+      "index": 345,
+      "file": "native-language-toggle-mark.png",
+      "rect": [
+        2498,
+        3055,
+        12,
+        12
+      ],
+      "reused": true,
+      "rgbaExact": true,
+      "bytes": 470,
+      "sha256": "7824854890dc416c6355fd9f86d26c3d47354a7ba2dc8ec01a4a2acc2e92bdde"
+    },
+    {
+      "index": 346,
+      "file": "native-language-toggle-off.png",
+      "rect": [
+        3104,
+        4031,
+        20,
+        20
+      ],
+      "reused": true,
+      "rgbaExact": true,
+      "bytes": 216,
+      "sha256": "0cfb2ea06cea4caa02b5438c8ca623065fde7fa3ec0502c3ac686d5951a286c0"
+    },
+    {
+      "index": 347,
+      "file": "native-language-toggle-on.png",
+      "rect": [
+        3126,
+        4031,
+        20,
+        20
+      ],
+      "reused": true,
+      "rgbaExact": true,
+      "bytes": 250,
+      "sha256": "7cb922387a1f431558aaabf61842b26cfa88ed3cf36946ac181bd279eae2ab42"
+    },
+    {
+      "index": 350,
+      "file": "native-language-toggle-disabled.png",
+      "rect": [
+        3148,
+        4031,
+        20,
+        20
+      ],
+      "reused": true,
+      "rgbaExact": true,
+      "bytes": 176,
+      "sha256": "cfe26202efc8f22185e4c775b6b8b773d46c71a77ca8b859e5468dd54bd75475"
+    },
+    {
+      "index": 348,
+      "file": "native-betting-checkbox-off.png",
+      "rect": [
+        4075,
+        4048,
+        16,
+        16
+      ],
+      "reused": false,
+      "rgbaExact": true,
+      "bytes": 300,
+      "sha256": "33a8831336165f188f2497542df48141fb7966000f34dfd2e668170526a11ddf"
+    },
+    {
+      "index": 349,
+      "file": "native-betting-checkbox-on.png",
+      "rect": [
+        211,
+        4050,
+        16,
+        16
+      ],
+      "reused": false,
+      "rgbaExact": true,
+      "bytes": 456,
+      "sha256": "f24183be02b4318bf8de43c66d922f5035f8b7732e0e08284edcc1133143d583"
+    }
+  ]
+}
