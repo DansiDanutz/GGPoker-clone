@@ -1,0 +1,48 @@
+{
+  "method": "Exact frame-only decoded RGBA readback; no atlas trim reconstruction or color transform",
+  "sources": {
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+  },
+  "files": [
+    {
+      "index": 977,
+      "file": "native-settings-tab-up.png",
+      "rect": [
+        2368,
+        2742,
+        10,
+        10
+      ],
+      "rgbaExact": true,
+      "bytes": 96,
+      "sha256": "a8fb6a60eea014a0b2ba71f6a2133bc7962fe2c9f2c9b46bbb46437329cb3ed7"
+    },
+    {
+      "index": 978,
+      "file": "native-settings-tab-down.png",
+      "rect": [
+        2380,
+        2742,
+        10,
+        10
+      ],
+      "rgbaExact": true,
+      "bytes": 96,
+      "sha256": "66f96332e127cba07fcd31ac15c5716fa55bde9db477943ed10d2aa126670ef4"
+    },
+    {
+      "index": 979,
+      "file": "native-settings-tab-selected.png",
+      "rect": [
+        2392,
+        2742,
+        10,
+        10
+      ],
+      "rgbaExact": true,
+      "bytes": 96,
+      "sha256": "8f51720b9c0aa14d98ecc8dd51486a78e3f17704cff9a47020e3fd7214119cfc"
+    }
+  ]
+}
