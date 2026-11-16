@@ -2,11 +2,13 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
-## Active REA candidate — retained multi-run history
+## Verified release baseline — PR277
 
-The existing completed RIMT result already retains all boards and allocations. The history preview now draws all two/three runouts with native0.9 scale, centered-card pivot and single shared prefix. Winner summaries rank only the boards that actually paid that seat. Non-Omaha preview hole cards stay visible as the native source requires; folded paint and Omaha exact-two focus are preserved. No engine, backend endpoint, wallet or data schema change. Nine fresh source classes, a failing installed-baseline test and candidate geometry/privacy/summary/browser checks are documented in [history-runouts](docs/rea/history-runouts.md). Exact-head release QA and live installation remain separate.
+The existing completed RIMT result already retains all boards and allocations. The history preview now draws all two/three runouts with native0.9 scale, centered-card pivot and single shared prefix. Winner summaries rank only the boards that actually paid that seat. Non-Omaha preview hole cards stay visible as the native source requires; folded paint and Omaha exact-two focus are preserved. No engine, backend endpoint, wallet or data schema change. Nine fresh source classes and the failing installed-baseline test are documented in [history-runouts](docs/rea/history-runouts.md). PR277 merged `60b50fa4391dbbb7d88adc9b4afce86b1a32672e`; tested source `85495fb0063f965126ea1229b95d6d9d027fad5a`. All20 exact-head checks passed:130 committed runtime identities/nine classes/SWF,syntax/diff,layout/summary/normal-Omaha/history/privacy/engine regressions,three genuine owner-hosted browser hands at preflop/flop/turn with per-run payouts/104pot/70return/290chips,PNG/cold restart and Rabbit360-chip regression. Three-run preflop/flop captures inspected; merged tree equals the tested tree.
 
-## Verified release baseline — PR276
+Guarded idle rollout PID67159→78777 preserved all6ownerfiles/15496bytes byte-for-byte. Runtime130files/1512064logicalbytes;127verified immutable hardlinks plus116060newcode/stylebytes in three files. Existing1387artfiles reused unchanged. Backup `/Users/davidai/.local/state/playgg-rollouts/pr277-pnmpy5sd`. No live gameplay writes,foreground or speaker actions. Root Markdown report/GOAL updated; generated HTML/inventories remain historical. Native physical raster/font/animation/audio,unsupported RIMT formats and whole-app parity remain incomplete.
+
+## Historical release baseline — PR276
 
 PR276 merged `fe9ffcce7eec16bd38935d3681dcf38bad2d2041`; tested source `65d2e8679af4e4f6d989406162a42e563fc78f98`. Rabbit Hunt disclosures now remain in private retained history and PNG exports, tied to the authenticated historical viewer. REA confirms native missing-card slots/static open covers. Peers do not receive another viewer's Rabbit cards; played board, results, wallets and payouts are unchanged. Nine exact-head checks passed, including six logic/history/privacy suites and separate Holdem/Omaha browser journeys through next hand and cold restart. An extra history capture was visually inspected.
 
