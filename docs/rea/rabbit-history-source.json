@@ -1,0 +1,33 @@
+{
+  "method": "selective headless FFDec source exports; no native client launch",
+  "inspected": "2026-11-16",
+  "swfSha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
+  "runtimeLoadedPathVerified": false,
+  "files": [
+    {
+      "class": "com/nsus/iron/helper/HandHistory.as",
+      "bytes": 148871,
+      "sha256": "4c953011f237dc639aa54d4348eb9b239a557124827843d15e3e18b8ee0e6e40"
+    },
+    {
+      "class": "com/nsus/iron/handhistory/HandHistoryDetailViewVo.as",
+      "bytes": 15201,
+      "sha256": "df840c6fed4279aa0bfccf17beef5ff15f2eb7a557ba89a27824062a33c194c5"
+    },
+    {
+      "class": "com/nsus/iron/handhistory/HandHistoryPreview3D.as",
+      "bytes": 24614,
+      "sha256": "ba37cc3ad667def16ed0d5bd7bd8b0c7829746443aebde6b08cb2abcb7e1f66e"
+    },
+    {
+      "class": "com/nsus/iron/handhistory/preview/HandHistoryCommunityCard3D.as",
+      "bytes": 8955,
+      "sha256": "ea78146b5c34fc22dedbe54311be8ddc89d738cef00c80d670ba82fe3d00a7a7"
+    },
+    {
+      "class": "com/nsus/iron/table/view/display/card/HHCard3D.as",
+      "bytes": 401,
+      "sha256": "1cad2faaa28ae31ce0ec710a5d74bf514a2566542f0c85de9ee5fd0019596ef6"
+    }
+  ]
+}

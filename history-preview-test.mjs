@@ -21,3 +21,11 @@ const aof={...hand,variant:'aof'};for(const key of ['names','initialStacks','com
 for(let viewerSeat=0;viewerSeat<4;viewerSeat++){const layout=historyPreviewLayout({...aof,viewerSeat});assert.deepEqual(layout.players.map(p=>[p.x,p.y]),[[320,395],[60,225],[320,63],[580,225]]);assert.equal(layout.players[0].seat,viewerSeat);assert.deepEqual(layout.dealer,[[269,324],[127,267],[277,136],[513,267]][(aof.button-viewerSeat+4)%4])}assert.equal(historyPreviewLayout({...aof,viewerSeat:4}),null);assert.equal(historyPreviewLayout({...aof,cards:[['Ac'],...aof.cards.slice(1)]}),null);
 
 for(const n of [3,4,6]){const t={...hand,mode:'tournament'};for(const key of ['names','initialStacks','committed','payouts','returns','stacks','folded','cards'])t[key]=t[key].slice(0,n);const p=historyPreviewLayout(t);assert.equal(p?.theme,'tournament');assert.equal(p.players.length,n);assert.equal(p.players[0].seat,2);assert.deepEqual([p.players[0].x,p.players[0].y],[320,395]);if(n===3){assert.deepEqual(p.players.map(p=>[p.x,p.y]),[[320,395],[65,130],[575,130]]);assert.deepEqual(p.dealer,[101,202])}}assert.equal(historyPreviewLayout({...hand,mode:'tournament',names:hand.names.slice(0,5)}),null);console.log('PASS local default tournament preview3/4/6seats,rotation and distinct background');
+
+const {historyRabbitCards}=await import('./felt.mjs');
+const rabbitHand={...hand,viewerSeat:2,board:['2c','3d','4h'],rabbitCards:['5s','9c']},rabbitBefore=JSON.stringify(rabbitHand);
+assert.deepEqual(historyRabbitCards(rabbitHand),[{card:'5s',index:3},{card:'9c',index:4}]);
+assert.equal(JSON.stringify(rabbitHand),rabbitBefore,'Rabbit layout must not change played board/accounting');
+for(const change of [{viewerSeat:-1},{viewerSeat:undefined},{mode:'tournament'},{mode:'rush'},{variant:'shortdeck'},{board:hand.board},{rabbitCards:['5s']},{rabbitCards:['2c','9c']},{rabbitCards:['Ac','9c']},{rabbitCards:['XX','9c']}])assert.deepEqual(historyRabbitCards({...rabbitHand,...change}),[],'Invalid/unsupported/unowned Rabbit remains hidden');
+assert.deepEqual(historyRabbitCards({...rabbitHand,board:[],rabbitCards:['2c','3d','4h','5s','9c']}),[{card:'2c',index:0},{card:'3d',index:1},{card:'4h',index:2},{card:'5s',index:3},{card:'9c',index:4}]);
+console.log('PASS source Rabbit history suffix/preflop slots, explicit viewer, invalid/unsupported privacy guards and immutable played data');

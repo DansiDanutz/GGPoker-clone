@@ -111,6 +111,16 @@ function expireClock(room,now){if(room.hand?.runoutPending)return;while(autoTime
 function cashSitOut(r){return !!r?.settings&&!r.tournament&&[undefined,'holdem','plo','plo5','plo6','shortdeck'].includes(r.settings.variant)}
 function rabbitSupported(r){return !!r?.settings&&!r.tournament&&[undefined,'holdem','plo','plo5','plo6'].includes(r.settings.variant)}
 function rabbitEligible(r,me){const g=r?.hand,p=r?.players[me];return !!(rabbitSupported(r)&&p&&g?.end&&[0,3,4].includes(g.board.length)&&g.hands[me]?.length&&g.hudSubjects?.[me]===noteSubject(p))}
+function retainRabbitHistory(r){
+ const g=r.hand||r.previousHand,h=r.hudHistory?.find(h=>h.number===r.number);if(!g?.end||!h||!Array.isArray(g.rabbitShown)||!g.rabbitShown.some(v=>v===true))return;
+ const cards=rabbitCards(g),prior=h.rabbitCardsBySeat;h.rabbitCardsBySeat=h.subjects.map((subject,i)=>subject&&g.rabbitShown[i]===true&&subject===g.hudSubjects?.[i]?[...cards]:prior?.[i]??null);
+}
+function validRabbitHistory(r,h){
+ if(!rabbitSupported(r)||!Array.isArray(h.subjects)||!Array.isArray(h.rabbitCardsBySeat)||h.rabbitCardsBySeat.length!==h.subjects.length)return false;
+ const board=(h.result||r.results.find(v=>v.number===h.number))?.board;if(!Array.isArray(board)||![0,3,4].includes(board.length))return false;
+ const known=[...board,...(Array.isArray(h.privateCards)?h.privateCards.flatMap(v=>Array.isArray(v)?v:[]):[])];let first;
+ return h.rabbitCardsBySeat.every((cards,i)=>{if(cards===null)return true;if(typeof h.subjects[i]!=='string'||!Array.isArray(cards)||cards.length!==5-board.length||!cards.every(c=>typeof c==='string'&&/^[2-9TJQKA][cdhs]$/.test(c))||new Set([...known,...cards]).size!==known.length+cards.length)return false;const key=JSON.stringify(cards);if(first!==undefined&&first!==key)return false;first=key;return true});
+}
 function hasHandBalance(r,i){return !!(r.hand&&r.players[i]&&(r.hand.hands[i].length||r.hand.sittingOut?.[i]&&r.hand.hudSubjects?.[i]===noteSubject(r.players[i])))}
 function cashBalance(r,i){
  if(!r.players[i])return 0;
@@ -149,7 +159,7 @@ function cashHand(r,now,avatarFor,wallet,id){
   if(after>before){r.topUps??=[];r.topUps.push({subject:p.account||p.digest,seat:i,name:p.name,hand:r.number+1,before,after,added:after-before,at:now});if(r.topUps.length>100)r.topUps.shift()}
  }
  const button=previous?nextDealer(active,previous):active.findIndex(Boolean);
- delete r.rimt;r.number++;r.hand=startHand(stacks,r.settings?.blind||4,button,r.settings?.variant,0,sittingOut,r.settings?.rimt===true&&active.every((v,i)=>!v||rimtParticipant(r.players[i]))?r.number:null);r.hand.hudStartedAt=now;r.hand.hudSubjects=r.players.map(p=>p?noteSubject(p):null);r.hand.hudNames=r.players.map(p=>p?.name??null);r.hand.hudAvatars=r.players.map(p=>p?.account?avatarFor(p.account):p?0:null);startClock(r,now);r.ready.fill(false);delete r.waitingStacks;delete r.previousHand;return true;
+ retainRabbitHistory(r);delete r.rimt;r.number++;r.hand=startHand(stacks,r.settings?.blind||4,button,r.settings?.variant,0,sittingOut,r.settings?.rimt===true&&active.every((v,i)=>!v||rimtParticipant(r.players[i]))?r.number:null);r.hand.hudStartedAt=now;r.hand.hudSubjects=r.players.map(p=>p?noteSubject(p):null);r.hand.hudNames=r.players.map(p=>p?.name??null);r.hand.hudAvatars=r.players.map(p=>p?.account?avatarFor(p.account):p?0:null);startClock(r,now);r.ready.fill(false);delete r.waitingStacks;delete r.previousHand;return true;
 }
 function newRoom(table,body,capacity,now){
  if(table?.pushSeatHands!==undefined&&(!Number.isSafeInteger(table.pushSeatHands)||table.pushSeatHands<1||table.pushSeatHands>1000||!['cash','plo','plo5','plo6'].includes(table.mode||'cash')))fail(400,'Push Seat requires a cash table and1 to1000local hands');
@@ -169,7 +179,8 @@ function hudHands(room,subject,viewer){
  return (room.hudHistory||[]).flatMap(h=>{
   const seat=h.subjects.indexOf(subject),own=h.subjects.indexOf(viewer),result=h.result||room.results.find(r=>r.number===h.number);if(seat<0||!result)return [];
   const cards=h.cards.map((hand,i)=>i===own&&h.privateCards?.[i]?.length?h.privateCards[i]:hand);
-  return [structuredClone({...result,mode:room.tournament?'tournament':'cash',...(Number.isSafeInteger(h.startedAt)&&h.startedAt>=0?{startedAt:h.startedAt}:{}),canReport:own>=0&&Number.isSafeInteger(h.startedAt)&&h.startedAt>=0&&Date.now()>=h.startedAt&&Date.now()-h.startedAt<30*hour,dealtSeats:h.subjects.map(Boolean),...(h.historyTrace?{historyTrace:h.historyTrace}:{}),...(h.historyEvents?{historyEvents:h.historyEvents}:{}),...(h.variant?{variant:h.variant,button:h.button,folded:h.folded,...(h.initialStacks?{initialStacks:h.initialStacks}:{}),...(h.avatars?{avatars:h.avatars}:{})}:{}),...(Number.isSafeInteger(h.blind)&&h.blind>0?{blind:h.blind}:{}),at:h.at,names:h.names,cards,seat,viewerSeat:own,net:result.payouts[seat]-result.committed[seat]})];
+  const g=room.hand||room.previousHand,rabbit=own>=0?(h.rabbitCardsBySeat?.[own]||(h.number===room.number&&g?.hudSubjects?.[own]===viewer&&g.rabbitShown?.[own]===true?rabbitCards(g):null)):null;
+  return [structuredClone({...result,...(rabbit?{rabbitCards:rabbit}:{}),mode:room.tournament?'tournament':'cash',...(Number.isSafeInteger(h.startedAt)&&h.startedAt>=0?{startedAt:h.startedAt}:{}),canReport:own>=0&&Number.isSafeInteger(h.startedAt)&&h.startedAt>=0&&Date.now()>=h.startedAt&&Date.now()-h.startedAt<30*hour,dealtSeats:h.subjects.map(Boolean),...(h.historyTrace?{historyTrace:h.historyTrace}:{}),...(h.historyEvents?{historyEvents:h.historyEvents}:{}),...(h.variant?{variant:h.variant,button:h.button,folded:h.folded,...(h.initialStacks?{initialStacks:h.initialStacks}:{}),...(h.avatars?{avatars:h.avatars}:{})}:{}),...(Number.isSafeInteger(h.blind)&&h.blind>0?{blind:h.blind}:{}),at:h.at,names:h.names,cards,seat,viewerSeat:own,net:result.payouts[seat]-result.committed[seat]})];
  });
 }
 function chatMuted(r,p){return !!(p?.chatMuted||p?.account&&r.mutedAccounts?.includes(p.account))}
@@ -478,6 +489,7 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
     if(Object.keys(body).some(k=>!['number','version'].includes(k))||!Number.isSafeInteger(body.number)||body.version!==undefined&&(!Number.isSafeInteger(body.version)||body.version<0))fail(400,'Choose a completed hand');
     if(body.number!==r.number)fail(409,'Hand changed; refresh the table');
     if(!r.hand.rabbitShown?.[me]){rabbitCards(r.hand);r.hand.rabbitShown??=r.players.map(()=>false);r.hand.rabbitShown[me]=true;r.version++}
+    retainRabbitHistory(r);
     return view(r,me,avatarFor);
   }
   if(op==='sit-out-state'){
@@ -736,6 +748,7 @@ rules=spinRules(rooms.get('local-spin-rules'));rooms.delete('local-spin-rules');
    if(t?.walletSettled!==undefined&&!(t.walletSettled===false&&t.cancelRequested===true)&& (t.walletSettled!==true||!r.players.some(p=>p?.entryFunded)||!(t.cancelledAt||t.winner!==null&&Array.isArray(t.prizes))))throw Error('Invalid tournament wallet settlement');
   }
   for(const r of rooms.values())if(r.hand?.rabbitShown!==undefined&&(!rabbitSupported(r)||!r.hand.end||![0,3,4].includes(r.hand.board.length)||!Array.isArray(r.hand.rabbitShown)||r.hand.rabbitShown.length!==r.players.length||r.hand.rabbitShown.some((v,i)=>typeof v!=='boolean'||v&&!r.hand.hands[i]?.length)))throw Error('Invalid Rabbit reveal state');
+  for(const r of rooms.values())for(const h of r.hudHistory||[])if(h.rabbitCardsBySeat!==undefined&&!validRabbitHistory(r,h))throw Error('Invalid Rabbit history');
   const notes=openNotes(file+'.notes.json');
   for(const r of rooms.values())if(r.actionVersion!==undefined&&(!Number.isSafeInteger(r.version)||!Number.isSafeInteger(r.actionVersion)||r.actionVersion<0||r.actionVersion>r.version))throw Error('Invalid action version');
   let migrated=false;for(const r of rooms.values())for(const p of r.players)if(p?.bot&&!p.noteId){p.noteId=randomBytes(16).toString('hex');migrated=true}
