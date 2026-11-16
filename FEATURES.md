@@ -2,7 +2,19 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
-## Verified release baseline — PR266
+## Verified release baseline — PR268
+
+PR268 merged `45da34d0d38088184bc1ada5808c44497d1c37f6`; tested source `dcd59455316887cde1f90fd8073ebb9f305185c5`.
+
+Group/Table preview tabs now use the original source skins, Roboto14, actual hover/down/selected behavior and selected disabling. Exact flat-band scale9 rasters remove browser interpolation seams. Private table-preview note frames use authenticated color/hasText metadata, with real HUD edits, correct memo reversal, white/default notes and clearing. No note text is published through public tables or preview markers. The local short-window HUD scrolls and keeps its close pinned after history or scrolling; normal native404×582/404×530 frames remain unchanged.
+
+All15 exact-head checks/reviews passed: original source/font/atlas identities, six crops/four rasters, actual tab pointer states and240 exact background pixels, private note CRUD/isolation/wallet invariants,800×480 history close,900×700 resize,manual admission,heads-up,Group/Table/Wait/Cancel,replay,two hands,independent payouts,cold restart and cross-room conservation. Installed1200×963 capture reviewed; native app not relaunched.
+
+Live runtime130files/1,488,644bytes;art1,375files with1,365 immutable verified hardlinks and10new PNGs totaling4,880bytes. Two owned code snapshots generated this release total2,977,233bytes;earlier failed candidate is preserved,not installed. Guarded idle rollout PID22223→49447 preserved all six owner files(15,496bytes) byte-for-byte. Backup `/Users/davidai/.local/state/playgg-rollouts/pr268-ed2axp2e`. No live gameplay writes. Full Group parent,locale/color pipeline,operator/variant/full-app and native animation/audio parity remain incomplete.
+
+[Tab, note and short-HUD evidence](docs/rea/cash-preview-controls.md).
+
+## Historical release baseline — PR266
 
 PR266 merged `480b5aefdfdf4e3a7144fff71f44c872c54db273`; tested source `12e1c62b87872ae7ad690e3147f172ea9851b021`.
 

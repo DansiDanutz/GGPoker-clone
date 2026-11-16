@@ -4,13 +4,15 @@ This project is a local play-money application under active development. It is n
 
 ## Current verified release
 
-PR266 merged `480b5aefdfdf4e3a7144fff71f44c872c54db273`; tested source `12e1c62b87872ae7ad690e3147f172ea9851b021`.
+PR268 merged `45da34d0d38088184bc1ada5808c44497d1c37f6`; tested source `dcd59455316887cde1f90fd8073ebb9f305185c5`.
 
-The ordinary Hold’em Table View parent is calibrated to the original1200×963 native reference and recovered source dimensions. Actual preview is approximately(843.985,185)/241×376;Open(856.032,571)/216.891×38;Wait y619. The existing list/counter geometry is unchanged. All14 exact-head checks/reviews passed,including source/capture/runtime/art identities,1200parent/header/control geometry,900×700 proportional resize/restore,real HUD/admission/sparse heads-up,Group/Table/Wait/Cancel/buy-in replay,two hands,independent payouts,cold restart and cross-room conservation. No native relaunch.
+Group/Table preview tabs now use the original source skins, Roboto14, actual hover/down/selected behavior and selected disabling. Exact flat-band scale9 rasters remove browser interpolation seams. Private table-preview note frames use authenticated color/hasText metadata, with real HUD edits, correct memo reversal, white/default notes and clearing. No note text is published through public tables or preview markers. The local short-window HUD scrolls and keeps its close pinned after history or scrolling; normal native404×582/404×530 frames remain unchanged.
 
-Runtime130files1,485,462bytes;existing1,365art files reused,no added art bytes. Guarded idle rollout PID99093→22223 preserved all six owner files(15,496bytes) byte-for-byte. Backup `/Users/davidai/.local/state/playgg-rollouts/pr266-i67elkw8`. No live gameplay writes. Group parent/native tab art,font/color-profile/full-app timing fidelity remain incomplete.
+All15 exact-head checks/reviews passed: original source/font/atlas identities, six crops/four rasters, actual tab pointer states and240 exact background pixels, private note CRUD/isolation/wallet invariants,800×480 history close,900×700 resize,manual admission,heads-up,Group/Table/Wait/Cancel,replay,two hands,independent payouts,cold restart and cross-room conservation. Installed1200×963 capture reviewed; native app not relaunched.
 
-[Calibration and remaining gaps](docs/rea/cash-preview-parent.md).
+Live runtime130files/1,488,644bytes;art1,375files with1,365 immutable verified hardlinks and10new PNGs totaling4,880bytes. Two owned code snapshots generated this release total2,977,233bytes;earlier failed candidate is preserved,not installed. Guarded idle rollout PID22223→49447 preserved all six owner files(15,496bytes) byte-for-byte. Backup `/Users/davidai/.local/state/playgg-rollouts/pr268-ed2axp2e`. No live gameplay writes. Full Group parent,locale/color pipeline,operator/variant/full-app and native animation/audio parity remain incomplete.
+
+[Source identities and remaining gaps](docs/rea/cash-preview-controls.md).
 
 ## Native reference checkpoint
 
