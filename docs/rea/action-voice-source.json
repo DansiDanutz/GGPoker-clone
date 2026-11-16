@@ -1,0 +1,1294 @@
+{
+  "method": "Original98 SoundItem VOICE declarations,SWF SymbolClass/DefineSound and14 original image identities;read-only,no payload extraction/playback",
+  "swf": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf",
+  "swfSha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
+  "sounds": [
+    {
+      "pack": "VDaniel",
+      "action": "ALL_IN",
+      "symbol": "VoiceAllinDaniel",
+      "character": 264,
+      "samples": 35712,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 11337,
+      "sha256": "a21236788bca13721b8909dddd17fa2886feabca862b88a8b38d9ffe41ce5477"
+    },
+    {
+      "pack": "VDaniel",
+      "action": "RAISE",
+      "symbol": "VoiceRaiseDaniel",
+      "character": 334,
+      "samples": 35712,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 11337,
+      "sha256": "a1842d20e7eaf98b87271770503d1a0ea209fdec9d0eee37f4264e62f1beb6b7"
+    },
+    {
+      "pack": "VDaniel",
+      "action": "BET",
+      "symbol": "VoiceBetDaniel",
+      "character": 278,
+      "samples": 18432,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 5851,
+      "sha256": "2d7513d63a643f246d5714856c62fa223750806131f8d342e245a0daf8803450"
+    },
+    {
+      "pack": "VDaniel",
+      "action": "CHECK",
+      "symbol": "VoiceCheckDaniel",
+      "character": 306,
+      "samples": 27648,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 8777,
+      "sha256": "ed8056a167e3d52d45bf95e84a9615708ff1c17204b3a43cfd09447fab5fc6d1"
+    },
+    {
+      "pack": "VDaniel",
+      "action": "CALL",
+      "symbol": "VoiceCallDaniel",
+      "character": 292,
+      "samples": 35712,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 11337,
+      "sha256": "257f9a1520be244e33e5ce15cbb75c2b5131cd8d4227022c522476efdee2e655"
+    },
+    {
+      "pack": "VDaniel",
+      "action": "FOLD",
+      "symbol": "VoiceFoldDaniel",
+      "character": 320,
+      "samples": 28800,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9143,
+      "sha256": "4382809dba815be0db1b9916d22d2dc7847f360c56c2dbc71cb3b2a9aea4bdd2"
+    },
+    {
+      "pack": "VDaniel",
+      "action": "STRADDLE",
+      "symbol": "VoiceStraddleDaniel",
+      "character": 348,
+      "samples": 43776,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 13897,
+      "sha256": "20fcc202a7164b4b54c47675534d5828795d5c3d2952ab6ad3781d034f600723"
+    },
+    {
+      "pack": "VDoyle",
+      "action": "ALL_IN",
+      "symbol": "VoiceAllinDoyle",
+      "character": 265,
+      "samples": 38016,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 12068,
+      "sha256": "ed5d25761f04d3fd584bfa860c506aa9c353895dafa2aa7b18b765fa6044177d"
+    },
+    {
+      "pack": "VDoyle",
+      "action": "RAISE",
+      "symbol": "VoiceRaiseDoyle",
+      "character": 335,
+      "samples": 38016,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 12068,
+      "sha256": "54f95606571494f85957abd294681109eea9d84b50dcc6d268b554643681324d"
+    },
+    {
+      "pack": "VDoyle",
+      "action": "BET",
+      "symbol": "VoiceBetDoyle",
+      "character": 279,
+      "samples": 13824,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 4388,
+      "sha256": "d9e59a4386bef11afab937d291e65da3aac933734387bc65aceaed07c14d43d5"
+    },
+    {
+      "pack": "VDoyle",
+      "action": "CHECK",
+      "symbol": "VoiceCheckDoyle",
+      "character": 307,
+      "samples": 23040,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 7314,
+      "sha256": "3a92acba766a9768cd5133c7ba4482767cea346c345cf8998be9f3a972435964"
+    },
+    {
+      "pack": "VDoyle",
+      "action": "CALL",
+      "symbol": "VoiceCallDoyle",
+      "character": 293,
+      "samples": 29952,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9508,
+      "sha256": "ad63f045fabca8cbd347d76ad246e181031e10c15d342fed66f8e054f7613d93"
+    },
+    {
+      "pack": "VDoyle",
+      "action": "FOLD",
+      "symbol": "VoiceFoldDoyle",
+      "character": 321,
+      "samples": 31104,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9874,
+      "sha256": "ecc4616756723d478da4808794e6759af71bbb0448450e8b850c502e2f8783c7"
+    },
+    {
+      "pack": "VDoyle",
+      "action": "STRADDLE",
+      "symbol": "VoiceStraddleDoyle",
+      "character": 349,
+      "samples": 35712,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 11337,
+      "sha256": "a164d7a8e140415a259ddfdc3ddb4262014ba546473e9e5dc17dd1cc8792d414"
+    },
+    {
+      "pack": "VGreg",
+      "action": "ALL_IN",
+      "symbol": "VoiceAllinGreg",
+      "character": 267,
+      "samples": 33408,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 10605,
+      "sha256": "0e7830a5d9463dc1b371b486029ba389e502c25b9a418d82529e42b40be094e0"
+    },
+    {
+      "pack": "VGreg",
+      "action": "RAISE",
+      "symbol": "VoiceRaiseGreg",
+      "character": 337,
+      "samples": 38016,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 12068,
+      "sha256": "7244466f49671e8944d71ad7577f5a19e73f889c1daef8eabc3daa3d930c4139"
+    },
+    {
+      "pack": "VGreg",
+      "action": "BET",
+      "symbol": "VoiceBetGreg",
+      "character": 281,
+      "samples": 13824,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 4388,
+      "sha256": "1c568fe43922ea43d3201c2801e80b3d1c13d1c5aef75c828007602221ad526d"
+    },
+    {
+      "pack": "VGreg",
+      "action": "CHECK",
+      "symbol": "VoiceCheckGreg",
+      "character": 309,
+      "samples": 26496,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 8411,
+      "sha256": "9a1aa902eb5cefae1fbc640af91aef99e4dd6dc7bb92d8d61b22e33c8cd2921c"
+    },
+    {
+      "pack": "VGreg",
+      "action": "CALL",
+      "symbol": "VoiceCallGreg",
+      "character": 295,
+      "samples": 29952,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9508,
+      "sha256": "d7b0b4077fa06aef54e10305d734be06a649a168d37115da74914577553e9867"
+    },
+    {
+      "pack": "VGreg",
+      "action": "FOLD",
+      "symbol": "VoiceFoldGreg",
+      "character": 323,
+      "samples": 31104,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9874,
+      "sha256": "98cb2ad80ebca58df3a2a59457b06fd65416c33ab53792cdba21a8d12467a26c"
+    },
+    {
+      "pack": "VGreg",
+      "action": "STRADDLE",
+      "symbol": "VoiceStraddleGreg",
+      "character": 351,
+      "samples": 28800,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9143,
+      "sha256": "8dbe56a855fef28a2c916d41a921b1454b970d8d38f03d220c38dce5cae37baa"
+    },
+    {
+      "pack": "VSophia",
+      "action": "ALL_IN",
+      "symbol": "VoiceAllinSophia",
+      "character": 274,
+      "samples": 29952,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9508,
+      "sha256": "aa6b77020fc4ae904c170ead50a242080ec636c78843725c8a7857ef0202fe98"
+    },
+    {
+      "pack": "VSophia",
+      "action": "RAISE",
+      "symbol": "VoiceRaiseSophia",
+      "character": 344,
+      "samples": 29952,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9508,
+      "sha256": "f7e5c7265e5ee90f683a31de46de3f61dbade1de44a06c1c5c50a9b6cee2ddf2"
+    },
+    {
+      "pack": "VSophia",
+      "action": "BET",
+      "symbol": "VoiceBetSophia",
+      "character": 288,
+      "samples": 23040,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 7314,
+      "sha256": "15fe2cf425ebb50f8079c2d865a3a276053b8e78dedf5233871147ebfe0051dd"
+    },
+    {
+      "pack": "VSophia",
+      "action": "CHECK",
+      "symbol": "VoiceCheckSophia",
+      "character": 316,
+      "samples": 24192,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 7680,
+      "sha256": "7cfec110411f2b63e1e14d2b406c6626f1a85c226755d48c4b63b7082aabda8c"
+    },
+    {
+      "pack": "VSophia",
+      "action": "CALL",
+      "symbol": "VoiceCallSophia",
+      "character": 302,
+      "samples": 29952,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9508,
+      "sha256": "fb80e775c194d5457a90796fad8b2f8c26e945f5f08db483d3826c45294ffbdb"
+    },
+    {
+      "pack": "VSophia",
+      "action": "FOLD",
+      "symbol": "VoiceFoldSophia",
+      "character": 330,
+      "samples": 24192,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 7680,
+      "sha256": "833ec116f024fab90e0799648a37e9fc0497f0d3a90c2f458d4c06bc71279538"
+    },
+    {
+      "pack": "VSophia",
+      "action": "STRADDLE",
+      "symbol": "VoiceStraddleSophia",
+      "character": 358,
+      "samples": 31104,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9874,
+      "sha256": "25e0a43d0514972b868d1f3583b116404b3e3960e4d98c2b166003df17ccaf23"
+    },
+    {
+      "pack": "VOliver",
+      "action": "ALL_IN",
+      "symbol": "VoiceAllinOliver",
+      "character": 272,
+      "samples": 28800,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9143,
+      "sha256": "a5893cbf9e1a0dbf46e9d160d37a4b28a57aa920291bac67497bc0560aa10a8e"
+    },
+    {
+      "pack": "VOliver",
+      "action": "RAISE",
+      "symbol": "VoiceRaiseOliver",
+      "character": 342,
+      "samples": 29952,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9508,
+      "sha256": "1fb56d03bd11e9c71f2ec193784ff3f5da4b60ce829b05a7e4e20c95f1836af0"
+    },
+    {
+      "pack": "VOliver",
+      "action": "BET",
+      "symbol": "VoiceBetOliver",
+      "character": 286,
+      "samples": 14976,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 4754,
+      "sha256": "b9fbc52f405ade1a128cd10f184454b5c62df26d7893004ef2f781fc16d8dc2e"
+    },
+    {
+      "pack": "VOliver",
+      "action": "CHECK",
+      "symbol": "VoiceCheckOliver",
+      "character": 314,
+      "samples": 28800,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9143,
+      "sha256": "af90231c357a8b652e13f5ffda76625c71a524e80cee9eb5dc72bf4cd64e11d6"
+    },
+    {
+      "pack": "VOliver",
+      "action": "CALL",
+      "symbol": "VoiceCallOliver",
+      "character": 300,
+      "samples": 25344,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 8045,
+      "sha256": "bb3e5cf0ad08ccee643287214931a5e1acdae35ecb1501f836cd03facf0d2fd4"
+    },
+    {
+      "pack": "VOliver",
+      "action": "FOLD",
+      "symbol": "VoiceFoldOliver",
+      "character": 328,
+      "samples": 26496,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 8411,
+      "sha256": "12cb0f5d1ed8c279463802f7ebbd6f0256d84afb270883598dd522d2242c7a3a"
+    },
+    {
+      "pack": "VOliver",
+      "action": "STRADDLE",
+      "symbol": "VoiceStraddleOliver",
+      "character": 356,
+      "samples": 29952,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9508,
+      "sha256": "5a12a82371380518bf59f41ac175bd29f37cad60d2e144e25fd5e35a5dbc4f33"
+    },
+    {
+      "pack": "VNoah",
+      "action": "ALL_IN",
+      "symbol": "VoiceAllinNoah",
+      "character": 271,
+      "samples": 34560,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 10971,
+      "sha256": "c47c07cf6bd695f202bf74b46189955da8f27c8b6c92af49c057e7df8094d895"
+    },
+    {
+      "pack": "VNoah",
+      "action": "RAISE",
+      "symbol": "VoiceRaiseNoah",
+      "character": 341,
+      "samples": 24192,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 7680,
+      "sha256": "23bc637f375812c94a9b0f6ec4c25123f8b215250050e7b104a1f76251007b15"
+    },
+    {
+      "pack": "VNoah",
+      "action": "BET",
+      "symbol": "VoiceBetNoah",
+      "character": 285,
+      "samples": 19584,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 6217,
+      "sha256": "17ae295ae785cecbebb1b559f2ea6aed0919e106867b8e5bd572adf51965e6fa"
+    },
+    {
+      "pack": "VNoah",
+      "action": "CHECK",
+      "symbol": "VoiceCheckNoah",
+      "character": 313,
+      "samples": 28800,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9143,
+      "sha256": "95988ff0bd440820bf449871b1a6cda118e551a6d98acab42b3b25d3107e40a5"
+    },
+    {
+      "pack": "VNoah",
+      "action": "CALL",
+      "symbol": "VoiceCallNoah",
+      "character": 299,
+      "samples": 31104,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9874,
+      "sha256": "86d776c8506011e18b42d9b93b5b200f229afdbb85bc9d7439df9026c54b68d2"
+    },
+    {
+      "pack": "VNoah",
+      "action": "FOLD",
+      "symbol": "VoiceFoldNoah",
+      "character": 327,
+      "samples": 34560,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 10971,
+      "sha256": "39bf5df11577d8bf644700073dde515f7b554da48a9b9d3f8e3f8a470224ff23"
+    },
+    {
+      "pack": "VNoah",
+      "action": "STRADDLE",
+      "symbol": "VoiceStraddleNoah",
+      "character": 355,
+      "samples": 27648,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 8777,
+      "sha256": "d618b180927a041d28f77fb2823110ad0965e4652ec299b52fa977b327dfb287"
+    },
+    {
+      "pack": "VOlivia",
+      "action": "ALL_IN",
+      "symbol": "VoiceAllinOlivia",
+      "character": 273,
+      "samples": 33408,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 10605,
+      "sha256": "f192b1310d7202bb656d5e36c4b2681d37585c24318fa01389fdadb6c582b15f"
+    },
+    {
+      "pack": "VOlivia",
+      "action": "RAISE",
+      "symbol": "VoiceRaiseOlivia",
+      "character": 343,
+      "samples": 26496,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 8411,
+      "sha256": "e65ed5816344e418bb4d3762e360f637c58283de1464f44fc99b87312c297085"
+    },
+    {
+      "pack": "VOlivia",
+      "action": "BET",
+      "symbol": "VoiceBetOlivia",
+      "character": 287,
+      "samples": 20736,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 6583,
+      "sha256": "e31d0554666527aba06dc4be2b35ce268ec714555e96d7a97cbe5b5ccddaa95f"
+    },
+    {
+      "pack": "VOlivia",
+      "action": "CHECK",
+      "symbol": "VoiceCheckOlivia",
+      "character": 315,
+      "samples": 24192,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 7680,
+      "sha256": "8af535906624cb5cc78b19935fc5b4b1b2bbba3255edf62856e9c8628905c4ef"
+    },
+    {
+      "pack": "VOlivia",
+      "action": "CALL",
+      "symbol": "VoiceCallOlivia",
+      "character": 301,
+      "samples": 25344,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 8045,
+      "sha256": "04806fb583b4dd84bef40bfd0fc5f86224587e9adfab1f886c1d7f440dcf488d"
+    },
+    {
+      "pack": "VOlivia",
+      "action": "FOLD",
+      "symbol": "VoiceFoldOlivia",
+      "character": 329,
+      "samples": 20736,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 6583,
+      "sha256": "ee7c835a02cb543becfdfed157ded3cb1f5cbeaeaa767254912da3de487f540c"
+    },
+    {
+      "pack": "VOlivia",
+      "action": "STRADDLE",
+      "symbol": "VoiceStraddleOlivia",
+      "character": 357,
+      "samples": 28800,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9143,
+      "sha256": "07c6035fd454e2003abb4ad5ef98cf2c2df6961a0419eba7d01138b4175e25ea"
+    },
+    {
+      "pack": "VAva",
+      "action": "ALL_IN",
+      "symbol": "VoiceAllinAva",
+      "character": 263,
+      "samples": 38016,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 12068,
+      "sha256": "d15c494f0f104419655fc2971608c20c668dbb1544a11347f3837229ad8094b3"
+    },
+    {
+      "pack": "VAva",
+      "action": "RAISE",
+      "symbol": "VoiceRaiseAva",
+      "character": 333,
+      "samples": 29952,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9508,
+      "sha256": "8ba3b0d3355e72df850f1113f6f788589e7a54aa1300befad8af817a524f0212"
+    },
+    {
+      "pack": "VAva",
+      "action": "BET",
+      "symbol": "VoiceBetAva",
+      "character": 277,
+      "samples": 20736,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 6583,
+      "sha256": "52916daef00db9533c575fa4557821fff416e1e82f9de8f6b5c3dc956fb98c8c"
+    },
+    {
+      "pack": "VAva",
+      "action": "CHECK",
+      "symbol": "VoiceCheckAva",
+      "character": 305,
+      "samples": 23040,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 7314,
+      "sha256": "25ff80e7d4eddffb967660dd3980d62970dee38bff3767cb5390fcff34985706"
+    },
+    {
+      "pack": "VAva",
+      "action": "CALL",
+      "symbol": "VoiceCallAva",
+      "character": 291,
+      "samples": 26496,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 8411,
+      "sha256": "b882c567d3885e708040bd125a8c45edb509b5121b5bb82313abca448fd17ebf"
+    },
+    {
+      "pack": "VAva",
+      "action": "FOLD",
+      "symbol": "VoiceFoldAva",
+      "character": 319,
+      "samples": 24192,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 7680,
+      "sha256": "9edd15605919e755a437dc0164486102836535dd91806914e94654d6fda79763"
+    },
+    {
+      "pack": "VAva",
+      "action": "STRADDLE",
+      "symbol": "VoiceStraddleAva",
+      "character": 347,
+      "samples": 35712,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 11337,
+      "sha256": "5c1d947740f792b38ac7e20652423627819c0695fcd4fd6b1174609a63db43d6"
+    },
+    {
+      "pack": "VWilliams",
+      "action": "ALL_IN",
+      "symbol": "VoiceAllinWilliam",
+      "character": 275,
+      "samples": 36864,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 11703,
+      "sha256": "b960a0e651abf36a56389ef8d0ea3bad737c7f78b46b766b0221ed0cfea03f5d"
+    },
+    {
+      "pack": "VWilliams",
+      "action": "RAISE",
+      "symbol": "VoiceRaiseWilliam",
+      "character": 345,
+      "samples": 39168,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 12434,
+      "sha256": "c499f7d99dee70d01eff8fa5e7fa310863243c8c64deef40514150f927167184"
+    },
+    {
+      "pack": "VWilliams",
+      "action": "BET",
+      "symbol": "VoiceBetWilliam",
+      "character": 289,
+      "samples": 28800,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9143,
+      "sha256": "a3c8b27545ccc0ac04fe7c8ba1e4eeb0a5f6a86a1e449c2ece54ec1448e4a94d"
+    },
+    {
+      "pack": "VWilliams",
+      "action": "CHECK",
+      "symbol": "VoiceCheckWilliam",
+      "character": 317,
+      "samples": 24192,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 7680,
+      "sha256": "638fcbaa225256eb5e5b8321522bb1661c227619bfa6b6752085ee5a30679350"
+    },
+    {
+      "pack": "VWilliams",
+      "action": "CALL",
+      "symbol": "VoiceCallWilliam",
+      "character": 303,
+      "samples": 29952,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9508,
+      "sha256": "5df76fb7665359f58d804a08818a4578d8e938b2b7c735062317b3b111789271"
+    },
+    {
+      "pack": "VWilliams",
+      "action": "FOLD",
+      "symbol": "VoiceFoldWilliam",
+      "character": 331,
+      "samples": 28800,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9143,
+      "sha256": "38f052c58b8321afad41bfc3f16ca63413bf48e0f0c6cde834aca619fa3c22d0"
+    },
+    {
+      "pack": "VWilliams",
+      "action": "STRADDLE",
+      "symbol": "VoiceStraddleWilliam",
+      "character": 359,
+      "samples": 28800,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9143,
+      "sha256": "e0273b30780ac94e216df1428d994ce10ba14c9bc2b732696c5b458c4c5e30f9"
+    },
+    {
+      "pack": "VAmelia",
+      "action": "ALL_IN",
+      "symbol": "VoiceAllinAmelia",
+      "character": 262,
+      "samples": 36864,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 11703,
+      "sha256": "3ea9be53ab6e9dec422e5b24dd790647b3ce93020b83a89cfea09cc8b4e33995"
+    },
+    {
+      "pack": "VAmelia",
+      "action": "RAISE",
+      "symbol": "VoiceRaiseAmelia",
+      "character": 332,
+      "samples": 35712,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 11337,
+      "sha256": "c811a40f38290cc2c17ba75918be6b0ed70769bac949e20035821f5a97d415b8"
+    },
+    {
+      "pack": "VAmelia",
+      "action": "BET",
+      "symbol": "VoiceBetAmelia",
+      "character": 276,
+      "samples": 12672,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 4023,
+      "sha256": "4245f1fbbe10e87242ba7bbb935b2a45fda7d9f54b662059a5e25b155b02d711"
+    },
+    {
+      "pack": "VAmelia",
+      "action": "CHECK",
+      "symbol": "VoiceCheckAmelia",
+      "character": 304,
+      "samples": 23040,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 7314,
+      "sha256": "17b1853c285a6137429beb66b8e013e06391e071f54e5ae00482189b7c9b24ef"
+    },
+    {
+      "pack": "VAmelia",
+      "action": "CALL",
+      "symbol": "VoiceCallAmelia",
+      "character": 290,
+      "samples": 26496,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 8411,
+      "sha256": "56f1d98fa8fdf0fe40befe3b7e38a0a1e0ddc198151ff55145af1e359462a0f7"
+    },
+    {
+      "pack": "VAmelia",
+      "action": "FOLD",
+      "symbol": "VoiceFoldAmelia",
+      "character": 318,
+      "samples": 46080,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 14628,
+      "sha256": "8a465ba0465d1f43cfc25406bb67215180566367b4eae78ba4f59a37fae7396a"
+    },
+    {
+      "pack": "VAmelia",
+      "action": "STRADDLE",
+      "symbol": "VoiceStraddleAmelia",
+      "character": 346,
+      "samples": 38016,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 12068,
+      "sha256": "ccbfd175525cc5b15ab1826d90d5b3567bc6b51dc501b3c0678e6eac2f98dcb2"
+    },
+    {
+      "pack": "VJames",
+      "action": "ALL_IN",
+      "symbol": "VoiceAllinJames",
+      "character": 268,
+      "samples": 32256,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 10240,
+      "sha256": "2306ea5022408d3042d91730984234a849648c5228c6575f43109ca4ea8ff61f"
+    },
+    {
+      "pack": "VJames",
+      "action": "RAISE",
+      "symbol": "VoiceRaiseJames",
+      "character": 338,
+      "samples": 34560,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 10971,
+      "sha256": "064b3d5d53e44feb71d63c2c3b57d434301fd13f80877ec7eea4723489ee9977"
+    },
+    {
+      "pack": "VJames",
+      "action": "BET",
+      "symbol": "VoiceBetJames",
+      "character": 282,
+      "samples": 19584,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 6217,
+      "sha256": "b957ef41a086f5cd29ba9d871fb1f9bcb05814cb76d93145775e9d74c54c6496"
+    },
+    {
+      "pack": "VJames",
+      "action": "CHECK",
+      "symbol": "VoiceCheckJames",
+      "character": 310,
+      "samples": 28800,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9143,
+      "sha256": "07d6365bae08e5122b511c65726c75d6d33671e7e34994039840452faed73ddc"
+    },
+    {
+      "pack": "VJames",
+      "action": "CALL",
+      "symbol": "VoiceCallJames",
+      "character": 296,
+      "samples": 29952,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9508,
+      "sha256": "52785a39af4c9e4908ff7cee4697ec6d251679f60e6b1adca19b856a95ea8137"
+    },
+    {
+      "pack": "VJames",
+      "action": "FOLD",
+      "symbol": "VoiceFoldJames",
+      "character": 324,
+      "samples": 32256,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 10240,
+      "sha256": "f78fb867f6fd01232221f090231c113e668ce3baec5bd0f9932624333f656e76"
+    },
+    {
+      "pack": "VJames",
+      "action": "STRADDLE",
+      "symbol": "VoiceStraddleJames",
+      "character": 352,
+      "samples": 38016,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 12068,
+      "sha256": "e504d0426ed0f46be81803d7cd3da87dbe7b83f71cadb5b9d19cc2b0b99e8ec9"
+    },
+    {
+      "pack": "VEmma",
+      "action": "ALL_IN",
+      "symbol": "VoiceAllinEmma",
+      "character": 266,
+      "samples": 31104,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9874,
+      "sha256": "b1a830f459cddd82f6dd07908df1ec165a9af0e25573ab1d94d7d2003ee1c587"
+    },
+    {
+      "pack": "VEmma",
+      "action": "RAISE",
+      "symbol": "VoiceRaiseEmma",
+      "character": 336,
+      "samples": 29952,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9508,
+      "sha256": "d8d590bb4df2d12bee79457374bac71bf9d001fbdba4484db15fd24f1620bec3"
+    },
+    {
+      "pack": "VEmma",
+      "action": "BET",
+      "symbol": "VoiceBetEmma",
+      "character": 280,
+      "samples": 16128,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 5120,
+      "sha256": "39f61cacb389e4fab89bb568a178dccd441a1e0d5f7a61cd9e0cebe41b1f6e88"
+    },
+    {
+      "pack": "VEmma",
+      "action": "CHECK",
+      "symbol": "VoiceCheckEmma",
+      "character": 308,
+      "samples": 23040,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 7314,
+      "sha256": "f22b9c0186e3233c702df87c5e5ff06b8df00758d4baac780f4b1f8dac750e7d"
+    },
+    {
+      "pack": "VEmma",
+      "action": "CALL",
+      "symbol": "VoiceCallEmma",
+      "character": 294,
+      "samples": 24192,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 7680,
+      "sha256": "12a613d38c4bb7a60b90b8b986bf0a5209ed66316f46755f7ea32e205944188c"
+    },
+    {
+      "pack": "VEmma",
+      "action": "FOLD",
+      "symbol": "VoiceFoldEmma",
+      "character": 322,
+      "samples": 27648,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 8777,
+      "sha256": "970b43c9ee9f84f3d0594d2d86be7b57d2a66f6231ef9b228158877bb974f19d"
+    },
+    {
+      "pack": "VEmma",
+      "action": "STRADDLE",
+      "symbol": "VoiceStraddleEmma",
+      "character": 350,
+      "samples": 26496,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 8411,
+      "sha256": "a6b474039c8833fa6580acb695d8d3ec0959002459374b7d98e128983a7027f7"
+    },
+    {
+      "pack": "VKevin",
+      "action": "ALL_IN",
+      "symbol": "VoiceAllinKevin",
+      "character": 269,
+      "samples": 41472,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 13165,
+      "sha256": "12332fe91d376d1cd375bd81b0b1f4155462c24061d572c02dce2d74bebe44c3"
+    },
+    {
+      "pack": "VKevin",
+      "action": "RAISE",
+      "symbol": "VoiceRaiseKevin",
+      "character": 339,
+      "samples": 34560,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 10971,
+      "sha256": "fdc02cb474d280aae4139bc0c5c863914dd7be4f1cecc4562bbf45d626a62ac3"
+    },
+    {
+      "pack": "VKevin",
+      "action": "BET",
+      "symbol": "VoiceBetKevin",
+      "character": 283,
+      "samples": 24192,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 7680,
+      "sha256": "827fd19dce8b097fda9330b5fe152147da48d5854ae73d312a671227fb8df032"
+    },
+    {
+      "pack": "VKevin",
+      "action": "CHECK",
+      "symbol": "VoiceCheckKevin",
+      "character": 311,
+      "samples": 25344,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 8045,
+      "sha256": "65715fa1db4f008dad98570ea4af5e09b7adf1185b035c8b65876fe365b85be7"
+    },
+    {
+      "pack": "VKevin",
+      "action": "CALL",
+      "symbol": "VoiceCallKevin",
+      "character": 297,
+      "samples": 26496,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 8411,
+      "sha256": "5be70b42941d7296695fe5fc923923bf223f75153bcf1b7ec082f2c713da35a0"
+    },
+    {
+      "pack": "VKevin",
+      "action": "FOLD",
+      "symbol": "VoiceFoldKevin",
+      "character": 325,
+      "samples": 24192,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 7680,
+      "sha256": "0825d7a786df48134d5cb1dccd1150cb518bee2560bec5e5ccd89a4409c5d8f1"
+    },
+    {
+      "pack": "VKevin",
+      "action": "STRADDLE",
+      "symbol": "VoiceStraddleKevin",
+      "character": 353,
+      "samples": 27648,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 8777,
+      "sha256": "627f089f63ee5cbe539c8989c4cddda82b77f72b3ac959a510d6ecbfa16c7f48"
+    },
+    {
+      "pack": "VMichael",
+      "action": "ALL_IN",
+      "symbol": "VoiceAllinMichael",
+      "character": 270,
+      "samples": 26496,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 8411,
+      "sha256": "4f7868c8702d8b33fe40f3f42e836769377c60a7ac085d1f0558cd21276d1ab6"
+    },
+    {
+      "pack": "VMichael",
+      "action": "RAISE",
+      "symbol": "VoiceRaiseMichael",
+      "character": 340,
+      "samples": 35712,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 11337,
+      "sha256": "859c0b0ac64e01da2017b1d384674f9116772e1fb60a33d528f87a55dbffc802"
+    },
+    {
+      "pack": "VMichael",
+      "action": "BET",
+      "symbol": "VoiceBetMichael",
+      "character": 284,
+      "samples": 19584,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 6217,
+      "sha256": "99329313f439fab508449431d2ad232b1af83d6696339396addde5226cfcf2f2"
+    },
+    {
+      "pack": "VMichael",
+      "action": "CHECK",
+      "symbol": "VoiceCheckMichael",
+      "character": 312,
+      "samples": 23040,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 7314,
+      "sha256": "dee075d5ecbb9be8758594dd486f6fd199f2fe8209b9e8d9242b346b59c1f143"
+    },
+    {
+      "pack": "VMichael",
+      "action": "CALL",
+      "symbol": "VoiceCallMichael",
+      "character": 298,
+      "samples": 29952,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9508,
+      "sha256": "37294ab5f4892e1b6b601ee0e4582b5136c4a1bb8e30472511ebd72f13b11fb8"
+    },
+    {
+      "pack": "VMichael",
+      "action": "FOLD",
+      "symbol": "VoiceFoldMichael",
+      "character": 326,
+      "samples": 29952,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 9508,
+      "sha256": "4dc98ddd3c951619741f17e67dc3f2715f508cd7a049ce3acce0a65604bd5481"
+    },
+    {
+      "pack": "VMichael",
+      "action": "STRADDLE",
+      "symbol": "VoiceStraddleMichael",
+      "character": 354,
+      "samples": 46080,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 14628,
+      "sha256": "e9236b4ec8c661b4c02ffaf16b493220df6e1ac53c9a2d3d7a5c1b4964b925f4"
+    }
+  ],
+  "images": [
+    {
+      "pack": "VDaniel",
+      "source": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/action_voice/DanielNegreanu_ActionVoice.png",
+      "file": "native-action-voice/DanielNegreanu_ActionVoice.png",
+      "size": [
+        208,
+        208
+      ],
+      "bytes": 72886,
+      "sha256": "1fe9807f55ac9eef58bf0058835253e8ca31292e81a3380986e0db481bc16c65"
+    },
+    {
+      "pack": "VDoyle",
+      "source": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/action_voice/DoyleBronson_ActionVoice.png",
+      "file": "native-action-voice/DoyleBronson_ActionVoice.png",
+      "size": [
+        208,
+        208
+      ],
+      "bytes": 63922,
+      "sha256": "1bc7725f72662598b065f448ec123eca343d100dd4a23f8f4d36205eb4756d5f"
+    },
+    {
+      "pack": "VGreg",
+      "source": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/action_voice/GregGoesAllin_ActionVoice.png",
+      "file": "native-action-voice/GregGoesAllin_ActionVoice.png",
+      "size": [
+        208,
+        208
+      ],
+      "bytes": 73622,
+      "sha256": "0dc341a97ca32d3983c8f584ce96e5de02160aee97acc056a6abd119e09198c2"
+    },
+    {
+      "pack": "VSophia",
+      "source": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/action_voice/Sophia_ActionVoice.png",
+      "file": "native-action-voice/Sophia_ActionVoice.png",
+      "size": [
+        208,
+        208
+      ],
+      "bytes": 71265,
+      "sha256": "ebb694ecd540eb327809719201ea94d7a9afcf171b35521e0ebd12f9e58760a9"
+    },
+    {
+      "pack": "VOliver",
+      "source": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/action_voice/Oliver_ActionVoice.png",
+      "file": "native-action-voice/Oliver_ActionVoice.png",
+      "size": [
+        208,
+        208
+      ],
+      "bytes": 73309,
+      "sha256": "51303458b716c2f70e93ad28b24b648b4dd5c209fe4012d97cdb5c4b9176efee"
+    },
+    {
+      "pack": "VNoah",
+      "source": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/action_voice/Noah_ActionVoice.png",
+      "file": "native-action-voice/Noah_ActionVoice.png",
+      "size": [
+        208,
+        208
+      ],
+      "bytes": 63576,
+      "sha256": "33892f79c2100ce96a0957268ade00ba9851952309e213a3ef4dd8103e3791de"
+    },
+    {
+      "pack": "VOlivia",
+      "source": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/action_voice/Olivia_ActionVoice.png",
+      "file": "native-action-voice/Olivia_ActionVoice.png",
+      "size": [
+        208,
+        208
+      ],
+      "bytes": 68455,
+      "sha256": "0812ef5fb8e6ab7eb998ce3e910c5a04bb46520078b2ad7656a91355d514019d"
+    },
+    {
+      "pack": "VAva",
+      "source": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/action_voice/Ava_ActionVoice.png",
+      "file": "native-action-voice/Ava_ActionVoice.png",
+      "size": [
+        208,
+        208
+      ],
+      "bytes": 71745,
+      "sha256": "f7bd10303afe8b356dbd3dad01e29af2fdb2050d859dee00924e3a00d03b12b6"
+    },
+    {
+      "pack": "VWilliams",
+      "source": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/action_voice/William_ActionVoice.png",
+      "file": "native-action-voice/William_ActionVoice.png",
+      "size": [
+        208,
+        208
+      ],
+      "bytes": 73103,
+      "sha256": "cb22b12a0b516808bd32b4df3d761abfaf731b6a70a43d27f97a744f84fc6126"
+    },
+    {
+      "pack": "VAmelia",
+      "source": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/action_voice/Amelia_ActionVoice.png",
+      "file": "native-action-voice/Amelia_ActionVoice.png",
+      "size": [
+        208,
+        208
+      ],
+      "bytes": 75904,
+      "sha256": "b60ff441108b38040a8ffca05ecd92eb9bc7f1ebe6a7dd4f0a884b53f566ed00"
+    },
+    {
+      "pack": "VJames",
+      "source": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/action_voice/James_ActionVoice.png",
+      "file": "native-action-voice/James_ActionVoice.png",
+      "size": [
+        208,
+        208
+      ],
+      "bytes": 69509,
+      "sha256": "f2b45ea1ad9014fab779ef7eb7338d3224532b4a6d9c36cc03df37d58287a330"
+    },
+    {
+      "pack": "VEmma",
+      "source": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/action_voice/Emma_ActionVoice.png",
+      "file": "native-action-voice/Emma_ActionVoice.png",
+      "size": [
+        208,
+        208
+      ],
+      "bytes": 69987,
+      "sha256": "5cbbf7742ac9ae01247ec6b5f3c27d2f5131b6c1874dde1c0402eaf429b87e74"
+    },
+    {
+      "pack": "VKevin",
+      "source": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/action_voice/KevinMartin_ActionVoice.png",
+      "file": "native-action-voice/KevinMartin_ActionVoice.png",
+      "size": [
+        208,
+        208
+      ],
+      "bytes": 48930,
+      "sha256": "cbb598ab30140314d8cdbe3e97b526c7389fcbaabbc0bdadcd93245666876913"
+    },
+    {
+      "pack": "VMichael",
+      "source": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/action_voice/MichaelMizrachi_ActionVoice.png",
+      "file": "native-action-voice/MichaelMizrachi_ActionVoice.png",
+      "size": [
+        208,
+        208
+      ],
+      "bytes": 57374,
+      "sha256": "11fd1124631c5bc3878702a25f6fb351414fbf00bd28c2e39b0a9f88b90cd3fc"
+    }
+  ],
+  "files": [
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/voice-pack-source/scripts/com/nsus/iron/sound/VoicePack.as",
+      "bytes": 6088,
+      "sha256": "9761cbf89a3dd315c7bcb6e28438a8989ba1dd01db7b9362bbc9473d1850d73f"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/voice-pack-source/scripts/com/nsus/iron/lobby/view/option/page/MyActionVoicePage.as",
+      "bytes": 31969,
+      "sha256": "941c293facae406d1a561ea3a896b9ad0c487649278aec4d210548699dfd3fa7"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/sound/SoundItem.as",
+      "bytes": 75541,
+      "sha256": "5a978cd4d00a4c10c9e87e407327081123cc9cfd224566bf280e1d7e2f080ef9"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/data/UserSetting.as",
+      "bytes": 102275,
+      "sha256": "879aab33b93e952d5515222b70300455d8f6186e9cbb153c9a1fa47898129019"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/TableMediator.as",
+      "bytes": 231955,
+      "sha256": "a17c9da4b16339a65a8329e0329c52dff7f7fb6072474da02ef6379c1359d4f5"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/lib/media/SoundManager.as",
+      "bytes": 8470,
+      "sha256": "7dd662e2bdc06077f6d72c90b304a26992179fe716ca3b9160fb4283104e1bf9"
+    }
+  ],
+  "status": "Source/catalog/resource stage only. UI,authenticated per-actor transport and runtime routing not implemented or installed.",
+  "nativePreferences": {
+    "defaultPack": "VDaniel",
+    "voiceVolume": 0.5,
+    "voiceEnabled": true
+  },
+  "nativeVoiceRules": [
+    "Sound selector saves changed sound-page draft then opens MyPage/MyActionVoice.",
+    "MyActionVoice Apply persists pack/volume and stays on page;preview does not save selection.",
+    "Own actor resolves local preference;opponent resolves player.voiceName,not listeners selected pack.",
+    "No voice unless userPlayer isPlaying;preflop fold voice suppressed.",
+    "All-in voice applies to zero-balance non-call and AoF;zero-balance call retains Call voice.",
+    "Voice preview master override/restoration and3.5s fade/4s stop remain source requirements."
+  ],
+  "remaining": [
+    "Full browser decode of98clips",
+    "Source carousel/apply/preview UI and14portrait packaging",
+    "Authenticated account save and public seat voice metadata",
+    "Action trace-based actor/street/all-in call selection",
+    "Full separate-session hand,payout,cold restart and native comparison"
+  ]
+}

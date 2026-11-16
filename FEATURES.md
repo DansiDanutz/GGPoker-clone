@@ -2,6 +2,10 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
+## Action Voice reconstruction — not installed
+
+Source-backed candidate catalog has14packs/7actions/98exact original clips and14original portrait identities. UI,authenticated per-actor transport and table playback remain unwired;live remains PR293. [Native workflow,rules and remaining gate](docs/rea/action-voice.md). Do not describe the player-facing voice feature as complete.
+
 ## Functional Critical Alert audio
 
 Third category controls actual clock-alert gain independently,with source-bound existing cue aliases and all three native preview choices. Mute/level,draft cancellation,storage/reload/restart and unchanged clock cancellation are verified before publication. [Native identity and acceptance](docs/rea/critical-alert.md). Native six-category geometry/remaining transports and physical timing stay incomplete.
