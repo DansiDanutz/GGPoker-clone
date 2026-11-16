@@ -1,0 +1,60 @@
+{
+  "method": "REA reused headless FFDec original OptionSoundPage with inner VolumeSlider/VolumeSliderType and SoundItem; static evidence,not native audio playback",
+  "swfSha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
+  "files": [
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/lobby/view/option/page/OptionSoundPage.as",
+      "bytes": 29742,
+      "sha256": "eb73476f46edf2a6e1392eb185acdeaf92b96bfe9db9e3aafe31bfb0f5a97237"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/sound/SoundItem.as",
+      "bytes": 75541,
+      "sha256": "5a978cd4d00a4c10c9e87e407327081123cc9cfd224566bf280e1d7e2f080ef9"
+    }
+  ],
+  "boundLabels": {
+    "page": "OptionTabSound",
+    "table": "TableSound",
+    "effects": "MobileSoundEffect"
+  },
+  "nativeCategories": [
+    "ActionVoice",
+    "Bgm",
+    "TableSound",
+    "MobileSoundEffect",
+    "CriticalAlert",
+    "SnapCamVoiceMsg"
+  ],
+  "nativeCategoryTypes": [
+    "VOICE",
+    "BGM",
+    "SOUND_TABLE",
+    "SOUND",
+    "NOTIFICATION",
+    "SNAPCAM"
+  ],
+  "nativeChannelLabel": {
+    "size": 16,
+    "color": "#fefefe",
+    "useRoboto": true
+  },
+  "nativePageTitle": {
+    "size": 18,
+    "color": "#cccccc",
+    "useRoboto": true
+  },
+  "remainingLocalGaps": [
+    "ActionVoice/voice pack selection",
+    "BGM",
+    "CriticalAlert per-category controls",
+    "SnapCam/voice message audio",
+    "Native six-category page geometry and native master-on/off skin",
+    "Physical speaker/native timing verification"
+  ],
+  "limitations": [
+    "Only the two existing functional local categories receive caption/accessibility binding.",
+    "Local master-volume/mute/status copy has no established native key in this trace and remains explicitly local.",
+    "No extra control is presented as functional without real audio transport/category binding."
+  ]
+}

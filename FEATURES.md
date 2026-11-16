@@ -2,6 +2,10 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
+## Native Sound captions and remaining categories
+
+Sound title and two implemented category captions use original keys/fonts with stable translated slider/preview names and drafts. [Source,acceptance and explicit gaps](docs/rea/sound-page-language.md). Native Voice,BGM,CriticalAlert and SnapCam/voice-message categories remain missing;the current page is not the complete native Sound feature.
+
 ## Localized betting caption readability
 
 Three wrapped row captions retain full text and source column/row positions with a local browser height-fit safeguard. Romanian overlap and hidden-page English reset are verified before publication. [REA source distinction and acceptance](docs/rea/betting-caption-fit.md). This local bound is not a claim of exact native multiline metrics.
