@@ -2,7 +2,19 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
-## Verified release baseline — PR268
+## Verified release baseline — PR270
+
+PR270 merged `7db0c343e1ca3de8cbefeda44db2e7ff8336ac15`; tested source `1ec77b284db52cdb9d0660ec45026ab76bdc4d04`.
+
+Group View now uses the source241px sidebar and animated88/136px operator. Selection changes list690→642px at1200×963, with actual Profile/Open/Join callbacks retained. The in-app Information panel uses original close/arrow/icon art,200ms cubic motion, original language catalogs and actual local catalog rules. Native fixed14-second values are not copied over owner-configurable action times. Source/implementation/browser focus issues and remaining differences are documented.
+
+All16 exact-head installed checks/reviews passed:130 runtime identities,1381 artwork hashes/1375 unchanged hardlinks,15 original AS3 identities,6 independent exact RGBA crops,unit/font/language/private metadata checks,actual Group/panel geometry and cubic midpoints,resize/lifecycle/stable refresh,two complete six-seat browser journeys,independent payouts,reconnect/cold restart and conserved balances. Installed1200×963 Group capture inspected; original app not relaunched.
+
+Live runtime130files/1,498,363bytes;art1381files with1375 verified immutable hardlinks plus6new PNGs totaling3907bytes. Guarded idle rollout PID49447→4590 preserved all6ownerfiles(15,496bytes) byte-for-byte. Backup `/Users/davidai/.local/state/playgg-rollouts/pr270-tjy2zqkz`. No live gameplay writes,foreground or speaker actions. Native feature rows,loaded-module identity,color/text pipeline,fresh native Group comparison and whole-app parity remain incomplete.
+
+[Source, behavior and remaining gaps](docs/rea/cash-group-operator-research.md).
+
+## Historical release baseline — PR268
 
 PR268 merged `45da34d0d38088184bc1ada5808c44497d1c37f6`; tested source `dcd59455316887cde1f90fd8073ebb9f305185c5`.
 
