@@ -47,7 +47,6 @@
   "remainingLocalGaps": [
     "ActionVoice/voice pack selection",
     "BGM",
-    "CriticalAlert per-category controls",
     "SnapCam/voice message audio",
     "Native six-category page geometry and native master-on/off skin",
     "Physical speaker/native timing verification"
@@ -56,5 +55,6 @@
     "Only the two existing functional local categories receive caption/accessibility binding.",
     "Local master-volume/mute/status copy has no established native key in this trace and remains explicitly local.",
     "No extra control is presented as functional without real audio transport/category binding."
-  ]
+  ],
+  "implementationFollowup": "critical-alert-source.json adds functional third category;initial two-category caption scope is historical"
 }

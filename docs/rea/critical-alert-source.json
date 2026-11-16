@@ -1,0 +1,59 @@
+{
+  "method": "REA original SoundItem/OptionSoundPage plus exact SWF SymbolClass/DefineSound readback using published extractor --critical",
+  "swfSha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
+  "files": [
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/lobby/view/option/page/OptionSoundPage.as",
+      "bytes": 29742,
+      "sha256": "eb73476f46edf2a6e1392eb185acdeaf92b96bfe9db9e3aafe31bfb0f5a97237"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/sound/SoundItem.as",
+      "bytes": 75541,
+      "sha256": "5a978cd4d00a4c10c9e87e407327081123cc9cfd224566bf280e1d7e2f080ef9"
+    }
+  ],
+  "sounds": {
+    "NotificationTimeBank": {
+      "character": 51,
+      "samples": 9216,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 6815,
+      "sha256": "835ec95355373947875a8314c2da240a601070b12387cefa4e64f89e9a4c8d1a"
+    },
+    "NotificationTimeFFTPreFlop": {
+      "character": 53,
+      "samples": 9216,
+      "sampleRate": 44100,
+      "seekSamples": 0,
+      "bytes": 6815,
+      "sha256": "d8bf4f3899b98bdab07a39285efc5200d95dddb65e2b850fa53a4e3e0e519260"
+    },
+    "TimeBankSound": {
+      "character": 260,
+      "samples": 220500,
+      "sampleRate": 44100,
+      "seekSamples": 1633,
+      "bytes": 40352,
+      "sha256": "d4864e5eb414d9dce75fd9312d20980ddc47ad3cda04627e69b5ef2557a0d12f"
+    }
+  },
+  "localAliases": {
+    "ChessClock": "NotificationTimeFFTPreFlop",
+    "TimeBankTick": "TimeBankSound",
+    "NotificationTimeBank": "NotificationTimeBank"
+  },
+  "category": "SoundType.NOTIFICATION / VolumeSliderType.CRITICAL_ALERT / CriticalAlert label",
+  "emissionPolicy": "Existing clock event/cadence/phase/cancellation unchanged. New third cue is available for source-whitelist preview;no new bank-event timing is invented.",
+  "legacyDefault": "Missing critical preferences use enabled100percent to preserve previous master-only gain,not an asserted native default.",
+  "storageKeys": [
+    "river-audio-critical-volume",
+    "river-audio-critical-enabled"
+  ],
+  "limitations": [
+    "Native six-category layout/Voice/BGM/SnapCam remain incomplete.",
+    "Actual native speaker/phase timing and initial NotificationTimeBank automatic trigger remain unverified.",
+    "Local shared-room mode retains private-art exclusion."
+  ]
+}

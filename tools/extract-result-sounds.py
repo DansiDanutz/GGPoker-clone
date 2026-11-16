@@ -6,12 +6,13 @@ import struct
 import sys
 import zlib
 
-assert len(sys.argv) in (3,4) and (len(sys.argv)==3 or sys.argv[3] in ('--spin','--insurance','--board','--battle'))
+assert len(sys.argv) in (3,4) and (len(sys.argv)==3 or sys.argv[3] in ('--spin','--insurance','--board','--battle','--critical'))
 source, destination = map(Path, sys.argv[1:3])
 selected=[("TournamentFallResult",443520,3),("TournamentResultFT",488448,3),("TournamentResultITM",510336,3)] if len(sys.argv)==3 else [('SpinAndGoldSpin',192384,3),('SNGWheelStuckHigh',11520,3),('SNGWheelStuckLow',6912,3),('SngFireworks',46656,2),('SNGWheelOut',126720,3),('SngBigWin',472320,3),('SngWheelFrameEffect',82944,3),('SngWheelFrameLight',66816,3),('SngWheelBaseLight',208512,3)]
 if len(sys.argv)==4 and sys.argv[3]=='--insurance':selected=[('SngInsuranceText',155520,3),('SngPrizeCheers',73728,3),('SngPrizeDaller',129024,3)]
 if len(sys.argv)==4 and sys.argv[3]=='--board':selected=[('BoardFlop',27648,3)]
 if len(sys.argv)==4 and sys.argv[3]=='--battle':selected=[('BnRReadyCount',331776,3),('BnRRoundEnd',72576,3)]
+if len(sys.argv)==4 and sys.argv[3]=='--critical':selected=[('NotificationTimeBank',9216,3),('NotificationTimeFFTPreFlop',9216,3),('TimeBankSound',220500,3)]
 raw = source.read_bytes()
 assert raw[:3] in (b"CWS", b"FWS"), "Unsupported SWF compression"
 data = raw[:8] + zlib.decompress(raw[8:]) if raw[:3] == b"CWS" else raw
@@ -42,7 +43,7 @@ while pos < len(data):
         break
 recovered = {}
 for name, expected, expected_rate in selected:
-    character = symbols["Sound" + name]
+    character = symbols[name if len(sys.argv)==4 and sys.argv[3]=='--critical' else "Sound" + name]
     sound = sounds[character]
     rate=(sound[2] >> 2) & 3
     assert sound[2] >> 4 == 2 and rate in (2,3) and (expected_rate is None or rate==expected_rate), "Expected native MP3 sample rate"

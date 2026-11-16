@@ -133,7 +133,7 @@ for(const id of ['shuffleEnabled','shuffleDirection','shuffleSensitivity'])$(id)
 const soundOptions=document.createElement('div');soundOptions.id='soundOptions';soundOptions.hidden=true;
 soundOptions.innerHTML='<h2>Sound</h2><p><label>Master Volume <input id="masterVolume" type="range" min="0" max="100" step="1" aria-label="Master Volume"><output id="volumeValue"></output></label></p><p><label><input id="tableMuted" type="checkbox"> Mute all sound</label></p>';
 soundOptions.querySelector('h2').id='soundPageTitle';soundOptions.querySelector('h2').dataset.nativeLabel='OptionTabSound';
-const soundChannelLabels={table:'TableSound',effects:'MobileSoundEffect'};
+const soundChannelLabels={table:'TableSound',effects:'MobileSoundEffect',critical:'CriticalAlert'};
 for(const channel of audioChannels){const row=document.createElement('p');row.className='audioChannel';row.innerHTML='<label><input id="audio-'+channel.id+'-enabled" type="checkbox"> <span id="audio-'+channel.id+'-label" data-native-label="'+soundChannelLabels[channel.id]+'">'+channel.label+'</span></label><input id="audio-'+channel.id+'-volume" type="range" min="0" max="100" step="1" aria-labelledby="audio-'+channel.id+'-label"><output id="audio-'+channel.id+'-value"></output>';soundOptions.append(row)}
 let soundPreviewChannel=null,lastSoundPreview=null,soundPreviewRequest=0;
 const soundPreviewStatus=document.createElement('p');soundPreviewStatus.setAttribute('role','status');soundPreviewStatus.id='soundPreviewStatus';soundOptions.append(soundPreviewStatus);
