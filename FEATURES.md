@@ -2,6 +2,10 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
+## Settings sidebar language
+
+Eleven remaining sidebar captions bind native source keys and the existing catalog without changing page identity, capability flags or unsaved drafts. [Source and acceptance](docs/rea/settings-sidebar-language.md). Page body translation and physical native parity remain incomplete.
+
 ## Editable betting presets
 
 Source-backed direct Custom typing and opening Max replace fixed-only selection. Native bounds, options/order,48px input/20px arrow,four-row popup,translated labels and existing draft persistence are connected to legal prepared targets. [Contract and acceptance](docs/rea/editable-bet-presets.md). Native physical popup/font/gesture parity remains incomplete.
