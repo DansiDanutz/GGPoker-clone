@@ -2,6 +2,10 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
+## Betting settings language
+
+Betting settings bind18 body labels and the sidebar title to the recovered native keys. Stable page identity preserves translated routing/selection; translated row/column labels name preset controls, and page entry focuses a real choice. Draft preferences and prepared bets must survive cross-window language changes. [Source contract and acceptance](docs/rea/betting-settings-language.md). Other settings labels, exact native text scaling and physical parity remain incomplete.
+
 ## Group player chip display
 
 The Group player list uses the same grouped play-chip display as the Table preview, retaining actual numeric stacks and numeric sorting. Source PlayerCellRenderer delegates formatting before drawing. The actual9760-chip browser row reproduces the old ungrouped value; units cover999/9760/1000000 numeric order and input immutability. Native currency-specific decimals/abbreviations and physical label scaling remain unverified. [REA scope](docs/rea/cash-group-players.md#group-chips-formatting-follow-up).
