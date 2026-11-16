@@ -22,3 +22,11 @@ const legacy={Vmale1:'VJames',Vmale2:'VOliver',Vmale3:'VNoah',Vmale4:'VWilliam',
 export function isVoicePackId(id){return voicePacks.some(pack=>pack.id===id)}
 export function voicePack(id){const key=typeof id==='string'&&Object.hasOwn(legacy,id)?legacy[id]:id;return voicePacks.find(pack=>pack.id===key)||voicePacks[0]}
 export function voiceCue(packId,action){const selected=voiceActions.find(item=>item.id===action);return selected?'Voice'+selected.soundPart+voicePack(packId).soundSuffix:null}
+// MyActionVoicePage.VoiceCarousel.layout/posX and VoiceCarouselCell.render.
+export function voiceCarouselLayout(index,phase=0){
+ const count=voicePacks.length,half=count>>1,offset=Math.max(-2,Math.min(2,phase));
+ return voicePacks.map((_,i)=>{
+  const slot=((i-index+half)%count+count)%count-half,distance=slot+offset,absolute=Math.abs(distance),selection=Math.max(0,1-absolute);
+  return {slot,x:Math.sign(distance)*(absolute<=1?absolute*131:131+(absolute-1)*85),radius:36+24*selection,dim:Math.min(1,absolute/4)*.6,primary:selection>=.5};
+ });
+}

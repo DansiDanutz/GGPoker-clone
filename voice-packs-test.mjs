@@ -1,6 +1,20 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {voicePacks,voiceActions,voicePack,isVoicePackId,voiceCue} from './voice-packs.mjs';
+import {voicePacks,voiceActions,voicePack,isVoicePackId,voiceCue,voiceCarouselLayout} from './voice-packs.mjs';
+const centered=voiceCarouselLayout(0);
+assert.equal(centered.length,14);
+assert.deepEqual(centered[0],{slot:0,x:0,radius:60,dim:0,primary:true});
+assert.deepEqual(centered[1],{slot:1,x:131,radius:36,dim:.15,primary:false});
+assert.equal(centered[2].x,216);assert.equal(centered[13].x,-131);
+assert.equal(centered[7].slot,-7);assert.equal(centered[7].dim,.6);
+assert.equal(voiceCarouselLayout(13)[0].x,131);
+assert.deepEqual(voiceCarouselLayout(14),centered);
+const midway=voiceCarouselLayout(0,.5);
+assert.equal(midway[0].x,65.5);assert.equal(midway[0].radius,48);assert.equal(midway[0].primary,true);
+assert.equal(midway[13].x,-65.5);assert.equal(midway[13].radius,48);
+assert.deepEqual(voiceCarouselLayout(0,99),voiceCarouselLayout(0,2));
+assert.deepEqual(voiceCarouselLayout(0,-99),voiceCarouselLayout(0,-2));
+console.log('PASS native cyclic carousel offsets,131/85 spacing,36–60 radii,dim cap and bounded transition phase');
 assert.equal(voicePacks.length,14);assert.equal(voiceActions.length,7);
 assert.deepEqual(voicePacks.map(p=>p.id),['VDaniel','VDoyle','VGreg','VSophia','VOliver','VNoah','VOlivia','VAva','VWilliams','VAmelia','VJames','VEmma','VKevin','VMichael']);
 assert.equal(voicePack(null).id,'VDaniel');for(const bad of [null,undefined,0,{},[],true,'__proto__','constructor','../VDaniel','VoiceBetDaniel','VWilliam']){assert.equal(isVoicePackId(bad),false);assert.equal(voicePack(bad).id,'VDaniel')}
