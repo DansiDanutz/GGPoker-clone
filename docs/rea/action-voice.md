@@ -18,7 +18,7 @@ Preview uses the selected pack's exact action clip,shared master volume override
 
 TableMediator resolves the own actor's pack from the local preference and the opponent's pack from player.voiceName. A listener's selected pack must not replace every actor. Persist the authenticated account's choice and project safe canonical pack IDs by authenticated seat identity,following existing account/avatar ownership. Do not infer account identity from a display nickname. Preserve PIN/session/avatar/wallet data and validate backup/restore compatibility.
 
-Voice playback is gated by the user being dealt into the hand;source suppresses preflop Fold voice. A zero-balance non-call gets All-In voice,while an all-in Call retains Call voice. AoF is separately All-In. Local tableCues currently loses actor/street detail and treats some all-in calls as AllIn effects;do not blindly append voices to its strings. Use public action trace metadata with actor,street and actual action,without exposing private cards or replaying reconnect history. Preserve existing sound effects,clock alerts and payouts.
+Voice playback requires native userPlayer.isPlaying (status equals EGamePlayerStatus.Playing);the equivalent local eligibility predicate needs an explicit mapping test before routing.Source suppresses preflop Fold voice. A zero-balance non-call gets All-In voice,while an all-in Call retains Call voice. AoF is separately All-In. Local tableCues currently loses actor/street detail and treats some all-in calls as AllIn effects;do not blindly append voices to its strings. Use public action trace metadata with actor,street and actual action,without exposing private cards or replaying reconnect history. Preserve existing sound effects,clock alerts and payouts.
 
 ## Release gate
 
