@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {traceVoiceEvents} from './table-voice.mjs';
+import {traceVoiceEvents,validVoiceStamps} from './table-voice.mjs';
 import {startHand,act,options} from './engine/table.mjs';
 const row=(seat,street,action,bet,voicePackId='VGreg',allIn=false)=>({seat,street,action,bet,voicePackId,allIn});
 const trace={opening:{bets:[0,2,4]},actions:[row(0,0,'call',4),row(1,0,'raise',8,'VDoyle'),row(2,0,'call',8,'VDaniel',true),row(0,0,'fold',4),row(1,3,'check',0),row(2,3,'raise',12,'VSophia'),row(1,3,'raise',40,'VEmma',true),row(2,3,'fold',12)]};
@@ -12,6 +12,8 @@ assert.equal(traceVoiceEvents(trace,0,'aof')[0].cue,'VoiceAllinGreg');
 assert.equal(traceVoiceEvents(trace,0,'aof').some(event=>event.index===3),false);
 assert.equal(traceVoiceEvents(trace,0,'aof').at(-1).cue,'VoiceFoldGreg');
 const saved=structuredClone(trace);traceVoiceEvents(trace);assert.deepEqual(trace,saved);
+assert.equal(validVoiceStamps(undefined),true);assert.equal(validVoiceStamps(trace),true);assert.equal(validVoiceStamps({actions:[{seat:0}]}),true);
+for(const invalid of [null,{},[],{actions:null},{actions:[null]},{actions:[{voicePackId:'../bad'}]},{actions:[{voicePackId:null}]}])assert.equal(validVoiceStamps(invalid),false);
 const changing={opening:{bets:[2,4]},actions:[row(0,0,'raise',12,'VGreg'),row(1,0,'call',12,'VDoyle'),row(0,3,'raise',8,'VEmma'),row(1,3,'raise',20,'VDoyle')]};
 assert.deepEqual(traceVoiceEvents(changing).map(event=>event.cue),['VoiceRaiseGreg','VoiceCallDoyle','VoiceBetEmma','VoiceRaiseDoyle'],'Use each action stamp rather than current seat preference');
 const legacy=structuredClone(changing);delete legacy.actions[0].voicePackId;

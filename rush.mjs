@@ -1,4 +1,5 @@
 import {voicePack} from './voice-packs.mjs';
+import {traceVoiceEvents,validVoiceStamps} from './table-voice.mjs';
 import {createHash} from 'node:crypto';
 import {readFileSync,writeFileSync,renameSync} from 'node:fs';
 import {rushPool} from './engine/rush-pool.mjs';
@@ -13,10 +14,11 @@ export function openRush(file,variant='holdem',avatarFor=()=>0,notes,walletStore
  let entries=[],pool=null,version=0,knownTables=new Set();
  // Cosmetic leases stay in memory so a restart cannot replay a shuffle.
  const shuffles=new Map();
- function restore(saved){entries=saved.entries;if(!Array.isArray(entries)||entries.some(p=>p?.sitOutAllCash!==undefined&&(p.sitOutAllCash!==true||p.bot)||p?.sitOutAllGames!==undefined&&(p.sitOutAllGames!==true||p.bot||p.left||!p.paused||p.sitOutAllCash)||p?.helmet!==undefined&&typeof p.helmet!=='boolean'||p?.left!==undefined&&p.left!==true||p?.walletFunded!==undefined&&(p.walletFunded!==true||p.bot||p.left||!walletStore)))throw Error('Invalid Rush helmet state');version=saved.version;pool=saved.pool?rushPool(entries,4,saved.pool,variant):null;knownTables=new Set(pool?.tables.keys()||[])}
+ function restore(saved){entries=saved.entries;if(!Array.isArray(entries)||entries.some(p=>p?.sitOutAllCash!==undefined&&(p.sitOutAllCash!==true||p.bot)||p?.sitOutAllGames!==undefined&&(p.sitOutAllGames!==true||p.bot||p.left||!p.paused||p.sitOutAllCash)||p?.helmet!==undefined&&typeof p.helmet!=='boolean'||p?.left!==undefined&&p.left!==true||p?.walletFunded!==undefined&&(p.walletFunded!==true||p.bot||p.left||!walletStore)))throw Error('Invalid Rush helmet state');version=saved.version;pool=saved.pool?rushPool(entries,4,saved.pool,variant):null;for(const table of pool?.tables.values()||[])if(!validVoiceStamps(table.game.historyTrace))throw Error('Invalid Rush action voice stamp');knownTables=new Set(pool?.tables.keys()||[])}
  try{restore(walletStore?.read(variant)??JSON.parse(readFileSync(file,'utf8')))}catch(e){if(e.code!=='ENOENT')throw e}
  const avatars=ids=>ids.map(id=>entries.some(p=>p.id===id&&p.bot)?null:avatarFor(id));
  const voices=ids=>ids.map(id=>voicePack(entries.some(p=>p.id===id&&p.bot)?null:voiceFor(id)).id);
+ const stampVoice=(game,id)=>{if(game.historyTrace?.actions.length)game.historyTrace.actions.at(-1).voicePackId=voices([id])[0]};
  const subject=id=>noteSubject(entries.find(p=>p.id===id)?.bot?{bot:true,noteId:'rush:'+variant+':'+id}:{account:id});
  const snapshot=()=>({entries,version,pool:pool?.snapshot()||null});
  function register(id,bot=false,transfers=[]){
@@ -44,7 +46,7 @@ export function openRush(file,variant='holdem',avatarFor=()=>0,notes,walletStore
    if(now<table.deadline)continue;
    const o=options(g),move=bot?computerMove(g.hands[g.turn],g.board,g.blind,g.price,o,'rush'):[o.due?'fold':'check'];
    if(!bot){const entry=entries.find(p=>p.id===id);entry.paused=true;entry.queued=false}
-   pool.move(id,...move);changed=true;
+   pool.move(id,...move);stampVoice(g,id);changed=true;
   }
   for(const entry of entries)if(entry.queued&&pool?.players.get(entry.id)?.table!=null){entry.queued=false;changed=true}
   for(const entry of entries)if(entry.queued&&pool?.players.get(entry.id)?.table===null&&pool.players.get(entry.id).balance>0){
@@ -57,10 +59,10 @@ export function openRush(file,variant='holdem',avatarFor=()=>0,notes,walletStore
   const player=pool?.players.get(id),table=pool?.tables.get(player?.table);
   const me=table?table.ids.indexOf(id):null;
   let hand=null;
-  if(table){const g=table.game,{deck,hands,reservedChecks,...publicHand}=g;hand={...publicHand,pots:collectedPots(g),quickFoldAllowed:canQuickFold(g,me),...(!g.end&&!g.folded[me]&&g.stacks[me]>0?{preAction:{rush:true,bigBlindOption:!g.board.length&&me===g.bigBlindSeat&&g.actedAt[me]===null,due:Math.max(0,g.price-g.bets[me]),call:Math.min(g.stacks[me],Math.max(0,g.price-g.bets[me])),acted:g.actedAt[me]!==null,reservedCheck:reservedChecks?.[me]===g.board.length,foldEnabled:g.stacks.some((stack,i)=>i!==me&&!g.folded[i]&&g.bets[i]+stack>g.bets[me])}}:{}),deadline:table.deadline,hands:visibleCards(g,me)}}
+  if(table){const g=table.game,{deck,hands,reservedChecks,...publicHand}=g;hand={...publicHand,voiceEvents:traceVoiceEvents(g.historyTrace,0,g.variant),voiceActionCount:g.historyTrace?.actions.length??0,pots:collectedPots(g),quickFoldAllowed:canQuickFold(g,me),...(!g.end&&!g.folded[me]&&g.stacks[me]>0?{preAction:{rush:true,bigBlindOption:!g.board.length&&me===g.bigBlindSeat&&g.actedAt[me]===null,due:Math.max(0,g.price-g.bets[me]),call:Math.min(g.stacks[me],Math.max(0,g.price-g.bets[me])),acted:g.actedAt[me]!==null,reservedCheck:reservedChecks?.[me]===g.board.length,foldEnabled:g.stacks.some((stack,i)=>i!==me&&!g.folded[i]&&g.bets[i]+stack>g.bets[me])}}:{}),deadline:table.deadline,hands:visibleCards(g,me)}}
   const previous=pool?[...pool.tables].findLast(([,t])=>t.settled&&t.ids.includes(id)):null;
   let result=null;
-  if(previous){const [tableId,t]=previous,seat=t.ids.indexOf(id),{deck,hands,reservedChecks,...game}=t.game;result={table:tableId,me:seat,names:t.ids,voicePacks:voices(t.ids),avatars:avatars(t.ids),hand:{...game,hands:visibleCards(t.game,seat)}}}
+  if(previous){const [tableId,t]=previous,seat=t.ids.indexOf(id),{deck,hands,reservedChecks,...game}=t.game;result={table:tableId,me:seat,names:t.ids,voicePacks:voices(t.ids),avatars:avatars(t.ids),hand:{...game,voiceEvents:traceVoiceEvents(t.game.historyTrace,0,t.game.variant),voiceActionCount:t.game.historyTrace?.actions.length??0,hands:visibleCards(t.game,seat)}}}
   const noteTable=table||previous?.[1],noteTableID=table?player.table:previous?.[0],noteSeat=noteTable?.ids.indexOf(id);
   return {account:id,variant,version,shuffles:table?table.ids.flatMap((name,seat)=>{const event=shuffles.get(name);return event?.table===player.table&&Date.now()-event.at<2450?[{seat,at:event.at}]:[]}):[],walletSupported:!!walletStore,...(walletStore&&!entries.some(p=>p.id===id&&p.bot)?{walletAvailable:walletStore.summary(id).available}:{}),walletFunded:entries.some(p=>p.id===id&&p.walletFunded===true&&!p.left),buyIn:200,canLeave:entries.some(p=>p.id===id&&!p.left)&&!table&&![...(pool?.tables.values()||[])].some(t=>!t.settled&&t.ids.includes(id)),helmet:entries.some(p=>p.id===id&&p.helmet===true),helmets:(table?.ids||previous?.[1].ids||[]).map(name=>entries.some(p=>p.id===name&&p.helmet===true)),paused:entries.some(p=>p.id===id&&p.paused===true),sitOutAllGames:entries.some(p=>p.id===id&&!p.left&&p.paused===true&&p.sitOutAllGames===true),sitOutAllCash:entries.some(p=>p.id===id&&!p.left&&p.paused===true&&p.sitOutAllCash===true),noteTable:noteTableID??null,hudVersion:pool?[...pool.tables.values()].filter(t=>t.settled).length:0,...(noteTable?{noteSubjects:noteTable.ids.map((id,i)=>i===noteSeat?null:subject(id))}:{}),voicePacks:table?voices(table.ids):[],avatars:table?avatars(table.ids):[],queued:entries.some(p=>p.id===id&&p.queued),handVersion:table?player.table+':'+table.game.history.length:null,registered:entries.some(p=>p.id===id&&!p.left),population:entries.filter(p=>!p.left).length,waiting:pool?[...pool.players].filter(([id,p])=>p.table===null&&p.balance>0&&eligible().includes(id)).length:entries.length,table:player?.table||null,balance:player?.balance??(entries.some(p=>p.id===id&&!p.left)?200:0),me,names:table?.ids||[],hand,result,legal:table?.game.turn===me&&!table.game.end?options(table.game):null};
  }
@@ -120,10 +122,10 @@ export function openRush(file,variant='holdem',avatarFor=()=>0,notes,walletStore
     if(op==='deal'){delete entry.sitOutAllCash;delete entry.sitOutAllGames;entry.paused=false;entry.queued=pool.deal(id,eligible())===null}
     if(op==='act'){
      if(body.reserved!==undefined&&typeof body.reserved!=='boolean')fail(400,'Invalid reserved action flag');
-     const table=pool.tables.get(current.table),g=table.game,seat=table.ids.indexOf(id),board=g.board.length;pool.move(id,body.action,body.target);
+     const table=pool.tables.get(current.table),g=table.game,seat=table.ids.indexOf(id),board=g.board.length;pool.move(id,body.action,body.target);stampVoice(g,id);
      if(body.reserved===true&&body.action==='check'){g.reservedChecks??=Array(6).fill(null);g.reservedChecks[seat]=board}else if(g.reservedChecks)g.reservedChecks[seat]=null;
     }
-    if(op==='quick-fold'){const next=pool.fold(id,eligible(),!entry.paused);entry.queued=!entry.paused&&next===null}
+    if(op==='quick-fold'){const game=pool.tables.get(current.table).game,next=pool.fold(id,eligible(),!entry.paused);stampVoice(game,id);entry.queued=!entry.paused&&next===null}
    }
    save(transfers);
    return view(id);

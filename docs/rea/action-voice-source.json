@@ -1270,7 +1270,7 @@
       "sha256": "7dd662e2bdc06077f6d72c90b304a26992179fe716ca3b9160fb4283104e1bf9"
     }
   ],
-  "status": "Candidate My Page and Sound selector integrated;independent voice gain/default50 and source pack-specific preview verified;event-time table playback/native parity incomplete.",
+  "status": "Candidate ordinary-room and Rush Holdem/PLO event-time voice stamps,restore validation and minimal public events implemented;listener/replay gates,table playback and native parity incomplete.",
   "nativePreferences": {
     "defaultPack": "VDaniel",
     "voiceVolume": 0.5,
@@ -1285,9 +1285,10 @@
     "Voice preview master override/restoration and3.5s fade/4s stop remain source requirements."
   ],
   "remaining": [
-    "Event-time actor/street/all-in call routing and viewer-playing eligibility",
+    "Listener Playing mapping,reconnect/no-replay guards and table playback caller",
     "Full separate-session voiced hand,payout,cold restart and native comparison",
-    "Source equalizer waveform,volume balloon/slider skin,Apply geometry and native Tween easing verification"
+    "Source equalizer waveform,volume balloon/slider skin,Apply geometry and native Tween easing verification",
+    "Audit Battle Royale qualification voice transport separately from ordinary/final rooms"
   ],
   "backendVerification": {
     "testedSha": "c3b36af296ebe8e7b0f7f1bb1464fa7e7428a7c5",
@@ -1338,6 +1339,23 @@
       "Unstamped history skipped without inventing current-profile stamps",
       "Real unequal-all-in four-seat engine trace,total300chips,unchanged game"
     ],
-    "wired": false
+    "wired": true,
+    "wiringScope": "Ordinary-room shared step and standalone Rush Holdem/PLO;frontend playback not wired"
+  },
+  "backendStamping": {
+    "tests": [
+      "room-voice-stamp-test.mjs",
+      "rush-voice-stamp-test.mjs"
+    ],
+    "verified": [
+      "Actual per-action canonical pack persisted,not current profile projection",
+      "Mid-hand profile change and restart preserve old stamps",
+      "Human/bot/clock action paths and Rush quick fold",
+      "Minimal ordinary-room public events/count,live/settled Rush events",
+      "Malformed canonical stamps rejected on cold restore",
+      "Failed ordinary-room save rolls back unacknowledged stamp",
+      "300chip room hand and1200chip Rush Holdem/PLO hands conserve totals"
+    ],
+    "installed": false
   }
 }
