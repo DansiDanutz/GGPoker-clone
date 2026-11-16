@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
-import {readBettingPreferences,betShortcuts} from './betting-preferences.mjs';
+import {readBettingPreferences,betShortcuts,validBettingPreset,normalizeBettingPreset,openingChoices} from './betting-preferences.mjs';
 const defaults=readBettingPreferences(null);assert.deepEqual(defaults,{opening:[2,3,4,'pot'],normal:[33,50,75,100],unit:'bb',dontRoundBlind:true});
 const custom={opening:[2.5,3.5,5,'pot'],normal:[66,80,90,'max'],unit:'sb',dontRoundBlind:true};
 assert.deepEqual(readBettingPreferences(JSON.stringify(custom)),custom);
-for(const raw of ['bad','null','[]',JSON.stringify({...custom,opening:[2,3,4,6]}),JSON.stringify({...custom,normal:[33,50,75,101]}),JSON.stringify({...custom,unit:'x'})])assert.deepEqual(readBettingPreferences(raw),defaults);
+const typed={opening:[0.1,6.7,99.9,'max'],normal:[1,42,999,'max'],unit:'bb',dontRoundBlind:true};assert.deepEqual(readBettingPreferences(JSON.stringify(typed)),typed,'Native custom ranges and opening Max must survive saved preferences');
+for(const raw of ['bad','null','[]',JSON.stringify({...custom,opening:[2,3,4,100]}),JSON.stringify({...custom,normal:[33,50,75,1000]}),JSON.stringify({...custom,unit:'x'})])assert.deepEqual(readBettingPreferences(raw),defaults);
 const g={blind:4,board:[],bets:[0,2,4],committed:[0,2,4]},o={due:4,min:8,max:120};assert.deepEqual(betShortcuts(g,o,0,custom).map(p=>p.target),[10,14,20,14]);assert.deepEqual(betShortcuts(g,o,0,custom).map(p=>p.label),['2.5BB','3.5BB','5BB','Pot']);
 const flop={...g,board:['As','Kh','2d'],bets:[0,0,0],committed:[10,10,10]};assert.deepEqual(betShortcuts(flop,{due:0,min:4,max:120},0,custom).map(p=>p.target),[20,24,27,120]);
 assert.deepEqual(betShortcuts(flop,{due:0,min:4,max:16},0,custom).map(p=>p.target),[16,16,16,16]);assert.equal(betShortcuts(g,{...o,pot:10},0,custom).at(-1).target,18);
@@ -21,3 +22,10 @@ assert.equal(betShortcuts(facing,facingOptions,0,{...defaults,dontRoundBlind:fal
 assert.equal(betShortcuts({...uneven,variant:'shortdeck'},{due:0,min:4,max:120},0,{...defaults,dontRoundBlind:false})[0].target,20,'Button blind uses native ten-chip ceiling unit');
 assert.equal(betShortcuts(g,o,0,{...defaults,dontRoundBlind:false}).at(-1).target,14,'Pot shortcut bypasses rounding');
 console.log('PASS betting preferences: native ceiling and opening bypass, legacy/default recovery, presets, effective pot and legal clamps');
+
+assert.ok(openingChoices.includes('max'));assert.deepEqual(betShortcuts(g,o,0,typed).map(p=>p.target),[8,26,120,120]);assert.deepEqual(betShortcuts(flop,{due:0,min:4,max:120},0,typed).map(p=>p.target),[4,13,120,120]);
+for(const bad of [0,.09,100,6.78,19.4999999999,null,true,'6.7',{},Infinity,NaN])assert.equal(validBettingPreset('opening',bad),false);
+for(const bad of [0,1000,42.5,null,true,'42','pot','custom',{},Infinity,NaN])assert.equal(validBettingPreset('normal',bad),false);
+for(const [kind,text,old,want]of [['opening','',2,.1],['opening','.5',2,.5],['opening','1000',2,99.9],['opening','6.',2,6],['opening','6.7',2,6.7],['opening','6.78',2,2],['opening','1e3',2,2],['normal','',33,1],['normal','1000',33,999],['normal','42',33,42],['normal','42.5',33,33],['normal','oops','max','max']])assert.equal(normalizeBettingPreset(kind,text,old),want);
+const untouched=JSON.stringify(typed),loaded=readBettingPreferences(untouched);loaded.opening[0]=20;assert.equal(JSON.stringify(typed),untouched);assert.equal(readBettingPreferences(untouched).opening[0],.1);
+console.log('PASS custom preset ranges,opening Max,precision/type guards,empty/min/max/invalid focus normalization,immutable recovery and legal min/max targets');

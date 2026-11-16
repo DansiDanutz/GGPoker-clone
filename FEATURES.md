@@ -2,9 +2,13 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
+## Editable betting presets
+
+Source-backed direct Custom typing and opening Max replace fixed-only selection. Native bounds, options/order,48px input/20px arrow,four-row popup,translated labels and existing draft persistence are connected to legal prepared targets. [Contract and acceptance](docs/rea/editable-bet-presets.md). Native physical popup/font/gesture parity remains incomplete.
+
 ## Betting control reconstruction
 
-Source-backed radio skins/font/colors/240x24 geometry, native rounding checkbox, missing preset subtitles and inner field coordinates replace approximations. Long titles use integer single-line fitting and reset on locale changes. [REA evidence and acceptance](docs/rea/betting-controls.md). Confirmed next functional gap: native editable custom presets and opening Max are absent from local fixed selects; not claimed complete. Physical raster/font/popup/audio parity remains incomplete.
+Source-backed radio skins/font/colors/240x24 geometry, native rounding checkbox, missing preset subtitles and inner field coordinates replace approximations. Long titles use integer single-line fitting and reset on locale changes. [REA evidence and acceptance](docs/rea/betting-controls.md). The historical fixed-select/custom/Max gap is addressed by the editable-preset implementation above. Physical raster/font/popup/audio parity remains incomplete.
 
 ## Betting settings language
 

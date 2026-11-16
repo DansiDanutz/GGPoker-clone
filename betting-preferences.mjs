@@ -1,4 +1,4 @@
-export const openingChoices=[2,2.5,3,3.5,4,4.5,5,'pot'];
+export const openingChoices=[2,2.5,3,3.5,4,4.5,5,'pot','max'];
 export const normalChoices=[33,50,66,75,80,90,100,'max'];
 export function reservedChoices(p){if(!p)return [];if(p.aof)return p.acted?[]:['fold','allin'];if(p.rush&&p.bigBlindOption)return [];return p.due>0?(p.rush?['call']:['fold','call']):p.foldEnabled?(!p.acted?['check-fold','check']:p.reservedCheck?['check-fold']:[]):[]}
 export function resolveReservedAction(selection,state){
@@ -13,9 +13,20 @@ export function resolveReservedAction(selection,state){
  if(action==='check'&&selection.retain){const history=g.history?.length??0;return {selection:{...selection,checkedHistory:history},action:selection.checkedHistory===history?null:action}}
  return {selection:null,action};
 }
+export function validBettingPreset(kind,value){
+ if(kind!=='opening'&&kind!=='normal')return false;
+ if(value==='max'||kind==='opening'&&value==='pot')return true;
+ return typeof value==='number'&&Number.isFinite(value)&&(kind==='opening'?value>=.1&&value<=99.9&&Math.round(value*10)/10===value:Number.isInteger(value)&&value>=1&&value<=999);
+}
+// Native focus-out clamps empty/typed numeric text; malformed text keeps the last validated value.
+export function normalizeBettingPreset(kind,text,previous){
+ if(!['opening','normal'].includes(kind)||typeof text!=='string'||!(kind==='opening'?/^\d*(?:\.\d?)?$/:/^\d*$/).test(text)||!Number.isFinite(Number(text)))return previous;
+ return Math.max(kind==='opening'?0.1:1,Math.min(kind==='opening'?99.9:999,Number(text)));
+}
+
 export function readBettingPreferences(raw){
  const defaults={opening:[2,3,4,'pot'],normal:[33,50,75,100],unit:'bb',dontRoundBlind:true};
- try{const p=JSON.parse(raw);if(!p||p.dontRoundBlind!==undefined&&typeof p.dontRoundBlind!=='boolean'||!['bb','sb'].includes(p.unit)||!Array.isArray(p.opening)||p.opening.length!==4||!p.opening.every(v=>openingChoices.includes(v))||!Array.isArray(p.normal)||p.normal.length!==4||!p.normal.every(v=>normalChoices.includes(v)))return defaults;return {opening:[...p.opening],normal:[...p.normal],unit:p.unit,dontRoundBlind:p.dontRoundBlind??true}}catch{return defaults}
+ try{const p=JSON.parse(raw);if(!p||p.dontRoundBlind!==undefined&&typeof p.dontRoundBlind!=='boolean'||!['bb','sb'].includes(p.unit)||!Array.isArray(p.opening)||p.opening.length!==4||!p.opening.every(v=>validBettingPreset('opening',v))||!Array.isArray(p.normal)||p.normal.length!==4||!p.normal.every(v=>validBettingPreset('normal',v)))return defaults;return {opening:[...p.opening],normal:[...p.normal],unit:p.unit,dontRoundBlind:p.dontRoundBlind??true}}catch{return defaults}
 }
 export function betShortcuts(g,o,seat,p){
  const price=g.bets[seat]+o.due,pot=o.pot??g.committed.reduce((a,b)=>a+b,0),opening=!g.board.length&&price===g.blind;

@@ -1,0 +1,13 @@
+# Editable betting presets and opening Max
+
+The previous fixed selects could not retain valid custom numbers or opening Max. A failing model test reproduced default recovery for valid0.1/6.7/99.9BB and1/42/999percent values. Six fresh exports plus four reused source identities bind the native configuration, input restriction/normalization, Custom/Max/Pot choices and popup/scrollbar. See editable-bet-presets-source.json.
+
+Opening presets now accept0.1–99.9 in one-decimal UI precision, Pot and Max; normal presets accept integer1–999percent and Max. Four-value arrays, unit and rounding schema are retained. Untrusted nonnumeric,out-of-range,wrong-type/precision and malformed saved preferences still recover defaults. Existing percentage/BB calculation and legal min/max clamp remain; no poker engine, endpoint or wallet rule changes.
+
+Eight editable controls reuse existing hidden model IDs and draft callbacks. The visible48px text field and20px arrow open a68x104 list with four26px rows, source option order, selected/hover colors, zero-duration opening and5px scrollbar using the existing common275texture. Custom focuses/selects the input; numeric typing uses native restrictions and focus-out bounds. Empty numeric edits clamp to the minimum; malformed intermediate text retains a validated value. Enter in the field normalizes, with no save/wager. The list closes on selection,outside pointer,focus departure,page change or Escape. Keyboard list navigation is a local accessible implementation, without a native runtime parity claim.
+
+Selecting or typing updates only the current draft. OK persists; Cancel/Escape discards; reload and other settings-page saves retain the typed values. Active typed text survives locale updates. Choosing a size at the table prepares the validated raise target; the existing Enter-confirm policy and server validation still govern a wager.
+
+Source correction: DropDownButton initially assigns Setting.defaultFont, but setInputTextFormat switches Latin display to regular Roboto after setting the value/language. The previous Condensed closed-select assumption is superseded by the new regular-Roboto input. Native script-specific fonts,physical glyph/raster/scrollbar/gesture timing and whole-app fidelity remain unverified. No new artwork,font,package or runtime module is added.
+
+Acceptance covers direct pointer/keyboard Custom/min/max,opening Max,one popup/outside close,active locale text,draft cancellation,Apply/reload/live prepared amount,an actual custom-target Enter raise,server restart and full-hand/payout regression. Raw native/local matched-state captures remain evidence with unbound color profiles, not a physical pixel parity certificate.
