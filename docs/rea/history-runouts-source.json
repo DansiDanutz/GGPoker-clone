@@ -1,0 +1,94 @@
+{
+  "method": "Fresh headless selective FFDec26.4 export; existing bounded Temurin17 runtime",
+  "swfSha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
+  "loadedNativeModuleVerified": false,
+  "files": [
+    {
+      "class": "com/nsus/iron/handhistory/HandHistoryPreview3D.as",
+      "bytes": 24614,
+      "sha256": "ba37cc3ad667def16ed0d5bd7bd8b0c7829746443aebde6b08cb2abcb7e1f66e"
+    },
+    {
+      "class": "com/nsus/iron/handhistory/actioncell/HandHistoryActionsCellSummary3D.as",
+      "bytes": 15180,
+      "sha256": "54bfbc37f3178e112be2426b69bf7241e876ad994c2797e6da2659ae16ebe5f9"
+    },
+    {
+      "class": "com/nsus/iron/handhistory/preview/HandHistoryCommunityCard3D.as",
+      "bytes": 8955,
+      "sha256": "ea78146b5c34fc22dedbe54311be8ddc89d738cef00c80d670ba82fe3d00a7a7"
+    },
+    {
+      "class": "com/nsus/iron/handhistory/preview/HandHistoryPlayerCell3D.as",
+      "bytes": 25787,
+      "sha256": "880d494a268a2ba51640cc84f327f254b71edad95206492d24fc4d0996fcb42f"
+    },
+    {
+      "class": "com/nsus/iron/handhistory/preview/HandHistoryPlayers3D.as",
+      "bytes": 8796,
+      "sha256": "b1c5125a6de4634fe2065ae8af57a7d208b231fc6e638831c14070050a09f1ab"
+    },
+    {
+      "class": "com/nsus/iron/handhistory/preview/data/HandHistoryPreviewPlayerCellVo.as",
+      "bytes": 9711,
+      "sha256": "35b8807154474933cd218b8a5010bbcbd486a9155417f17b67e93ca11aa230e9"
+    },
+    {
+      "class": "com/nsus/iron/handhistory/preview/data/HandHistorySettingData.as",
+      "bytes": 13263,
+      "sha256": "b22f1125ac720c640d7e3c30b1e7be61ca972ea04864074e07a63b2aec6cb6a8"
+    },
+    {
+      "class": "com/nsus/iron/helper/HandHistory.as",
+      "bytes": 148871,
+      "sha256": "4c953011f237dc639aa54d4348eb9b239a557124827843d15e3e18b8ee0e6e40"
+    },
+    {
+      "class": "com/nsus/iron/table/view/display/card/Card3D.as",
+      "bytes": 17197,
+      "sha256": "6446d5f8cc9912385205138a7d00d9c0dfc0d82f0b38916b1b166b960efd8ff5"
+    }
+  ],
+  "contract": {
+    "cashHoldemCommunityAnchor": [
+      320,
+      305
+    ],
+    "communityPivot": [
+      118,
+      82.5
+    ],
+    "cardAlignment": "C centered layer",
+    "cardFace": [
+      61,
+      81
+    ],
+    "columnPitch": 59,
+    "rowPitch": 42,
+    "multiScale": 0.9,
+    "twoRunAnchorYOffset": -15,
+    "threeRunAnchorYOffset": -25,
+    "sharedCards": "One first-row prefix; following rows render only their own suffix",
+    "flattenedCardLengths": {
+      "two": {
+        "preflop": 10,
+        "flop": 7,
+        "turn": 6
+      },
+      "three": {
+        "preflop": 15,
+        "flop": 9,
+        "turn": 7
+      }
+    },
+    "holdemHoleCards": "HandHistory.getPreviewPlayerUsedHoleCard returns true for both Holdem/ShortDeck cards; Omaha alone derives used-hole selection. HandHistoryPlayers3D forwards to setUsedHoleCard/cardHighLight.",
+    "winnerSummary": "HandHistory.makeSummaryVo iterates winningBoardList, computes five cards per awarded board and keeps duplicate RIMT combinations; Summary3D chunks in five, adds two-pixel separators, 3-unit gaps, 22x32 card faces and board-card vertical offset10"
+  },
+  "remaining": "Fresh native physical seated/runtime comparison, full rank-summary font/raster and all unsupported game formats remain unverified",
+  "baselineRed": {
+    "runtimeCommit": "65d2e8679af4e4f6d989406162a42e563fc78f98",
+    "test": "history-rimt-layout-red.mjs",
+    "observed": "Three-run shared-flop preview runoutCards undefined, expected 9",
+    "scope": "Missing renderer; actual stored runoutBoards and payouts already present"
+  }
+}

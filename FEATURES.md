@@ -2,7 +2,19 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
-## Verified release baseline — PR274
+## Active REA candidate — retained multi-run history
+
+The existing completed RIMT result already retains all boards and allocations. The history preview now draws all two/three runouts with native0.9 scale, centered-card pivot and single shared prefix. Winner summaries rank only the boards that actually paid that seat. Non-Omaha preview hole cards stay visible as the native source requires; folded paint and Omaha exact-two focus are preserved. No engine, backend endpoint, wallet or data schema change. Nine fresh source classes, a failing installed-baseline test and candidate geometry/privacy/summary/browser checks are documented in [history-runouts](docs/rea/history-runouts.md). Exact-head release QA and live installation remain separate.
+
+## Verified release baseline — PR276
+
+PR276 merged `fe9ffcce7eec16bd38935d3681dcf38bad2d2041`; tested source `65d2e8679af4e4f6d989406162a42e563fc78f98`. Rabbit Hunt disclosures now remain in private retained history and PNG exports, tied to the authenticated historical viewer. REA confirms native missing-card slots/static open covers. Peers do not receive another viewer's Rabbit cards; played board, results, wallets and payouts are unchanged. Nine exact-head checks passed, including six logic/history/privacy suites and separate Holdem/Omaha browser journeys through next hand and cold restart. An extra history capture was visually inspected.
+
+Guarded idle rollout PID73740→67159 preserved all6ownerfiles/15496bytes byte-for-byte; no live gameplay QA or foreground/speaker actions. Runtime130files/1509775logicalbytes with125 verified immutable hardlinks and278577newcode/stylebytes;1387existingartfiles reused. Backup `/Users/davidai/.local/state/playgg-rollouts/pr276-onspawfr`. Native physical history/animation/audio and whole-app parity remain incomplete. Source-checkout mmap failures were recovered from the exact merged blobs with old/target-byte admission and preserved partial files; final clean main verification passed. Root Markdown report and GOAL checkpoint updated; generated HTML/inventories remain historical.
+
+[Private Rabbit history evidence](docs/rea/rabbit-hunt.md).
+
+## Historical release baseline — PR274
 
 PR274 merged `31b7ad5c31e55207ac3ee80e774126b53bd7a8c8`; tested source `82da9cfd90d66f83277ab65bc4c0f53e44a4a714`.
 

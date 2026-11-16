@@ -72,3 +72,5 @@
 @media(max-height:597px){.nativeHud{max-height:calc(100vh - 16px);overflow:auto}.nativeHud .hudClose{position:sticky;float:right;left:auto;right:7px;margin-right:7px;z-index:3}}
 
 .historyPreviewRabbit>.historyRabbitPeel{position:absolute;left:-.5%;top:-.5%;width:101%;height:101%;pointer-events:none}
+
+.historySummarySeparator{display:block;width:17.8125cqw;height:.3125cqw;margin:.46875cqw 0 0;background:linear-gradient(#9a9a9a 50%,#343434 50%)}
