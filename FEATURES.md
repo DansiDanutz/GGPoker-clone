@@ -2,9 +2,9 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
-## Active REA candidate — native cash headings
+## Active source-fidelity follow-up — cash headings
 
-Ordinary Holdem Table/Group headings now use the original regular Roboto12,source cell/divider/label geometry and existing native-language keys. The captured native header palette is applied only to that shared component; source literal colors differ from actual pixels. A measured22px browser leading adapts the native24px labelbox; full font-compositor/AA parity remains open. Table header last cell is the original48 units(total child extent812 over810 background),without moving row data anchors. Passive header clicks retain ordering/funding semantics. Candidate gates cover1200/900,actual Romanian/polling/stable nodes and full two-hand bot/reconnect/restart; exact-head release QA is separate. [Source,capture calibration and remaining gaps](docs/rea/cash-header.md).
+PR280 adds original regular Roboto12,source cell/divider/label geometry,48-unit final Table heading and native language keys. Its temporary raw-capture palette/22px-leading calibration is being removed: native Cua and headless Chrome capture profiles,DPI/raster and loaded-module identity were unbound,so lower PNG error was not proof of native physical parity. The follow-up preserves literal source#333/#808080/#404040 and an uncompensated24px CSS linebox. Two Game37 heading classes are byte-identical to Game51. Actual heading/locale/stable-node and full-game gates remain required. [Source,evidence correction and remaining gaps](docs/rea/cash-header.md).
 
 ## Verified release baseline — PR277
 
