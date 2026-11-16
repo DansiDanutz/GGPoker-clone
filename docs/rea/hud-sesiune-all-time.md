@@ -106,3 +106,8 @@ potsWonAtShowdown pornește de la cheia MobileAofB, confirmată în dicționarul
 Getterul ratei nu are protecție explicită la numitor zero în această sursă. Nu declarăm rezultatul concret al conversiei runtime fără execuție Flash. O implementare locală trebuie să trateze lipsa eșantionului explicit, fără Infinity sau un câștig fals.
 
 sessionTime este TimeManager.current.currentTime minus sessionStartTime, sau zero dacă timpul de început lipsește. Prin urmare timerul vizual nu dovedește o nouă cerere de rețea și nu trebuie resetat la fiecare deschidere a filei. Persistența/reconectarea trebuie să păstreze începutul sesiunii conform contractului local ales și etichetat.
+
+
+## Clarificare REA: Sit-out time este o bancă rămasă
+
+Exportul proaspăt StatusView/TablePlayer/callbackuri arată că valoarea vine din kickOutTimeRemaining plus termenul local de extensie, cu excluderi pentru turnee/Rush/AoF Sit-and-Go. Nu reprezintă durata cumulată a pauzei. Politica locală curentă este fără expirare; nu se adaugă un cronometru cu altă semnificație pentru a umple câmpul. [Contractul complet, cele șapte identități și limitele](sitout-bank.md). Contorii Session time și Time bank/carduri sunt separați.
