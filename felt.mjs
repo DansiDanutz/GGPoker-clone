@@ -97,6 +97,11 @@ export function historyWinningCards(hole,board,shortDeck=false){
  const ordered=[...groups.values()].sort((a,b)=>b.length-a.length||ranks.indexOf(b[0].card[0])-ranks.indexOf(a[0].card[0])).flatMap(group=>group.sort((a,b)=>'sdhc'.indexOf(a.card[1])-'sdhc'.indexOf(b.card[1])));
  if(ordered.map(c=>c.card[0]).join('')===(shortDeck?'A9876':'A5432'))ordered.push(ordered.shift());return ordered;
 }
+export function historyWinningRunCards(hand,seat){
+ if(!hand.runoutBoards){const cards=historyWinningCards(hand.cards?.[seat],hand.board,hand.variant==='shortdeck');return cards?[{run:0,cards}]:[]}
+ if(!historyPreviewLayout(hand)||!Array.isArray(hand.pots)||!hand.pots.length||!hand.pots.every(p=>Array.isArray(p.runs)&&p.runs.length===hand.runoutBoards.length&&p.runs.every(r=>Array.isArray(r.payouts)&&r.payouts.length===hand.names.length&&r.payouts.every(n=>Number.isSafeInteger(n)&&n>=0))))return [];
+ return hand.runoutBoards.flatMap((board,run)=>{if(!hand.pots.some(p=>p.runs[run].payouts[seat]>0))return [];const cards=historyWinningCards(hand.cards?.[seat],board);return cards?[{run,cards}]:[]});
+}
 export function historyActionColumns(hand){
  const n=hand?.names?.length,trace=hand?.historyTrace,opening=trace?.opening,stages=[0,3,4,5],money=a=>Array.isArray(a)&&a.length===n&&a.every(v=>Number.isSafeInteger(v)&&v>=0),sum=a=>a.reduce((a,b)=>a+b,0);
  if(!Number.isInteger(n)||n<2||n>10||!['holdem','rush','plo','plo5','plo6','shortdeck','aof'].includes(hand.variant)||!hand.names.every(v=>v===null||typeof v==='string')||!Array.isArray(hand.dealtSeats)||hand.dealtSeats.length!==n||!hand.dealtSeats.every(v=>typeof v==='boolean')||!Array.isArray(hand.folded)||hand.folded.length!==n||!hand.folded.every(v=>typeof v==='boolean')||!Number.isInteger(hand.button)||hand.button<0||hand.button>=n||!hand.dealtSeats[hand.button]||![hand.initialStacks,hand.committed,hand.payouts,hand.returns,hand.stacks,opening?.bets,opening?.committed,opening?.stacks].every(money)||!Array.isArray(trace?.actions)||!Array.isArray(hand.history)||trace.actions.length!==hand.history.length||!Array.isArray(hand.board)||!stages.includes(hand.board.length))return null;
@@ -152,11 +157,19 @@ export function historyPreviewLayout(hand){
  const holeCount=({holdem:2,shortdeck:2,plo:4,plo5:5,plo6:6,aof:2})[variant];
  const validCard=c=>typeof c==='string'&&(variant==='shortdeck'?/^[6-9TJQKA][cdhs]$/:/^[2-9TJQKA][cdhs]$/).test(c);
  if(!hand.names.every(n=>n===null||typeof n==='string')||!hand.cards.every(h=>h===null||Array.isArray(h)&&h.length===holeCount&&h.every(c=>c===null||validCard(c)))||!hand.board.every(validCard))return null;
+ let runoutCards;
+ if(hand.runoutBoards!==undefined){
+  const boards=hand.runoutBoards;if(hand.mode!=='cash'||variant!=='holdem'||!Array.isArray(boards)||![1,2,3].includes(boards.length)||hand.runoutDecision?.runs!==boards.length||!boards.every(b=>Array.isArray(b)&&b.length===5&&b.every(validCard))||JSON.stringify(boards[0])!==JSON.stringify(hand.board))return null;
+  let shared=0;while(shared<5&&boards.every(b=>b[shared]===boards[0][shared]))shared++;
+  if(boards.length>1&&![0,3,4].includes(shared))return null;
+  const known=[...hand.cards.flatMap(h=>h?h.filter(Boolean):[]),...boards[0],...boards.slice(1).flatMap(b=>b.slice(shared))];if(new Set(known).size!==known.length)return null;
+  if(boards.length>1)runoutCards=boards.flatMap((board,run)=>board.flatMap((card,slot)=>run&&slot<shared?[]:[{card,run,slot,x:320+(slot*59-118)*.9,y:305-(boards.length===2?15:25)+(run*42-82.5)*.9,width:61*.9,height:81*.9}]));
+ }
  const many=holeCount>2,scale=many?.84*.45:.45,gap=many?(holeCount>=5?90:80)*.45/(holeCount/2):36;
  const holeLayout=folded=>({width:122*scale,height:162*scale,mask:many?{x:-19.5,y:-11,width:135,height:81}:null,cards:Array.from({length:holeCount},(_,i)=>({x:(many?67.5:48)+(i-(holeCount-1)/2)*gap,y:many?(folded?67:57):42.5}))});
  const positions=count===3?[[320,395],[65,130],[575,130]]:count===4?[[320,395],[60,225],[320,63],[580,225]]:[[320,395],[65,310],[65,130],[320,65],[575,130],[575,310]],buttons=count===3?[[269,324],[101,202],[540,202]]:count===4?[[269,324],[127,267],[277,136],[513,267]]:[[269,324],[136,306],[101,202],[277,136],[541,202],[504,306]],players=[];
- for(let pos=0;pos<count;pos++){const seat=(hero+pos)%count;if(!hand.names[seat]||!hand.initialStacks[seat])continue;const [x,y]=positions[pos];players.push({seat,x,y,name:hand.names[seat],avatar:hand.avatars?.[seat],folded:hand.folded[seat],hole:hand.cards[seat],holeLayout:holeLayout(hand.folded[seat]),focus:!hand.folded[seat]&&hand.board.length===5&&hand.cards[seat]?.length===holeCount&&hand.cards[seat].every(Boolean)?bestFiveFocus(hand.cards[seat],hand.board,variant==='shortdeck'):null,balance:Math.max(0,hand.initialStacks[seat]-hand.committed[seat]+hand.returns[seat]),winner:hand.payouts[seat]>hand.returns[seat]})}
- return {ownSeat:hero,theme:hand.mode==='tournament'?'tournament':hand.mode==='rush'?'rush-'+variant:variant,gameName:({holdem:'Hold’em',shortdeck:'Short Deck',plo:'Omaha',plo5:'5-card Omaha',plo6:'6-card Omaha',aof:'All-In or Fold'})[variant],players,dealer:buttons[(hand.button-hero+count)%count],board:{x:202,y:222.5,gap:59,width:61,height:81},totalPot:hand.payouts.reduce((sum,n,i)=>sum+n-hand.returns[i],0)};
+ for(let pos=0;pos<count;pos++){const seat=(hero+pos)%count;if(!hand.names[seat]||!hand.initialStacks[seat])continue;const [x,y]=positions[pos];players.push({seat,x,y,name:hand.names[seat],avatar:hand.avatars?.[seat],folded:hand.folded[seat],hole:hand.cards[seat],holeLayout:holeLayout(hand.folded[seat]),focus:many&&!hand.folded[seat]&&hand.board.length===5&&hand.cards[seat]?.length===holeCount&&hand.cards[seat].every(Boolean)?bestFiveFocus(hand.cards[seat],hand.board,variant==='shortdeck'):null,balance:Math.max(0,hand.initialStacks[seat]-hand.committed[seat]+hand.returns[seat]),winner:hand.payouts[seat]>hand.returns[seat]})}
+ return {...(runoutCards?{runoutCards}:{}),ownSeat:hero,theme:hand.mode==='tournament'?'tournament':hand.mode==='rush'?'rush-'+variant:variant,gameName:({holdem:'Hold’em',shortdeck:'Short Deck',plo:'Omaha',plo5:'5-card Omaha',plo6:'6-card Omaha',aof:'All-In or Fold'})[variant],players,dealer:buttons[(hand.button-hero+count)%count],board:{x:202,y:222.5,gap:59,width:61,height:81},totalPot:hand.payouts.reduce((sum,n,i)=>sum+n-hand.returns[i],0)};
 }
 
 export function hudPercent(count,hands){
