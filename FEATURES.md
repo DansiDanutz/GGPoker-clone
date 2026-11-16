@@ -2,7 +2,19 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
-## Verified release baseline — PR270
+## Verified release baseline — PR272
+
+PR272 merged `05b766f1fb85d282eb867ec07fae75743acadf5b`; tested source `47eb7a5a43da166a1d7cbf7a447f4c2f909acf88`.
+
+Hold’em Information now reflects actual local continuous-bank,free-card and Multiple Dealing rules,including mixed catalogs and polling changes. Three native-style408px informational dialogs use the recovered frame,close controls,original diagrams and source-positioned labels. Escape,close,outside dismissal and focus return work without seating/debit. Paid card/refill descriptions unsupported locally are not asserted as working features.
+
+All16 exact-head installed checks/reviews passed:130 runtime identities,1387 artwork hashes/1381 immutable hardlinks,27 original class identities and4 unchanged local rule sources,three exact crops/three byte-identical diagrams,syntax/catalog/language,finite clock/card room behavior and private inventory,hosted unequal-all-in/fold/three-run RIMT with290allocatedchips/70uncalled return/restart,actual dialog/Group controls and a six-seat bot journey with96-chip independent payout,next hand/reconnect/restart/720-chip conservation. Installed1200×963 modal capture inspected; native app not relaunched.
+
+Live runtime130files/1,504,881bytes;art1387files with1381 verified immutable hardlinks plus6new PNGs totaling148,590bytes. Guarded idle rollout PID4590→92382 preserved all6ownerfiles(15,496bytes) byte-for-byte. Backup `/Users/davidai/.local/state/playgg-rollouts/pr272-d3ggqvbv`. No live gameplay writes,foreground or speaker actions. Native paid/refill features,remaining game-info branches,loaded-module identity,color/text pipeline,fresh physical comparison and whole-app parity remain incomplete.
+
+[Source, interactions and remaining gaps](docs/rea/cash-group-operator-research.md).
+
+## Historical release baseline — PR270
 
 PR270 merged `7db0c343e1ca3de8cbefeda44db2e7ff8336ac15`; tested source `1ec77b284db52cdb9d0660ec45026ab76bdc4d04`.
 

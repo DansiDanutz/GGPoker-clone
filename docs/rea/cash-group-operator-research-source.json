@@ -1,5 +1,5 @@
 {
-  "status": "Published PR270 base; clock/card/multiple rows and internal help dialogs are an unreleased candidate",
+  "status": "Published PR270 Group/panel base and PR272 local clock/card/multiple rules with native informational dialogs; full native parity remains incomplete",
   "source_swf_sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
   "method": "Selective headless FFDec AS3 export from installed Game/51/IronDesktop.swf",
   "files": [

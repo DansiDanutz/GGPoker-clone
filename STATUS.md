@@ -4,13 +4,13 @@ This project is a local play-money application under active development. It is n
 
 ## Current verified release
 
-PR270 merged `7db0c343e1ca3de8cbefeda44db2e7ff8336ac15`; tested source `1ec77b284db52cdb9d0660ec45026ab76bdc4d04`.
+PR272 merged `05b766f1fb85d282eb867ec07fae75743acadf5b`; tested source `47eb7a5a43da166a1d7cbf7a447f4c2f909acf88`.
 
-Group View now uses the source241px sidebar and animated88/136px operator. Selection changes list690→642px at1200×963, with actual Profile/Open/Join callbacks retained. The in-app Information panel uses original close/arrow/icon art,200ms cubic motion, original language catalogs and actual local catalog rules. Native fixed14-second values are not copied over owner-configurable action times. Source/implementation/browser focus issues and remaining differences are documented.
+Hold’em Information now reflects actual local continuous-bank,free-card and Multiple Dealing rules,including mixed catalogs and polling changes. Three native-style408px informational dialogs use the recovered frame,close controls,original diagrams and source-positioned labels. Escape,close,outside dismissal and focus return work without seating/debit. Paid card/refill descriptions unsupported locally are not asserted as working features.
 
-All16 exact-head installed checks/reviews passed:130 runtime identities,1381 artwork hashes/1375 unchanged hardlinks,15 original AS3 identities,6 independent exact RGBA crops,unit/font/language/private metadata checks,actual Group/panel geometry and cubic midpoints,resize/lifecycle/stable refresh,two complete six-seat browser journeys,independent payouts,reconnect/cold restart and conserved balances. Installed1200×963 Group capture inspected; original app not relaunched.
+All16 exact-head installed checks/reviews passed:130 runtime identities,1387 artwork hashes/1381 immutable hardlinks,27 original class identities and4 unchanged local rule sources,three exact crops/three byte-identical diagrams,syntax/catalog/language,finite clock/card room behavior and private inventory,hosted unequal-all-in/fold/three-run RIMT with290allocatedchips/70uncalled return/restart,actual dialog/Group controls and a six-seat bot journey with96-chip independent payout,next hand/reconnect/restart/720-chip conservation. Installed1200×963 modal capture inspected; native app not relaunched.
 
-Live runtime130files/1,498,363bytes;art1381files with1375 verified immutable hardlinks plus6new PNGs totaling3907bytes. Guarded idle rollout PID49447→4590 preserved all6ownerfiles(15,496bytes) byte-for-byte. Backup `/Users/davidai/.local/state/playgg-rollouts/pr270-tjy2zqkz`. No live gameplay writes,foreground or speaker actions. Native feature rows,loaded-module identity,color/text pipeline,fresh native Group comparison and whole-app parity remain incomplete.
+Live runtime130files/1,504,881bytes;art1387files with1381 verified immutable hardlinks plus6new PNGs totaling148,590bytes. Guarded idle rollout PID4590→92382 preserved all6ownerfiles(15,496bytes) byte-for-byte. Backup `/Users/davidai/.local/state/playgg-rollouts/pr272-d3ggqvbv`. No live gameplay writes,foreground or speaker actions. Native paid/refill features,remaining game-info branches,loaded-module identity,color/text pipeline,fresh physical comparison and whole-app parity remain incomplete.
 
 [Source evidence and remaining gaps](docs/rea/cash-group-operator-research.md).
 
