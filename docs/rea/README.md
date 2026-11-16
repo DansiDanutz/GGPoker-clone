@@ -6,6 +6,7 @@ Aceasta este versiunea publică a fișelor detaliate. Explică aspectul,controal
 
 | Fișă | Acoperire |
 |---|---|
+| [Preview tabs and private notes](cash-preview-controls.md) | Native tab images/states, private memo/color frames, exact scale9 rasters and short-window HUD repair |
 | [Hold’em parent frame](cash-preview-parent.md) | Native241px panel,header/page/operator coordinates and1200capture calibration;resize policy and limits |
 | [Hold’em seat coordinates](cash-preview-seat.md) | Original six-seat indexing,scaled origins,marker top-left/dealer offset and heads-up priority |
 | [Hold’em player plates](cash-preview-player.md) | Native64×46 background,actual balance and authenticated own styling; remaining text/parent contracts |

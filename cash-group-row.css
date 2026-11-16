@@ -65,3 +65,18 @@
 #catalog.nativeCashOperator[data-mode=holdem][data-view=table] #joinTable{top:469px}
 
 #catalog.nativeCashOperator[data-mode=holdem][data-view=table] #listing{grid-column:1;grid-row:2}
+
+/* LobbyDetailViewTabButton:verified117x28 scale9 rasters avoid browser border-image seams. */
+#catalog.nativeCashOperator[data-mode=holdem] #viewSwitch{width:234px;height:28px;flex-shrink:0}
+#catalog.nativeCashOperator[data-mode=holdem] #viewSwitch button{position:relative;min-width:0;border:0;border-radius:0;background:transparent url('/home-art/native-preview-control-tab-left-up-117x28.png') 0 0/117px 28px no-repeat;padding:0;color:#999;font:14px NativeGroupRow,Arial,sans-serif}
+#catalog.nativeCashOperator[data-mode=holdem] #viewSwitch #tableView{background-image:url('/home-art/native-preview-control-tab-right-up-117x28.png')}
+#catalog.nativeCashOperator[data-mode=holdem] #viewSwitch #groupView:disabled{background-image:url('/home-art/native-preview-control-tab-left-selected-117x28.png');color:#fff}
+#catalog.nativeCashOperator[data-mode=holdem] #viewSwitch #tableView:disabled{background-image:url('/home-art/native-preview-control-tab-right-selected-117x28.png');color:#fff}
+#catalog.nativeCashOperator[data-mode=holdem] #viewSwitch button>span{position:absolute;left:5px;top:0;width:calc(100% - 10px);height:28px;line-height:28px;text-align:center;white-space:nowrap;pointer-events:none}
+#catalog.nativeCashOperator[data-mode=holdem] #viewSwitch button:hover:not(:disabled){color:#a9a9a9}
+#catalog.nativeCashOperator[data-mode=holdem] #viewSwitch button:active:not(:disabled){color:#696969}
+#catalog.nativeCashOperator[data-mode=holdem] #viewSwitch button:active:not(:disabled)>span{top:2px}
+/* PlayerNoteImage is a fixed alpha frame;only the memo texture reverses on the right. */
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #preview .previewPlate[data-note-kind]::before{content:'';position:absolute;left:-7px;top:12px;width:78px;height:37px;background:var(--preview-note-color);mask:url('/home-art/native-preview-control-note-color.png') 0 0/100% 100% no-repeat;pointer-events:none}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #preview .previewPlate[data-note-kind=memo]::before{height:36px;mask-image:url('/home-art/native-preview-control-note-memo.png')}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=table] #preview .previewPlate[data-note-kind=memo][data-note-reverse=true]::before{transform:scaleX(-1)}

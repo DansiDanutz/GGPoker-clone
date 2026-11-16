@@ -19,6 +19,32 @@ func extract(_ relative:String,_ entries:[(String,String,Int,Int)],_ prefix:Stri
  let receipt:[String:Any] = ["method":"StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding","sources":[atlas.path:hash(try Data(contentsOf:atlas)),metadata.path:hash(try Data(contentsOf:metadata))],"files":records]
  try JSONSerialization.data(withJSONObject:receipt,options:[.prettyPrinted,.sortedKeys]).write(to:out.appendingPathComponent("rea/"+receiptName+".json"))
 }
+if CommandLine.arguments.contains("--cash-preview-controls") {
+ try extract("init_lobby/desktop_assets.png",[("lobby0083","tab-left-up",18,18),("lobby0084","tab-left-selected",18,18),("lobby0085","tab-right-up",18,18),("lobby0086","tab-right-selected",18,18),("lobby_preview0047","note-color",78,37),("lobby_preview0048","note-memo",78,36)],"native-preview-control-","cash-preview-controls-atlas")
+ // Bake the fixed117x28 native tabs:flat stretch bands make this exact and avoid browser border-image seams.
+ var receipt=try JSONSerialization.jsonObject(with:Data(contentsOf:out.appendingPathComponent("rea/cash-preview-controls-atlas.json"))) as! [String:Any]
+ var rendered=[[String:Any]]()
+ for stem in ["tab-left-up","tab-left-selected","tab-right-up","tab-right-selected"] {
+  let source=out.appendingPathComponent("native-preview-control-"+stem+".png"),image=CGImageSourceCreateImageAtIndex(CGImageSourceCreateWithURL(source as CFURL,nil)!,0,nil)!,raw=pixels(image),width=117,height=28
+  precondition(image.width==18 && image.height==18)
+  for n in 0..<18 { for c in 0..<4 { precondition(raw[(n*18+8)*4+c]==raw[(n*18+9)*4+c] && raw[(8*18+n)*4+c]==raw[(9*18+n)*4+c],"Stretch bands must be flat") } }
+  var rgba=Data(count:width*height*4)
+  for y in 0..<height { let sy=y<8 ? y : y>=height-8 ? 18-height+y : 8+(y-8)*2/(height-16)
+   for x in 0..<width { let sx=x<8 ? x : x>=width-8 ? 18-width+x : 8+(x-8)*2/(width-16)
+    for c in 0..<4 { rgba[(y*width+x)*4+c]=raw[(sy*18+sx)*4+c] }
+   }
+  }
+  let scaled=CGImage(width:width,height:height,bitsPerComponent:8,bitsPerPixel:32,bytesPerRow:width*4,space:CGColorSpaceCreateDeviceRGB(),bitmapInfo:CGBitmapInfo(rawValue:CGImageAlphaInfo.premultipliedLast.rawValue),provider:CGDataProvider(data:rgba as CFData)!,decode:nil,shouldInterpolate:false,intent:.defaultIntent)!,url=out.appendingPathComponent("native-preview-control-"+stem+"-117x28.png")
+  if !FileManager.default.fileExists(atPath:url.path) { let dest=CGImageDestinationCreateWithURL(url as CFURL,"public.png" as CFString,1,nil)!;CGImageDestinationAddImage(dest,scaled,nil);precondition(CGImageDestinationFinalize(dest)) }
+  let check=CGImageSourceCreateImageAtIndex(CGImageSourceCreateWithURL(url as CFURL,nil)!,0,nil)!
+  precondition(check.width==width && check.height==height && pixels(check)==rgba,"Preserve existing output; native scale9 pixels changed")
+  rendered.append(["file":url.lastPathComponent,"source":source.lastPathComponent,"sourceSha256":hash(try Data(contentsOf:source)),"width":width,"height":height,"grid":[8,8,2,2],"rgbaExact":true,"sha256":hash(try Data(contentsOf:url)),"bytes":try Data(contentsOf:url).count])
+ }
+ receipt["rendered"]=rendered;receipt["renderMethod"]="Native8px borders copied exactly;2px flat stretch bands verified equal,then extended to117x28;no browser nine-patch seams"
+ try JSONSerialization.data(withJSONObject:receipt,options:[.prettyPrinted,.sortedKeys]).write(to:out.appendingPathComponent("rea/cash-preview-controls-atlas.json"))
+ print("PASS native preview4tabs/2notes exact decoded RGBA")
+ exit(0)
+}
 if CommandLine.arguments.contains("--cash-preview-player") {
  try extract("init_lobby/desktop_assets.png",[("lobby_preview0030","info",64,46)],"native-tourney-preview-","cash-preview-player-atlas")
  print("PASS native Hold’em preview player plate exact decoded RGBA")
