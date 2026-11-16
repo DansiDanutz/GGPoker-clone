@@ -1289,6 +1289,12 @@
     "Source carousel/apply/preview UI and14portrait packaging",
     "Action trace-based actor/street/all-in call selection",
     "Full separate-session hand,payout,cold restart and native comparison",
-    "Real HTTP/backup/invalid-model restore verification for candidate backend;event-time voice stamping remains unwired"
-  ]
+    "Event-time voice stamping and ordered actor/street playback remain unwired"
+  ],
+  "backendVerification": {
+    "testedSha": "c3b36af296ebe8e7b0f7f1bb1464fa7e7428a7c5",
+    "checks": 16,
+    "evidence": ".git/danslab-qa/voice-backend-c3b36af/evidence.json",
+    "scope": "Candidate backend only;no UI/audio runtime installation"
+  }
 }
