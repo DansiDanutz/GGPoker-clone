@@ -2009,6 +2009,7 @@ console.log('PASS selected-table comparison: loaded original/local images, equal
     await c.run("document.querySelector('#groups button').click()");
     const selectedGroup=()=>c.run("document.querySelector('#groups button[aria-pressed=true]')?.getAttribute('aria-label')");
     await checkNativeCashHeader('group');
+    assert.deepEqual(await c.run("[...document.querySelectorAll('#preview .groupPlayerChips')].map(n=>n.textContent)"),['9,760'],'Group chips use the same grouped local value as Table preview');
     const groupKey=async(key,code)=>{await c.key('keyDown',key,code);await c.key('keyUp',key,code)};
     await groupKey('ArrowUp',38);assert.equal(await selectedGroup(),'Held Group budget · hosted','Top does not wrap');
     await groupKey('ArrowDown',40);assert.equal(await selectedGroup(),'Green Felt · hosted','Down selects next real group');
