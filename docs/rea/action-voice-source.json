@@ -1270,7 +1270,7 @@
       "sha256": "7dd662e2bdc06077f6d72c90b304a26992179fe716ca3b9160fb4283104e1bf9"
     }
   ],
-  "status": "Candidate My Page voice selection/preview/volume/Apply integrated and two-session restart tested;Sound selector navigation,event-time table playback and native rendering parity incomplete.",
+  "status": "Candidate My Page and Sound selector integrated;independent voice gain/default50 and source pack-specific preview verified;event-time table playback/native parity incomplete.",
   "nativePreferences": {
     "defaultPack": "VDaniel",
     "voiceVolume": 0.5,
@@ -1285,8 +1285,7 @@
     "Voice preview master override/restoration and3.5s fade/4s stop remain source requirements."
   ],
   "remaining": [
-    "Sound selector navigation with Sound-only draft persistence",
-    "Independent saved voice channel and event-time actor/street/all-in call routing",
+    "Event-time actor/street/all-in call routing and viewer-playing eligibility",
     "Full separate-session voiced hand,payout,cold restart and native comparison",
     "Source equalizer waveform,volume balloon/slider skin,Apply geometry and native Tween easing verification"
   ],
@@ -1312,6 +1311,17 @@
       "Actual selected Call buffer and sample-capped duration",
       "Discard unsaved volume across wallet navigation",
       "Saved pack/volume after server restart and browser reload"
+    ],
+    "installed": false
+  },
+  "soundIntegration": {
+    "nativeSource": "OptionSoundPage.onVoiceChangeHandler,preview,load/saveUserData;VolumeSliderType.VOICE=ActionVoice",
+    "verified": [
+      "Independent voice gain,enabled flag and native50default",
+      "Seven current-pack preview choices without immediate repeat",
+      "Sound-only auto-save leaves unrelated Hotkey draft unsaved",
+      "Standalone settings window switches to My Action Voice without closing",
+      "Existing global Apply reuses the Sound persistence path"
     ],
     "installed": false
   }

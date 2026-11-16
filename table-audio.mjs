@@ -1,16 +1,16 @@
 import {spinInsuranceCues} from './spin-insurance-presentation.mjs';
 import {spinWheelCues} from './spin-wheel-presentation.mjs';
-import {isVoiceCue,voiceCueSamples} from './voice-packs.mjs';
-export const audioChannels=[{id:'table',label:'Table Sound'},{id:'effects',label:'Sound Effect'},{id:'critical',label:'Critical Alert'}];
-export function audioChannel(cue){if(['NotificationTimeBank','ChessClock','TimeBankTick'].includes(cue))return 'critical';if(Object.values(spinWheelCues).includes(cue)||Object.values(spinInsuranceCues).includes(cue))return 'effects';return ['RabbitCard','RabbitCardDouble','Fold','DealCard','Board','BoardFlop','GatherChips','WinPot','ShowCard','ShowDownCard','SqueezeOpen'].includes(cue)?'table':['BnRRoundEnd','Check','Call','Bet','Raise','AllIn','ShuffleUp','ShuffleCombine','ShuffleOther','AofButton','TournamentResultFT','TournamentResultITM','TournamentFallResult'].includes(cue)?'effects':null}
-export function audioPreviewChoices(id,previous){
- const choices=id==='table'?['Board','DealCard','ShowCard','GatherChips','WinPot','Fold','ShowDownCard','SqueezeOpen']:id==='effects'?['Bet','Call','Raise','Check','AllIn','AofButton']:id==='critical'?['NotificationTimeBank','ChessClock','TimeBankTick']:[];
+import {isVoiceCue,voiceCueSamples,voiceActions,voiceCue} from './voice-packs.mjs';
+export const audioChannels=[{id:'table',label:'Table Sound'},{id:'effects',label:'Sound Effect'},{id:'critical',label:'Critical Alert'},{id:'voice',label:'Action Voice'}];
+export function audioChannel(cue){if(isVoiceCue(cue))return 'voice';if(['NotificationTimeBank','ChessClock','TimeBankTick'].includes(cue))return 'critical';if(Object.values(spinWheelCues).includes(cue)||Object.values(spinInsuranceCues).includes(cue))return 'effects';return ['RabbitCard','RabbitCardDouble','Fold','DealCard','Board','BoardFlop','GatherChips','WinPot','ShowCard','ShowDownCard','SqueezeOpen'].includes(cue)?'table':['BnRRoundEnd','Check','Call','Bet','Raise','AllIn','ShuffleUp','ShuffleCombine','ShuffleOther','AofButton','TournamentResultFT','TournamentResultITM','TournamentFallResult'].includes(cue)?'effects':null}
+export function audioPreviewChoices(id,previous,packId){
+ const choices=id==='voice'?voiceActions.map(action=>voiceCue(packId,action.id)):id==='table'?['Board','DealCard','ShowCard','GatherChips','WinPot','Fold','ShowDownCard','SqueezeOpen']:id==='effects'?['Bet','Call','Raise','Check','AllIn','AofButton']:id==='critical'?['NotificationTimeBank','ChessClock','TimeBankTick']:[];
  return choices.filter(c=>c!==previous);
 }
 export function readAudioChannel(id){
  if(!audioChannels.some(c=>c.id===id))throw new RangeError('Unknown audio channel');
  const raw=localStorage.getItem('river-audio-'+id+'-volume'),value=raw!==null&&/^\d+$/.test(raw)?Number(raw):NaN;
- return {enabled:localStorage.getItem('river-audio-'+id+'-enabled')!=='0',volume:Number.isInteger(value)&&value>=0&&value<=100?value:100};
+ return {enabled:localStorage.getItem('river-audio-'+id+'-enabled')!=='0',volume:Number.isInteger(value)&&value>=0&&value<=100?value:(id==='voice'?50:100)};
 }
 export function voluntaryReveals(before,after){
  if(!before?.hand||!after?.hand?.end||before.number!==after.number)return [];
@@ -84,7 +84,7 @@ export function installAudio(button){
  const play=async (names,isCurrent=()=>true)=>{
   sync();if(!enabled||!ctx)return;await resuming;sync();if(!enabled||ctx.state!=='running'||!isCurrent())return;
   const clips=await Promise.all(names.map(load));sync();if(!enabled||ctx.state!=='running'||!isCurrent())return;
-  const sources=[];let t=ctx.currentTime;for(const [i,clip]of clips.entries()){if(!clip)continue;const source=ctx.createBufferSource();source.buffer=clip;source.connect(channelTarget(audioChannel(names[i])));if(cueSamples[names[i]])source.start(t,0,audioCueDuration(names[i],clip.duration));else source.start(t);sources.push(source);t+=Math.min(.18,clip.duration)}
+  const sources=[];let t=ctx.currentTime;for(const [i,clip]of clips.entries()){if(!clip)continue;const source=ctx.createBufferSource();source.buffer=clip;source.connect(channelTarget(audioChannel(names[i])));if(cueSamples[names[i]]||isVoiceCue(names[i]))source.start(t,0,audioCueDuration(names[i],clip.duration));else source.start(t);sources.push(source);t+=Math.min(.18,clip.duration)}
   return ()=>{for(const source of sources)try{source.stop()}catch{}};
  };
  play.preloadSpinInsurance=async()=>ctx?(await Promise.all(Object.values(spinInsuranceCues).map(load))).every(Boolean):false;
