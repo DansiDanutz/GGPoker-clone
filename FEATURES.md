@@ -2,6 +2,10 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
+## Group player chip display
+
+The Group player list uses the same grouped play-chip display as the Table preview, retaining actual numeric stacks and numeric sorting. Source PlayerCellRenderer delegates formatting before drawing. The actual9760-chip browser row reproduces the old ungrouped value; units cover999/9760/1000000 numeric order and input immutability. Native currency-specific decimals/abbreviations and physical label scaling remain unverified. [REA scope](docs/rea/cash-group-players.md#group-chips-formatting-follow-up).
+
 ## Verified release baseline — PR283
 
 Cash headings follow native LabelModel single-line slicing before compositor scaling: four TextField gutter pixels and successive UTF-16 prefixes plus two literal dots. The existing translation loader preserves full accessible labels and recalculates on fallback, font-loading and resize changes. Canvas/Flash advances and post-slice scaling remain unverified. [REA pipeline](docs/rea/cash-header.md).
