@@ -1,6 +1,6 @@
 # Group View operator and in-app Game Info — research checkpoint
 
-Status: source-derived requirements plus initial local implementation, verified in an isolated headless browser; not yet released to the live runtime. Original client was not launched. The installed SWF identity is recorded in the companion source receipt; its identity as the previously running client module is still unproven.
+Status: source-derived requirements plus initial local implementation, verified in an isolated headless browser; released through PR270 after commit-bound installed verification. Original client was not launched. The installed SWF identity is recorded in the companion source receipt; its identity as the previously running client module is still unproven.
 
 ## Operator and list
 
@@ -38,7 +38,7 @@ The Hold’em Group View now has an in-app Information action. The panel reuses 
 
 Changed code: playgg.mjs, cash-group-players.css and cash-group-catalog.mjs. Regression coverage is in cash-group-catalog-test.mjs and cash-game-info-browser-test.mjs. The initial missing helper failed first; the implemented tests then passed. Isolated1200×963 headless browser checks passed real pointer opening/closing, Escape, six rows, local90-second value, source535/455 widths after stage scaling, unchanged row identity over polling, PLO/Hold’em lifecycle and unchanged viewer/wallet. The private working capture was inspected, not published. No live owner data or native client was touched.
 
-This is not a complete native panel: feature rows and same-screen native comparison remain unfinished. The local mixed-catalog values intentionally differ from operator-specific static native values. These remaining items must be completed before calling the panel1:1. No release/merge/runtime-install claim is made by these working-tree checks.
+This is not a complete native panel: feature rows and same-screen native comparison remain unfinished. The local mixed-catalog values intentionally differ from operator-specific static native values. These remaining items must be completed before calling the panel1:1. The development checks below preceded the separate commit-bound release verification recorded at the end.
 
 ## Original controls and motion added
 
@@ -61,3 +61,13 @@ Red/green evidence: the new geometry test initially failed the old sidebar x ori
 The next broad run passed the corrected source dimensions but clicked Profile while the newly added300ms operator transition was still moving; the physical press/release did not open its target HUD. The test now waits for the actual operator animation to finish before that stationary-target click, rather than removing the native motion or adding an arbitrary delay. The rerun remains the gate for declaring the whole Group journey verified after calibration.
 
 Final development rerun after the Group calibration passed network-browser-test.mjs --bots --cash-group-dialog, including the own/observer HUD, actual room Open, lost-response-safe two-room Join, complete120-chip pot independently awarded as[0,0,0,120,0,0], next hand, reconnect/restart and720-chip conservation. The dedicated panel/Group test also passed900×700 resize and1200×963 restoration, with operator buttons remaining inside the window. These are working-tree checks; commit-bound QA, merge and guarded live rollout remain outstanding.
+
+## Installed release — PR270
+
+PR270 merged `7db0c343e1ca3de8cbefeda44db2e7ff8336ac15`; tested source `1ec77b284db52cdb9d0660ec45026ab76bdc4d04`.
+
+Group View now uses the source241px sidebar and animated88/136px operator. Selection changes list690→642px at1200×963, with actual Profile/Open/Join callbacks retained. The in-app Information panel uses original close/arrow/icon art,200ms cubic motion, original language catalogs and actual local catalog rules. Native fixed14-second values are not copied over owner-configurable action times. Source/implementation/browser focus issues and remaining differences are documented.
+
+All16 exact-head installed checks/reviews passed:130 runtime identities,1381 artwork hashes/1375 unchanged hardlinks,15 original AS3 identities,6 independent exact RGBA crops,unit/font/language/private metadata checks,actual Group/panel geometry and cubic midpoints,resize/lifecycle/stable refresh,two complete six-seat browser journeys,independent payouts,reconnect/cold restart and conserved balances. Installed1200×963 Group capture inspected; original app not relaunched.
+
+Live runtime130files/1,498,363bytes;art1381files with1375 verified immutable hardlinks plus6new PNGs totaling3907bytes. Guarded idle rollout PID49447→4590 preserved all6ownerfiles(15,496bytes) byte-for-byte. Backup `/Users/davidai/.local/state/playgg-rollouts/pr270-tjy2zqkz`. No live gameplay writes,foreground or speaker actions. Native feature rows,loaded-module identity,color/text pipeline,fresh native Group comparison and whole-app parity remain incomplete.

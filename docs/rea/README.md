@@ -6,6 +6,7 @@ Aceasta este versiunea publică a fișelor detaliate. Explică aspectul,controal
 
 | Fișă | Acoperire |
 |---|---|
+| [Group operator and Game Info](cash-group-operator-research.md) | Source-based Group frame/operator,original panel controls/cubic motion,actual local rules and installed PR270 evidence |
 | [Preview tabs and private notes](cash-preview-controls.md) | Native tab images/states, private memo/color frames, exact scale9 rasters and short-window HUD repair |
 | [Hold’em parent frame](cash-preview-parent.md) | Native241px panel,header/page/operator coordinates and1200capture calibration;resize policy and limits |
 | [Hold’em seat coordinates](cash-preview-seat.md) | Original six-seat indexing,scaled origins,marker top-left/dealer offset and heads-up priority |
@@ -99,7 +100,7 @@ Testele browser cer Chrome și pachetul local de referință,folosesc date tempo
 
 - [Tournament/Spin player pause investigation](tournament-player-pause.md): native flags/global scope/return, current gaps and release acceptance; not yet implemented.
 
-- [All-games pause candidate](all-games-pause.md): atomic mixed-format backend and HTTP; UI/release pending.
+- [All-games pause candidate](all-games-pause.md): atomic mixed-format backend and HTTP; UI/live PR270; full native parity remains incomplete.
 
 - [Sit Out callbacks and Short Deck funding](sitout-callbacks.md): fresh4009/4038protocol evidence,client4buttonBlind return threshold and still-unproven Next Blind boundary.
 
@@ -115,4 +116,4 @@ Testele browser cer Chrome și pachetul local de referință,folosesc date tempo
 
 - [Manual selected-table Join confirmation](lobby-join-confirmation.md): actual HomeMediator/ReserveSeat3104/CheckTakeSeat chain and explicit local purchase.
 
-- [Group View operator and in-app Game Info](cash-group-operator-research.md): recovered command owner, original skins/cubic motion, actual local rules, calibrated Group list/operator and isolated browser/gameplay evidence; release pending.
+- [Group View operator and in-app Game Info](cash-group-operator-research.md): recovered command owner, original skins/cubic motion, actual local rules, calibrated Group list/operator and isolated browser/gameplay evidence; live PR270; full native parity remains incomplete.

@@ -4,15 +4,15 @@ This project is a local play-money application under active development. It is n
 
 ## Current verified release
 
-PR268 merged `45da34d0d38088184bc1ada5808c44497d1c37f6`; tested source `dcd59455316887cde1f90fd8073ebb9f305185c5`.
+PR270 merged `7db0c343e1ca3de8cbefeda44db2e7ff8336ac15`; tested source `1ec77b284db52cdb9d0660ec45026ab76bdc4d04`.
 
-Group/Table preview tabs now use the original source skins, Roboto14, actual hover/down/selected behavior and selected disabling. Exact flat-band scale9 rasters remove browser interpolation seams. Private table-preview note frames use authenticated color/hasText metadata, with real HUD edits, correct memo reversal, white/default notes and clearing. No note text is published through public tables or preview markers. The local short-window HUD scrolls and keeps its close pinned after history or scrolling; normal native404×582/404×530 frames remain unchanged.
+Group View now uses the source241px sidebar and animated88/136px operator. Selection changes list690→642px at1200×963, with actual Profile/Open/Join callbacks retained. The in-app Information panel uses original close/arrow/icon art,200ms cubic motion, original language catalogs and actual local catalog rules. Native fixed14-second values are not copied over owner-configurable action times. Source/implementation/browser focus issues and remaining differences are documented.
 
-All15 exact-head checks/reviews passed: original source/font/atlas identities, six crops/four rasters, actual tab pointer states and240 exact background pixels, private note CRUD/isolation/wallet invariants,800×480 history close,900×700 resize,manual admission,heads-up,Group/Table/Wait/Cancel,replay,two hands,independent payouts,cold restart and cross-room conservation. Installed1200×963 capture reviewed; native app not relaunched.
+All16 exact-head installed checks/reviews passed:130 runtime identities,1381 artwork hashes/1375 unchanged hardlinks,15 original AS3 identities,6 independent exact RGBA crops,unit/font/language/private metadata checks,actual Group/panel geometry and cubic midpoints,resize/lifecycle/stable refresh,two complete six-seat browser journeys,independent payouts,reconnect/cold restart and conserved balances. Installed1200×963 Group capture inspected; original app not relaunched.
 
-Live runtime130files/1,488,644bytes;art1,375files with1,365 immutable verified hardlinks and10new PNGs totaling4,880bytes. Two owned code snapshots generated this release total2,977,233bytes;earlier failed candidate is preserved,not installed. Guarded idle rollout PID22223→49447 preserved all six owner files(15,496bytes) byte-for-byte. Backup `/Users/davidai/.local/state/playgg-rollouts/pr268-ed2axp2e`. No live gameplay writes. Full Group parent,locale/color pipeline,operator/variant/full-app and native animation/audio parity remain incomplete.
+Live runtime130files/1,498,363bytes;art1381files with1375 verified immutable hardlinks plus6new PNGs totaling3907bytes. Guarded idle rollout PID49447→4590 preserved all6ownerfiles(15,496bytes) byte-for-byte. Backup `/Users/davidai/.local/state/playgg-rollouts/pr270-tjy2zqkz`. No live gameplay writes,foreground or speaker actions. Native feature rows,loaded-module identity,color/text pipeline,fresh native Group comparison and whole-app parity remain incomplete.
 
-[Source identities and remaining gaps](docs/rea/cash-preview-controls.md).
+[Source evidence and remaining gaps](docs/rea/cash-group-operator-research.md).
 
 ## Native reference checkpoint
 
