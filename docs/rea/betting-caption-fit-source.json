@@ -1,0 +1,71 @@
+{
+  "method": "REA reused identity-bound headless FFDec source trace; shipped font SFNT name/metric table read without installation or native activation",
+  "swfSha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
+  "files": [
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/betting-language-source/scripts/com/nsus/iron/lobby/view/option/page/component/ChooseItem.as",
+      "bytes": 7080,
+      "sha256": "86de1cf4a5b152b08bdcf46185cd883932408ccc75ee00a237129719f6308535"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/cash-header-source/scripts/com/nsus/iron/components/display/text/Label.as",
+      "bytes": 5377,
+      "sha256": "b949917c5add59d41e126c1c70ab5a5c39091b46dd13f1a0805dff7826ab39fa"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/cash-header-source/scripts/com/nsus/iron/components/display/text/UniqueLabel.as",
+      "bytes": 15112,
+      "sha256": "ebf2dfc4abce2a7de077b31af397d056ceb526f52b132cc09610b9c1fc1e5803"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/cash-header-source/scripts/com/nsus/iron/components/display/text/STextField.as",
+      "bytes": 18214,
+      "sha256": "b43ea62ffb11dd2730cb8355fa698fc4c0b2d7f73f34fd722b5ae0bb8500ea6f"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/cash-header-source/scripts/com/nsus/iron/components/display/text/TrueTypeCompositor.as",
+      "bytes": 9604,
+      "sha256": "837e21e20803c3fdc1967dc5d9612b4d7c9b0a9f336d49fc3edac399555e0b36"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/cash-header-source/scripts/com/nsus/lib/components/LabelModel.as",
+      "bytes": 18304,
+      "sha256": "168c762858d5e67c37167268616639030f795fdcbf4ad6d06b7e666c4b9fd7ef"
+    }
+  ],
+  "font": {
+    "file": "/Users/davidai/.local/share/playgg-art/settings-sidebar-candidate/native-history-roboto.ttf",
+    "sha256": "3d9e65fbf2459f595bba0e01adb16a5502d66c938970bdef1bc5024ac180e809",
+    "family": "Roboto",
+    "subfamily": "Regular",
+    "unitsPerEm": 1024,
+    "hhea": [
+      1056,
+      -261,
+      170
+    ]
+  },
+  "confirmedSource": {
+    "captionWidth": 206,
+    "rowStride": 32,
+    "initialFontSize": 14,
+    "wrap": true,
+    "titleHeightModel": 0,
+    "autoSize": "vertical",
+    "unconstrainedCompositorHeight": 100000,
+    "center": "-2+(24-title.height)/2",
+    "nativeAutoScaleFloor": 5
+  },
+  "localSafeguard": {
+    "maxBrowserBoxHeight": 32,
+    "fontReset": 14,
+    "floor": 5,
+    "fullText": true,
+    "scope": "three betting row captions only"
+  },
+  "limitations": [
+    "32px height bound is a local readability safeguard; native vertical autoSize has no such height bound.",
+    "SFNT metadata and browser line boxes do not certify actual AIR glyph/raster/line metrics.",
+    "Native Romanian physical comparison remains unavailable; do not call this exact native multiline autoScale."
+  ]
+}

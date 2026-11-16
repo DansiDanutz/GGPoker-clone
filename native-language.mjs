@@ -28,6 +28,13 @@ export function languageFitSize(text,width,size,measure){
  return size;
 }
 
+// Local readability guard: preserve full wrapped text within neighboring source row bands.
+export function languageFitHeight(size,height,measure){
+ if(!height)return size;
+ while(size>5&&measure(size)>height)size--;
+ return size;
+}
+
 export function installTableLanguage(root,changed){
  let strings={},generation=0,context;
  const slice=(node,text)=>{
@@ -39,6 +46,13 @@ export function installTableLanguage(root,changed){
  };
  const fit=(node,text)=>{
   const size=Number(node.dataset.nativeFit);if(!Number.isInteger(size)||size<5||size>72||!node.clientWidth)return;
+  const height=Number(node.dataset.nativeFitHeight);
+  if(Number.isInteger(height)&&height>0&&height<=500){
+   // shortcut: browser box fitting is a local safeguard, not verified AIR multiline metric parity.
+   const fitted=languageFitHeight(size,height,n=>{node.style.fontSize=n+'px';return node.offsetHeight});
+   if(node.style.fontSize!==fitted+'px')node.style.fontSize=fitted+'px';
+   return;
+  }
   context??=root.createElement('canvas').getContext('2d');const style=getComputedStyle(node);
   // shortcut: canvas advances approximate Flash glyph metrics; native physical raster needs a comparable capture.
   const fitted=languageFitSize(text,node.clientWidth,size,(value,n)=>{context.font=style.fontStyle+' '+style.fontWeight+' '+n+'px '+style.fontFamily;return context.measureText(value).width});
@@ -49,5 +63,5 @@ export function installTableLanguage(root,changed){
   const manifestResponse=await fetch('/home-art/native-language-manifest.json');if(!manifestResponse.ok)throw Error('Language list unavailable');const manifest=await manifestResponse.json();if(!Array.isArray(manifest.languages)||!manifest.languages.length||manifest.languages.some(l=>!l||typeof l.code!=='string'||!/^[a-z]{2}(?:-[a-z]{2})?$/.test(l.code)))throw Error('Invalid language list');
   const code=languageCode(localStorage.getItem('river-language'),manifest.languages.map(l=>l.code)),response=await fetch('/home-art/native-language-'+code+'.json');if(!response.ok)throw Error('Language catalog unavailable');const next=languageCatalog(await response.json(),code);if(ticket!==generation)return false;strings=next;root.documentElement.lang=code;delete root.documentElement.dataset.nativeLanguageError;apply();return true;
  }catch(error){if(ticket===generation)root.documentElement.dataset.nativeLanguageError=error.message;return false}};
- const observer=new MutationObserver(apply);observer.observe(root,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['data-native-label','data-native-fallback','data-native-fit','data-native-slice','data-native-values','data-native-title','data-native-notice-key','data-native-notice-values','data-native-notice-fallback']});addEventListener('storage',event=>{if(event.key===null||event.key==='river-language')refresh()});addEventListener('resize',apply);root.fonts?.addEventListener('loadingdone',apply);apply();return {refresh,ready:refresh()};
+ const observer=new MutationObserver(apply);observer.observe(root,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['data-native-label','data-native-fallback','data-native-fit','data-native-fit-height','hidden','data-native-slice','data-native-values','data-native-title','data-native-notice-key','data-native-notice-values','data-native-notice-fallback']});addEventListener('storage',event=>{if(event.key===null||event.key==='river-language')refresh()});addEventListener('resize',apply);root.fonts?.addEventListener('loadingdone',apply);apply();return {refresh,ready:refresh()};
 }

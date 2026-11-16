@@ -2,6 +2,10 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
+## Localized betting caption readability
+
+Three wrapped row captions retain full text and source column/row positions with a local browser height-fit safeguard. Romanian overlap and hidden-page English reset are verified before publication. [REA source distinction and acceptance](docs/rea/betting-caption-fit.md). This local bound is not a claim of exact native multiline metrics.
+
 ## Native settings sidebar rendering
 
 Original lobby977/978/979 skins,230x28 buttons,asymmetric source9slice and Roboto14 labels replace CSS approximations. Actual hover/down,drag cancellation and release routing are verified before publication. [Contract and limitations](docs/rea/settings-sidebar-skins.md). Physical native parity and the separate Romanian body wrapping defect remain incomplete.
