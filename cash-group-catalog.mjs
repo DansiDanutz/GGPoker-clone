@@ -20,7 +20,7 @@ export function cashTableCatalog(tables){return [...tables].sort((a,b)=>cashRule
 export function cashGameInformation(tables){
  if(!tables.length)return [];
  const numbers=key=>[...new Set(tables.map(key))].sort((a,b)=>a-b).join(' / ');
- return [
+ const rows=[
   {key:'MobileCurrencyTitle',title:'Currency',value:'Play money'},
   {key:'MobileMissionGameType',title:'Game Type',value:'Hold’em',valueKey:'CategoryHoldem'},
   {key:'TableMax',title:'Table Max',value:numbers(t=>t.capacity)},
@@ -28,4 +28,14 @@ export function cashGameInformation(tables){
   {key:'TimeToAct',title:'Time to Act',value:numbers(t=>t.actionSeconds??90)+' seconds'},
   {key:'MinimumPlayersForDealing',title:'Minimum Players for Dealing',value:'2 Players',valueKey:'MobileTwoPlayers',explanation:'Dealing will only start when minimum number of players are met',explanationKey:'DealingWillOnlyStartWhen'}
  ];
+ const unique=values=>[...new Set(values)],clocks=[],cards=tables.filter(t=>t.timeChipCount>0);
+ if(tables.some(t=>t.timeBankSeconds>0)||!cards.length){
+  const banks=unique(tables.map(t=>t.timeBankSeconds||0)).sort((a,b)=>a-b);
+  clocks.push({key:'MobileTimeBank',title:'Time Bank',value:banks.map(n=>n?n+' seconds':'Off').join(' / '),...(banks.length===1&&banks[0]===0?{valueKey:'TableOptionAnimationOff'}:{})});
+ }
+ if(cards.length)clocks.push({key:'TimeBankCard',title:'Time Bank Card',value:unique(tables.map(t=>t.timeChipCount||0)).sort((a,b)=>a-b).map(n=>n?n+' '+(n===1?'card':'cards'):'Off').join(' / '),explanation:unique(cards.map(t=>t.timeChipCount+' '+(t.timeChipCount===1?'card':'cards')+' per seating, '+t.freeTimeChipSecondsPerUnit+' seconds per card, max '+t.maxTimeChipsPerAction+' per turn')).join('; ')});
+ rows.splice(5,0,...clocks);
+ const multiple=unique(tables.map(t=>t.rimt===true)).sort();
+ rows.push({key:'MultipleDealing',title:'Multiple Dealing',paragraph:2,icon:'native-cash-game-info-multiple.png',value:multiple.map(on=>on?'On':'Off').join(' / '),...(multiple.length===1?{valueKey:multiple[0]?'TableOptionAnimationOn':'TableOptionAnimationOff'}:{})});
+ return rows;
 }
