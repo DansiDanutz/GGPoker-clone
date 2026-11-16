@@ -449,6 +449,10 @@ function cashCatalog(request,mode){
   if(!group&&mode==='aof')columns.replaceChildren(...['Table Name','Games','Stakes','Buy-in','Players','Wait','AvgPot','All-in %','H/hr'].map(x=>node('span',x)));
   if(group&&mode==='holdem')columns.replaceChildren(...['Table Size','Stakes','Buy-in','Players','Action'].map(x=>node('span',x)));
   if(group&&mode==='shortdeck')columns.replaceChildren(...['Promotion','Stakes','Buy-in','Players','Action'].map(x=>node('span',x)));
+  if(mode==='holdem'){
+   const keys=group?['TableSize','LabelStakes','MobileTrTableBuyIn','HoldemTourneyGeneralTableListLabelPlayers','LabelAction']:['TableName','LabelStakes','MobileTrTableBuyIn','HoldemTourneyGeneralTableListLabelPlayers','MobileMoveTableWait','AverSpacePot','MobileHudVPIP','MobileHHr'];
+   [...columns.children].forEach((column,i)=>{const label=node('span',column.textContent,'nativeCashHeaderLabel');label.dataset.nativeLabel=keys[i];column.replaceChildren(label)});
+  }
   updateElement($('columns'),columns);
   nextList.replaceChildren(...rows.map((r,i)=>{const b=node('button',''),n=r.occupied,stake=mode==='shortdeck'?r.blind+' ('+r.blind+')':r.blind/2+' / '+r.blind,stack=r.minBuyIn!==undefined&&r.minBuyIn!==r.maxBuyIn?r.minBuyIn+'–'+r.maxBuyIn:r.stack??'30–100';
    const cells=group?[r.name,mode==='plo'?r.mode.toUpperCase().replace(/(\d)/,'-$1'):(r.capacity||4)+'-Max',stake,mode==='holdem'?r.stack:stack,n===null?'—':mode==='holdem'?String(n):n+'/'+(r.capacity||4),r.open?'Join':'Closed']:[r.name,stake,stack,n===null?'—':n+'/'+(r.capacity||4),r.waitingCount??0,r.avgPot??'—',r.vpip==null?'—':r.vpip+'%','—'];

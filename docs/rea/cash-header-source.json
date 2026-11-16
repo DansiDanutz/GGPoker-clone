@@ -1,0 +1,167 @@
+{
+  "method": "Fresh selective headless FFDec26.4 export plus raw pixel inspection of preserved native1200x963 capture; native app not relaunched",
+  "swfSha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
+  "loadedNativeModuleVerified": false,
+  "files": [
+    {
+      "class": "com/nsus/iron/lobby/view/content/HoldemLobby.as",
+      "bytes": 4283,
+      "sha256": "0c2fb4bf06b214feacbf945799565720efc13033cfd066c42b94246693d7e6fd"
+    },
+    {
+      "class": "com/nsus/iron/lobby/view/content/NewListHeader.as",
+      "bytes": 7672,
+      "sha256": "77d5bc9fe638c25bf028ba9cd0200954997257fd239692e75ca2ecd805f52492"
+    },
+    {
+      "class": "com/nsus/iron/lobby/view/content/NewTableTitleItem.as",
+      "bytes": 3850,
+      "sha256": "542af5a2534ed57e1798ec82929b383fd0c0222e537963b9b73f50bc0dbceeec"
+    },
+    {
+      "class": "com/nsus/iron/lobby/view/content/GameLobbyTableView.as",
+      "bytes": 6699,
+      "sha256": "2546827ebcfcdab00297844e799960da5cc5d1513db8b0755aaab724c47d8609"
+    },
+    {
+      "class": "com/nsus/iron/lobby/view/content/GameLobbyGroupView.as",
+      "bytes": 9028,
+      "sha256": "29629caa7791df7757091b872a8111fc5e1223c8cf1022ea98bc3c8024851589"
+    },
+    {
+      "class": "com/nsus/iron/lobby/view/content/NormalCashGameLobby.as",
+      "bytes": 8899,
+      "sha256": "5fb68ee3fb858b9fdc5fb47edb06c722a4cf8c698a58819851cfa6f69cc63ed1"
+    },
+    {
+      "class": "com/nsus/iron/lobby/view/content/TableList.as",
+      "bytes": 2424,
+      "sha256": "ca1f4248299068cc4c4658abc08147456c16e1f27516f561ef994a4a90b747f4"
+    },
+    {
+      "class": "com/nsus/iron/table/asset/StageAssets.as",
+      "bytes": 30674,
+      "sha256": "e993e9ebfc32e1214162109e9af1eb3eef98e2cf6cbf6d7fb0ce1be4e3f0b0a3"
+    },
+    {
+      "class": "com/nsus/iron/components/display/text/UniqueLabel.as",
+      "bytes": 15112,
+      "sha256": "ebf2dfc4abce2a7de077b31af397d056ceb526f52b132cc09610b9c1fc1e5803"
+    },
+    {
+      "class": "com/nsus/iron/components/display/text/Label.as",
+      "bytes": 5377,
+      "sha256": "b949917c5add59d41e126c1c70ab5a5c39091b46dd13f1a0805dff7826ab39fa"
+    },
+    {
+      "class": "com/nsus/iron/components/display/text/STextField.as",
+      "bytes": 18214,
+      "sha256": "b43ea62ffb11dd2730cb8355fa698fc4c0b2d7f73f34fd722b5ae0bb8500ea6f"
+    },
+    {
+      "class": "com/nsus/iron/components/display/text/TrueTypeCompositor.as",
+      "bytes": 9604,
+      "sha256": "837e21e20803c3fdc1967dc5d9612b4d7c9b0a9f336d49fc3edac399555e0b36"
+    },
+    {
+      "class": "com/nsus/lib/components/LabelModel.as",
+      "bytes": 18304,
+      "sha256": "168c762858d5e67c37167268616639030f795fdcbf4ad6d06b7e666c4b9fd7ef"
+    }
+  ],
+  "palette": {
+    "source": {
+      "fill": [
+        51,
+        51,
+        51
+      ],
+      "label": [
+        128,
+        128,
+        128
+      ],
+      "divider": [
+        64,
+        64,
+        64
+      ]
+    },
+    "savedNativeCapture": {
+      "sha256": "c3fed1862476df9f5fa3e3b518526d10d3efb5d84190e3748ac132bec3b47208",
+      "dimensions": [
+        1200,
+        963
+      ],
+      "fill": [
+        58,
+        58,
+        58
+      ],
+      "labelSolid": [
+        138,
+        138,
+        138
+      ],
+      "divider": [
+        73,
+        73,
+        73
+      ],
+      "fillProbe": [
+        30,
+        310
+      ],
+      "dividerX": [
+        196,
+        402,
+        512,
+        628,
+        680,
+        732,
+        784
+      ],
+      "dividerY": 310
+    },
+    "localMapping": "Measured three-color palette applies only to this shared header component; no global gamma/brightness compensation. Group palette inferred from same NewListHeader/NewTableTitleItem class, not a fresh native Group runtime capture."
+  },
+  "columns": {
+    "backgroundWidth": 810,
+    "height": 24,
+    "group": [
+      133,
+      223,
+      150,
+      157,
+      147
+    ],
+    "table": [
+      176,
+      206,
+      110,
+      116,
+      52,
+      52,
+      52,
+      48
+    ],
+    "tableChildExtent": 812
+  },
+  "label": {
+    "font": "Roboto",
+    "size": 12,
+    "bold": false,
+    "y": 1,
+    "height": 24,
+    "localCalibratedLeading": 22,
+    "localLeadingIsNativeConstant": false,
+    "compositorEvidence": "Native centers integer-aligned cropped textures, includes four native text-field gutter pixels and enables pixel grid fitting; CSS linebox is a distinct renderer"
+  },
+  "divider": {
+    "x": "cell width",
+    "y": 6,
+    "width": 1,
+    "height": 12
+  },
+  "remaining": "Full font-metric/AA/autoscale/parent raster and native Group physical comparison; capture color pipeline and active native module identity remain unproven"
+}
