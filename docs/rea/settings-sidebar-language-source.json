@@ -58,7 +58,7 @@
     "Time Bank Card": "TimeBankCard"
   },
   "limitations": [
-    "Static exported type names do not establish operator runtime overrides. Existing captured Betting title remains unchanged rather than replacing it with constructor SetBettingOption.",
+    "Correction from preserved native1200x957 reference: sidebar Betting options matches SetBettingOption; page title Betting uses OptionTabBetting. The initial release conflated these labels; native sidebar reconstruction corrects that mapping.",
     "Native exact font metrics,script-specific glyphs,tab geometry,runtime visibility/brand overrides remain unverified.",
     "This change binds eleven sidebar captions only; untranslated page bodies and unsupported local capabilities remain incomplete."
   ]

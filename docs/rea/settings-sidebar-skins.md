@@ -9,3 +9,5 @@ Stable sidebar buttons now contain a separate native catalog label at x3,width20
 Rendered RED exposed228px source width before implementation (physical228.76 due to the existing stage scale). Assertions compare logical source units after removing stage scale. Acceptance checks230x28,label geometry/font/color,three10x10 decodes,asymmetric slices,actual hover/down,drag-away cancellation and release navigation; full language/settings/custom-wager/restart and bot-payout regression remain publication gates.
 
 Physical native parent/color/raster/glyph/animation timing remains unverified. The separately recorded Romanian betting body wrapping collision is not fixed or hidden by this sidebar change.
+
+Same-size visual review also corrected the sidebar key to SetBettingOption (Betting options), matching both the source type and preserved native reference. The separate page title retains OptionTabBetting (Betting). Prior documentation that described the captured sidebar as Betting was incorrect.

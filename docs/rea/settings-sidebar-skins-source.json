@@ -65,5 +65,14 @@
     "Outer native parent and physical color/raster/font metrics remain unverified.",
     "Local disabled capability treatment and focus outlines remain accessible local integration.",
     "Romanian multiline betting body collision is recorded separately; sidebar reconstruction does not fix it."
-  ]
+  ],
+  "nativeReference": {
+    "file": "/Users/davidai/Documents/ChatGPT/REA/GGPoker/.git/danslab-qa/betting-controls-native.png",
+    "sha256": "bc1f4153e7a81149dbce0b75f99dc512b0406e110a3535f2631676c9387ef4b0",
+    "size": [
+      1200,
+      957
+    ],
+    "observation": "Sidebar Betting options; page title Betting. Confirms source SetBettingOption sidebar key."
+  }
 }

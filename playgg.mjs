@@ -35,7 +35,7 @@ const saveChipSwitch=$('homeChips').onchange;
 $('homeChips').onchange=()=>{saveChipSwitch();homeOpenBB.disabled=!$('homeChips').checked};
 $('closeSettings').onclick=closeHomeSettings;
 const settingsNames=['Betting options','Buy-in settings','Card Squeeze','Chip Shuffle','Device access','Hotkey','Language','Smart Focus','Sound','Switch Chip Display','Table Theme','Time Bank Card'];
-const settingsLabelKeys={"Betting options":"OptionTabBetting","Buy-in settings":"SetBuyinSettings","Card Squeeze":"OptionCardSqueeze","Chip Shuffle":"ChipShuffle","Device access":"DeviceAccess","Hotkey":"OptionTabHotkey","Language":"OptionTabLanguage","Smart Focus":"MobileSmartFocus","Sound":"OptionTabSound","Switch Chip Display":"OptionSwitchChipDisplay","Table Theme":"OptionTableTheme","Time Bank Card":"TimeBankCard"};
+const settingsLabelKeys={"Betting options":"SetBettingOption","Buy-in settings":"SetBuyinSettings","Card Squeeze":"OptionCardSqueeze","Chip Shuffle":"ChipShuffle","Device access":"DeviceAccess","Hotkey":"OptionTabHotkey","Language":"OptionTabLanguage","Smart Focus":"MobileSmartFocus","Sound":"OptionTabSound","Switch Chip Display":"OptionSwitchChipDisplay","Table Theme":"OptionTableTheme","Time Bank Card":"TimeBankCard"};
 const content=$('chipSettings').querySelector('.settingsContent'),chipOptions=document.createElement('div');chipOptions.id='chipOptions';
 for(const child of [...content.children])if(!child.matches('.settingsConfirm,.settingsScope'))chipOptions.append(child);
 content.prepend(chipOptions);
