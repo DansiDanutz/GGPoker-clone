@@ -42,7 +42,7 @@ This is not a complete native panel: feature rows and same-screen native compari
 
 ## Original controls and motion added
 
-The extractor’s --cash-game-info mode now recovers common4/5 close skins (12×11), lobby191/192/193 arrow skins (22×80) and lobby112 link icon (16×16). All six decoded RGBA crops were read back against the source atlas; total generated PNG storage is3907bytes. The source CloseButton uses common4 for normal/pressed and common5 for hover. Arrow normal/hover/pressed use191/193/192 respectively.
+The extractor’s --cash-game-info mode now recovers common4/5 close skins (12×11), lobby191/192/193 arrow skins (22×80) and lobby112 link icon (16×16). All six decoded RGBA crops were read back against the source atlas; total generated PNG storage is3907bytes. The source CloseButton uses common4 for normal/pressed and common5 for hover. Corrected inherited constructor order: arrow normal/hover/pressed use191/192/193 respectively; see asset-button-pipeline.md.
 
 Both opening and closing use200ms motion and a clipped535px region. Reopening cancels the old motion and starts from its current position. Native Ease.easeOut computes1+(t−1)^3; cubic-bezier(1/3,1,2/3,1) reproduces that curve exactly. Reduced-motion preference skips duration as a local accessibility adaptation. The isolated browser pauses the opening at100ms and verifies that exactly one eighth of travel remains within tolerance, then finishes it. Separate pointer tests verify both close and arrow dismissal, Escape and game-tab lifecycle, and decode all six original images. No speaker/foreground/native-client action was performed.
 
@@ -103,3 +103,7 @@ All16 exact-head installed checks/reviews passed:130 runtime identities,1387 art
 Live runtime130files/1,504,881bytes;art1387files with1381 verified immutable hardlinks plus6new PNGs totaling148,590bytes. Guarded idle rollout PID4590→92382 preserved all6ownerfiles(15,496bytes) byte-for-byte. Backup `/Users/davidai/.local/state/playgg-rollouts/pr272-d3ggqvbv`. No live gameplay writes,foreground or speaker actions. Native paid/refill features,remaining game-info branches,loaded-module identity,color/text pipeline,fresh physical comparison and whole-app parity remain incomplete.
 
 Earlier candidate notes record the development sequence; this verified release supersedes their unreleased status.
+
+## Inherited button-state correction candidate
+
+The prior arrow/CloseOption state interpretation was incorrect because Button parameters are up,down,over,disabled. The unreleased correction also restores inherited1/1.3/0.8 multipliers and200ms linear transitions,including drag-out cancellation. Original image bytes remain unchanged; see [source and verification](asset-button-pipeline.md). Global selected-skin color differences remain unresolved.

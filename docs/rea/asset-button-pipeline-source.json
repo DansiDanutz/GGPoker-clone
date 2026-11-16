@@ -1,0 +1,117 @@
+{
+  "status": "Unreleased candidate; source-based inherited-button correction, not global color parity",
+  "source_swf_sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
+  "method": "Fresh selected headless FFDec export; AtlasLoader/StageAssets exactly match retained exports; source constructor and Tween defaults inspected",
+  "files": [
+    {
+      "class_file": "com/nsus/iron/components/loader/AtlasLoader.as",
+      "sha256": "662f734ba57cddd261a4ab2e825c2c1b318a0d3be7fd9773e49f32208c7df29c",
+      "bytes": 18033
+    },
+    {
+      "class_file": "com/nsus/iron/table/asset/StageAssets.as",
+      "sha256": "e993e9ebfc32e1214162109e9af1eb3eef98e2cf6cbf6d7fb0ce1be4e3f0b0a3",
+      "bytes": 30674
+    },
+    {
+      "class_file": "com/nsus/lib/components/Button.as",
+      "sha256": "005aff16f04b263bfd0550ea73d919275afba37703e4ae36a55dcdbcae62b107",
+      "bytes": 15039
+    },
+    {
+      "class_file": "com/nsus/iron/components/display/button/LabelButton.as",
+      "sha256": "5e9cc08b2489e890d5684b9edb2b9b11e452d1ffdb991850f1edc0f83cade197",
+      "bytes": 1870
+    },
+    {
+      "class_file": "com/nsus/iron/components/display/StageImage.as",
+      "sha256": "062248409e26cda8a18b7d98e8409b2fb4f3c97853110ed1680f34ee14aafbc6",
+      "bytes": 703
+    },
+    {
+      "class_file": "com/nsus/iron/components/display/StageNinePatchImage.as",
+      "sha256": "3c20e2a08213b52a831f4365e4aa1dd176e54a271cf59d414a689a7fe465e5b0",
+      "bytes": 3933
+    },
+    {
+      "class_file": "com/nsus/lib/base/Tween.as",
+      "sha256": "a9def8290192da18c0634c9d458204141d598124d75e69c923240a1319833ffa",
+      "bytes": 18054
+    },
+    {
+      "class_file": "com/nsus/lib/base/Ease.as",
+      "sha256": "fb54a8c5d923e95bbe6acf9d1d8360790630b8db3e617e3ee41e8ea1db0bb481",
+      "bytes": 6303
+    },
+    {
+      "class_file": "com/nsus/iron/lobby/view/content/detailview/tab/LobbyDetailViewTabButton.as",
+      "sha256": "54f20158459ef4cd27002d9005a2bd5eae1e92bf975fe1983475f2a0d5c5c2ed",
+      "bytes": 3301
+    },
+    {
+      "class_file": "com/nsus/iron/lobby/view/content/detailview/base/GameInfoPageButton.as",
+      "sha256": "04be2d1d04eec557b5e95359b289f41bc0d4d0b61d4cd39ec432f648bb9c8ebb",
+      "bytes": 3086
+    },
+    {
+      "class_file": "com/nsus/iron/lobby/view/content/detailview/LobbyGameInfoView.as",
+      "sha256": "5da2a9d84cc80e398e36f51228ab3595d90cd571781286d31933b40626b60e6c",
+      "bytes": 42674
+    },
+    {
+      "class_file": "com/nsus/iron/lobby/view/content/detailview/gameInfo/NormalGameInfoItem.as",
+      "sha256": "17114e1fc643ccd3dc421d4bb206b4760ca534cd74499f190abea5097bc1db5e",
+      "bytes": 2104
+    },
+    {
+      "class_file": "com/nsus/iron/components/display/button/specific/option/CloseOptionButton.as",
+      "sha256": "93be79d2bf32cf758bb21df53bb30a9f1c9c31d813560b0a69d29145c52e9ec4",
+      "bytes": 718
+    }
+  ],
+  "button_constructor_order": [
+    "up",
+    "down",
+    "over",
+    "disabled"
+  ],
+  "multipliers": {
+    "up": 1,
+    "over_when_no_over_texture": 1.3,
+    "down_when_no_down_texture": 0.8,
+    "disabled": 1,
+    "up_over_duration_ms": 200,
+    "down_disabled_duration_ms": 0,
+    "default_ease": "linear"
+  },
+  "arrow_source_indices": {
+    "up": 191,
+    "over": 192,
+    "down": 193
+  },
+  "popup_close_source_indices": {
+    "up": 0,
+    "over": 1,
+    "down": 0
+  },
+  "historical_asset_aliases": {
+    "arrow_hover": "native-cash-game-info-arrow-down.png",
+    "arrow_pressed": "native-cash-game-info-arrow-over.png",
+    "popup_close_hover": "native-cash-game-info-popup-close-down.png",
+    "popup_close_pressed": "native-cash-game-info-popup-close-up.png"
+  },
+  "saved_selected_fill": {
+    "native_rgb": [
+      174,
+      148,
+      90
+    ],
+    "clone_rgb": [
+      164,
+      137,
+      84
+    ],
+    "global_color_correction_applied": false,
+    "loaded_native_swf_observed": false
+  }
+}
