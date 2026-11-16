@@ -1270,7 +1270,7 @@
       "sha256": "7dd662e2bdc06077f6d72c90b304a26992179fe716ca3b9160fb4283104e1bf9"
     }
   ],
-  "status": "Candidate source model,carousel component,authenticated backend,explicit preview and private media routes verified;full My Page integration,event-time playback and installation incomplete.",
+  "status": "Candidate My Page voice selection/preview/volume/Apply integrated and two-session restart tested;Sound selector navigation,event-time table playback and native rendering parity incomplete.",
   "nativePreferences": {
     "defaultPack": "VDaniel",
     "voiceVolume": 0.5,
@@ -1285,10 +1285,10 @@
     "Voice preview master override/restoration and3.5s fade/4s stop remain source requirements."
   ],
   "remaining": [
-    "Source carousel/apply/preview UI and14portrait packaging",
-    "Action trace-based actor/street/all-in call selection",
-    "Full separate-session hand,payout,cold restart and native comparison",
-    "Event-time voice stamping and ordered actor/street playback remain unwired"
+    "Sound selector navigation with Sound-only draft persistence",
+    "Independent saved voice channel and event-time actor/street/all-in call routing",
+    "Full separate-session voiced hand,payout,cold restart and native comparison",
+    "Source equalizer waveform,volume balloon/slider skin,Apply geometry and native Tween easing verification"
   ],
   "backendVerification": {
     "testedSha": "c3b36af296ebe8e7b0f7f1bb1464fa7e7428a7c5",
@@ -1298,8 +1298,21 @@
   },
   "mediaVerification": {
     "browser": "All98 original-hash MP3s decoded;AudioContext resamples to its output rate;decoded duration covers original samples/44100",
-    "http": "All98 clips and14 portraits exact-hash HTTP readback;private MIME/cache;unknown/method/traversal rejected;all112 denied in shared mode",
+    "http": "98 clips,14 portraits and six exact original atlas skins;118 assets exact-hash locally and denied in shared mode",
     "preview": "All98 exact names allowed;DefineSound duration cap;existing saved-mute override/restore and no preference writes",
+    "installed": false
+  },
+  "pageVerification": {
+    "test": "network-browser-test.mjs --voice-page",
+    "accounts": 2,
+    "isolation": "Independent cookies and localStorage contexts",
+    "verified": [
+      "Original portraits decode",
+      "Independent pack/volume Apply stays on page",
+      "Actual selected Call buffer and sample-capped duration",
+      "Discard unsaved volume across wallet navigation",
+      "Saved pack/volume after server restart and browser reload"
+    ],
     "installed": false
   }
 }

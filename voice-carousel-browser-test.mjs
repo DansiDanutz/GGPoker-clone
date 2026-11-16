@@ -11,13 +11,15 @@ import {createHash} from 'node:crypto';
 const directory=mkdtempSync(join(tmpdir(),'voice-carousel-')),profile=join(directory,'chrome');
 const images=new Map(voicePacks.map(pack=>['/home-art/'+pack.image,readFileSync('/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/action_voice/'+pack.image.split('/').at(-1))]));
 const receipt=JSON.parse(readFileSync(new URL('./docs/rea/action-voice-source.json',import.meta.url))),sounds=new Map();
+const skins=JSON.parse(readFileSync(new URL('./docs/rea/action-voice-art.json',import.meta.url)));
+for(const row of skins.files){const bytes=readFileSync('/Users/davidai/Sandbox/rea-tools/action-voice-ui-art/'+row.file);assert.equal(createHash('sha256').update(bytes).digest('hex'),row.sha256);images.set('/home-art/'+row.file,bytes)}
 for(const row of receipt.sounds){const bytes=readFileSync('/Users/davidai/Sandbox/rea-tools/action-voice-sounds/'+row.symbol+'.mp3');assert.equal(bytes.length,row.bytes);assert.equal(createHash('sha256').update(bytes).digest('hex'),row.sha256);sounds.set('/table-audio/'+row.symbol+'.mp3',bytes)}
 const html='<!doctype html><div id="carousel"></div><script type="module">import {installVoiceCarousel}from"/voice-carousel.mjs";window.changes=[];window.carousel=installVoiceCarousel(document.querySelector("#carousel"),{text:key=>key,onchange:id=>changes.push(id)});window.ready=true;</script>';
 const server=createServer((req,res)=>{
  if(req.url==='/'){res.setHeader('Content-Type','text/html');res.end(html)}
  else if(images.has(req.url)){res.setHeader('Content-Type','image/png');res.end(images.get(req.url))}
  else if(sounds.has(req.url)){res.setHeader('Content-Type','audio/mpeg');res.end(sounds.get(req.url))}
- else if(['/voice-carousel.mjs','/voice-packs.mjs'].includes(req.url)){res.setHeader('Content-Type','text/javascript');res.end(readFileSync(new URL('.'+req.url,import.meta.url)))}
+ else if(['/voice-carousel.mjs','/voice-packs.mjs','/voice-page.mjs'].includes(req.url)){res.setHeader('Content-Type','text/javascript');try{res.end(readFileSync(new URL('.'+req.url,import.meta.url)))}catch{res.statusCode=404;res.end()}}
  else{res.statusCode=404;res.end()}
 });
 let chrome,ws;
@@ -57,6 +59,20 @@ try{
  const scaled=await run(`(()=>{const r=document.querySelector('[data-voice="VDaniel"]').getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height/2}})()`);
  const before=await run('changes.length');await mouse('mousePressed',scaled.x,scaled.y,1);await mouse('mouseMoved',scaled.x-55,scaled.y,1);await mouse('mouseReleased',scaled.x-55,scaled.y);await delay(240);assert.equal(await run('carousel.value'),'VDoyle');assert.equal(await run('changes.length'),before+1);
  await run(`carousel.destroy();window.dispatchEvent(new PointerEvent('pointerup',{pointerId:1,clientX:5}))`);assert.equal(await run(`document.querySelector('#carousel').children.length`),0);
+ await run(`(async()=>{const{installVoicePage}=await import('/voice-page.mjs');window.voiceCalls=[];window.voicePlayer={name:'VoiceQA',voicePackId:'VGreg'};window.voiceAudio=Object.assign(async()=>{},{preview:async(...args)=>{voiceCalls.push(args.slice(0,2));return args[2]()},stopPreview:()=>voiceCalls.push(['stop']),updatePreview:value=>voiceCalls.push(['volume',value])});window.voicePage=installVoicePage(document.querySelector('#carousel'),{player:voicePlayer,audio:voiceAudio});voicePage.activate()})()`);
+ assert.equal(await run(`document.querySelector('[data-voice="VGreg"]').getAttribute('aria-pressed')`),'true');
+ assert.equal(await run(`document.querySelector('#voiceVolume').value`),'50');assert.equal(await run(`document.querySelector('#applyVoice').disabled`),true);
+ await run(`document.querySelector('[data-action="CALL"]').click()`);await until(()=>run(`voiceCalls.some(call=>call[0]==='VoiceCallGreg'&&call[1]===50)`));
+ await run(`document.querySelector('#voiceVolume').value='27';document.querySelector('#voiceVolume').dispatchEvent(new Event('input'))`);assert.equal(await run(`document.querySelector('#applyVoice').disabled`),false);assert.equal(await run(`localStorage.getItem('river-audio-voice-volume')`),null);
+ await run(`window.voiceFetch=fetch;window.voicePosts=[];window.fetch=async(url,options)=>{if(url!=='/local/voice')return voiceFetch(url,options);voicePosts.push(JSON.parse(options.body));return new Response(JSON.stringify({name:'VoiceQA',voicePackId:JSON.parse(options.body).voicePackId}),{status:200,headers:{'Content-Type':'application/json'}})};document.querySelector('#applyVoice').click()`);
+ await until(()=>run(`document.querySelector('#applyVoice').disabled&&localStorage.getItem('river-audio-voice-volume')==='27'`));assert.deepEqual(await run('voicePosts'),[{voicePackId:'VGreg'}]);
+ await run(`voicePage.deactivate();voicePage.activate()`);assert.equal(await run(`document.querySelector('#voiceVolume').value`),'27');assert.equal(await run(`document.querySelector('#applyVoice').disabled`),true);
+ await run(`document.querySelector('[aria-label="Next voice"]').click();window.fetch=async()=>new Response(JSON.stringify({error:'Save unavailable'}),{status:503,headers:{'Content-Type':'application/json'}});document.querySelector('#voiceVolume').value='42';document.querySelector('#voiceVolume').dispatchEvent(new Event('input'));document.querySelector('#applyVoice').click()`);
+ await until(()=>run(`document.querySelector('#voiceStatus').textContent==='Save unavailable'`));assert.equal(await run(`voicePlayer.voicePackId`),'VGreg');assert.equal(await run(`localStorage.getItem('river-audio-voice-volume')`),'27');assert.equal(await run(`document.querySelector('#applyVoice').disabled`),false);
+ await run(`voicePage.deactivate();voicePage.activate()`);assert.equal(await run(`document.querySelector('[data-voice="VGreg"]').getAttribute('aria-pressed')`),'true');assert.equal(await run(`document.querySelector('#voiceVolume').value`),'27');
+ await run(`document.querySelector('#voiceMute').click()`);assert.equal(await run(`document.querySelector('#voiceVolume').value`),'0');
+ await run(`voicePage.destroy();window.fetch=voiceFetch`);assert.equal(await run(`document.querySelector('#carousel').children.length`),0);
+ console.log('PASS voice page:profile selection,default50,exact action cue,draft-only slider,Apply,non-destructive failed save,reopen reset,mute and cleanup');
  console.log('PASS headless actual DOM:14 exact native portraits,center/side geometry,dim cap,arrows,side selection,wrap,110px drag,keyboard button activation,non-notifying reset and teardown');
 }finally{
  if(ws&&ws.readyState===WebSocket.OPEN){const closed=once(ws,'close');ws.close();await closed}

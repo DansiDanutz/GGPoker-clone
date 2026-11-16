@@ -1,0 +1,80 @@
+{
+  "sources": {
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+    "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+  },
+  "files": [
+    {
+      "file": "native-action-voice-edge.png",
+      "frame": "lobby_option0394",
+      "rect": [
+        326,
+        1830,
+        24,
+        10
+      ],
+      "bytes": 356,
+      "sha256": "7dd35c66a1fa38dd8c51d6960481a3f703aed1a27a81bf3a0de3fdcf88c0f8b6"
+    },
+    {
+      "file": "native-action-voice-button.png",
+      "frame": "lobby_option0395",
+      "rect": [
+        1756,
+        1568,
+        72,
+        32
+      ],
+      "bytes": 719,
+      "sha256": "9fb69cc73dcb00d1ba4b9f8ce5106f04f233be55c4b6f8dec8cf9153945d5a9d"
+    },
+    {
+      "file": "native-action-voice-button-active.png",
+      "frame": "lobby_option0396",
+      "rect": [
+        1296,
+        3659,
+        72,
+        32
+      ],
+      "bytes": 1010,
+      "sha256": "ac54ed9565446a9f9f45cb00a31ccea282476fcbbc690d1ad5cf0a0b0a002273"
+    },
+    {
+      "file": "native-action-voice-speaker.png",
+      "frame": "lobby_option0185",
+      "rect": [
+        445,
+        3664,
+        48,
+        48
+      ],
+      "bytes": 729,
+      "sha256": "c8d678ab7a0a1bb23f1f6be1f197fc6a486df3526a453d0f0bbd988f17ea697d"
+    },
+    {
+      "file": "native-action-voice-speaker-muted.png",
+      "frame": "lobby_option0186",
+      "rect": [
+        495,
+        3664,
+        48,
+        48
+      ],
+      "bytes": 831,
+      "sha256": "fc78898b9176b36ee088143d3544ae01cff2807f05b825605a4acc42b158abf6"
+    },
+    {
+      "file": "native-action-voice-volume-balloon.png",
+      "frame": "lobby_option0187",
+      "rect": [
+        2510,
+        3893,
+        36,
+        28
+      ],
+      "bytes": 351,
+      "sha256": "85ac29879ee88d59e1332ae9c0115eb1fe0a8ab563825b84f22af2d6c6ce0706"
+    }
+  ]
+}

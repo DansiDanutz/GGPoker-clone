@@ -1,4 +1,5 @@
 import {autoFoldHandKey} from './auto-fold.mjs';
+import {voiceCueSamples} from './voice-packs.mjs';
 import {betShortcuts} from './betting-preferences.mjs';
 import {startHand} from './engine/table.mjs';
 // Four separate Chrome storage contexts, real UI actions, ephemeral server and data.
@@ -1437,6 +1438,29 @@ console.log('PASS selected-table comparison: loaded original/local images, equal
   await c.run("document.querySelector('#eventLobby').click()");await until(()=>c.run("!!document.querySelector('#join')?.onsubmit"));
   assert.equal(await c.run("location.pathname==='/network.html'&&new URLSearchParams(location.search).get('mode')==='tournament'"),true);
   console.log('PASS event filters browser: native-format bar, custom inclusive range, invalid-range lockout, reset, PLO/All filtering and in-app Tournament Lobby');
+ }else if(process.argv.includes('--voice-page')){
+  const clients=[];
+  for(const [index,pack,level]of [[0,'VGreg',27],[1,'VDoyle',64]]){
+   const c=await browser();await c.size(1196,929);await c.go(origin+'/');await loginForm(c);
+   await c.run(`(()=>{const f=document.querySelector('form');f.nickname.value='Voice${index}';f.pin.value='123456';f.requestSubmit(f.querySelector('[value=create]'))})()`);
+   await until(()=>c.run(`!!document.querySelector('#profile')?.onclick`));
+   await c.run(`document.querySelector('#profile').click();document.querySelector('[data-profile-page="My Action Voice"]').click()`);
+   await until(()=>c.run(`!document.querySelector('#profileVoice').hidden&&document.querySelectorAll('#profileVoice [data-voice]').length===14`));
+   await until(()=>c.run(`[...document.querySelectorAll('#profileVoice img')].every(image=>image.complete&&image.naturalWidth>0)`));
+   assert.equal(await c.run(`document.querySelector('#voiceVolume').value`),'50');
+   await c.run(`document.querySelector('[data-voice="${pack}"]').click()`);await delay(250);
+   await c.run(`document.querySelector('#voiceVolume').value='${level}';document.querySelector('#voiceVolume').dispatchEvent(new Event('input'));document.querySelector('#applyVoice').click()`,true);
+   await until(()=>c.run(`document.querySelector('#applyVoice').disabled&&localStorage.getItem('river-audio-voice-volume')==='${level}'`));
+   assert.equal(await c.run(`fetch('/local/me').then(r=>r.json()).then(p=>p.voicePackId)`),pack);
+   assert.equal(await c.run(`document.querySelector('#profileVoice').hidden`),false);
+   if(index===0){await watchShowAudio(c,'VoiceCallGreg');await c.run(`document.querySelector('[data-action="CALL"]').click()`,true);await until(()=>c.run('showSounds.length===1'));assert.ok(Math.abs((await c.run('showStarts[0][2]'))-Math.min(await c.run('showClipDuration'),voiceCueSamples.VoiceCallGreg/44100))<1e-9)}
+   await c.run(`document.querySelector('#voiceVolume').value='9';document.querySelector('#voiceVolume').dispatchEvent(new Event('input'));document.querySelector('[data-profile-page="My Wallet"]').click()`);
+   await until(()=>c.run(`!document.querySelector('#profileWallet').hidden`));await c.run(`document.querySelector('[data-profile-page="My Action Voice"]').click()`);assert.equal(await c.run(`document.querySelector('#voiceVolume').value`),String(level));
+   assert.deepEqual(await c.run('__qaErrors'),[]);clients.push({c,pack,level});
+  }
+  await stop(server);await boot();
+  for(const {c,pack,level}of clients){await c.reload();await until(()=>c.run(`!!document.querySelector('#profile')?.onclick`));await c.run(`document.querySelector('#profile').click();document.querySelector('[data-profile-page="My Action Voice"]').click()`);assert.equal(await c.run(`document.querySelector('#profileVoice [aria-pressed="true"]').dataset.voice`),pack);assert.equal(await c.run(`document.querySelector('#voiceVolume').value`),String(level));assert.deepEqual(await c.run('__qaErrors'),[])}
+  console.log('PASS complete My Page voice UI:two separate signed-in browser contexts,original portraits,independent pack/volume,Apply stays on page,exact native Call buffer/duration,unsaved draft discard,wallet navigation and server/browser reload recovery');
  }else if(process.argv.includes('--settings')){
   const c=await browser();await c.size(1200,961);await c.go(origin+'/playgg.html?still=1');
   await until(()=>c.run("!!document.querySelector('#settings')?.onclick"));

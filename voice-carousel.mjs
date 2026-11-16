@@ -11,8 +11,10 @@ export function installVoiceCarousel(host,{selected='VDaniel',text=key=>key,onch
  .voiceCarousel .voicePortrait{position:absolute;border-radius:50%;background:#3a3a3a;overflow:hidden}
  .voiceCarousel img{width:100%;height:100%;display:block;pointer-events:none}
  .voiceCarousel .voiceDim{position:absolute;inset:0;background:#000;pointer-events:none}
- .voiceCarousel .voiceName{position:absolute;white-space:nowrap;transform:translateX(-50%);pointer-events:none}
- .voiceCarousel .voiceArrow{top:48px;width:28px;height:28px;border-radius:50%;background:#0008;z-index:3}
+ .voiceCarousel .voiceName{position:absolute;white-space:pre;transform:translateX(-50%);pointer-events:none}
+ .voiceCarousel:before,.voiceCarousel:after{content:'';position:absolute;top:0;width:24px;height:162px;background:url('/home-art/native-action-voice-edge.png') center/24px 162px;pointer-events:none;z-index:3}
+ .voiceCarousel:before{left:0}.voiceCarousel:after{right:0;transform:scaleX(-1)}
+ .voiceCarousel .voiceArrow{top:48px;width:28px;height:28px;border-radius:50%;background:#0008;z-index:4}
  .voiceCarousel .voiceArrow svg{display:block;width:28px;height:28px;pointer-events:none}
  `;host.append(style);
  const cells=voicePacks.map(pack=>{
@@ -32,6 +34,7 @@ export function installVoiceCarousel(host,{selected='VDaniel',text=key=>key,onch
    dim.style.opacity=String(position.dim);
    button.tabIndex=Math.abs(x)+radius<=374?0:-1;
    label.textContent=text(primary?pack.labelKey:pack.subLabelKey);
+   label.dataset.nativeLabel=primary?pack.labelKey:pack.subLabelKey;label.dataset.nativeFallback=label.textContent;
    Object.assign(label.style,{left:radius+'px',top:radius*2+8+'px',fontSize:12+4*(radius-36)/24+'px',fontWeight:primary?'700':'400',color:primary?'#fefefe':'#666666'});
    button.setAttribute('aria-pressed',String(i===index));
   });
