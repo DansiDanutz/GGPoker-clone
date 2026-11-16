@@ -4,7 +4,7 @@ Target: reproduce player-visible workflows using independent code and an owner-c
 
 ## Betting settings language
 
-Betting settings bind18 body labels and the sidebar title to the recovered native keys. Stable page identity preserves translated routing/selection; translated row/column labels name preset controls, and page entry focuses a real choice. Draft preferences and prepared bets must survive cross-window language changes. [Source contract and acceptance](docs/rea/betting-settings-language.md). Other settings labels, exact native text scaling and physical parity remain incomplete.
+Betting settings bind18 body labels, the sidebar title and shared OK/Cancel footer to the recovered native keys. Stable page identity preserves translated routing/selection; translated row/column labels name preset controls, and page entry focuses a real choice. Draft preferences and prepared bets must survive cross-window language changes. [Source contract and acceptance](docs/rea/betting-settings-language.md). Other settings labels, exact native text scaling and physical parity remain incomplete.
 
 ## Group player chip display
 

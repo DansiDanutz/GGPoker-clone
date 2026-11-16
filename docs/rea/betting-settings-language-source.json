@@ -34,7 +34,9 @@
     "MobileOpeningBetSize",
     "MobileNormalBetSize",
     "DontRoundBlind",
-    "MobileLabelButton"
+    "MobileLabelButton",
+    "ButtonOK",
+    "ButtonCancel"
   ],
   "limitations": [
     "Native physical layout/raster and script-specific font parity unverified",
