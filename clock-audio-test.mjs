@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {createClockAudio} from './table-audio.mjs';
+import {createClockAudio,audioChannel} from './table-audio.mjs';
 const played=[],stopped=[];
 const audio=createClockAudio(async names=>{const i=played.length;played.push(names);return ()=>stopped.push(i)});
 const h={deadline:10000,clock:{actionId:'a',seat:1,phase:'bank',canDisableLimit:true}};
@@ -15,3 +15,5 @@ console.log('PASS own-turn cap ticks at1s, reserve cancellation, hot-time final5
 const guards=[];const loading=createClockAudio((_names,current)=>{guards.push(current);return Promise.resolve()});h.clock={actionId:'c',seat:1,phase:'bank',canDisableLimit:true};h.deadline=10000;loading.update(h,1,0,true);loading.update(h,1,1000,true);assert.equal(guards[0](),false,'Old pending ticks must not play in a burst when decode finishes');assert.equal(guards[1](),true);loading.update(null,1,1001,true);assert.equal(guards[1](),false);
 
 console.log('PASS pending cap ticks collapse to the current tick rather than replaying a decoded backlog');
+
+assert.ok(played.flat().every(cue=>audioChannel(cue)==='critical'),'Actual clock state transitions must route to Critical Alert without changing cadence/cancellation');
