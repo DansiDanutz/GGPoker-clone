@@ -211,11 +211,11 @@
     ]
   },
   "localMapping": [
-    "Reuse authenticated privatePaint own/color/hasText metadata;no note text/subject/new private fields in public table DTO or DOM.",
+    "Reuse authenticated privatePaint own/color/hasText metadata;no note text/subject/new private fields in public table DTO or preview marker DOM.",
     "Real local tab actions and real HUD note/color persistence;selected Holdem tab disabled;other modes keep their enabled semantics.",
     "Verified flat2px stretch bands allow exact source scale9 raster at117x28;this avoids browser border-image interpolation seams without inventing color/shape.",
     "Ten small PNGs add4880bytes;no fonts/dependencies/model downloads.",
-    "Media max-height597 adds scrollable HUD max100vh-16 and reachable right-close only on short windows;native normal404x582/404x530 geometry retained. This small-window policy is not claimed as observed native behavior."
+    "Media max-height597 adds scrollable HUD max100vh-16 and sticky right-close only on short windows;native normal404x582/404x530 geometry retained. This small-window policy is not claimed as observed native behavior."
   ],
   "verification": [
     "RED selected tab not disabled;RED saved color metadata had no visible preview marker.",
