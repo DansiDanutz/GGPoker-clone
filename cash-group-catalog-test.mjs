@@ -23,3 +23,16 @@ const tablesBefore=JSON.stringify(tables);
 assert.deepEqual(cashTableCatalog(tables).map(t=>t.id),['higher','busy','tie','empty'],'Native comparable Table View rule priorities then descending real player count, stable ties');
 assert.equal(JSON.stringify(tables),tablesBefore);assert.deepEqual(cashTableCatalog([]),[]);assert.equal(cashTableCatalog(tables).length,tables.length,'Table View retains individual tables');
 console.log('PASS native Table View sorting/occupancy/stable ties/no aggregation/no mutation');
+
+
+const {cashGameInformation}=await import('./cash-group-catalog.mjs');
+assert.deepEqual(cashGameInformation([]),[],'Empty catalog must not invent rules');
+const infoTables=[{capacity:6,actionSeconds:14,ante:0},{capacity:6,actionSeconds:30,ante:2},{capacity:4,ante:0}];
+const infoBefore=JSON.stringify(infoTables),info=cashGameInformation(infoTables);
+assert.deepEqual(info.map(r=>r.key),['MobileCurrencyTitle','MobileMissionGameType','TableMax','LabelBlinds','TimeToAct','MinimumPlayersForDealing']);
+assert.equal(info.find(r=>r.key==='TableMax').value,'4 / 6');
+assert.equal(info.find(r=>r.key==='TimeToAct').value,'14 / 30 / 90 seconds');
+assert.equal(info.find(r=>r.key==='LabelBlinds').value,'SB, BB, Ante');
+assert.equal(cashGameInformation([{capacity:6}]).find(r=>r.key==='LabelBlinds').value,'SB, BB');
+assert.equal(JSON.stringify(infoTables),infoBefore,'Information preserves server projections');
+console.log('PASS local game information aggregates actual rules without inventing native defaults');

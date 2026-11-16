@@ -1,0 +1,145 @@
+{
+  "status": "Source research plus initial local implementation; isolated browser verified; not released or native-runtime verified",
+  "source_swf_sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
+  "method": "Selective headless FFDec AS3 export from installed Game/51/IronDesktop.swf",
+  "files": [
+    {
+      "class_file": "lobby/view/content/detailview/base/LobbyPlayerView.as",
+      "sha256": "7cc8635b5290bea32772f1a495969799d018b4f6892e4db26cca415c95882ad8",
+      "bytes": 17329
+    },
+    {
+      "class_file": "lobby/view/content/detailview/base/LobbyDetailViewOperatorBase.as",
+      "sha256": "b0e51c932eecf8f78f02b8d834fedb351c671d5830262839ae0d659ecad1655d",
+      "bytes": 22173
+    },
+    {
+      "class_file": "lobby/view/content/detailview/base/GameInfoPageButton.as",
+      "sha256": "04be2d1d04eec557b5e95359b289f41bc0d4d0b61d4cd39ec432f648bb9c8ebb",
+      "bytes": 3086
+    },
+    {
+      "class_file": "lobby/view/content/detailview/LobbyGameInfoView.as",
+      "sha256": "5da2a9d84cc80e398e36f51228ab3595d90cd571781286d31933b40626b60e6c",
+      "bytes": 42674
+    },
+    {
+      "class_file": "lobby/view/content/detailview/gameInfo/GameInfoHoldemRulesItem.as",
+      "sha256": "d3c06f4dfde854b2bd17e4fed284d2daaea93043f3f4599b0a5a837ee44b923a",
+      "bytes": 2186
+    },
+    {
+      "class_file": "lobby/view/LobbyView.as",
+      "sha256": "92840fe6d1998cc428e0e5cb07575c6a67f111351e0321b8b1bdf66d256c43f4",
+      "bytes": 7191
+    },
+    {
+      "class_file": "lobby/view/TabbedLobbyView.as",
+      "sha256": "3ac80ebd863799bdc266deec3075a34b93cbeeba039483d0b2963e9e617afa82",
+      "bytes": 15949
+    },
+    {
+      "class_file": "lobby/view/content/LobbyContentView.as",
+      "sha256": "0047c61dc30a3a40f186f0bf8983ae04001c0a982a8540a87ccebc9d53b47ca8",
+      "bytes": 39846
+    },
+    {
+      "class_file": "lobby/view/content/detailview/gameInfo/GameInfoItemBase.as",
+      "sha256": "210538a0f3e05fd6d71e23bc6ba0877c4cb62927ae3eed02814eaa3b5a33dc84",
+      "bytes": 2964
+    },
+    {
+      "class_file": "lobby/view/content/detailview/gameInfo/LobbyGameInfoItem.as",
+      "sha256": "2a69d3d1723dc180ff6e1fba358ace20a373a560b683b0a3ac0f10611d040983",
+      "bytes": 7170
+    },
+    {
+      "class_file": "lobby/view/content/detailview/gameInfo/NormalGameInfoItem.as",
+      "sha256": "17114e1fc643ccd3dc421d4bb206b4760ca534cd74499f190abea5097bc1db5e",
+      "bytes": 2104
+    },
+    {
+      "class_file": "lobby/view/content/detailview/gameInfo/GameInfoRulesItem.as",
+      "sha256": "296d1319206602a9c628a23c2a1c9f8a1214c6b76f1e2933b80a08031077947d",
+      "bytes": 343
+    },
+    {
+      "class_file": "view/lobby/gameInfo/InfoType.as",
+      "sha256": "5cd09de95e80cea30c6ddc1247ebe45361696076c4868c8bf86530099931f643",
+      "bytes": 11657
+    },
+    {
+      "class_file": "com/nsus/iron/components/display/button/CloseButton.as",
+      "sha256": "255449b211d5b32a6483c44fe87182a25d6cce37a43b7d0ebf0ebd19bbb9ecd6",
+      "bytes": 611
+    },
+    {
+      "class_file": "com/nsus/lib/base/Ease.as",
+      "sha256": "fb54a8c5d923e95bbe6acf9d1d8360790630b8db3e617e3ee41e8ea1db0bb481",
+      "bytes": 6303
+    }
+  ],
+  "controls_atlas": {
+    "files": [
+      {
+        "bytes": 333,
+        "file": "native-cash-game-info-close-up.png",
+        "frame": "common0004",
+        "height": 11,
+        "rgbaExact": true,
+        "sha256": "2d06f42bf49bfc1736bbe94393a26825e19f315499310730b7fe98b3c409e86b",
+        "width": 12
+      },
+      {
+        "bytes": 304,
+        "file": "native-cash-game-info-close-over.png",
+        "frame": "common0005",
+        "height": 11,
+        "rgbaExact": true,
+        "sha256": "fb76264443c4a91e46acc4e330471e0e6df68a18963149f8c0f6f3bf84b20603",
+        "width": 12
+      },
+      {
+        "bytes": 833,
+        "file": "native-cash-game-info-arrow-up.png",
+        "frame": "lobby0191",
+        "height": 80,
+        "rgbaExact": true,
+        "sha256": "2c996b451a704ca1645fbcf24a5d6f7d79da6ca97a6e7dde56da5def9a8d8870",
+        "width": 22
+      },
+      {
+        "bytes": 965,
+        "file": "native-cash-game-info-arrow-down.png",
+        "frame": "lobby0192",
+        "height": 80,
+        "rgbaExact": true,
+        "sha256": "e56a1bcf1d04917efcc9e9fee0a93be37ada09eed7639184ecb170178cc4e001",
+        "width": 22
+      },
+      {
+        "bytes": 929,
+        "file": "native-cash-game-info-arrow-over.png",
+        "frame": "lobby0193",
+        "height": 80,
+        "rgbaExact": true,
+        "sha256": "ca71e508cfba14dad256f69ab35521fbea6ff8866954ce98a7b767a39df69487",
+        "width": 22
+      },
+      {
+        "bytes": 543,
+        "file": "native-cash-game-info-link-icon.png",
+        "frame": "lobby0112",
+        "height": 16,
+        "rgbaExact": true,
+        "sha256": "e8b1900c4ea092b9b28e5a13b0ca0722b2882f5d7d24efa28ccc0d0c012b4a04",
+        "width": 16
+      }
+    ],
+    "method": "StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding",
+    "sources": {
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+    }
+  }
+}

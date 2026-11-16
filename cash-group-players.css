@@ -13,7 +13,6 @@
 #catalog.nativeCashOperator[data-mode=holdem][data-view=group] :is(#groupPlayerProfile,#takeSeat){--up:url('/home-art/native-tourney-entry-up.png');--down:url('/home-art/native-tourney-entry-down.png');position:relative;isolation:isolate;box-sizing:border-box;align-self:center;display:grid;place-items:center;flex-shrink:0;width:90%;height:38px;padding:0;margin:10px 0 0;border:0;border-radius:0;background:none;color:#fff;font:700 18px NativeGroupRow,Arial,sans-serif;text-align:center;filter:brightness(1);transition:filter .2s linear;text-decoration:none}
 #catalog.nativeCashOperator[data-mode=holdem][data-view=group] #takeSeat{margin-top:auto;margin-bottom:10px}
 #catalog.nativeCashOperator[data-mode=holdem][data-view=group] #groupPlayerProfile{--up:url('/home-art/native-tourney-entry-disabled.png');--down:url('/home-art/native-cash-group-join-down.png');margin-top:auto}
-#catalog.nativeCashOperator[data-mode=holdem][data-view=group] #groupPlayerProfile:not([hidden])~#takeSeat{margin-top:10px}
 #catalog.nativeCashOperator[data-mode=holdem][data-view=group] :is(#groupPlayerProfile,#takeSeat)::before{content:'';position:absolute;left:-5px;top:5px;width:calc(100% + 10px);height:calc(100% + 5px);border:15px solid transparent;border-image:url('/home-art/native-tourney-entry-shadow.png') 15 fill stretch;box-sizing:border-box;z-index:-1}
 #catalog.nativeCashOperator[data-mode=holdem][data-view=group] :is(#groupPlayerProfile,#takeSeat)::after{content:'';position:absolute;inset:0;border-style:solid;border-color:transparent;border-width:20px 9px 19px 10px;border-image:var(--up) 20 9 19 10 fill stretch;z-index:-1}
 #catalog.nativeCashOperator[data-mode=holdem][data-view=group] :is(#groupPlayerProfile,#takeSeat)>span{position:relative;pointer-events:none}
@@ -31,3 +30,41 @@
 .nativeGroupPlayer[data-note-kind]::before{content:'';position:absolute;left:47px;top:4px;width:97px;height:20px;background:var(--group-note-color);-webkit-mask-box-image:url('/home-art/native-cash-group-note-color.png') 5 fill stretch;-webkit-mask-box-image-width:5px;pointer-events:none}
 .nativeGroupPlayer[data-note-kind=memo]::before{left:42px;width:102px;-webkit-mask-box-image-source:url('/home-art/native-cash-group-note-memo.png');-webkit-mask-box-image-slice:5 5 5 10 fill;-webkit-mask-box-image-width:5px 5px 5px 10px}
 .nativeGroupPlayer[data-note-kind] .groupPlayerName{position:relative;box-sizing:border-box;padding-left:8px;padding-right:4px}
+
+/* Source geometry: LobbyContentView + LobbyGameInfoView + NormalGameInfoItem. */
+.nativeCashGameInfoLink{align-self:center;margin:0 0 10px;padding:0;border:0;background:none;color:#068fdd;height:20px;font:13px NativeGroupPlayer,Arial,sans-serif;cursor:pointer}
+.nativeCashGameInfoLink:hover{color:#06a7f5}
+.nativeCashGameInfo{position:absolute;z-index:4;right:0;top:0;width:535px;max-width:100%;height:100%;border:0;box-shadow:inset 0 0 0 2px #3b3b3b;background:#000;transform:translateX(100%)}
+.nativeCashGameInfo[hidden]{display:none}
+.nativeCashGameInfoClip{position:absolute;z-index:4;right:0;top:0;width:535px;max-width:100%;height:100%;overflow:clip;pointer-events:none}
+.nativeCashGameInfo{pointer-events:auto}
+.nativeCashGameInfoClose{position:absolute;right:12px;top:12px;width:12px;height:11px;border:0;padding:0;background:url('/home-art/native-cash-game-info-close-up.png') center/100% 100% no-repeat;cursor:pointer}
+.nativeCashGameInfoClose:hover{background-image:url('/home-art/native-cash-game-info-close-over.png')}
+.nativeCashGameInfoClose:active{background-image:url('/home-art/native-cash-game-info-close-up.png')}
+.nativeCashGameInfoArrow{position:absolute;left:1px;top:calc(50% - 40px);width:22px;height:80px;padding:0;border:0;background:url('/home-art/native-cash-game-info-arrow-up.png') center/100% 100% no-repeat;cursor:pointer}
+.nativeCashGameInfoArrow:hover{background-image:url('/home-art/native-cash-game-info-arrow-over.png')}
+.nativeCashGameInfoArrow:active{background-image:url('/home-art/native-cash-game-info-arrow-down.png')}
+.nativeCashGameInfoLink>span{display:inline-flex;align-items:center;gap:3px}
+.nativeCashGameInfoLink i{display:inline-block;margin-left:2px;width:16px;height:16px;background:currentColor;mask:url('/home-art/native-cash-game-info-link-icon.png') center/100% 100% no-repeat}
+.nativeCashGameInfoLink:active>span{transform:translateY(2px)}
+.nativeCashGameInfoRows{position:absolute;top:40px;bottom:10px;left:50%;transform:translateX(-50%);width:455px;max-width:calc(100% - 40px);overflow:auto;scrollbar-width:thin;font:14px NativeGroupPlayer,Arial,sans-serif}
+.nativeCashGameInfoItem{margin:0 0 4px}
+.nativeCashGameInfoLine{min-height:36px;padding:0 12px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-radius:5px;background:#1d1d1d}
+.nativeCashGameInfoLine>span:first-child{color:#fefefe}
+.nativeCashGameInfoLine>span:last-child{color:#b1b1b1;text-align:right}
+.nativeCashGameInfoItem>p{margin:2px 10px 0;color:#5f5f5f;font-size:12px;line-height:normal}
+.nativeCashGameInfoRules{margin-top:56px;padding:12px;background:#1d1d1d;border-radius:5px;color:#b1b1b1;font-size:13px}
+.nativeCashGameInfoRules h2{margin:0 0 8px;font-size:14px;color:#fefefe}
+.nativeCashGameInfoRules p{margin:0;line-height:1.5}
+
+/* LobbyPlayerView reserves the animated operator height below its header/list. */
+.nativeGroupOperator{display:contents}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=group]{--group-operator-height:88px}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=group][data-group-profile=true]{--group-operator-height:136px}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=group] aside{background:#222}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=group] #preview.nativeGroupPlayerList{position:absolute;left:0;top:35px;width:241px;height:calc(100% - 35px - var(--group-operator-height));margin:0;flex:none;transition:height .3s cubic-bezier(.333333333333,1,.666666666667,1)}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=group] .nativeGroupOperator{display:block;position:absolute;left:0;bottom:0;width:241px;height:var(--group-operator-height);background:#1f1f1f;box-shadow:inset 0 2px #313131;transition:height .3s cubic-bezier(.333333333333,1,.666666666667,1)}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=group] .nativeGroupOperator :is(#takeSeat,#groupPlayerProfile){position:absolute;left:12.05px;top:10px;width:216.9px;height:38px;margin:0}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=group][data-group-profile=true] .nativeGroupOperator #takeSeat{top:58px}
+#catalog.nativeCashOperator[data-mode=holdem][data-view=group] .nativeCashGameInfoLink{position:absolute;left:0;top:calc(var(--group-operator-height) - 30px);width:241px;margin:0}
+@media(prefers-reduced-motion:reduce){#catalog.nativeCashOperator[data-mode=holdem][data-view=group] :is(.nativeGroupOperator,#preview.nativeGroupPlayerList){transition:none}}
