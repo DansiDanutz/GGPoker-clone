@@ -2,11 +2,15 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
-## Active source-fidelity follow-up — cash headings
+## Verified release baseline — PR281
 
-PR280 adds original regular Roboto12,source cell/divider/label geometry,48-unit final Table heading and native language keys. Its temporary raw-capture palette/22px-leading calibration is being removed: native Cua and headless Chrome capture profiles,DPI/raster and loaded-module identity were unbound,so lower PNG error was not proof of native physical parity. The follow-up preserves literal source#333/#808080/#404040 and an uncompensated24px CSS linebox. Two Game37 heading classes are byte-identical to Game51. Actual heading/locale/stable-node and full-game gates remain required. [Source,evidence correction and remaining gaps](docs/rea/cash-header.md).
+Cash Table/Group headings now use the native source palette #333333/#808080/#404040, regular Roboto12, recovered label/divider geometry, the48-unit final Table cell and native language keys. PR280's raw-capture color/22px-leading compensation was rejected because capture profiles,DPI/raster and loaded-module identity were unbound; PR281 restores source values and an uncompensated24px CSS linebox. The two Game37 heading classes are byte-identical to Game51. [Source, correction and remaining gaps](docs/rea/cash-header.md).
 
-## Verified release baseline — PR277
+PR281 merged `7fde59b940f9ec466b113673089a8fa2653cbc5a`; tested source `80702e0ad7580145236abd6259164a36a6ee6d25`. All12 exact-head checks passed, including source/runtime identities, language/catalog/privacy/HTTP and two complete browser journeys with independent payouts,reconnect/restart. Capture characterization is not a physical pixel-parity gate.
+
+Guarded idle rollout PID79681→82320 preserved all6ownerfiles/15496bytes byte-for-byte. Runtime130files/1513958logicalbytes,129verified immutable hardlinks plus15425newCSSbytes;1387existingartfiles reused. Backup `/Users/davidai/.local/state/playgg-rollouts/pr281-acqi8oog`. No live gameplay writes,foreground or speaker actions. Physical font/raster/animation/audio and full-app parity remain incomplete. Root Markdown report and GOAL record both the rejected calibration and correction; generated HTML/inventories remain historical.
+
+## Historical release baseline — PR277
 
 The existing completed RIMT result already retains all boards and allocations. The history preview now draws all two/three runouts with native0.9 scale, centered-card pivot and single shared prefix. Winner summaries rank only the boards that actually paid that seat. Non-Omaha preview hole cards stay visible as the native source requires; folded paint and Omaha exact-two focus are preserved. No engine, backend endpoint, wallet or data schema change. Nine fresh source classes and the failing installed-baseline test are documented in [history-runouts](docs/rea/history-runouts.md). PR277 merged `60b50fa4391dbbb7d88adc9b4afce86b1a32672e`; tested source `85495fb0063f965126ea1229b95d6d9d027fad5a`. All20 exact-head checks passed:130 committed runtime identities/nine classes/SWF,syntax/diff,layout/summary/normal-Omaha/history/privacy/engine regressions,three genuine owner-hosted browser hands at preflop/flop/turn with per-run payouts/104pot/70return/290chips,PNG/cold restart and Rabbit360-chip regression. Three-run preflop/flop captures inspected; merged tree equals the tested tree.
 
