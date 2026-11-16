@@ -117,3 +117,5 @@ Testele browser cer Chrome și pachetul local de referință,folosesc date tempo
 - [Manual selected-table Join confirmation](lobby-join-confirmation.md): actual HomeMediator/ReserveSeat3104/CheckTakeSeat chain and explicit local purchase.
 
 - [Group View operator and in-app Game Info](cash-group-operator-research.md): recovered command owner, original skins/cubic motion, actual local rules, calibrated Group list/operator and isolated browser/gameplay evidence; live PR270; full native parity remains incomplete.
+
+- [Asset loader and inherited button states](asset-button-pipeline.md): fresh source lookup/cropping evidence,actual constructor order,multipliers,linear timing and corrected control states; candidate,global color fidelity unresolved.

@@ -74,9 +74,16 @@
 #catalog.nativeCashOperator[data-mode=holdem] #viewSwitch #tableView:disabled{background-image:url('/home-art/native-preview-control-tab-right-selected-117x28.png');color:#fff}
 #catalog.nativeCashOperator[data-mode=holdem] #viewSwitch button>span{position:absolute;left:5px;top:0;width:calc(100% - 10px);height:28px;line-height:28px;text-align:center;white-space:nowrap;pointer-events:none}
 #catalog.nativeCashOperator[data-mode=holdem] #viewSwitch button:hover:not(:disabled){color:#a9a9a9}
-#catalog.nativeCashOperator[data-mode=holdem] #viewSwitch button:active:not(:disabled){color:#696969}
-#catalog.nativeCashOperator[data-mode=holdem] #viewSwitch button:active:not(:disabled)>span{top:2px}
+#catalog.nativeCashOperator[data-mode=holdem] #viewSwitch button:hover:active:not(:disabled){color:#696969}
+#catalog.nativeCashOperator[data-mode=holdem] #viewSwitch button:hover:active:not(:disabled)>span{top:2px}
 /* PlayerNoteImage is a fixed alpha frame;only the memo texture reverses on the right. */
 #catalog.nativeCashOperator[data-mode=holdem][data-view=table] #preview .previewPlate[data-note-kind]::before{content:'';position:absolute;left:-7px;top:12px;width:78px;height:37px;background:var(--preview-note-color);mask:url('/home-art/native-preview-control-note-color.png') 0 0/100% 100% no-repeat;pointer-events:none}
 #catalog.nativeCashOperator[data-mode=holdem][data-view=table] #preview .previewPlate[data-note-kind=memo]::before{height:36px;mask-image:url('/home-art/native-preview-control-note-memo.png')}
 #catalog.nativeCashOperator[data-mode=holdem][data-view=table] #preview .previewPlate[data-note-kind=memo][data-note-reverse=true]::before{transform:scaleX(-1)}
+
+/* Button(up,down,over,disabled): missing state skins inherit0.8/1.3 multipliers. */
+#catalog.nativeCashOperator[data-mode=holdem] #viewSwitch button{filter:brightness(1);transition:filter .2s linear}
+#catalog.nativeCashOperator[data-mode=holdem] #viewSwitch button:hover:not(:disabled){filter:brightness(1.3)}
+#catalog.nativeCashOperator[data-mode=holdem] #viewSwitch button:hover:active:not(:disabled){filter:brightness(.8);transition:none}
+#catalog.nativeCashOperator[data-mode=holdem] #viewSwitch button:disabled{filter:brightness(1);transition:none}
+@media(prefers-reduced-motion:reduce){#catalog.nativeCashOperator[data-mode=holdem] #viewSwitch button{transition:none}}
