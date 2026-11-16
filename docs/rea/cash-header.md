@@ -1,6 +1,6 @@
 # Hold’em Table/Group header — native source contract
 
-Status: source-backed heading implementation; follow-up removes the unverified capture compensation shipped in PR280. Scope is the ordinary no-promotion Hold’em catalog. Rows, native-derived ordering, selected room, waiting/admission, wallet and engine are unchanged. Full physical parity remains unproven.
+Status: source-backed heading implementation installed in PR281; the unverified capture compensation shipped in PR280 is removed. Scope is the ordinary no-promotion Hold’em catalog. Rows, native-derived ordering, selected room, waiting/admission, wallet and engine are unchanged. Full physical parity remains unproven.
 
 ## Recovered implementation
 
@@ -25,3 +25,9 @@ The old installed header first failed the source-style assertion. Corrected brow
 The full fixture exercises real Table/Group controls,spectator Open without seat/token/debit,Group preferences,transactional two-window funding/retry,private HUD/notes,two hands with five computers,independent payouts,720-chip conservation,reconnect/restart and cross-room balances. All use ephemeral data and muted headless Chrome. Neither source-style checks nor screenshot characterization constitute full native pixel/frame/speaker parity.
 
 The comparison HTML preserves both1200x963 captures at equal zoom,explicitly as evidence with unbound color pipelines. Raw account/player images remain private under.git/danslab-qa. Different table data,promotions,avatars and capture pipelines are not a valid whole-screen error score. A future same-pipeline/profile/DPI comparison is required before any physical color/ink compensation.
+
+## Release evidence
+
+PR281 tested80702e0ad7580145236abd6259164a36a6ee6d25,merged7fde59b940f9ec466b113673089a8fa2653cbc5a. All12 exact-head checks passed with recorded evidence and a fresh qa-check before merge. Private local receipts: `.git/danslab-qa/pr281-evidence.json`, `pr281-pixel-review.json` and `pr281-live.json`. The source review binds13 Game51 classes and two Game37 cross-checks; static evidence does not prove the executing native module.
+
+The idle-guarded rollout installed130files/1513958logicalbytes at runtime `cash-header-source-80702e0`,using129verified immutable hardlinks and15425newCSSbytes. Existing1387artfiles were reused. PID79681→82320; all6ownerfiles/15496bytes stayed byte-identical. No live gameplay QA, foreground activation or speaker playback. Full objective remains incomplete.
