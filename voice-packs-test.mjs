@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {voicePacks,voiceActions,voicePack,isVoicePackId,voiceCue,voiceCarouselLayout} from './voice-packs.mjs';
+import {voicePacks,voiceActions,voicePack,isVoicePackId,voiceCue,voiceCarouselLayout,voiceCueSamples,isVoiceCue} from './voice-packs.mjs';
 const centered=voiceCarouselLayout(0);
 assert.equal(centered.length,14);
 assert.deepEqual(centered[0],{slot:0,x:0,radius:60,dim:0,primary:true});
@@ -25,3 +25,7 @@ assert.ok(Object.isFrozen(voicePacks)&&Object.isFrozen(voiceActions)&&voicePacks
 console.log('PASS original14-pack order/default/legacy fallback,seven actions,98 distinct safe symbols,William spelling,invalid selectors and immutable catalog');
 
 const original=JSON.parse(readFileSync(new URL('./docs/rea/action-voice-source.json',import.meta.url)));assert.deepEqual(new Set(cues),new Set(original.sounds.map(row=>row.symbol)));assert.deepEqual(new Set(voicePacks.map(p=>p.id)),new Set(original.images.map(row=>row.pack)));assert.ok(original.sounds.every(row=>row.sampleRate===44100&&row.samples>0&&row.bytes>1000));console.log('PASS model catalog agrees with all98 original sound bindings and14 image identities');
+assert.equal(Object.keys(voiceCueSamples).length,98);assert.ok(Object.isFrozen(voiceCueSamples));
+for(const row of original.sounds){assert.equal(voiceCueSamples[row.symbol],row.samples);assert.equal(isVoiceCue(row.symbol),true)}
+for(const bad of [null,undefined,1,{},[],true,'__proto__','constructor','../VoiceBetDaniel','VoiceBetWilliamExtra','VoiceBetVWilliam'])assert.equal(isVoiceCue(bad),false);
+console.log('PASS exact98-cue whitelist and original DefineSound sample durations');

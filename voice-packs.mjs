@@ -30,3 +30,22 @@ export function voiceCarouselLayout(index,phase=0){
   return {slot,x:Math.sign(distance)*(absolute<=1?absolute*131:131+(absolute-1)*85),radius:36+24*selection,dim:Math.min(1,absolute/4)*.6,primary:selection>=.5};
  });
 }
+
+// Original DefineSound sample counts, VoicePack.list / voiceActions order,44.1kHz.
+export const voiceCueSamples=Object.freeze(Object.fromEntries([
+ [35712,35712,18432,27648,35712,28800,43776],
+ [38016,38016,13824,23040,29952,31104,35712],
+ [33408,38016,13824,26496,29952,31104,28800],
+ [29952,29952,23040,24192,29952,24192,31104],
+ [28800,29952,14976,28800,25344,26496,29952],
+ [34560,24192,19584,28800,31104,34560,27648],
+ [33408,26496,20736,24192,25344,20736,28800],
+ [38016,29952,20736,23040,26496,24192,35712],
+ [36864,39168,28800,24192,29952,28800,28800],
+ [36864,35712,12672,23040,26496,46080,38016],
+ [32256,34560,19584,28800,29952,32256,38016],
+ [31104,29952,16128,23040,24192,27648,26496],
+ [41472,34560,24192,25344,26496,24192,27648],
+ [26496,35712,19584,23040,29952,29952,46080]
+].flatMap((samples,i)=>samples.map((count,j)=>[voiceCue(voicePacks[i].id,voiceActions[j].id),count]))));
+export function isVoiceCue(name){return typeof name==='string'&&Object.hasOwn(voiceCueSamples,name)}

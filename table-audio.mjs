@@ -1,5 +1,6 @@
 import {spinInsuranceCues} from './spin-insurance-presentation.mjs';
 import {spinWheelCues} from './spin-wheel-presentation.mjs';
+import {isVoiceCue,voiceCueSamples} from './voice-packs.mjs';
 export const audioChannels=[{id:'table',label:'Table Sound'},{id:'effects',label:'Sound Effect'},{id:'critical',label:'Critical Alert'}];
 export function audioChannel(cue){if(['NotificationTimeBank','ChessClock','TimeBankTick'].includes(cue))return 'critical';if(Object.values(spinWheelCues).includes(cue)||Object.values(spinInsuranceCues).includes(cue))return 'effects';return ['RabbitCard','RabbitCardDouble','Fold','DealCard','Board','BoardFlop','GatherChips','WinPot','ShowCard','ShowDownCard','SqueezeOpen'].includes(cue)?'table':['BnRRoundEnd','Check','Call','Bet','Raise','AllIn','ShuffleUp','ShuffleCombine','ShuffleOther','AofButton','TournamentResultFT','TournamentResultITM','TournamentFallResult'].includes(cue)?'effects':null}
 export function audioPreviewChoices(id,previous){
@@ -17,7 +18,7 @@ export function voluntaryReveals(before,after){
 }
 // DefineSound sample counts; wheel fireworks use22.05kHz, other listed cues44.1kHz.
 const cueSamples={NotificationTimeBank:9216,BnRRoundEnd:72576,BoardFlop:27648,SngInsuranceText:155520,SngPrizeCheers:73728,SngPrizeDaller:129024,SngWheelBaseLight:208512,SngWheelFrameLight:66816,SngWheelFrameEffect:82944,SpinAndGoldSpin:192384,SNGWheelStuckHigh:11520,SNGWheelStuckLow:6912,SngFireworks:46656,SNGWheelOut:126720,SngBigWin:472320,TournamentFallResult:443520,TournamentResultFT:488448,TournamentResultITM:510336,RabbitCard:13824,RabbitCardDouble:27648,ShowDownCard:12672,ShuffleUp:9216,ShuffleCombine:11520,ShuffleOther:116352,ChessClock:9216,TimeBankTick:220500};
-export function audioCueDuration(name,decodedSeconds){return cueSamples[name]?Math.min(decodedSeconds,cueSamples[name]/(name==='SngFireworks'?22050:44100)):decodedSeconds}
+export function audioCueDuration(name,decodedSeconds){const samples=isVoiceCue(name)?voiceCueSamples[name]:cueSamples[name];return samples?Math.min(decodedSeconds,samples/(name==='SngFireworks'?22050:44100)):decodedSeconds}
 // Native default clock: sweep .4s, selected-card notifications span 2s, throw .2s, flop spread .3s.
 export function showdownPlan(before,after){
  const old=before?.hand,h=after?.hand;
@@ -96,7 +97,7 @@ export function installAudio(button){
  };
  play.updatePreview=level=>{if(!Number.isInteger(level)||level<0||level>100)return;previewLevel=level;clearTimeout(fadeTimer);if(previewGain){previewGain.gain.cancelScheduledValues(ctx.currentTime);previewGain.gain.value=volume()*level/100}};
  play.preview=async(name,level,isCurrent=()=>true)=>{
-  if(!ready||!Number.isInteger(level)||level<=0||level>100||!audioPreviewChoices(audioChannel(name)).includes(name)||!isCurrent())return false;
+  if(!ready||!Number.isInteger(level)||level<=0||level>100||(!isVoiceCue(name)&&!audioPreviewChoices(audioChannel(name)).includes(name))||!isCurrent())return false;
   play.stopPreview();const generation=previewGeneration;previewLevel=level;
   if(!ctx){ctx=new AudioContext();gain=ctx.createGain();gain.gain.value=enabled?volume():0;gain.connect(ctx.destination)}
   await ctx.resume().catch(()=>{});const clip=await load(name);

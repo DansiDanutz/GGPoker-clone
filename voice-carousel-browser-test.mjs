@@ -6,13 +6,17 @@ import {join} from 'node:path';
 import {spawn} from 'node:child_process';
 import {once} from 'node:events';
 import {voicePacks} from './voice-packs.mjs';
+import {createHash} from 'node:crypto';
 
 const directory=mkdtempSync(join(tmpdir(),'voice-carousel-')),profile=join(directory,'chrome');
 const images=new Map(voicePacks.map(pack=>['/home-art/'+pack.image,readFileSync('/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/action_voice/'+pack.image.split('/').at(-1))]));
+const receipt=JSON.parse(readFileSync(new URL('./docs/rea/action-voice-source.json',import.meta.url))),sounds=new Map();
+for(const row of receipt.sounds){const bytes=readFileSync('/Users/davidai/Sandbox/rea-tools/action-voice-sounds/'+row.symbol+'.mp3');assert.equal(bytes.length,row.bytes);assert.equal(createHash('sha256').update(bytes).digest('hex'),row.sha256);sounds.set('/table-audio/'+row.symbol+'.mp3',bytes)}
 const html='<!doctype html><div id="carousel"></div><script type="module">import {installVoiceCarousel}from"/voice-carousel.mjs";window.changes=[];window.carousel=installVoiceCarousel(document.querySelector("#carousel"),{text:key=>key,onchange:id=>changes.push(id)});window.ready=true;</script>';
 const server=createServer((req,res)=>{
  if(req.url==='/'){res.setHeader('Content-Type','text/html');res.end(html)}
  else if(images.has(req.url)){res.setHeader('Content-Type','image/png');res.end(images.get(req.url))}
+ else if(sounds.has(req.url)){res.setHeader('Content-Type','audio/mpeg');res.end(sounds.get(req.url))}
  else if(['/voice-carousel.mjs','/voice-packs.mjs'].includes(req.url)){res.setHeader('Content-Type','text/javascript');res.end(readFileSync(new URL('.'+req.url,import.meta.url)))}
  else{res.statusCode=404;res.end()}
 });
@@ -31,6 +35,9 @@ try{
  const run=async expression=>{const response=await cmd('Runtime.evaluate',{expression,awaitPromise:true,returnByValue:true},sessionId);if(response.exceptionDetails)throw Error(JSON.stringify(response.exceptionDetails));return response.result.value};
  await cmd('Page.navigate',{url:'http://127.0.0.1:'+server.address().port},sessionId);await until(()=>run('window.ready'));
  await until(()=>run('[...document.images].every(image=>image.complete&&image.naturalWidth>0)'));
+ const decoded=await run(`(async()=>{const context=new AudioContext(),rows=${JSON.stringify(receipt.sounds.map(row=>({symbol:row.symbol,samples:row.samples,sampleRate:row.sampleRate})))};try{for(const row of rows){const response=await fetch('/table-audio/'+row.symbol+'.mp3');if(!response.ok)throw Error(row.symbol+' unavailable');const buffer=await context.decodeAudioData(await response.arrayBuffer());row.decodedSamples=buffer.length;row.decodedRate=buffer.sampleRate;row.channels=buffer.numberOfChannels;row.contextRate=context.sampleRate}return rows}finally{await context.close()}})()`);
+ assert.equal(decoded.length,98);for(const row of decoded){assert.equal(row.decodedRate,row.contextRate,row.symbol);assert.ok(row.decodedSamples/row.decodedRate+1/row.decodedRate>=row.samples/row.sampleRate,row.symbol+' must cover declared native duration');assert.ok(row.channels===1||row.channels===2,row.symbol)}
+ console.log('PASS all98 original-hash MP3 payloads decoded by actual muted browser,context-rate resampling and sufficient duration for native44.1kHz playback cap;no speakers used');
  const metrics=await run(`(()=>{const host=document.querySelector('#carousel').getBoundingClientRect();return [...document.querySelectorAll('[data-voice]')].map(button=>{const r=button.getBoundingClientRect();return{id:button.dataset.voice,x:r.x-host.x+r.width/2,y:r.y-host.y+r.height/2,width:r.width,pressed:button.getAttribute('aria-pressed'),dim:Number(button.querySelector('.voiceDim').style.opacity)}})})()`);
  assert.equal(metrics.length,14);assert.deepEqual(metrics[0],{id:'VDaniel',x:374,y:62,width:120,pressed:'true',dim:0});
  assert.equal(metrics[1].x,505);assert.equal(metrics[1].width,72);assert.equal(metrics[13].x,243);assert.equal(metrics[7].dim,.6);
