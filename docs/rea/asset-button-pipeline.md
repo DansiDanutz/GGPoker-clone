@@ -1,6 +1,6 @@
 # Native asset pipeline and inherited button states
 
-Status: source-backed correction in the working tree; not released yet. Native client stayed stopped and no real-money action or live data write occurred. The installed Game51 SWF is the analysis artifact, not a proven loaded native module.
+Status: source-backed correction released through PR274 after commit-bound installed verification. Native client stayed stopped and no real-money action or live data write occurred. The installed Game51 SWF is the analysis artifact, not a proven loaded native module.
 
 ## Asset resolution evidence
 
@@ -23,3 +23,15 @@ Earlier information-control documentation treated constructor arguments in the w
 The new test first failed against the installed previous release because the multiplier transition was absent. Startup from the synchronized checkout twice timed out before the test could inspect controls; this is not treated as a gameplay failure or a proven iCloud diagnosis. Verification switched to an explicitly test-only nonsynced overlay:128 validated immutable code hardlinks plus the two changed CSS files. The overlay and isolated server/Chrome/profile/data were removed after completion; it was never installed live.
 
 The regression then passed actual pointer hover/down,1.15 multiplier at100ms,disabled1,pressed0.8,drag-out cancellation,information link/icon multipliers and corrected arrow/modal-close textures. Existing Group/panel cubic motion,real rule polling,three408px dialogs,Escape/outside/close/focus and unchanged identity/wallet passed. Full installed release QA and native physical frame/speaker comparison remain outstanding. Straddle remains disabled: its recovered client contract does not establish server arbitration,restraddle progression or first-actor policy; see straddle-contract.md.
+
+## Installed release — PR274
+
+PR274 merged `31b7ad5c31e55207ac3ee80e774126b53bd7a8c8`; tested source `82da9cfd90d66f83277ab65bc4c0f53e44a4a714`.
+
+Lobby tabs,Information links and rule-info controls now inherit the original1/1.3/0.8 multipliers and200ms linear up/hover motion. Dragging out clears pressed styling and cancels activation. Arrow/modal-close skins follow the actual up,down,over constructor order; historical image filenames are preserved as aliases. No image bytes,backend rules,wallet data or global color adjustment changed.
+
+All8 exact-head installed checks/reviews passed:130 runtime identities with128 verified immutable code hardlinks/two committed CSS files,1387 unchanged artwork hashes,13 original source identities,syntax/language,actual pointer/linear midpoint/texture/drag/modal tests and a full six-seat bot journey with independent96-chip payout,next hand,reconnect/restart and720-chip conservation. Installed1200×963 rendering inspected. Tests ran from verified nonsynced copies after source-checkout startup timeouts; temporary QA copies were removed.
+
+Live runtime130files/1,506,146logicalbytes;only26,970newCSSbytes plus manifest metadata were generated through128 immutable runtime hardlinks. Existing1387artfiles reused unchanged. Guarded idle rollout PID92382→73740 preserved all6ownerfiles(15,496bytes) byte-for-byte. Backup `/Users/davidai/.local/state/playgg-rollouts/pr274-z_uym5je`. No live gameplay writes,foreground or speaker actions. Selected-skin/capture color mismatch,loaded-native-module identity,straddle server arbitration and whole-app physical parity remain incomplete.
+
+Earlier development checks preceded the separate release evidence above. Native physical color/frame parity remains unproven.

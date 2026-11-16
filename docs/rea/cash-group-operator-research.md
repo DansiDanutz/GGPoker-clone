@@ -107,3 +107,5 @@ Earlier candidate notes record the development sequence; this verified release s
 ## Inherited button-state correction candidate
 
 The prior arrow/CloseOption state interpretation was incorrect because Button parameters are up,down,over,disabled. The unreleased correction also restores inherited1/1.3/0.8 multipliers and200ms linear transitions,including drag-out cancellation. Original image bytes remain unchanged; see [source and verification](asset-button-pipeline.md). Global selected-skin color differences remain unresolved.
+
+The inherited-button correction above is now installed through PR274 with8 exact-head checks; [release evidence](asset-button-pipeline.md). PR272 remains the historical base for clock/card/rule dialogs; full native parity remains incomplete.

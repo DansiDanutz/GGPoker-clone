@@ -1,5 +1,5 @@
 {
-  "status": "Unreleased candidate; source-based inherited-button correction, not global color parity",
+  "status": "Published PR274 source-based inherited-button correction; global color and native physical parity remain incomplete",
   "source_swf_sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
   "method": "Fresh selected headless FFDec export; AtlasLoader/StageAssets exactly match retained exports; source constructor and Tween defaults inspected",
   "files": [
