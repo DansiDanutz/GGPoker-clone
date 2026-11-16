@@ -1,0 +1,44 @@
+{
+  "method": "Headless FFDec selective export; static original source, not native runtime observation",
+  "swf": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf",
+  "swfSha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
+  "files": [
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/betting-language-source/scripts/com/nsus/iron/lobby/view/option/page/OptionBettingPage.as",
+      "bytes": 24215,
+      "sha256": "2cc1fb62f0f3a5e2c7b5a2111d7ed8ba48afb337c0e92f674725c117bf2b287b"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/betting-language-source/scripts/com/nsus/iron/lobby/view/option/page/component/ChooseItem.as",
+      "bytes": 7080,
+      "sha256": "86de1cf4a5b152b08bdcf46185cd883932408ccc75ee00a237129719f6308535"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/betting-language-source/scripts/com/nsus/iron/vo/ButtonType.as",
+      "bytes": 29421,
+      "sha256": "9826102d368b5f3eb800514a5effcf7c5b20906af23c1de81a7fbd91a6f2dcd4"
+    }
+  ],
+  "keys": [
+    "OptionTabBetting",
+    "AdjustBetSize",
+    "BettingOptionLabelInvertMouseWheel",
+    "AskWhenEnterBet",
+    "MobileBigBlindToolTip",
+    "MobileSmallBlindToolTip",
+    "BettingOptionInvertMouseWheelOn",
+    "BettingOptionInvertMouseWheelOff",
+    "BettingOptionInvertEnterBetConfirmOn",
+    "BettingOptionInvertEnterBetConfirmOff",
+    "BettingOptionBetAmountShortcutText",
+    "MobileOpeningBetSize",
+    "MobileNormalBetSize",
+    "DontRoundBlind",
+    "MobileLabelButton"
+  ],
+  "limitations": [
+    "Native physical layout/raster and script-specific font parity unverified",
+    "No new operator defaults or server policies inferred",
+    "Native number/unit and currency formatting outside this label binding scope"
+  ]
+}
