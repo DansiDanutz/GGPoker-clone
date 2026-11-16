@@ -2,7 +2,19 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
-## Verified release baseline — PR272
+## Verified release baseline — PR274
+
+PR274 merged `31b7ad5c31e55207ac3ee80e774126b53bd7a8c8`; tested source `82da9cfd90d66f83277ab65bc4c0f53e44a4a714`.
+
+Lobby tabs,Information links and rule-info controls now inherit the original1/1.3/0.8 multipliers and200ms linear up/hover motion. Dragging out clears pressed styling and cancels activation. Arrow/modal-close skins follow the actual up,down,over constructor order; historical image filenames are preserved as aliases. No image bytes,backend rules,wallet data or global color adjustment changed.
+
+All8 exact-head installed checks/reviews passed:130 runtime identities with128 verified immutable code hardlinks/two committed CSS files,1387 unchanged artwork hashes,13 original source identities,syntax/language,actual pointer/linear midpoint/texture/drag/modal tests and a full six-seat bot journey with independent96-chip payout,next hand,reconnect/restart and720-chip conservation. Installed1200×963 rendering inspected. Tests ran from verified nonsynced copies after source-checkout startup timeouts; temporary QA copies were removed.
+
+Live runtime130files/1,506,146logicalbytes;only26,970newCSSbytes plus manifest metadata were generated through128 immutable runtime hardlinks. Existing1387artfiles reused unchanged. Guarded idle rollout PID92382→73740 preserved all6ownerfiles(15,496bytes) byte-for-byte. Backup `/Users/davidai/.local/state/playgg-rollouts/pr274-z_uym5je`. No live gameplay writes,foreground or speaker actions. Selected-skin/capture color mismatch,loaded-native-module identity,straddle server arbitration and whole-app physical parity remain incomplete.
+
+[Source, corrected states and remaining gaps](docs/rea/asset-button-pipeline.md).
+
+## Historical release baseline — PR272
 
 PR272 merged `05b766f1fb85d282eb867ec07fae75743acadf5b`; tested source `47eb7a5a43da166a1d7cbf7a447f4c2f909acf88`.
 

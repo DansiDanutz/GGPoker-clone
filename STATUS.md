@@ -4,15 +4,15 @@ This project is a local play-money application under active development. It is n
 
 ## Current verified release
 
-PR272 merged `05b766f1fb85d282eb867ec07fae75743acadf5b`; tested source `47eb7a5a43da166a1d7cbf7a447f4c2f909acf88`.
+PR274 merged `31b7ad5c31e55207ac3ee80e774126b53bd7a8c8`; tested source `82da9cfd90d66f83277ab65bc4c0f53e44a4a714`.
 
-Hold’em Information now reflects actual local continuous-bank,free-card and Multiple Dealing rules,including mixed catalogs and polling changes. Three native-style408px informational dialogs use the recovered frame,close controls,original diagrams and source-positioned labels. Escape,close,outside dismissal and focus return work without seating/debit. Paid card/refill descriptions unsupported locally are not asserted as working features.
+Lobby tabs,Information links and rule-info controls now inherit the original1/1.3/0.8 multipliers and200ms linear up/hover motion. Dragging out clears pressed styling and cancels activation. Arrow/modal-close skins follow the actual up,down,over constructor order; historical image filenames are preserved as aliases. No image bytes,backend rules,wallet data or global color adjustment changed.
 
-All16 exact-head installed checks/reviews passed:130 runtime identities,1387 artwork hashes/1381 immutable hardlinks,27 original class identities and4 unchanged local rule sources,three exact crops/three byte-identical diagrams,syntax/catalog/language,finite clock/card room behavior and private inventory,hosted unequal-all-in/fold/three-run RIMT with290allocatedchips/70uncalled return/restart,actual dialog/Group controls and a six-seat bot journey with96-chip independent payout,next hand/reconnect/restart/720-chip conservation. Installed1200×963 modal capture inspected; native app not relaunched.
+All8 exact-head installed checks/reviews passed:130 runtime identities with128 verified immutable code hardlinks/two committed CSS files,1387 unchanged artwork hashes,13 original source identities,syntax/language,actual pointer/linear midpoint/texture/drag/modal tests and a full six-seat bot journey with independent96-chip payout,next hand,reconnect/restart and720-chip conservation. Installed1200×963 rendering inspected. Tests ran from verified nonsynced copies after source-checkout startup timeouts; temporary QA copies were removed.
 
-Live runtime130files/1,504,881bytes;art1387files with1381 verified immutable hardlinks plus6new PNGs totaling148,590bytes. Guarded idle rollout PID4590→92382 preserved all6ownerfiles(15,496bytes) byte-for-byte. Backup `/Users/davidai/.local/state/playgg-rollouts/pr272-d3ggqvbv`. No live gameplay writes,foreground or speaker actions. Native paid/refill features,remaining game-info branches,loaded-module identity,color/text pipeline,fresh physical comparison and whole-app parity remain incomplete.
+Live runtime130files/1,506,146logicalbytes;only26,970newCSSbytes plus manifest metadata were generated through128 immutable runtime hardlinks. Existing1387artfiles reused unchanged. Guarded idle rollout PID92382→73740 preserved all6ownerfiles(15,496bytes) byte-for-byte. Backup `/Users/davidai/.local/state/playgg-rollouts/pr274-z_uym5je`. No live gameplay writes,foreground or speaker actions. Selected-skin/capture color mismatch,loaded-native-module identity,straddle server arbitration and whole-app physical parity remain incomplete.
 
-[Source evidence and remaining gaps](docs/rea/cash-group-operator-research.md).
+[Source evidence and remaining gaps](docs/rea/asset-button-pipeline.md).
 
 ## Native reference checkpoint
 
