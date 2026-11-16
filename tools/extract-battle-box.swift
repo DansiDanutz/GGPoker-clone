@@ -19,6 +19,25 @@ func extract(_ relative:String,_ entries:[(String,String,Int,Int)],_ prefix:Stri
  let receipt:[String:Any] = ["method":"StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding","sources":[atlas.path:hash(try Data(contentsOf:atlas)),metadata.path:hash(try Data(contentsOf:metadata))],"files":records]
  try JSONSerialization.data(withJSONObject:receipt,options:[.prettyPrinted,.sortedKeys]).write(to:out.appendingPathComponent("rea/"+receiptName+".json"))
 }
+if CommandLine.arguments.contains("--cash-game-info-popups") {
+ try extract("init_lobby/desktop_assets.png",[("lobby_option0000","popup-close-up",11,11),("lobby_option0001","popup-close-down",11,11)],"native-cash-game-info-","cash-game-info-popups")
+ let receiptURL=out.appendingPathComponent("rea/cash-game-info-popups.json")
+ var receipt=try JSONSerialization.jsonObject(with:Data(contentsOf:receiptURL)) as! [String:Any],illustrations=[[String:Any]]()
+ for (index,name) in [(0,"multiple"),(1,"bank"),(26,"cards")] {
+  let source=root.appendingPathComponent(String(format:"game_info/game_info%04d.png",index)),target=out.appendingPathComponent("native-cash-game-info-illustration-"+name+".png"),data=try Data(contentsOf:source)
+  if !FileManager.default.fileExists(atPath:target.path){try data.write(to:target)}
+  let installed=try Data(contentsOf:target);precondition(installed==data)
+  let image=CGImageSourceCreateImageAtIndex(CGImageSourceCreateWithURL(target as CFURL,nil)!,0,nil)!
+  illustrations.append(["source":source.path,"file":target.lastPathComponent,"sha256":hash(data),"bytes":data.count,"width":image.width,"height":image.height])
+ }
+ receipt["illustrations"]=illustrations
+ try JSONSerialization.data(withJSONObject:receipt,options:[.prettyPrinted,.sortedKeys]).write(to:receiptURL)
+ exit(0)
+}
+if CommandLine.arguments.contains("--cash-game-info-features") {
+ try extract("init_lobby/desktop_assets.png",[("lobby0200","multiple",23,21)],"native-cash-game-info-","cash-game-info-features-atlas")
+ exit(0)
+}
 if CommandLine.arguments.contains("--cash-game-info") {
  try extract("init_lobby/desktop_assets.png",[("common0004","close-up",12,11),("common0005","close-over",12,11),("lobby0191","arrow-up",22,80),("lobby0192","arrow-down",22,80),("lobby0193","arrow-over",22,80),("lobby0112","link-icon",16,16)],"native-cash-game-info-","cash-game-info-atlas")
  exit(0)

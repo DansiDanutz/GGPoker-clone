@@ -29,10 +29,24 @@ const {cashGameInformation}=await import('./cash-group-catalog.mjs');
 assert.deepEqual(cashGameInformation([]),[],'Empty catalog must not invent rules');
 const infoTables=[{capacity:6,actionSeconds:14,ante:0},{capacity:6,actionSeconds:30,ante:2},{capacity:4,ante:0}];
 const infoBefore=JSON.stringify(infoTables),info=cashGameInformation(infoTables);
-assert.deepEqual(info.map(r=>r.key),['MobileCurrencyTitle','MobileMissionGameType','TableMax','LabelBlinds','TimeToAct','MinimumPlayersForDealing']);
+assert.deepEqual(info.map(r=>r.key),['MobileCurrencyTitle','MobileMissionGameType','TableMax','LabelBlinds','TimeToAct','MobileTimeBank','MinimumPlayersForDealing','MultipleDealing']);
 assert.equal(info.find(r=>r.key==='TableMax').value,'4 / 6');
 assert.equal(info.find(r=>r.key==='TimeToAct').value,'14 / 30 / 90 seconds');
 assert.equal(info.find(r=>r.key==='LabelBlinds').value,'SB, BB, Ante');
 assert.equal(cashGameInformation([{capacity:6}]).find(r=>r.key==='LabelBlinds').value,'SB, BB');
 assert.equal(JSON.stringify(infoTables),infoBefore,'Information preserves server projections');
 console.log('PASS local game information aggregates actual rules without inventing native defaults');
+
+const clockInfo=cashGameInformation([{capacity:6},{capacity:6,timeBankSeconds:60,rimt:true},{capacity:6,timeChipCount:3,freeTimeChipSecondsPerUnit:12,maxTimeChipsPerAction:2}]);
+assert.equal(clockInfo.find(r=>r.key==='MobileTimeBank')?.value,'Off / 60 seconds');
+assert.equal(clockInfo.find(r=>r.key==='TimeBankCard')?.value,'Off / 3 cards');
+assert.equal(clockInfo.find(r=>r.key==='TimeBankCard')?.explanation,'3 cards per seating, 12 seconds per card, max 2 per turn');
+assert.equal(clockInfo.find(r=>r.key==='MultipleDealing')?.value,'Off / On');
+assert.equal(clockInfo.find(r=>r.key==='MultipleDealing')?.paragraph,2);
+assert.equal(cashGameInformation([{capacity:6,timeChipCount:1,freeTimeChipSecondsPerUnit:7,maxTimeChipsPerAction:1}]).some(r=>r.key==='MobileTimeBank'),false,'Card-only catalog uses original card branch');
+assert.equal(cashGameInformation([{capacity:6}]).find(r=>r.key==='MobileTimeBank')?.valueKey,'TableOptionAnimationOff');
+assert.equal(cashGameInformation([{capacity:6,rimt:true}]).find(r=>r.key==='MultipleDealing')?.valueKey,'TableOptionAnimationOn');
+console.log('PASS clock/card/multiple-dealing information reflects actual mixed rules and original branches');
+
+const singleCard=cashGameInformation([{capacity:6,timeChipCount:1,freeTimeChipSecondsPerUnit:7,maxTimeChipsPerAction:1}]).find(r=>r.key==='TimeBankCard');
+assert.equal(singleCard.value,'1 card');assert.equal(singleCard.explanation,'1 card per seating, 7 seconds per card, max 1 per turn');

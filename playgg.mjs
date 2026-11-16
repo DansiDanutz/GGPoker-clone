@@ -399,20 +399,35 @@ function cashCatalog(request,mode){
    motion.onfinish=()=>{if(!open)info.hidden=true;motion=null};if(focus)link.focus({preventScroll:true});
   };
   close.onclick=arrow.onclick=()=>show(false,true);info.onkeydown=e=>{if(e.key==='Escape'){e.preventDefault();show(false,true)}};
+  let ruleDialog;
+  const openRule=(row,trigger)=>{
+   ruleDialog?.remove();const dialog=document.createElement('dialog');ruleDialog=dialog;dialog.className='nativeCashRuleInfo';dialog.setAttribute('aria-labelledby','cashRuleTitle');
+   const heading=document.createElement('h2');heading.id='cashRuleTitle';heading.textContent=row.title;heading.dataset.nativeLabel=row.key;dialog.append(heading);
+   const dismiss=document.createElement('button');dismiss.type='button';dismiss.className='nativeCashRuleClose';dismiss.setAttribute('aria-label','Close '+row.title+' information');dialog.append(dismiss);
+   const done=()=>{dialog.close();dialog.remove();if(ruleDialog===dialog)ruleDialog=null;(trigger.isConnected?trigger:close).focus({preventScroll:true})};dismiss.onclick=done;dialog.oncancel=e=>{e.preventDefault();done()};
+   if(row.key!=='MultipleDealing'){
+    const text=document.createElement('p');text.textContent=row.key==='TimeBankCard'?row.explanation:row.value+'. When enabled, the configured time pool is shared across your actions. Only elapsed action time is consumed; remaining time survives a reconnect.';dialog.append(text);
+   }
+   const figure=document.createElement('div');figure.className='nativeCashRuleGraphic';const image=document.createElement('img'),kind=row.key==='MultipleDealing'?'multiple':row.key==='TimeBankCard'?'cards':'bank';image.className='nativeCashRuleIllustration';image.src='/home-art/native-cash-game-info-illustration-'+kind+'.png';image.alt=row.title+' illustration';figure.append(image);
+   const labels=kind==='cards'?[[136,123,80,21,13,'#fff','DataGridPlayersLabelPlayer','Player'],[136,141,80,21,13,'#74cefd','MobileInfoBuyin1000','1,000'],[227,88,55,36,14,'#000','TIME','TIME']]:kind==='bank'?[[134,129,84,0,12,'#fff','DataGridPlayersLabelPlayer','Player'],[134,147,84,0,14,'#77ccff','MobileInfoBuyin1000','1,000']]:[];
+   for(const [x,y,width,height,size,color,key,text]of labels){const label=document.createElement('span');label.textContent=text;label.dataset.nativeLabel=key;Object.assign(label.style,{left:x+'px',top:y+'px',width:width+'px',...(height?{height:height+'px'}:{}),fontSize:size+'px',color,...(key==='TIME'?{fontWeight:'700'}:{})});figure.append(label)}dialog.append(figure);
+   let outside=false;dialog.onmousedown=e=>{const r=dialog.getBoundingClientRect();outside=e.target===dialog&&(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)};dialog.onclick=e=>{if(outside&&e.target===dialog)done();outside=false};document.body.append(dialog);dialog.showModal();dismiss.focus({preventScroll:true});
+  };
   let infoSignature='';
   const update=()=>{
    link.hidden=pane.dataset.view!=='group';
-   if(info.hidden)return;const nextSignature=JSON.stringify(hosted.map(t=>[t.capacity,t.actionSeconds,t.ante]));if(nextSignature===infoSignature)return;infoSignature=nextSignature;body.replaceChildren();
+   if(info.hidden)return;const nextSignature=JSON.stringify(hosted.map(t=>[t.capacity,t.actionSeconds,t.ante,t.timeBankSeconds,t.timeChipCount,t.freeTimeChipSecondsPerUnit,t.maxTimeChipsPerAction,t.rimt]));if(nextSignature===infoSignature)return;infoSignature=nextSignature;body.replaceChildren();
+   let paragraph=1;
    for(const row of cashGameInformation(hosted)){
     const item=document.createElement('section'),line=document.createElement('div'),title=document.createElement('span'),value=document.createElement('span');
-    item.className='nativeCashGameInfoItem';line.className='nativeCashGameInfoLine';title.textContent=row.title;title.dataset.nativeLabel=row.key;value.textContent=row.value;if(row.valueKey)value.dataset.nativeLabel=row.valueKey;line.append(title,value);item.append(line);
-    if(row.explanation){const explanation=document.createElement('p');explanation.textContent=row.explanation;explanation.dataset.nativeLabel=row.explanationKey;item.append(explanation)}body.append(item);
+    item.className='nativeCashGameInfoItem';item.dataset.paragraphStart=String((row.paragraph??1)!==paragraph);paragraph=row.paragraph??1;line.className='nativeCashGameInfoLine';if(row.icon){const image=document.createElement('img');image.src='/home-art/'+row.icon;image.alt='';image.className='nativeCashGameInfoFeatureIcon';line.append(image)}title.textContent=row.title;title.dataset.nativeLabel=row.key;value.className='nativeCashGameInfoValue';value.textContent=row.value;if(row.valueKey)value.dataset.nativeLabel=row.valueKey;const caption=document.createElement('span');caption.className='nativeCashGameInfoHeading';caption.append(title);if(['MobileTimeBank','TimeBankCard','MultipleDealing'].includes(row.key)){const help=document.createElement('button');help.type='button';help.className='nativeCashRuleInfoButton';help.dataset.ruleInformation=row.key;help.setAttribute('aria-label','About '+row.title);help.onclick=()=>openRule(row,help);caption.append(help)}line.append(caption,value);item.append(line);
+    if(row.explanation){const explanation=document.createElement('p');explanation.textContent=row.explanation;if(row.explanationKey)explanation.dataset.nativeLabel=row.explanationKey;item.append(explanation)}body.append(item);
    }
    if(!hosted.length){const empty=document.createElement('p');empty.textContent='No local Hold’em tables available';empty.setAttribute('role','status');body.append(empty)}
    const rules=document.createElement('section'),heading=document.createElement('h2'),text=document.createElement('p');rules.className='nativeCashGameInfoRules';heading.textContent='Hold’em Rules';heading.dataset.nativeLabel='HoldemRules';text.textContent='Players combine their two hole cards with five community cards to make their best five-card poker hand.';text.dataset.nativeLabel='TexasHoldemMostPopularLong';rules.append(heading,text);body.append(rules);
   };
   link.onclick=()=>{show(true);update();close.focus({preventScroll:true})};
-  cashInfoView={update,destroy(){motion?.cancel();clip.remove();aside.insertBefore($('groupPlayerProfile'),operator);aside.insertBefore(join,operator);operator.remove();delete pane.dataset.groupProfile}};
+  cashInfoView={update,destroy(){motion?.cancel();ruleDialog?.remove();clip.remove();aside.insertBefore($('groupPlayerProfile'),operator);aside.insertBefore(join,operator);operator.remove();delete pane.dataset.groupProfile}};
  }
 
  let view='group',selected=0,filter='all',hosted=[],waiting=null,waitingRoom=null,waitingBusy=false,waitingError='',waitingRead=0;

@@ -1,5 +1,5 @@
 {
-  "status": "Source research plus initial local implementation; isolated browser verified; not released or native-runtime verified",
+  "status": "Published PR270 base; clock/card/multiple rows and internal help dialogs are an unreleased candidate",
   "source_swf_sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
   "method": "Selective headless FFDec AS3 export from installed Game/51/IronDesktop.swf",
   "files": [
@@ -77,6 +77,66 @@
       "class_file": "com/nsus/lib/base/Ease.as",
       "sha256": "fb54a8c5d923e95bbe6acf9d1d8360790630b8db3e617e3ee41e8ea1db0bb481",
       "bytes": 6303
+    },
+    {
+      "class_file": "com/nsus/iron/controller/OpenGameInfoPopupCommand.as",
+      "sha256": "65bf698f41d4e085fefd3b4146945c45591dde6a7296d450a5200cecd191f4ad",
+      "bytes": 6530
+    },
+    {
+      "class_file": "com/nsus/iron/table/view/component/gameinfo/GameInfoData.as",
+      "sha256": "e8c8bbb98c8d50a2f68aeb34e071474b673c89bb8624b88eb4974607527bbca3",
+      "bytes": 9125
+    },
+    {
+      "class_file": "com/nsus/iron/table/view/popup/gameinfo/GameInfoTemplateType.as",
+      "sha256": "063efbe6e805243b88e614963d7affcc77f6de44441d61442955098243ac91a8",
+      "bytes": 29658
+    },
+    {
+      "class_file": "com/nsus/iron/components/display/button/specific/option/CloseOptionButton.as",
+      "sha256": "93be79d2bf32cf758bb21df53bb30a9f1c9c31d813560b0a69d29145c52e9ec4",
+      "bytes": 718
+    },
+    {
+      "class_file": "com/nsus/iron/table/view/popup/gameinfo/newinfo/NewGameInfoType.as",
+      "sha256": "2a641d4c9a5078396f9449764ba4adeaacafdce2f8b444aa89bc64f07df02907",
+      "bytes": 15918
+    },
+    {
+      "class_file": "com/nsus/iron/table/view/popup/gameinfo/newinfo/NewGameInfoData.as",
+      "sha256": "a4620aa2b18e13dbc53c0140e301a72b599b41675e56daa3c70d61ef0d31fd67",
+      "bytes": 4139
+    },
+    {
+      "class_file": "com/nsus/iron/table/view/popup/gameinfo/newinfo/NewGameInfoPopup.as",
+      "sha256": "e325c150e2263f55b224b730aa8acbfee696a92e9a5bf7e5a0d231a76568adf3",
+      "bytes": 30037
+    },
+    {
+      "class_file": "com/nsus/iron/table/view/popup/gameinfo/newinfo/NewGameInfoView.as",
+      "sha256": "50bbebeef00e53200f177adec143589060d69319bd6bd53c77f5b028235b639c",
+      "bytes": 10817
+    },
+    {
+      "class_file": "com/nsus/iron/table/view/popup/gameinfo/newinfo/NewGameInfoFrame.as",
+      "sha256": "ea19971e225f9fba7d400de54395ae6d9094236beda02c1607b079e5ad2ba5d5",
+      "bytes": 2851
+    },
+    {
+      "class_file": "com/nsus/iron/table/view/popup/gameinfo/newinfo/NewGameInfoImageTemplate.as",
+      "sha256": "98151d7409999370b066f9a2514ebcf842937723fd65b60165626a7164246fa5",
+      "bytes": 7009
+    },
+    {
+      "class_file": "com/nsus/iron/table/view/popup/gameinfo/newinfo/NewGameInfoTitle.as",
+      "sha256": "867a44701ceefadcb3ec54e20176331c437022d09750b4835149676d6f41af44",
+      "bytes": 3607
+    },
+    {
+      "class_file": "com/nsus/iron/table/view/popup/gameinfo/newinfo/NewGameInfoNormalLabel.as",
+      "sha256": "ddaa9bfeabe70add8ef8de0dc1ffd2939583e3bbcf12e54e6840ca7b8cd5d71e",
+      "bytes": 8693
     }
   ],
   "controls_atlas": {
@@ -134,6 +194,95 @@
         "rgbaExact": true,
         "sha256": "e8b1900c4ea092b9b28e5a13b0ca0722b2882f5d7d24efa28ccc0d0c012b4a04",
         "width": 16
+      }
+    ],
+    "method": "StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding",
+    "sources": {
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+    }
+  },
+  "features_atlas": {
+    "files": [
+      {
+        "bytes": 1360,
+        "file": "native-cash-game-info-multiple.png",
+        "frame": "lobby0200",
+        "height": 21,
+        "rgbaExact": true,
+        "sha256": "c23400ebc32d21289b55577d4261c1bb058acb51dacc93a1088a76b316f748f3",
+        "width": 23
+      }
+    ],
+    "method": "StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding",
+    "sources": {
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+    }
+  },
+  "local_rule_sources": [
+    {
+      "file": "game-clock.mjs",
+      "sha256": "63e96cb16d25e537d1e3ec1f4555227380cae9789620a5d4eed6507011167b9e"
+    },
+    {
+      "file": "engine/rimt.mjs",
+      "sha256": "8f1662dae302ded0d19401d996a31e19ff5b7f7b1ca5233f3bcd059efaa6ff35"
+    },
+    {
+      "file": "server.mjs",
+      "sha256": "ae7c7896f0a74595776c6591ec7478002c70150d872b55e871698f8a869fc224"
+    },
+    {
+      "file": "rooms.mjs",
+      "sha256": "f2fb1c94288522a240cda329d6b5d0e1e1e8c04232ea66702b991f53e4fd3e85"
+    }
+  ],
+  "popup_atlas": {
+    "files": [
+      {
+        "bytes": 320,
+        "file": "native-cash-game-info-popup-close-up.png",
+        "frame": "lobby_option0000",
+        "height": 11,
+        "rgbaExact": true,
+        "sha256": "c3a1885feb2c3a84db6eef1543ad647d5f796aa9dbd2b20642e789dfe99a4d8e",
+        "width": 11
+      },
+      {
+        "bytes": 261,
+        "file": "native-cash-game-info-popup-close-down.png",
+        "frame": "lobby_option0001",
+        "height": 11,
+        "rgbaExact": true,
+        "sha256": "a31df1d707e9249053881d63ac983767a2550c1b51c8d7a49d90d7e7259803cb",
+        "width": 11
+      }
+    ],
+    "illustrations": [
+      {
+        "bytes": 35452,
+        "file": "native-cash-game-info-illustration-multiple.png",
+        "height": 180,
+        "sha256": "38a787b1220e10ef4c53c546f9d4f78f3438b293e6eb0f18027e958b5bd229b6",
+        "source": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/game_info/game_info0000.png",
+        "width": 352
+      },
+      {
+        "bytes": 58905,
+        "file": "native-cash-game-info-illustration-bank.png",
+        "height": 186,
+        "sha256": "d0f9769bc629da9cf0a1c36fc9382e49596ea9533f5cdb564677b15b58688981",
+        "source": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/game_info/game_info0001.png",
+        "width": 352
+      },
+      {
+        "bytes": 52292,
+        "file": "native-cash-game-info-illustration-cards.png",
+        "height": 180,
+        "sha256": "529fd8bbefeb5fccfcb0cd9f6c25d21d06c4c4826ee2741755d55adc1d35002a",
+        "source": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/game_info/game_info0026.png",
+        "width": 352
       }
     ],
     "method": "StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding",
