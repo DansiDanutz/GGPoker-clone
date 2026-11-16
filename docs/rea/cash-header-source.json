@@ -123,7 +123,8 @@
       ],
       "dividerY": 310
     },
-    "localMapping": "Measured three-color palette applies only to this shared header component; no global gamma/brightness compensation. Group palette inferred from same NewListHeader/NewTableTitleItem class, not a fresh native Group runtime capture."
+    "rejectedLocalMapping": "Measured three-color palette applies only to this shared header component; no global gamma/brightness compensation. Group palette inferred from same NewListHeader/NewTableTitleItem class, not a fresh native Group runtime capture.",
+    "localMapping": "Use native source51/128/64, not unprofiled native-capture58/138/73. Physical display/capture color equivalence is unresolved; no local or global compensation."
   },
   "columns": {
     "backgroundWidth": 810,
@@ -153,9 +154,9 @@
     "bold": false,
     "y": 1,
     "height": 24,
-    "localCalibratedLeading": 22,
-    "localLeadingIsNativeConstant": false,
-    "compositorEvidence": "Native centers integer-aligned cropped textures, includes four native text-field gutter pixels and enables pixel grid fitting; CSS linebox is a distinct renderer"
+    "compositorEvidence": "Native centers integer-aligned cropped textures, includes four native text-field gutter pixels and enables pixel grid fitting; CSS linebox is a distinct renderer",
+    "localCssLeading": 24,
+    "rejectedLeadingCalibration": 22
   },
   "divider": {
     "x": "cell width",
@@ -163,5 +164,24 @@
     "width": 1,
     "height": 12
   },
-  "remaining": "Full font-metric/AA/autoscale/parent raster and native Group physical comparison; capture color pipeline and active native module identity remain unproven"
+  "remaining": "Full font-metric/AA/autoscale/parent raster and native Group physical comparison; capture color pipeline and active native module identity remain unproven",
+  "game37CrossCheck": {
+    "swfSha256": "99c460da27dc8339b7a4ce5180785f2e7f85044c8a8956b60a13621acfaa7368",
+    "files": [
+      {
+        "class": "com/nsus/iron/lobby/view/content/NewListHeader.as",
+        "bytes": 7672,
+        "sha256": "77d5bc9fe638c25bf028ba9cd0200954997257fd239692e75ca2ecd805f52492",
+        "byteIdenticalToGame51": true
+      },
+      {
+        "class": "com/nsus/iron/lobby/view/content/NewTableTitleItem.as",
+        "bytes": 3850,
+        "sha256": "542af5a2534ed57e1798ec82929b383fd0c0222e537963b9b73f50bc0dbceeec",
+        "byteIdenticalToGame51": true
+      }
+    ],
+    "scope": "Same literal source contract in both installed versions; does not establish loaded native module or capture color pipeline"
+  },
+  "rejectedCalibrationReason": "Native Cua and headless Chrome captures have no verified shared color/profile/DPI/raster authority. Lower raw-PNG error does not establish physical native parity; preserve source values pending a comparable capture."
 }
