@@ -451,7 +451,7 @@ function cashCatalog(request,mode){
   if(group&&mode==='shortdeck')columns.replaceChildren(...['Promotion','Stakes','Buy-in','Players','Action'].map(x=>node('span',x)));
   if(mode==='holdem'){
    const keys=group?['TableSize','LabelStakes','MobileTrTableBuyIn','HoldemTourneyGeneralTableListLabelPlayers','LabelAction']:['TableName','LabelStakes','MobileTrTableBuyIn','HoldemTourneyGeneralTableListLabelPlayers','MobileMoveTableWait','AverSpacePot','MobileHudVPIP','MobileHHr'];
-   [...columns.children].forEach((column,i)=>{const label=node('span',column.textContent,'nativeCashHeaderLabel');label.dataset.nativeLabel=keys[i];column.replaceChildren(label)});
+   [...columns.children].forEach((column,i)=>{const label=node('span',column.textContent,'nativeCashHeaderLabel');label.dataset.nativeLabel=keys[i];label.dataset.nativeSlice='';column.replaceChildren(label)});
   }
   updateElement($('columns'),columns);
   nextList.replaceChildren(...rows.map((r,i)=>{const b=node('button',''),n=r.occupied,stake=mode==='shortdeck'?r.blind+' ('+r.blind+')':r.blind/2+' / '+r.blind,stack=r.minBuyIn!==undefined&&r.minBuyIn!==r.maxBuyIn?r.minBuyIn+'–'+r.maxBuyIn:r.stack??'30–100';
