@@ -1,0 +1,9 @@
+# Native Sound page captions and category gaps
+
+Original OptionSoundPage plus its inner VolumeSliderType and VolumeSlider establish OptionTabSound,TableSound and MobileSoundEffect for the title and two existing functional local categories. TitleRoboto18/#cccccc and channelRoboto16/#fefefe replace generic inherited text styling. Slider and preview accessible names reference the same stable translated label;checkboxes keep their real label and input. Dialog naming follows the translated Sound heading. Preview status uses the displayed channel caption. IDs,values,listeners,draft,persistence and audio routing remain unchanged.
+
+Rendered RED showed only Sound rather than the three original Romanian strings. Acceptance checks exact catalog text,stable focused37percent draft,translated accessible-name references and fonts,Cancel/exact storage/no wager,followed by actual WebAudio gain/preview/cancellation and cold-restart/full-hand regression. Physical speaker output remains deliberately untested.
+
+Full native Sound is NOT complete: source registers ActionVoice,BGM,TableSound,SoundEffect,CriticalAlert and SnapCam/VoiceMessage. The local implementation has only TableSound and SoundEffect. Voice packs,BGM,per-category critical alerts,SnapCam/voice-message transport,native six-category geometry/master toggle and physical timing are remaining work; no inert controls are added as fake functionality. SoundItem maps CriticalAlert previews to NOTIFICATION (NotificationTimeBank,NotificationTimeFFTPreFlop,TimeBankSound);native action-warning effects are separately SOUND,so existing clock aliases must not be assigned to a new category without source identity/trigger evidence.
+
+Local master-volume/mute/status wording remains local because this trace establishes no native key for it. External Spotify linking is outside the requested in-app scope. Whole-app/native physical fidelity remains incomplete.
