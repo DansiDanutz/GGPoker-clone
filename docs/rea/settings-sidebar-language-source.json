@@ -1,0 +1,65 @@
+{
+  "method": "REA workflow fallback: existing headless FFDec selective source export; Flash unsupported by connected decompiler provider; no native runtime activation",
+  "swf": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf",
+  "swfSha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
+  "files": [
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/settings-sidebar-source/scripts/com/nsus/iron/components/display/button/specific/option/OptionSideTabButton.as",
+      "bytes": 14480,
+      "sha256": "7df25d7a233bd91de44ea759a0f3177747e28e05e32fc8b10ce72fc615c3379a"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/settings-sidebar-source/scripts/com/nsus/iron/lobby/view/option/LobbyOptionView.as",
+      "bytes": 37910,
+      "sha256": "917903fe7897bdf97784313e8ee835bd89d4ba7c3a3d563257092311e056d89f"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/settings-sidebar-source/scripts/com/nsus/iron/lobby/view/option/OptionData.as",
+      "bytes": 7579,
+      "sha256": "3c5b9ffed80d8d2c391a5931c2b4b5a3ae2ddb9ac2bcaf67b233da689f3889b9"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/settings-sidebar-source/scripts/com/nsus/iron/lobby/view/option/OptionPageInfo.as",
+      "bytes": 486,
+      "sha256": "c02928fa91f6fe4e6e0dcaa32446c724a93efd41d113baf452493a05f00af980"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/settings-sidebar-source/scripts/com/nsus/iron/lobby/view/option/OptionTabView.as",
+      "bytes": 15859,
+      "sha256": "509c5b04e2b0b145d5a987325772cf04e48f9ae4a17df3b600ac8b59b576e6d0"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/settings-sidebar-source/scripts/com/nsus/iron/lobby/view/option/SettingsView.as",
+      "bytes": 8986,
+      "sha256": "a94db2c3369b3b742319af7e5266ac8258a25111f4bcbab2a8b3e487403017a3"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/settings-sidebar-source/scripts/com/nsus/iron/lobby/view/option/page/OptionTab.as",
+      "bytes": 1552,
+      "sha256": "38224965576406a4d18747eb942b8b0c9dacc3d649cf0dfa3b0d9dc4458ff4af"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/settings-sidebar-source/scripts/com/nsus/iron/type/OptionTabType.as",
+      "bytes": 13799,
+      "sha256": "74b46e11e823d26772fb7d4d96dab22fc0d75c840264210c6c5d4cad79cddf52"
+    }
+  ],
+  "sidebarKeys": {
+    "Buy-in settings": "SetBuyinSettings",
+    "Card Squeeze": "OptionCardSqueeze",
+    "Chip Shuffle": "ChipShuffle",
+    "Device access": "DeviceAccess",
+    "Hotkey": "OptionTabHotkey",
+    "Language": "OptionTabLanguage",
+    "Smart Focus": "MobileSmartFocus",
+    "Sound": "OptionTabSound",
+    "Switch Chip Display": "OptionSwitchChipDisplay",
+    "Table Theme": "OptionTableTheme",
+    "Time Bank Card": "TimeBankCard"
+  },
+  "limitations": [
+    "Static exported type names do not establish operator runtime overrides. Existing captured Betting title remains unchanged rather than replacing it with constructor SetBettingOption.",
+    "Native exact font metrics,script-specific glyphs,tab geometry,runtime visibility/brand overrides remain unverified.",
+    "This change binds eleven sidebar captions only; untranslated page bodies and unsupported local capabilities remain incomplete."
+  ]
+}
