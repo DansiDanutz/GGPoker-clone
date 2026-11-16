@@ -1,0 +1,43 @@
+{
+  "method": "Fresh selective headless FFDec26.4 source exports, existing bounded Temurin17 runtime; native application not launched",
+  "swfSha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
+  "loadedNativeModuleVerified": false,
+  "files": [
+    {
+      "class": "com/nsus/iron/table/services/callback/OnChangeSitOutState.as",
+      "bytes": 1096,
+      "sha256": "c1500f57e82d30e635bcfe6a7b815446b1b016c0fa63ae225d9731d3677abbd7"
+    },
+    {
+      "class": "com/nsus/iron/table/services/callback/OnSitOut.as",
+      "bytes": 4093,
+      "sha256": "50bf51a780d6afb486c3488b37688c6d65cdbb212f9f2a9427775ffff4b0d952"
+    },
+    {
+      "class": "com/nsus/iron/table/stage/component/mytablehud/StatusView.as",
+      "bytes": 12077,
+      "sha256": "dd6fa1c357aed4e832ddc1f53eff2aeb7a92a74dabbd3839f4bd7016ab163518"
+    },
+    {
+      "class": "com/nsus/iron/table/vo/TablePlayer.as",
+      "bytes": 38259,
+      "sha256": "a7e2398f4f903f59bcb6bd809e869ad54662da3e38c462b52cd9faeee2cb74af"
+    },
+    {
+      "class": "com/nsus/network/protocol/SessionCallback/NotifyChangeSitOutStateParameter.as",
+      "bytes": 779,
+      "sha256": "0924bf852408e6a7ba40899c424897801c409d466c616bc56133a1eb31bcb673"
+    },
+    {
+      "class": "com/nsus/network/protocol/SessionCallback/NotifyTableSitOutParameter.as",
+      "bytes": 1284,
+      "sha256": "25c6788b31a781d0128c85e1f93c0109d0a28371c2ef4e4850bc7b32956d6ff7"
+    },
+    {
+      "class": "com/nsus/network/protocol/types/tagTablePlayer.as",
+      "bytes": 9962,
+      "sha256": "c28c80867dab1268f10fa55adc8d55cec7d749424d855f972fa464687f6b2d3d"
+    }
+  ],
+  "localPolicy": "Existing unlimited-duration cash pause is unchanged; no invented timeout, elapsed-time substitute or cash-out action"
+}
