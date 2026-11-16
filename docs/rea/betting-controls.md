@@ -15,3 +15,5 @@ The prior installed browser failed the20-label contract because both subtitles w
 ## Confirmed remaining functionality gap
 
 Native DropDownButton supports direct typing, focus normalization and native four-row popup behavior. Opening accepts0.1–99.9 with one displayed decimal; normal accepts1–999percent. The native opening list includes Max as well as Pot. Local controls still expose fixed selects and omit opening Max. The source-backed next implementation is an editable preset control with validation/persistence/legal-target tests; visual work here does not claim that functionality or native popup parity. Native script-specific fonts, exact autoScale/raster and physical animation/speaker timing also remain incomplete.
+
+Same-size comparison captures the local panel at1200x957 before changing the original observed configuration: BB unit, increase wheel, always confirm, rounding enabled, opening2/3/4/Pot and normal33/50/75/100. Account/balances/banner/footer state and native capture color profiles are not treated as a whole-screen parity score. Raw images and the comparison page remain private local evidence, separate from the playable app.
