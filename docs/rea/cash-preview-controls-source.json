@@ -221,11 +221,36 @@
     "RED selected tab not disabled;RED saved color metadata had no visible preview marker.",
     "GREEN source real tab pointer hover/down/cancel/Group/Table selection,RGBA4original+2note+4rendered identities,seam samples,private color/memo/reversal/white/clear/anonymous isolation and unchanged wallet.",
     "Reproduced short800x480 HUD close at y-29 after history;media repair close y30 and actual dismissal passed in isolated helper.",
-    "Final full installed resize/HUD/Group/gameplay/restart exact-head QA pending."
+    "PR268 all15 exact-head installed checks/reviews passed before merge/idle rollout;normal/short HUD,private notes,Group/admission/gameplay/payout/restart and240 seam pixels verified."
   ],
   "remaining": [
     "Full Group parent physical calibration,all locale text metrics and exact native rendered color pipeline.",
     "Country/heat/operator branches and other screens/tabs/variants.",
     "Full application pixel parity and native animation/audio timing."
-  ]
+  ],
+  "release": {
+    "mergeCommit": "45da34d0d38088184bc1ada5808c44497d1c37f6",
+    "pr": 268,
+    "sourceCommit": "dcd59455316887cde1f90fd8073ebb9f305185c5",
+    "oldPid": 22223,
+    "newPid": 49447,
+    "backup": "/Users/davidai/.local/state/playgg-rollouts/pr268-ed2axp2e",
+    "runtimeDirectory": "/Users/davidai/.local/share/playgg-runtime/preview-controls-dcd5945",
+    "artDirectory": "/Users/davidai/.local/share/playgg-art/preview-controls-candidate",
+    "runtimeFiles": 130,
+    "artFiles": 1375,
+    "ownerFiles": 6,
+    "ownerBytes": 15496,
+    "ownerDataUnchanged": true,
+    "liveGameplayWrites": false
+  },
+  "afterCapture": {
+    "file": "clone-tabs-notes-installed.png",
+    "sha256": "296a342801e87ba5af11b95fd0b2ca937c854fd2dbc8405e67a32b9bfeef9677",
+    "width": 1200,
+    "height": 963,
+    "privateArtifactOnly": true,
+    "nativeRelaunched": false
+  },
+  "nextAction": "Recover remaining Group parent and runtime/atlas color-path identities from original source;full goal remains active."
 }
