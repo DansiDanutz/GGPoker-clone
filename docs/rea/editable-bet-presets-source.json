@@ -1,0 +1,88 @@
+{
+  "method": "Six fresh headless FFDec classes plus four identity-bound native control/page/font exports; static evidence, no native runtime activation",
+  "swf": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf",
+  "swfSha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
+  "files": [
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/betting-preset-source/scripts/com/nsus/iron/table/vo/OpeningBetSize.as",
+      "bytes": 1327,
+      "sha256": "779f0411a319e007955519971eb7ba050171ee6ba72d4bc8bcfac630231caba0"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/betting-preset-source/scripts/com/nsus/iron/table/vo/Betting.as",
+      "bytes": 5833,
+      "sha256": "31768efa943bf55f387dd9a0f0b021a38c264b1f54e7c1a984f575c007598b6e"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/betting-preset-source/scripts/com/nsus/iron/table/vo/BetSize.as",
+      "bytes": 1391,
+      "sha256": "2df852ee1b02a081caab2d2c6198d8fddc6cce5f40066684ed0d54524e27b3cc"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/betting-preset-source/scripts/com/nsus/iron/table/vo/NormalBetSize.as",
+      "bytes": 1049,
+      "sha256": "c34151e65c1bee109ea21c60fabb46677f1ebdd1e9154b3b844e82ad09851de6"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/betting-preset-source/scripts/com/nsus/iron/table/view/popup/component/ItemSliderScrollBar.as",
+      "bytes": 6848,
+      "sha256": "61bb0b3fa7c7a969125467fe6fc5d3163ebc026aeb907a310cf3d4ee8df46b8d"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/betting-preset-source/scripts/com/nsus/iron/components/display/button/DropDownItemVo.as",
+      "bytes": 896,
+      "sha256": "a39fa1c70c18d11c3f35608bb2afb89f7f91e4fab0567eb468a818bb8877bc16"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/betting-controls-source/scripts/com/nsus/iron/Setting.as",
+      "bytes": 6286,
+      "sha256": "7711ac87c7729456e36920529ca5adc88529d50409c095833da862de50c8c854"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/betting-controls-source/scripts/com/nsus/iron/tasks/InitFont.as",
+      "bytes": 6168,
+      "sha256": "d3831e2c3816f4adf93ed7d1bec21a55f47661bbe138da2eb66a471866df9465"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/betting-controls-source/scripts/com/nsus/iron/components/display/button/DropDownButton.as",
+      "bytes": 20477,
+      "sha256": "b2af9727a529ca573675e41ce3b75652167f1422f34c82bfe307b687c984e258"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/betting-language-source/scripts/com/nsus/iron/lobby/view/option/page/OptionBettingPage.as",
+      "bytes": 24215,
+      "sha256": "2cc1fb62f0f3a5e2c7b5a2111d7ed8ba48afb337c0e92f674725c117bf2b287b"
+    }
+  ],
+  "contract": {
+    "openingRange": [
+      0.1,
+      99.9
+    ],
+    "openingDecimals": 1,
+    "normalPercentRange": [
+      1,
+      999
+    ],
+    "popup": [
+      68,
+      104
+    ],
+    "rowHeight": 26,
+    "visibleRows": 4,
+    "scrollbarWidth": 5,
+    "scrollbarMinHeight": 80,
+    "openDuration": 0,
+    "openingSentinels": [
+      "pot",
+      "max"
+    ],
+    "customSavedValue": "numeric, not the custom sentinel",
+    "fontCorrection": "Constructor uses default font; setInputTextFormat switches Latin closed-field text to regular Roboto."
+  },
+  "limitations": [
+    "Physical AIR/browser popup rendering/scrollbar drag/keyboard parity unverified",
+    "Malformed intermediate text keeps a validated value; native invalid-input response is not asserted",
+    "Mid-edit locale updates preserve local typed text; native runtime locale-focus behavior not observed"
+  ]
+}
