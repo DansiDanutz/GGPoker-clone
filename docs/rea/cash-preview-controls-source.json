@@ -1,0 +1,231 @@
+{
+  "method": "REA original SWF/atlas: exact6crops and4 verified flat-band scale9 rasters, actual local note/HUD/tab controls; short-window HUD repair is a local adaptation",
+  "swf": {
+    "path": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf",
+    "bytes": 41892370,
+    "sha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1"
+  },
+  "sources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/tab/LobbyDetailViewTabButton.as",
+      "sha256": "54f20158459ef4cd27002d9005a2bd5eae1e92bf975fe1983475f2a0d5c5c2ed"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/tab/LobbyDetailViewHeader.as",
+      "sha256": "0689e1320fa683764f80d08d03be653809f13843e7afb004773504a3016bb38f"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/type/LobbyPageType.as",
+      "sha256": "a9c54c5524db7942b1c7e611eee11cdd986b5bc0a5487c0fe6e03f3f50a126c6"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/view/PreviewPlayerCell.as",
+      "sha256": "197f7337dd77c3b238f729fe54aef23092a7d34d585cb85c2905b298799a83d7"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/lobby/view/content/detailview/base/component/table/view/TableViewComponent.as",
+      "sha256": "792163a5f4f406507da45a337f3b9b7dc9f66f2c8759e583b5c25c610a0e5f3e"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/vo/PlayerNoteInfo.as",
+      "sha256": "e7d54a5323313ee91c8f0d5381430e335893c44ea5c581a983dc455a35eac259"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/cash-lobby-source/scripts/com/nsus/iron/helper/PlayerNoteManager.as",
+      "sha256": "ac52455f81da541c4fd853e1cf9464a5d5c82cb0621411e0053d6db11e1a8ad9"
+    }
+  ],
+  "fontSources": [
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/GlobalButton.as",
+      "sha256": "eb82ad01852703c14d475d837cb3ffe1785c7f1e624afb81b00caa980762f329"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/text/UniqueLabel.as",
+      "sha256": "ebf2dfc4abce2a7de077b31af397d056ceb526f52b132cc09610b9c1fc1e5803"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/table/asset/StageAssets.as",
+      "sha256": "e993e9ebfc32e1214162109e9af1eb3eef98e2cf6cbf6d7fb0ce1be4e3f0b0a3"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/Setting.as",
+      "sha256": "7711ac87c7729456e36920529ca5adc88529d50409c095833da862de50c8c854"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/tasks/InitFont.as",
+      "sha256": "d3831e2c3816f4adf93ed7d1bec21a55f47661bbe138da2eb66a471866df9465"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/iron/components/display/button/LabelButton.as",
+      "sha256": "5e9cc08b2489e890d5684b9edb2b9b11e452d1ffdb991850f1edc0f83cade197"
+    },
+    {
+      "path": "/Users/davidai/Sandbox/rea-tools/player-source/scripts/com/nsus/lib/components/Button.as",
+      "sha256": "005aff16f04b263bfd0550ea73d919275afba37703e4ae36a55dcdbcae62b107"
+    }
+  ],
+  "atlas": {
+    "files": [
+      {
+        "bytes": 257,
+        "file": "native-preview-control-tab-left-up.png",
+        "frame": "lobby0083",
+        "height": 18,
+        "rgbaExact": true,
+        "sha256": "833e401f66876bbba1b476eb4202fa9e50494c310010e793dd54c5f2b278f7ed",
+        "width": 18
+      },
+      {
+        "bytes": 257,
+        "file": "native-preview-control-tab-left-selected.png",
+        "frame": "lobby0084",
+        "height": 18,
+        "rgbaExact": true,
+        "sha256": "ec2945228ef83454b8c6784fcafa7bad90d94cb02246ce4bbab49b199ca13db2",
+        "width": 18
+      },
+      {
+        "bytes": 233,
+        "file": "native-preview-control-tab-right-up.png",
+        "frame": "lobby0085",
+        "height": 18,
+        "rgbaExact": true,
+        "sha256": "8ec886bef76eb8178c10d360fcfa582b5b8d7884f11830c7a6dde8a44264a538",
+        "width": 18
+      },
+      {
+        "bytes": 238,
+        "file": "native-preview-control-tab-right-selected.png",
+        "frame": "lobby0086",
+        "height": 18,
+        "rgbaExact": true,
+        "sha256": "d5a66e0a5414910f4c94bd7736eae8f903110c9351d8648f680ba1cd32d7d55f",
+        "width": 18
+      },
+      {
+        "bytes": 1160,
+        "file": "native-preview-control-note-color.png",
+        "frame": "lobby_preview0047",
+        "height": 37,
+        "rgbaExact": true,
+        "sha256": "2b3146fe8776bd07ae249a98c480d854460c15bbde0adb40ad6841af79b89f08",
+        "width": 78
+      },
+      {
+        "bytes": 1315,
+        "file": "native-preview-control-note-memo.png",
+        "frame": "lobby_preview0048",
+        "height": 36,
+        "rgbaExact": true,
+        "sha256": "098677910d312b00ea2fb0335d30d69150bfda0fb05dcf5665acda44ef93eb0d",
+        "width": 78
+      }
+    ],
+    "method": "StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding",
+    "rendered": [
+      {
+        "bytes": 366,
+        "file": "native-preview-control-tab-left-up-117x28.png",
+        "grid": [
+          8,
+          8,
+          2,
+          2
+        ],
+        "height": 28,
+        "rgbaExact": true,
+        "sha256": "10dfcfc79cbf15f0d7ad9aaad9ae26ff10a2e6a66df0c50e100c74056a7eea6c",
+        "source": "native-preview-control-tab-left-up.png",
+        "sourceSha256": "833e401f66876bbba1b476eb4202fa9e50494c310010e793dd54c5f2b278f7ed",
+        "width": 117
+      },
+      {
+        "bytes": 360,
+        "file": "native-preview-control-tab-left-selected-117x28.png",
+        "grid": [
+          8,
+          8,
+          2,
+          2
+        ],
+        "height": 28,
+        "rgbaExact": true,
+        "sha256": "2738e40118eb1ecca2dbfc7c8df2b8e8d7580ab25dfc116985c2be3e3e2a13ed",
+        "source": "native-preview-control-tab-left-selected.png",
+        "sourceSha256": "ec2945228ef83454b8c6784fcafa7bad90d94cb02246ce4bbab49b199ca13db2",
+        "width": 117
+      },
+      {
+        "bytes": 345,
+        "file": "native-preview-control-tab-right-up-117x28.png",
+        "grid": [
+          8,
+          8,
+          2,
+          2
+        ],
+        "height": 28,
+        "rgbaExact": true,
+        "sha256": "b9bcce9223a25109344acc7475f9be8366c464eda9c8528b33740224afcec391",
+        "source": "native-preview-control-tab-right-up.png",
+        "sourceSha256": "8ec886bef76eb8178c10d360fcfa582b5b8d7884f11830c7a6dde8a44264a538",
+        "width": 117
+      },
+      {
+        "bytes": 349,
+        "file": "native-preview-control-tab-right-selected-117x28.png",
+        "grid": [
+          8,
+          8,
+          2,
+          2
+        ],
+        "height": 28,
+        "rgbaExact": true,
+        "sha256": "bf772d60f5c105a7134110f86401891b5005993e667cf7f2b96f7d6dd7b459b3",
+        "source": "native-preview-control-tab-right-selected.png",
+        "sourceSha256": "d5a66e0a5414910f4c94bd7736eae8f903110c9351d8648f680ba1cd32d7d55f",
+        "width": 117
+      }
+    ],
+    "renderMethod": "Native8px borders copied exactly;2px flat stretch bands verified equal,then extended to117x28;no browser nine-patch seams",
+    "sources": {
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.json": "f6bf3f437842136ec7d0c617d9bb4da13ffa4f216f010a8b0795cca6d7a717ff",
+      "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/assets/init_lobby/desktop_assets.png": "63d6c2d91a6d86798575c53be889bf1b7fcd1b29b1441aa2038414b602f71c17"
+    }
+  },
+  "nativeContract": {
+    "tabs": [
+      "Left up/selected lobby83/84;right85/86;source18x18 and Rectangle8,8,2,2 scale9.",
+      "Each tab117x28 in native234px header;Roboto14,labelx5,width button-10,height button.",
+      "Default#999999,hover#A9A9A9,down#696969 at y2,selected white y0;selected enabled=false.",
+      "LobbyPageType GROUP_VIEW=MobileGroupView,TABLE_VIEW=MobileViewList;existing local language catalogs supply those labels."
+    ],
+    "notes": [
+      "Info note offset background.left-7/background.top+12;relative local plate(-7,12).",
+      "Color frame lobby_preview47 is78x37;memo48 is78x36.",
+      "Show non-default color or text;memo takes precedence even at default white. Local No-color default is#FFFFFF.",
+      "Only memo image reverses when cell.x>=viewport.width/2;actual six-seat coordinates determine side.",
+      "PlayerNoteImage is decorative/non-interactive;actual HUD remains the player-seat control."
+    ]
+  },
+  "localMapping": [
+    "Reuse authenticated privatePaint own/color/hasText metadata;no note text/subject/new private fields in public table DTO or DOM.",
+    "Real local tab actions and real HUD note/color persistence;selected Holdem tab disabled;other modes keep their enabled semantics.",
+    "Verified flat2px stretch bands allow exact source scale9 raster at117x28;this avoids browser border-image interpolation seams without inventing color/shape.",
+    "Ten small PNGs add4880bytes;no fonts/dependencies/model downloads.",
+    "Media max-height597 adds scrollable HUD max100vh-16 and reachable right-close only on short windows;native normal404x582/404x530 geometry retained. This small-window policy is not claimed as observed native behavior."
+  ],
+  "verification": [
+    "RED selected tab not disabled;RED saved color metadata had no visible preview marker.",
+    "GREEN source real tab pointer hover/down/cancel/Group/Table selection,RGBA4original+2note+4rendered identities,seam samples,private color/memo/reversal/white/clear/anonymous isolation and unchanged wallet.",
+    "Reproduced short800x480 HUD close at y-29 after history;media repair close y30 and actual dismissal passed in isolated helper.",
+    "Final full installed resize/HUD/Group/gameplay/restart exact-head QA pending."
+  ],
+  "remaining": [
+    "Full Group parent physical calibration,all locale text metrics and exact native rendered color pipeline.",
+    "Country/heat/operator branches and other screens/tabs/variants.",
+    "Full application pixel parity and native animation/audio timing."
+  ]
+}
