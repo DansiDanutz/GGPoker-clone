@@ -2,6 +2,10 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
+## Native settings sidebar rendering
+
+Original lobby977/978/979 skins,230x28 buttons,asymmetric source9slice and Roboto14 labels replace CSS approximations. Actual hover/down,drag cancellation and release routing are verified before publication. [Contract and limitations](docs/rea/settings-sidebar-skins.md). Physical native parity and the separate Romanian body wrapping defect remain incomplete.
+
 ## Settings sidebar language
 
 Eleven remaining sidebar captions bind native source keys and the existing catalog without changing page identity, capability flags or unsaved drafts. [Source and acceptance](docs/rea/settings-sidebar-language.md). Page body translation and physical native parity remain incomplete.
