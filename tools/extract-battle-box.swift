@@ -19,6 +19,10 @@ func extract(_ relative:String,_ entries:[(String,String,Int,Int)],_ prefix:Stri
  let receipt:[String:Any] = ["method":"StageAssets desktop frame-only crop; exact decoded RGBA readback, no synthetic trim padding","sources":[atlas.path:hash(try Data(contentsOf:atlas)),metadata.path:hash(try Data(contentsOf:metadata))],"files":records]
  try JSONSerialization.data(withJSONObject:receipt,options:[.prettyPrinted,.sortedKeys]).write(to:out.appendingPathComponent("rea/"+receiptName+".json"))
 }
+if CommandLine.arguments.contains("--cash-game-info") {
+ try extract("init_lobby/desktop_assets.png",[("common0004","close-up",12,11),("common0005","close-over",12,11),("lobby0191","arrow-up",22,80),("lobby0192","arrow-down",22,80),("lobby0193","arrow-over",22,80),("lobby0112","link-icon",16,16)],"native-cash-game-info-","cash-game-info-atlas")
+ exit(0)
+}
 if CommandLine.arguments.contains("--cash-preview-controls") {
  try extract("init_lobby/desktop_assets.png",[("lobby0083","tab-left-up",18,18),("lobby0084","tab-left-selected",18,18),("lobby0085","tab-right-up",18,18),("lobby0086","tab-right-selected",18,18),("lobby_preview0047","note-color",78,37),("lobby_preview0048","note-memo",78,36)],"native-preview-control-","cash-preview-controls-atlas")
  // Bake the fixed117x28 native tabs:flat stretch bands make this exact and avoid browser border-image seams.

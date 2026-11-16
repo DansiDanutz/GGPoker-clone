@@ -1,5 +1,5 @@
 import {cashGroupPlayerRows,renderCashGroupPlayers,installCashGroupPaint} from './cash-group-players.mjs';
-import {cashGroupCatalog,cashTableCatalog} from './cash-group-catalog.mjs';
+import {cashGroupCatalog,cashTableCatalog,cashGameInformation} from './cash-group-catalog.mjs';
 import {installCashGroupDialog} from './cash-group-dialog.mjs';
 import {installLobbyPlayerHud} from './lobby-player-hud.mjs';
 import {installBattleLobby} from './battle-lobby.mjs';
@@ -246,8 +246,9 @@ feed.onscroll=()=>{$('thumb').style.transform='translateY('+(feed.scrollTop/(can
 const closeAsk=()=>{$('assistantPane').hidden=true;$('floatingAsk').focus()};$('closeAsk').onclick=closeAsk;document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('assistantPane').hidden)closeAsk()});document.addEventListener('keydown',e=>{if(e.key==='F2'){e.preventDefault();location.href='/home-review.html'}});
 display(6);
 
-let catalogRequest=0,battleRulesView,battleLobbyView,groupPaintController;
+let catalogRequest=0,battleRulesView,battleLobbyView,groupPaintController,cashInfoView;
 function catalog(mode){
+ cashInfoView?.destroy();cashInfoView=null;
  lobbyHud.select(null);groupPaintController?.select(null,null);$('groupPlayerProfile').hidden=true;
  battleRulesView?.destroy();battleRulesView=null;battleLobbyView?.destroy();battleLobbyView=null;spinUI?.close();
  const request=++catalogRequest;$('viewSwitch').hidden=false;$('groups').hidden=false;
@@ -381,6 +382,39 @@ function cashCatalog(request,mode){
  const joinHref=(t,reserve=false,seat)=>{const url=new URL(t.href,location.href);if(journey&&reserve){url.searchParams.set('join','1');if(Number.isInteger(seat))url.searchParams.set('joinSeat',String(seat))}if(journey&&localStorage.getItem('river-auto-buyin')==='1')url.searchParams.set('autojoin','1');return url.href};
  const privatePaint=installCashGroupPaint(()=>{if(request===catalogRequest&&!pane.hidden)render()});groupPaintController=privatePaint;
  const rows=[];let playerGroup='',selectedPlayer='',playerSort='chips',playerOrder=1;
+ if(mode==='holdem'){
+  const aside=pane.querySelector('aside'),info=document.createElement('section'),link=document.createElement('button');
+  info.className='nativeCashGameInfo';info.hidden=true;info.setAttribute('aria-label','Hold’em Information');
+  link.type='button';link.className='nativeCashGameInfoLink';link.setAttribute('aria-expanded','false');
+  const close=document.createElement('button');close.type='button';close.className='nativeCashGameInfoClose';close.setAttribute('aria-label','Close game information');
+  const arrow=document.createElement('button');arrow.type='button';arrow.className='nativeCashGameInfoArrow';arrow.setAttribute('aria-label','Collapse game information');
+  const caption=document.createElement('span'),game=document.createElement('span'),information=document.createElement('span'),icon=document.createElement('i');game.textContent='Hold’em';game.dataset.nativeLabel='CategoryHoldem';information.textContent='Information';information.dataset.nativeLabel='MobileInformation';icon.setAttribute('aria-hidden','true');caption.append(game,document.createTextNode(' '),information,icon);link.replaceChildren(caption);
+  const clip=document.createElement('div');clip.className='nativeCashGameInfoClip';
+  const body=document.createElement('div');body.className='nativeCashGameInfoRows';info.append(close,arrow,body);clip.append(info);pane.append(clip);
+  const operator=document.createElement('div');operator.className='nativeGroupOperator';aside.insertBefore(operator,$('groupPlayerProfile'));operator.append($('groupPlayerProfile'),join,link);
+  let motion;
+  const show=(open,focus=false)=>{
+   const from=info.hidden?'translateX(100%)':getComputedStyle(info).transform;motion?.cancel();info.hidden=false;info.style.transform=open?'translateX(0)':'translateX(100%)';link.setAttribute('aria-expanded',String(open));
+   motion=info.animate([{transform:from},{transform:info.style.transform}],{duration:matchMedia('(prefers-reduced-motion:reduce)').matches?0:200,easing:'cubic-bezier(.333333333333,1,.666666666667,1)'});
+   motion.onfinish=()=>{if(!open)info.hidden=true;motion=null};if(focus)link.focus({preventScroll:true});
+  };
+  close.onclick=arrow.onclick=()=>show(false,true);info.onkeydown=e=>{if(e.key==='Escape'){e.preventDefault();show(false,true)}};
+  let infoSignature='';
+  const update=()=>{
+   link.hidden=pane.dataset.view!=='group';
+   if(info.hidden)return;const nextSignature=JSON.stringify(hosted.map(t=>[t.capacity,t.actionSeconds,t.ante]));if(nextSignature===infoSignature)return;infoSignature=nextSignature;body.replaceChildren();
+   for(const row of cashGameInformation(hosted)){
+    const item=document.createElement('section'),line=document.createElement('div'),title=document.createElement('span'),value=document.createElement('span');
+    item.className='nativeCashGameInfoItem';line.className='nativeCashGameInfoLine';title.textContent=row.title;title.dataset.nativeLabel=row.key;value.textContent=row.value;if(row.valueKey)value.dataset.nativeLabel=row.valueKey;line.append(title,value);item.append(line);
+    if(row.explanation){const explanation=document.createElement('p');explanation.textContent=row.explanation;explanation.dataset.nativeLabel=row.explanationKey;item.append(explanation)}body.append(item);
+   }
+   if(!hosted.length){const empty=document.createElement('p');empty.textContent='No local Hold’em tables available';empty.setAttribute('role','status');body.append(empty)}
+   const rules=document.createElement('section'),heading=document.createElement('h2'),text=document.createElement('p');rules.className='nativeCashGameInfoRules';heading.textContent='Hold’em Rules';heading.dataset.nativeLabel='HoldemRules';text.textContent='Players combine their two hole cards with five community cards to make their best five-card poker hand.';text.dataset.nativeLabel='TexasHoldemMostPopularLong';rules.append(heading,text);body.append(rules);
+  };
+  link.onclick=()=>{show(true);update();close.focus({preventScroll:true})};
+  cashInfoView={update,destroy(){motion?.cancel();clip.remove();aside.insertBefore($('groupPlayerProfile'),operator);aside.insertBefore(join,operator);operator.remove();delete pane.dataset.groupProfile}};
+ }
+
  let view='group',selected=0,filter='all',hosted=[],waiting=null,waitingRoom=null,waitingBusy=false,waitingError='',waitingRead=0;
  async function refreshWaiting(){
   const t=rows[selected];if(!journey||view!=='table'||!t)return;const read=++waitingRead;
@@ -394,8 +428,8 @@ function cashCatalog(request,mode){
  function render(){
   const preview=previewRoot.cloneNode(false),nextList=list.cloneNode(false),columns=$('columns').cloneNode(false);preview.classList.remove('nativeGroupPlayerList');preview.style.overflowY='';
   const group=view==='group',t=rows[selected],stakes=t&&(mode==='shortdeck'?t.blind+' ('+t.blind+')':t.blind/2+' / '+t.blind);
-  const groupKey=group&&mode==='holdem'?t?.groupId||t?.room||'':'';if(playerGroup!==groupKey){playerGroup=groupKey;selectedPlayer=''}const groupPlayers=groupKey&&t?cashGroupPlayerRows(t,playerSort,playerOrder):[],picked=groupPlayers.find(p=>p.key===selectedPlayer)||null;if(!picked)selectedPlayer='';privatePaint.select(mode==='holdem'?(group?t:{members:rows}):null,player?.name||null);$('groupPlayerProfile').hidden=!picked||!journey;
-  pane.dataset.view=view;$('groupView').setAttribute('aria-pressed',String(group));$('tableView').setAttribute('aria-pressed',String(!group));for(const [id,selected,key]of [['groupView',group,'MobileGroupView'],['tableView',!group,'MobileViewList']]){const b=$(id);b.disabled=mode==='holdem'&&selected;if(!b.firstElementChild){const label=node('span',b.textContent);label.dataset.nativeLabel=key;b.replaceChildren(label)}}
+  const groupKey=group&&mode==='holdem'?t?.groupId||t?.room||'':'';if(playerGroup!==groupKey){playerGroup=groupKey;selectedPlayer=''}const groupPlayers=groupKey&&t?cashGroupPlayerRows(t,playerSort,playerOrder):[],picked=groupPlayers.find(p=>p.key===selectedPlayer)||null;if(!picked)selectedPlayer='';privatePaint.select(mode==='holdem'?(group?t:{members:rows}):null,player?.name||null);$('groupPlayerProfile').hidden=!picked||!journey;pane.dataset.groupProfile=String(!!picked&&journey);
+  pane.dataset.view=view;cashInfoView?.update();$('groupView').setAttribute('aria-pressed',String(group));$('tableView').setAttribute('aria-pressed',String(!group));for(const [id,selected,key]of [['groupView',group,'MobileGroupView'],['tableView',!group,'MobileViewList']]){const b=$(id);b.disabled=mode==='holdem'&&selected;if(!b.firstElementChild){const label=node('span',b.textContent);label.dataset.nativeLabel=key;b.replaceChildren(label)}}
   columns.replaceChildren(...(group?['Promotion',mode==='plo'?'Games':'Table Size','Stakes','Buy-in','Players','Action']:['Table Name','Stakes','Buy-in','Players','Wait','AvgPot','VPIP%','H/hr']).map(x=>node('span',x)));
   if(!group&&mode==='aof')columns.replaceChildren(...['Table Name','Games','Stakes','Buy-in','Players','Wait','AvgPot','All-in %','H/hr'].map(x=>node('span',x)));
   if(group&&mode==='holdem')columns.replaceChildren(...['Table Size','Stakes','Buy-in','Players','Action'].map(x=>node('span',x)));
