@@ -1324,5 +1324,20 @@
       "Existing global Apply reuses the Sound persistence path"
     ],
     "installed": false
+  },
+  "actionMapping": {
+    "source": "Retained TableMediator.onAction / resolveActorVoicePack",
+    "module": "table-voice.mjs",
+    "test": "table-voice-test.mjs",
+    "verified": [
+      "Per-action canonical pack,not listener preference",
+      "Preflop Fold silent",
+      "All-in Call remains Call",
+      "Non-call all-in/AoF uses All-In",
+      "Bet/Raise from opening bets and street resets",
+      "Unstamped history skipped without inventing current-profile stamps",
+      "Real unequal-all-in four-seat engine trace,total300chips,unchanged game"
+    ],
+    "wired": false
   }
 }
