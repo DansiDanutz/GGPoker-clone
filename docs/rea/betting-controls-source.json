@@ -37,6 +37,11 @@
       "file": "/Users/davidai/Sandbox/rea-tools/betting-language-source/scripts/com/nsus/iron/lobby/view/option/page/component/ChooseItem.as",
       "bytes": 7080,
       "sha256": "86de1cf4a5b152b08bdcf46185cd883932408ccc75ee00a237129719f6308535"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/cash-header-source/scripts/com/nsus/iron/components/display/text/TrueTypeCompositor.as",
+      "bytes": 9604,
+      "sha256": "837e21e20803c3fdc1967dc5d9612b4d7c9b0a9f336d49fc3edac399555e0b36"
     }
   ],
   "keys": [
