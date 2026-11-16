@@ -2,7 +2,15 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
-## Verified release baseline — PR281
+## Verified release baseline — PR283
+
+Cash headings follow native LabelModel single-line slicing before compositor scaling: four TextField gutter pixels and successive UTF-16 prefixes plus two literal dots. The existing translation loader preserves full accessible labels and recalculates on fallback, font-loading and resize changes. Canvas/Flash advances and post-slice scaling remain unverified. [REA pipeline](docs/rea/cash-header.md).
+
+PR283 merged `99351d7cb5efd204b1a5e9da90e285671c73f0c3`; tested `5670c30813796fd5e68359653b4ebb123eeb0607`. Eleven exact-head checks passed, including source/runtime identities, text boundaries, privacy/HTTP and actual Table/Group locales, overflow/restoration/polling plus two hands with five bots, independent96-chip payout,reconnect/restart and720-chip conservation. A failing browser fallback update was fixed and retested, not waived.
+
+Idle-guarded rollout PID82320→86445 preserved all6ownerfiles/15496bytes. Runtime130files/1514966logicalbytes,127immutable verified links and131028newbytes across three files;1387unchangedartfiles. Backup `/Users/davidai/.local/state/playgg-rollouts/pr283-p2at0ga8`. No live gameplay writes, foreground or speaker actions. Physical native raster/font/animation/audio and full goal remain incomplete. Generated HTML/inventories remain historical.
+
+## Historical release baseline — PR281
 
 Cash Table/Group headings now use the native source palette #333333/#808080/#404040, regular Roboto12, recovered label/divider geometry, the48-unit final Table cell and native language keys. PR280's raw-capture color/22px-leading compensation was rejected because capture profiles,DPI/raster and loaded-module identity were unbound; PR281 restores source values and an uncompensated24px CSS linebox. The two Game37 heading classes are byte-identical to Game51. [Source, correction and remaining gaps](docs/rea/cash-header.md).
 
