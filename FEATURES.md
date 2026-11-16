@@ -2,6 +2,10 @@
 
 Target: reproduce player-visible workflows using independent code and an owner-controlled backend. The installed PLAYGG.RO client is the visual reference. A feature is not complete until its flow is tested in this project.
 
+## Betting control reconstruction
+
+Source-backed radio skins/font/colors/240x24 geometry, native rounding checkbox, missing preset subtitles and inner field coordinates replace approximations. Long titles use integer single-line fitting and reset on locale changes. [REA evidence and acceptance](docs/rea/betting-controls.md). Confirmed next functional gap: native editable custom presets and opening Max are absent from local fixed selects; not claimed complete. Physical raster/font/popup/audio parity remains incomplete.
+
 ## Betting settings language
 
 Betting settings bind18 body labels, the sidebar title and shared OK/Cancel footer to the recovered native keys. Stable page identity preserves translated routing/selection; translated row/column labels name preset controls, and page entry focuses a real choice. Draft preferences and prepared bets must survive cross-window language changes. [Source contract and acceptance](docs/rea/betting-settings-language.md). Other settings labels, exact native text scaling and physical parity remain incomplete.

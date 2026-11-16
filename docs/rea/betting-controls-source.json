@@ -1,0 +1,101 @@
+{
+  "method": "Fresh headless FFDec three-control export plus reused source-bound OptionBettingPage/ChooseItem; static evidence only",
+  "swf": "/Users/davidai/Library/Application Support/com.nsuslab.ncf.launcher.live.ggpcom/Game/51/IronDesktop.swf",
+  "swfSha256": "2bf08ebadf070b588feae5d0b8823629aed2e109a126e3bf4ae6ae363c1c32a1",
+  "files": [
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/betting-controls-source/scripts/com/nsus/iron/Setting.as",
+      "bytes": 6286,
+      "sha256": "7711ac87c7729456e36920529ca5adc88529d50409c095833da862de50c8c854"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/betting-controls-source/scripts/com/nsus/iron/tasks/InitFont.as",
+      "bytes": 6168,
+      "sha256": "d3831e2c3816f4adf93ed7d1bec21a55f47661bbe138da2eb66a471866df9465"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/betting-controls-source/scripts/com/nsus/iron/components/display/button/DropDownButton.as",
+      "bytes": 20477,
+      "sha256": "b2af9727a529ca573675e41ce3b75652167f1422f34c82bfe307b687c984e258"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/betting-controls-source/scripts/com/nsus/iron/components/display/button/OptionCheckInToggleButton.as",
+      "bytes": 3389,
+      "sha256": "1a097dc70b47fafa2ee9efc8df5797ce02d31e369e7370b3800635127a627cca"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/betting-controls-source/scripts/com/nsus/iron/components/display/button/OptionViewToggleButton.as",
+      "bytes": 4928,
+      "sha256": "3e1c5a40050f33c8a17d32087c43de479c031b858a70b295d4773c1356d887c5"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/betting-language-source/scripts/com/nsus/iron/lobby/view/option/page/OptionBettingPage.as",
+      "bytes": 24215,
+      "sha256": "2cc1fb62f0f3a5e2c7b5a2111d7ed8ba48afb337c0e92f674725c117bf2b287b"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/betting-language-source/scripts/com/nsus/iron/lobby/view/option/page/component/ChooseItem.as",
+      "bytes": 7080,
+      "sha256": "86de1cf4a5b152b08bdcf46185cd883932408ccc75ee00a237129719f6308535"
+    },
+    {
+      "file": "/Users/davidai/Sandbox/rea-tools/cash-header-source/scripts/com/nsus/iron/components/display/text/TrueTypeCompositor.as",
+      "bytes": 9604,
+      "sha256": "837e21e20803c3fdc1967dc5d9612b4d7c9b0a9f336d49fc3edac399555e0b36"
+    }
+  ],
+  "keys": [
+    "OptionTabBetting",
+    "AdjustBetSize",
+    "BettingOptionLabelInvertMouseWheel",
+    "AskWhenEnterBet",
+    "MobileBigBlindToolTip",
+    "MobileSmallBlindToolTip",
+    "BettingOptionInvertMouseWheelOn",
+    "BettingOptionInvertMouseWheelOff",
+    "BettingOptionInvertEnterBetConfirmOn",
+    "BettingOptionInvertEnterBetConfirmOff",
+    "BettingOptionBetAmountShortcutText",
+    "MobileOpeningBetSize",
+    "MobileNormalBetSize",
+    "DontRoundBlind",
+    "MobileLabelButton",
+    "ButtonOK",
+    "ButtonCancel",
+    "MobileBigBlindOrButtonBlind",
+    "MobilePercentPot"
+  ],
+  "limitations": [
+    "Native physical layout/raster and script-specific font parity unverified",
+    "No new operator defaults or server policies inferred",
+    "Native number/unit and currency formatting outside this label binding scope"
+  ],
+  "observedNativeCapture": {
+    "path": "/Users/davidai/.local/share/playgg-art/cash-rule-information-candidate/observed-betting-settings.png",
+    "sha256": "bc1f4153e7a81149dbce0b75f99dc512b0406e110a3535f2631676c9387ef4b0",
+    "comparisonLimit": "Native versus CDP profiles and raster remain unbound; raw color compensation rejected"
+  },
+  "knownFunctionalGap": {
+    "customPresets": "Native DropDownButton accepts direct editing; local fixed selects remain incomplete.",
+    "openingBounds": [
+      0.1,
+      99.9
+    ],
+    "normalPercentBounds": [
+      1,
+      999
+    ],
+    "openingPrecision": "one displayed decimal",
+    "openingMax": "Native opening list also includes Max; missing locally."
+  },
+  "fonts": [
+    {
+      "file": "native-history-roboto.ttf",
+      "sha256": "3d9e65fbf2459f595bba0e01adb16a5502d66c938970bdef1bc5024ac180e809"
+    },
+    {
+      "file": "native-action-roboto-condensed.ttf",
+      "sha256": "18d0126c5b6279862627fce250efd93c9c0256d6c78aaea0f21b0352b138aa48"
+    }
+  ]
+}
