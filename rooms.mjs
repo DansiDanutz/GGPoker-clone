@@ -1,3 +1,4 @@
+import {voicePack} from './voice-packs.mjs';
 import {rankCashGroupTables,validCashGroupPreferences} from './cash-group-matching.mjs';
 import {grantPushSeat,reservedPushSeats,pushSeatState,validatePushSeatRoom,reservePushSeat,applyPushSeats} from './room-push-seat.mjs';
 import {removeChipsOptions,removeChipsTarget,removeChipsGroup} from './remove-chips-options.mjs';
@@ -250,7 +251,7 @@ function seatRoster(r){
   return [{seat,name:p.name,bot:!!p.bot,accountBound:!!p.account,subject:digest('owner:'+noteSubject(p)).slice(0,24),stack:cashBalance(r,seat),committed:playing?g.committed[seat]:0,status,acting:playing&&g.turn===seat,place:t?.finishes?.[seat]??null,prize:t?.prizes?.[seat]??null}];
  });
 }
-function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
+function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet,voiceFor){
   if(!/^[a-f0-9]{48}$/.test(id))fail(404,'Unknown room');
   const now=Date.now(),enteredVersion=rooms.get(id)?.version,enteredClockId=rooms.get(id)?.actionClock?.id;
   for(const [k,r] of rooms)if(!r.settings&&now-r.touched>4*hour)rooms.delete(k);
@@ -341,13 +342,13 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
         else if(r.players[r.hand.turn]?.bot&&now>=(r.actionClock?.startedAt??r.deadline-turnMs(r))+500){const g=r.hand;step(r,...computerMove(g.hands[g.turn],g.board,g.blind,g.price,options(g),g.variant))}
       }
     }
-    return view(r,null,avatarFor);
+    return view(r,null,avatarFor,undefined,voiceFor);
   }
   advanceWaiting(r,table,now);
   if(op==='watch'){
     if(!table&&!r?.spinMatch&&!r?.battleEvent&&!r?.multiTournament)fail(404,'Unknown hosted table');if(r?.battleEvent&&typeof account!=='string')fail(401,'Sign in locally');
     if(!r)return {me:null,version:0,names:Array(capacity).fill(null),settings:table,hand:null,results:[],...(account?{canObserveChat:!!table.open,observerName:account}:{})};
-    return view(r,null,avatarFor,account);
+    return view(r,null,avatarFor,account,voiceFor);
   }
   if(op==='summary'){
     const results=r?.results||[],dealt=results.reduce((n,h)=>n+(h.dealt||0),0);
@@ -441,47 +442,47 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
     if(!r.players.includes(null)&&r.tournament&&r.spinReady===undefined&&!r.multiTournament){if(!r.tournament.startsAt){r.tournament.startedAt=now;tournamentHand(r,now,avatarFor)}else scheduledStart(r,now,avatarFor)}
     else if(!r.tournament&&!r.players.includes(null)&&!r.hand)cashHand(r,now,avatarFor,wallet,id);
   }
-  if(observingChat){if(r.players.some(p=>p?.account===account))fail(409,'Recover your seated session to chat');recordChat(r,null,{name:account,account},body,now,true);r.touched=now;return view(r,null,avatarFor,account)}
+  if(observingChat){if(r.players.some(p=>p?.account===account))fail(409,'Recover your seated session to chat');recordChat(r,null,{name:account,account},body,now,true);r.touched=now;return view(r,null,avatarFor,account,voiceFor)}
   if(me<0&&op==='state'&&typeof token==='string'&&/^[a-f0-9]{64}$/.test(token)){const receipt=r.cashDepartures?.find(p=>p.digest===digest(token));if(receipt){if(receipt.account&&account!==receipt.account)fail(401,'Sign in locally to recover cash-out');return {left:true,cashOut:receipt.cashOut}}}
   if(me<0)fail(401,'Join this room first');
-  if(['rimt-suggest','rimt-decide'].includes(op)){if(!account||account!==r.players[me].account)fail(401,'Sign in locally to decide RIMT');const ended=!!r.hand?.end;if(applyRoomRimt(r,me,op,body,now)&&!ended&&r.hand.end)record(r);return view(r,me,avatarFor)}
+  if(['rimt-suggest','rimt-decide'].includes(op)){if(!account||account!==r.players[me].account)fail(401,'Sign in locally to decide RIMT');const ended=!!r.hand?.end;if(applyRoomRimt(r,me,op,body,now)&&!ended&&r.hand.end)record(r);return view(r,me,avatarFor,undefined,voiceFor)}
   if(op==='spin-ready'){
     if(!r.spinMatch||!Array.isArray(r.spinReady))fail(409,'No Spin presentation barrier');
     if(account!==r.players[me].account)fail(401,'Sign in locally to finish the Spin presentation');
     if(Object.keys(body).some(k=>k!=='version'))fail(400,'Only presentation completion is accepted');
     if(r.players.includes(null))fail(409,'Wait for all registered players');
     if(!r.spinReady.includes(account)){r.spinReady.push(account);r.version++;if(r.spinReady.length===r.players.length&&r.number===0){r.tournament.startedAt=now;tournamentHand(r,now,avatarFor)}}
-    return view(r,me,avatarFor);
+    return view(r,me,avatarFor,undefined,voiceFor);
   }
 
   if(['join','ready','leave','end-practice','add-chips','remove-chips','remove-chips-option','push-seat','push-seat-cancel','sit-out'].includes(op))adoptCashSeat(r,me,wallet,id);
   r.touched=now;
-  if(['push-seat','push-seat-cancel'].includes(op)){reservePushSeat(r,me,op,body,account,r.players.map((p,i)=>cashBalance(r,i)));return view(r,me,avatarFor)}
+  if(['push-seat','push-seat-cancel'].includes(op)){reservePushSeat(r,me,op,body,account,r.players.map((p,i)=>cashBalance(r,i)));return view(r,me,avatarFor,undefined,voiceFor)}
   if(op==='remove-chips-option'){
     const p=r.players[me];if(!table?.removeChips||!r.settings?.removeChips||!cashSitOut(r)||p.bot||!wallet||!p.walletFunded||!p.account)fail(409,'Automatic removal requires an enabled funded cash seat');if(account!==p.account)fail(401,'Sign in locally to set automatic removal');
     if(Object.keys(body).length!==2||Object.keys(body).some(k=>!['version','bb'].includes(k))||!Number.isSafeInteger(body.version)||body.version<0||!removeChipsOptions(r.settings).includes(body.bb))fail(400,'Choose a listed automatic removal target and current version');
-    const group=removeChipsGroup(r.settings);if(wallet.removalOption(p.account,group)===body.bb)return view(r,me,avatarFor);if(body.version!==r.version)fail(409,'Table changed; refresh the automatic removal option');
-    wallet.setRemovalOption(p.account,group,body.bb);for(const target of rooms.values())if(target.settings?.removeChips&&cashSitOut(target)&&removeChipsGroup(target.settings)===group)for(const seat of target.players)if(seat?.account?.toLowerCase()===p.account.toLowerCase()&&seat.walletFunded&&!seat.bot){if(body.bb)seat.removeChipsBB=body.bb;else delete seat.removeChipsBB;target.version++}return view(r,me,avatarFor);
+    const group=removeChipsGroup(r.settings);if(wallet.removalOption(p.account,group)===body.bb)return view(r,me,avatarFor,undefined,voiceFor);if(body.version!==r.version)fail(409,'Table changed; refresh the automatic removal option');
+    wallet.setRemovalOption(p.account,group,body.bb);for(const target of rooms.values())if(target.settings?.removeChips&&cashSitOut(target)&&removeChipsGroup(target.settings)===group)for(const seat of target.players)if(seat?.account?.toLowerCase()===p.account.toLowerCase()&&seat.walletFunded&&!seat.bot){if(body.bb)seat.removeChipsBB=body.bb;else delete seat.removeChipsBB;target.version++}return view(r,me,avatarFor,undefined,voiceFor);
   }
   if(op==='remove-chips'){
     const p=r.players[me];if(!table?.removeChips||!r.settings?.removeChips||!cashSitOut(r)||p.bot||!wallet||!p.walletFunded||!p.account)fail(409,'Remove Chips requires an enabled funded cash seat');if(account!==p.account)fail(401,'Sign in locally to remove chips');
     if(Object.keys(body).length!==4||Object.keys(body).some(k=>!['number','version','amount','sequence'].includes(k))||!Number.isSafeInteger(body.number)||body.number<1||!Number.isSafeInteger(body.version)||body.version<0||!Number.isSafeInteger(body.sequence)||body.sequence<1||!Number.isSafeInteger(body.amount)||body.amount<1)fail(400,'Provide a whole chip amount and current hand/version/sequence');
-    const prior=p.cashRemoval;if(prior?.sequence===body.sequence){if(prior.number===body.number&&prior.amount===body.amount)return view(r,me,avatarFor);fail(409,'Removal sequence already used')}
+    const prior=p.cashRemoval;if(prior?.sequence===body.sequence){if(prior.number===body.number&&prior.amount===body.amount)return view(r,me,avatarFor,undefined,voiceFor);fail(409,'Removal sequence already used')}
     if(body.sequence!==(prior?.sequence??0)+1||body.number!==r.number||body.version!==r.version)fail(409,'Table or removal sequence changed; refresh and try again');
     if(r.hand&&(!r.hand.end||now<(r.hand.settledAt??now)+3000)||r.hand&&!hasHandBalance(r,me)||!r.hand&&!r.waitingStacks||r.ready[me]||p.addChips||p.topUpTo||p.walletTopUp||p.leaveNextHand)fail(409,'Remove chips between hands before ready or other pending funding actions');
     const before=cashBalance(r,me),minimum=table.minBuyIn??table.stack;if(body.amount>before-minimum)fail(400,'Removal must leave at least the table minimum');
-    applyCashRemoval(r,me,body.amount,wallet,id,now);r.version++;return view(r,me,avatarFor);
+    applyCashRemoval(r,me,body.amount,wallet,id,now);r.version++;return view(r,me,avatarFor,undefined,voiceFor);
   }
   if(op==='add-chips'){
     const p=r.players[me];if(!table||r.tournament||p.bot)fail(400,'Add chips requires a seated hosted cash player');if(p.account&&account!==p.account)fail(401,'Sign in locally to add chips');
     if(Object.keys(body).some(k=>!['number','version','amount'].includes(k))||!Number.isSafeInteger(body.amount)||body.amount<0)fail(400,'Choose whole play chips');
     if(body.number!==r.number)fail(409,'Hand changed; refresh and try again');
-    if(p.addChips){if(p.addChips.number===body.number&&p.addChips.amount===body.amount)return view(r,me,avatarFor);fail(409,'Chips are already pending for the next hand')}
+    if(p.addChips){if(p.addChips.number===body.number&&p.addChips.amount===body.amount)return view(r,me,avatarFor,undefined,voiceFor);fail(409,'Chips are already pending for the next hand')}
     if(body.version!==r.version)fail(409,'Table changed; refresh and try again');if(r.ready[me])fail(409,'Already ready for the next hand');
     const balance=cashBalance(r,me),available=wallet&&p.walletFunded?wallet.summary(p.account).available:Infinity,max=Math.max(0,Math.min((table.maxBuyIn??table.stack)-balance,available)),min=Math.min(Math.max(0,(table.minBuyIn??table.stack)-balance),max);
     if(body.amount<min||body.amount>max)fail(400,'Additional chips are outside table limits');
     if(body.amount){if(wallet&&p.walletFunded)wallet.move(p.account,-body.amount,'rebuy',id);p.addChips={number:r.number,amount:body.amount};r.version++}
-    return view(r,me,avatarFor);
+    return view(r,me,avatarFor,undefined,voiceFor);
   }
   if(op==='rabbit'){
     if(!rabbitEligible(r,me))fail(409,'Rabbit requires your completed cash hand with an incomplete board');
@@ -490,13 +491,13 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
     if(body.number!==r.number)fail(409,'Hand changed; refresh the table');
     if(!r.hand.rabbitShown?.[me]){rabbitCards(r.hand);r.hand.rabbitShown??=r.players.map(()=>false);r.hand.rabbitShown[me]=true;r.version++}
     retainRabbitHistory(r);
-    return view(r,me,avatarFor);
+    return view(r,me,avatarFor,undefined,voiceFor);
   }
   if(op==='sit-out-state'){
     const p=r.players[me];if(!cashSitOut(r)||!table||!r.hand?.sittingOut?.[me]||!hasHandBalance(r,me))fail(409,'Choose a status while sitting out');
     if(p.account&&account!==p.account)fail(401,'Sign in locally to change sit-out status');
     if(Object.keys(body).some(k=>!['state','version'].includes(k))||![0,1,2,4,8].includes(body.state)||body.version!==undefined&&(!Number.isSafeInteger(body.version)||body.version<0))fail(400,'Choose a supported sit-out status');
-    if((p.sitOutState||0)!==body.state){if(body.state)p.sitOutState=body.state;else delete p.sitOutState;r.version++}return view(r,me,avatarFor);
+    if((p.sitOutState||0)!==body.state){if(body.state)p.sitOutState=body.state;else delete p.sitOutState;r.version++}return view(r,me,avatarFor,undefined,voiceFor);
   }
   if(op==='sit-out'){
     if(!r.tournament&&(!cashSitOut(r)||!table))fail(409,'Sit out requires a supported local table');
@@ -504,17 +505,17 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
     if(Object.keys(body).some(k=>!['paused','version'].includes(k))||typeof body.paused!=='boolean'||body.version!==undefined&&(!Number.isSafeInteger(body.version)||body.version<0))fail(400,'Choose a sit-out state');
     if(r.tournament){
       setTournamentPause(r,me,body.paused);
-      return view(r,me,avatarFor);
+      return view(r,me,avatarFor,undefined,voiceFor);
     }
     setCashPause(r,me,body.paused);
     if(cashReady(r))cashHand(r,now,avatarFor,wallet,id);else if(!r.hand&&!r.players.includes(null))cashHand(r,now,avatarFor,wallet,id);
-    return view(r,me,avatarFor);
+    return view(r,me,avatarFor,undefined,voiceFor);
   }
   if(op==='helmet'){
     const player=r.players[me];if(player.account&&account!==player.account)fail(401,'Sign in locally to change helmet');
     if(Object.keys(body).some(k=>!['muted','version'].includes(k))||typeof body.muted!=='boolean'||body.version!==undefined&&(!Number.isSafeInteger(body.version)||body.version<0))fail(400,'Choose a helmet state');
     if(!!player.helmet!==body.muted){player.helmet=body.muted;r.version++}
-    return view(r,me,avatarFor);
+    return view(r,me,avatarFor,undefined,voiceFor);
   }
   if(op==='notes'){
     const viewer=r.players[me];if(viewer.account&&account!==viewer.account)fail(401,'Sign in locally to access private notes');
@@ -602,23 +603,23 @@ function handle(rooms,id,op,token,body,table,account,avatarFor,notes,wallet){
     }
   }
   if(op==='state'&&r.hand&&!r.hand.end&&r.players[r.hand.turn]?.bot&&now>=(r.actionClock?.startedAt??r.deadline-turnMs(r))+500){const g=r.hand;step(r,...computerMove(g.hands[g.turn],g.board,g.blind,g.price,options(g),g.variant))}
-  return {...view(r,me,avatarFor),issued,canStart:canStart&&!r.hand&&!seatChangeWaiting(r),canFill:canFill&&!r.hand&&!seatChangeWaiting(r),soloBots:r.players.some(p=>p?.bot)&&r.players.every((p,i)=>i===me||p?.bot)};
+  return {...view(r,me,avatarFor,undefined,voiceFor),issued,canStart:canStart&&!r.hand&&!seatChangeWaiting(r),canFill:canFill&&!r.hand&&!seatChangeWaiting(r),soloBots:r.players.some(p=>p?.bot)&&r.players.every((p,i)=>i===me||p?.bot)};
 }
-function view(r,me,avatarFor,account){
+function view(r,me,avatarFor,account,voiceFor=()=>null){
   const g=r.hand,clock=clockView(r,r.players[me]?.tourneySittingOut?null:me,Date.now());
   if(clock){delete clock.bankRemainingMs;clock.bankEndsAt=r.actionClock.bankEnd}
   const spin=r.spinMatch?spinRoomLevel(r,{startedAt:0,now:0,completedHands:0}):null;
   const spinRows=r.spinConfiguration?r.spinConfiguration.outcomes:spin?spinPayouts(r.tournament.pool/r.spinMultiplier):null;
   const spinAmounts=r.spinConfiguration?prizeAmounts(r.tournament.pool,spinRows.find(row=>row.multiplier===r.spinMultiplier).prizeShares):null;
   const spinPrizes=spinAmounts?Array.from({length:6},(_,i)=>spinAmounts[i]||0):spinRows?.find(row=>row.multiplier===r.spinMultiplier).prizes;
-  return {me,...(cashSitOut(r)||r.tournament?{globalGamesPause:true,...(me!=null?{sitOutAllGames:!!r.players[me]?.sitOutAllGames}:{} )}:{}),...(r.pushSeatNotice?{pushSeatNotice:{...r.pushSeatNotice}}:{}),...(me!=null&&r.players[me]?.pushSeatMove?{pushSeatMove:{...r.players[me].pushSeatMove}}:{}),...(seatChangeWaiting(r)?{seatChangeWaiting:true}:{}),...(me!=null&&pushSeatState(r.players[me],r.number)?{pushSeat:pushSeatState(r.players[me],r.number)}:{}),...(me!=null&&r.settings?.removeChips&&cashSitOut(r)?{removeChips:{options:removeChipsOptions(r.settings),bb:r.players[me]?.removeChipsBB??0}}:{}),...(me!=null&&r.players[me]?.cashRemoval?{cashRemoval:{...r.players[me].cashRemoval}}:{}),...(r.battleEvent?{battleFinal:{event:r.battleEvent,awardsPending:r.battleAwardsConfigured!==true}}:{}),...(r.rimt?{rimt:roomRimtView(r,me)}:{}),...(spin?{spin:{mode:'local-practice',buyIn:r.tournament.pool/r.spinMultiplier,multiplier:r.spinMultiplier,prizes:spinPrizes,...(me!=null&&r.spinInsuranceAwards?{insuranceAwards:r.players.flatMap((p,seat)=>{const award=r.spinInsuranceAwards.find(a=>a.account===p?.account);return award?[{seat,amount:award.amount}]:[]})}:{}),...(r.spinReady?{presentation:{pending:r.number===0,complete:me!=null&&r.spinReady.includes(r.players[me]?.account),ready:r.spinReady.length,total:r.players.length}}:{}),...(spinRows.length===8?{wheel:{...spinWheelSegments(spinRows.map(row=>row.multiplier),r.spinMultiplier),order:'local-practice-payout-order'}}:{}),unit:spin.unit,interval:spin.interval}}:{}),...(me!=null&&r.settings?.timeChipCount?{timeCardCount:r.players[me]?.freeTimeChipCount??r.settings.timeChipCount,timeCardOption:r.players[me]?.timeCardOption??3,timeCardOptionsSupported:true}:{}),...(cashSitOut(r)?{sitOutSupported:true,sitOutStateSupported:true,globalCashLeave:true,...(me!=null?{leaveNextHand:!!r.players[me]?.leaveNextHand}:{}),sitOutStates:r.players.map((p,i)=>p&&r.hand?.sittingOut?.[i]&&hasHandBalance(r,i)?p.sitOutState||0:0),globalCashReturn:true,globalCashPause:true,returnMinimum:returnMinimum(r),...(me!=null?{returnFundingRequired:returnNeedsChips(r,me)}:{}),...(me!=null?{sitOutNextHand:!!r.players[me]?.sitOutNextHand,sitOutAllCash:!!r.players[me]?.sitOutNextHand&&!!r.players[me]?.sitOutAllCash}:{}),sittingOut:r.players.map((p,i)=>!!p&&(g?!!g.sittingOut?.[i]&&hasHandBalance(r,i):!!p.sitOutNextHand)),seatBalances:r.players.map((p,i)=>p?cashBalance(r,i):null)}:{}),...(r.tournament?{tournamentSitOutSupported:!!(g&&r.tournament.winner===null&&!r.tournament.cancelledAt&&(me==null||g.stacks[me]+(g.end?0:g.committed[me])>0)),...(me!=null?{sitOutNextHand:!!r.players[me]?.tourneySitOutNextHand}:{}),sittingOut:r.players.map(p=>!!p?.tourneySittingOut)}:{}),...(me!=null&&r.tournament?{tournamentEntryPaid:!!r.players[me]?.entryFunded}:{}),...(me==null&&account?{canObserveChat:!r.players.some(p=>p?.account===account),observerName:account,...(chatMuted(r,{account})?{chatMuted:true}:{})}:{}),helmets:r.players.map(p=>!!p?.helmet),...(me!=null&&r.players[me]?.sessionStats?{sessionStats:{...r.players[me].sessionStats}}:{}),...(me!=null&&Number.isSafeInteger(r.players[me]?.sessionStartedAt)?{sessionStartedAt:r.players[me].sessionStartedAt}:{}),...(me!=null&&r.players[me]?.addChips?{pendingAdd:{...r.players[me].addChips}}:{}),reservedSeats:reservedSeats(r),...(me!=null?{noteSubjects:r.players.map((p,i)=>p&&i!==me?noteSubject(p):null)}:{}),...(me!=null&&r.topUps?{topUps:r.topUps.filter(t=>t.subject===(r.players[me]?.account||r.players[me]?.digest)).map(({subject,...t})=>t)}:{}),...(r.players.some(p=>p?.buyIn!==undefined)?{buyIns:r.players.map(p=>p?p.buyIn??r.settings.stack:0)}:{}),...(me!=null&&chatMuted(r,r.players[me])?{chatMuted:true}:{}),...(g&&me!=null&&r.tournament?.out?.[me]==null&&!g.hands[me].length?{waitingForHand:true}:{}),...(r.waitingStacks?{waitingStacks:r.waitingStacks}:{}),...(r.shuffles?{shuffles:r.shuffles.filter(e=>e.subject===r.players[e.seat]?.digest&&Date.now()-e.at<2450).map(({seat,at})=>({seat,at}))}:{}),avatars:r.players.map(p=>p?.account?avatarFor(p.account):null),chat:(r.chat||[]).map(({sender,...message})=>message),settings:r.settings,tournament:r.tournament,version:r.version,number:r.number,names:r.players.map(p=>p?.name??null),ready:r.ready,results:r.results,
+  return {me,...(cashSitOut(r)||r.tournament?{globalGamesPause:true,...(me!=null?{sitOutAllGames:!!r.players[me]?.sitOutAllGames}:{} )}:{}),...(r.pushSeatNotice?{pushSeatNotice:{...r.pushSeatNotice}}:{}),...(me!=null&&r.players[me]?.pushSeatMove?{pushSeatMove:{...r.players[me].pushSeatMove}}:{}),...(seatChangeWaiting(r)?{seatChangeWaiting:true}:{}),...(me!=null&&pushSeatState(r.players[me],r.number)?{pushSeat:pushSeatState(r.players[me],r.number)}:{}),...(me!=null&&r.settings?.removeChips&&cashSitOut(r)?{removeChips:{options:removeChipsOptions(r.settings),bb:r.players[me]?.removeChipsBB??0}}:{}),...(me!=null&&r.players[me]?.cashRemoval?{cashRemoval:{...r.players[me].cashRemoval}}:{}),...(r.battleEvent?{battleFinal:{event:r.battleEvent,awardsPending:r.battleAwardsConfigured!==true}}:{}),...(r.rimt?{rimt:roomRimtView(r,me)}:{}),...(spin?{spin:{mode:'local-practice',buyIn:r.tournament.pool/r.spinMultiplier,multiplier:r.spinMultiplier,prizes:spinPrizes,...(me!=null&&r.spinInsuranceAwards?{insuranceAwards:r.players.flatMap((p,seat)=>{const award=r.spinInsuranceAwards.find(a=>a.account===p?.account);return award?[{seat,amount:award.amount}]:[]})}:{}),...(r.spinReady?{presentation:{pending:r.number===0,complete:me!=null&&r.spinReady.includes(r.players[me]?.account),ready:r.spinReady.length,total:r.players.length}}:{}),...(spinRows.length===8?{wheel:{...spinWheelSegments(spinRows.map(row=>row.multiplier),r.spinMultiplier),order:'local-practice-payout-order'}}:{}),unit:spin.unit,interval:spin.interval}}:{}),...(me!=null&&r.settings?.timeChipCount?{timeCardCount:r.players[me]?.freeTimeChipCount??r.settings.timeChipCount,timeCardOption:r.players[me]?.timeCardOption??3,timeCardOptionsSupported:true}:{}),...(cashSitOut(r)?{sitOutSupported:true,sitOutStateSupported:true,globalCashLeave:true,...(me!=null?{leaveNextHand:!!r.players[me]?.leaveNextHand}:{}),sitOutStates:r.players.map((p,i)=>p&&r.hand?.sittingOut?.[i]&&hasHandBalance(r,i)?p.sitOutState||0:0),globalCashReturn:true,globalCashPause:true,returnMinimum:returnMinimum(r),...(me!=null?{returnFundingRequired:returnNeedsChips(r,me)}:{}),...(me!=null?{sitOutNextHand:!!r.players[me]?.sitOutNextHand,sitOutAllCash:!!r.players[me]?.sitOutNextHand&&!!r.players[me]?.sitOutAllCash}:{}),sittingOut:r.players.map((p,i)=>!!p&&(g?!!g.sittingOut?.[i]&&hasHandBalance(r,i):!!p.sitOutNextHand)),seatBalances:r.players.map((p,i)=>p?cashBalance(r,i):null)}:{}),...(r.tournament?{tournamentSitOutSupported:!!(g&&r.tournament.winner===null&&!r.tournament.cancelledAt&&(me==null||g.stacks[me]+(g.end?0:g.committed[me])>0)),...(me!=null?{sitOutNextHand:!!r.players[me]?.tourneySitOutNextHand}:{}),sittingOut:r.players.map(p=>!!p?.tourneySittingOut)}:{}),...(me!=null&&r.tournament?{tournamentEntryPaid:!!r.players[me]?.entryFunded}:{}),...(me==null&&account?{canObserveChat:!r.players.some(p=>p?.account===account),observerName:account,...(chatMuted(r,{account})?{chatMuted:true}:{})}:{}),helmets:r.players.map(p=>!!p?.helmet),...(me!=null&&r.players[me]?.sessionStats?{sessionStats:{...r.players[me].sessionStats}}:{}),...(me!=null&&Number.isSafeInteger(r.players[me]?.sessionStartedAt)?{sessionStartedAt:r.players[me].sessionStartedAt}:{}),...(me!=null&&r.players[me]?.addChips?{pendingAdd:{...r.players[me].addChips}}:{}),reservedSeats:reservedSeats(r),...(me!=null?{noteSubjects:r.players.map((p,i)=>p&&i!==me?noteSubject(p):null)}:{}),...(me!=null&&r.topUps?{topUps:r.topUps.filter(t=>t.subject===(r.players[me]?.account||r.players[me]?.digest)).map(({subject,...t})=>t)}:{}),...(r.players.some(p=>p?.buyIn!==undefined)?{buyIns:r.players.map(p=>p?p.buyIn??r.settings.stack:0)}:{}),...(me!=null&&chatMuted(r,r.players[me])?{chatMuted:true}:{}),...(g&&me!=null&&r.tournament?.out?.[me]==null&&!g.hands[me].length?{waitingForHand:true}:{}),...(r.waitingStacks?{waitingStacks:r.waitingStacks}:{}),...(r.shuffles?{shuffles:r.shuffles.filter(e=>e.subject===r.players[e.seat]?.digest&&Date.now()-e.at<2450).map(({seat,at})=>({seat,at}))}:{}),voicePacks:r.players.map(p=>p?voicePack(p.account?voiceFor(p.account):null).id:null),avatars:r.players.map(p=>p?.account?avatarFor(p.account):null),chat:(r.chat||[]).map(({sender,...message})=>message),settings:r.settings,tournament:r.tournament,version:r.version,number:r.number,names:r.players.map(p=>p?.name??null),ready:r.ready,results:r.results,
     hand:g&&{...(g.end&&g.runoutBoards?{runoutBoards:structuredClone(g.runoutBoards)}:{}),...(rabbitEligible(r,me)?{canRabbit:!g.rabbitShown?.[me],...(g.rabbitShown?.[me]?{rabbitCards:rabbitCards(g)}:{})}:{}),dealtSeats:g.hands.flatMap((cards,i)=>cards.length?[i]:[]),...(g.end&&g.shownIndices?{shownIndices:g.shownIndices.map(indices=>indices?[...indices]:null)}:{}),...(me!=null&&g.end&&g.hands[me].length&&!g.shownIndices?.[me]&&(g.folded[me]||g.folded.filter(f=>!f).length<2)?{canShowCards:true}:{}),...(r.settings?.timeBankSeconds?{timeBanks:r.players.map(p=>p?p.timeBankMs??r.settings.timeBankSeconds*1000:null)}:{}),...(clock?{clock}:{}),...(r.settings?.cardSqueeze?{squeezeActivated:true}:{}),blind:g.blind,...(g.ante?{ante:g.ante}:{}),button:g.button,turn:g.turn,deadline:g.end?null:r.deadline,stacks:g.stacks,bets:g.bets,committed:g.committed,folded:g.folded,board:g.board,pots:collectedPots(g),
       ...(me!=null&&!r.players[me]?.tourneySittingOut&&!g.runoutPending&&!g.end&&!g.folded[me]&&g.stacks[me]>0&&g.hands[me].length?{preAction:{...(g.variant==='aof'?{aof:true}:{}),due:Math.max(0,g.price-g.bets[me]),call:Math.min(g.stacks[me],Math.max(0,g.price-g.bets[me])),acted:g.actedAt[me]!==null,reservedCheck:g.reservedChecks?.[me]===g.board.length,foldEnabled:g.stacks.some((stack,i)=>i!==me&&!g.folded[i]&&g.bets[i]+stack>g.bets[me])}}:{}),cards:visibleCards(g,me),history:g.history,end:g.end,options:g.turn===me&&!r.players[me]?.tourneySittingOut?options(g):null}};
 }
 
 const digest=token=>createHash('sha256').update(token).digest('hex');
 export const noteSubject=p=>digest(p.account?'account:'+p.account.toLowerCase():p.bot?'bot:'+p.noteId:'seat:'+p.digest);
-export function openRooms(file,avatarFor=()=>0,walletsEnabled=false){
+export function openRooms(file,avatarFor=()=>0,walletsEnabled=false,voiceFor=()=>null){
   let rooms=new Map(),wallet=cashWallet(),battleEvents={},rushStates={},bank=spinBank(),spinEntries=[],rules=spinRules(),multi=multiTableRegistry();
   function validateRush(variant,saved){
     if(!['holdem','plo'].includes(variant)||!saved||!Array.isArray(saved.entries)||saved.entries.length>100||new Set(saved.entries.map(p=>p?.id)).size!==saved.entries.length||saved.entries.some(p=>!p||typeof p.id!=='string'||!p.id||!Number.isSafeInteger(p.stack)||p.stack<16||p.sitOutAllCash!==undefined&&(p.sitOutAllCash!==true||p.bot)||p.sitOutAllGames!==undefined&&(p.sitOutAllGames!==true||p.bot||p.left||!p.paused||p.sitOutAllCash)||p.walletFunded!==undefined&&(p.walletFunded!==true||p.bot||p.left||!Object.hasOwn(wallet.state.accounts,p.id.toLowerCase())))||!Number.isSafeInteger(saved.version)||saved.version<0||saved.pool!==null&&typeof saved.pool!=='string')throw Error('Invalid Rush wallet checkpoint');
@@ -757,7 +758,7 @@ rules=spinRules(rooms.get('local-spin-rules'));rooms.delete('local-spin-rules');
     const old=rooms.get(id),version=old?.version,oldTouched=old?.touched,controlFrame=op==='tournament-control'?JSON.stringify([old?.number,old?.hand]):null,oldClock=old?.actionClock,clockId=oldClock?.id,cardUses=oldClock?.cardsUsed,walletBefore=JSON.stringify(wallet.state),snapshot=(old?.players.some(p=>p?.tourneySitOutNextHand||p?.tourneySittingOut)||old?.multiTournament||old?.rimt||old?.hand?.runoutHand!==undefined||walletsEnabled&&(old?.spinMatch||old?.battleEvent||old?.settings?.removeChips||old?.settings?.pushSeatHands||['join','ready','leave','end-practice','add-chips','remove-chips','remove-chips-option','push-seat','push-seat-cancel','sit-out','remove-seat'].includes(op)||old?.tournament&&!old.tournament.walletSettled&&old.players.some(p=>p?.entryFunded)))?JSON.stringify(packed()):null;let failed=false;
     if(!walletsEnabled&&Object.keys(wallet.state.accounts).length&&['join','ready','leave','end-practice','add-chips','remove-chips','remove-chips-option','push-seat','push-seat-cancel','sit-out','remove-seat'].includes(op))fail(503,'Cash wallet mode is required for funded rooms');
     if(!walletsEnabled&&old?.tournament&&!old.tournament.walletSettled&&old.players.some(p=>p?.entryFunded))fail(503,'Wallet mode is required for funded tournaments');
-    try{if(old?.multiTournament&&op==='state'&&typeof token==='string'){const departed=old.multiDepartures?.find(p=>p.digest===digest(token));if(departed){if(typeof account!=='string'||account.toLowerCase()!==departed.account)fail(401,'Recover your own tournament session');const event=multi.summary(old.multiTournament,account),t=event.tournament.tables.find(t=>t.seats.some(p=>p?.id===departed.account));return {moved:!!t,eliminated:!t,room:t?.room??null,multi:event,me:null,names:Array(6).fill(null),ready:Array(6).fill(false),results:[],chat:[],avatars:Array(6).fill(null),settings:old.settings,tournament:structuredClone(old.tournament),number:old.number,version:old.version}}}if(op==='multi-ready'&&(!old?.multiTournament||Object.keys(body).some(k=>k!=='version')||!Number.isSafeInteger(body.version)||body.version<0))fail(400,'Provide the current multi-table version');let result=handle(rooms,id,op==='multi-ready'?'state':op,token,body,table,account,avatarFor,notes,walletsEnabled?wallet:null);const active=rooms.get(id);if(op==='multi-ready'&&multi.summary(active.multiTournament).status==='allocated'&&(!active.hand||active.hand.end)){const me=result.me;if(!active.ready[me]){if(body.version!==active.version)fail(409,'Table changed; refresh ready');active.ready[me]=true;active.version++}startMultiHands(active.multiTournament,true);result=view(active,me,avatarFor,account)}if(active?.multiTournament){if(active.hand?.end&&!multi.hand(active.multiTournament,active.multiTable)?.finish)multi.finish(active.multiTournament,active.multiTable,active.number,active.hand.stacks,active.hand.button,wallet);validateMultiRooms();multi.validateWallet(wallet);if(result&&typeof result==='object')result.multi=multi.summary(active.multiTournament,account)}if(active?.battleEvent){settleBattleBounties(active,op==='show-cards');settleBattleFinal(active);validateBattleFinals();if(result&&typeof result==='object'){if(battleEvents[active.battleEvent].bounty)result.battleBounty=battleBountyLedger(battleEvents[active.battleEvent]).summary();if(result.version!==undefined)result.version=active.version}}if(active?.rimt||active?.hand?.runoutPending)validateRoomRimt(active);if(active?.spinMatch){if(active.tournament.winner!==null){const order=spinFinishingOrder(active);if(!order)fail(409,'Spin finishing places are incomplete');settleSpinLedger(active.spinMatch,order)}validateSpinEntries()}if(settleTournamentWallet(rooms.get(id),walletsEnabled?wallet:null,id)&&result?.version!==undefined)result.version=rooms.get(id).version;return result}catch(error){if(snapshot){unpack(JSON.parse(snapshot));failed=true}throw error}finally{
+    try{if(old?.multiTournament&&op==='state'&&typeof token==='string'){const departed=old.multiDepartures?.find(p=>p.digest===digest(token));if(departed){if(typeof account!=='string'||account.toLowerCase()!==departed.account)fail(401,'Recover your own tournament session');const event=multi.summary(old.multiTournament,account),t=event.tournament.tables.find(t=>t.seats.some(p=>p?.id===departed.account));return {moved:!!t,eliminated:!t,room:t?.room??null,multi:event,me:null,names:Array(6).fill(null),ready:Array(6).fill(false),results:[],chat:[],avatars:Array(6).fill(null),settings:old.settings,tournament:structuredClone(old.tournament),number:old.number,version:old.version}}}if(op==='multi-ready'&&(!old?.multiTournament||Object.keys(body).some(k=>k!=='version')||!Number.isSafeInteger(body.version)||body.version<0))fail(400,'Provide the current multi-table version');let result=handle(rooms,id,op==='multi-ready'?'state':op,token,body,table,account,avatarFor,notes,walletsEnabled?wallet:null,voiceFor);const active=rooms.get(id);if(op==='multi-ready'&&multi.summary(active.multiTournament).status==='allocated'&&(!active.hand||active.hand.end)){const me=result.me;if(!active.ready[me]){if(body.version!==active.version)fail(409,'Table changed; refresh ready');active.ready[me]=true;active.version++}startMultiHands(active.multiTournament,true);result=view(active,me,avatarFor,account)}if(active?.multiTournament){if(active.hand?.end&&!multi.hand(active.multiTournament,active.multiTable)?.finish)multi.finish(active.multiTournament,active.multiTable,active.number,active.hand.stacks,active.hand.button,wallet);validateMultiRooms();multi.validateWallet(wallet);if(result&&typeof result==='object')result.multi=multi.summary(active.multiTournament,account)}if(active?.battleEvent){settleBattleBounties(active,op==='show-cards');settleBattleFinal(active);validateBattleFinals();if(result&&typeof result==='object'){if(battleEvents[active.battleEvent].bounty)result.battleBounty=battleBountyLedger(battleEvents[active.battleEvent]).summary();if(result.version!==undefined)result.version=active.version}}if(active?.rimt||active?.hand?.runoutPending)validateRoomRimt(active);if(active?.spinMatch){if(active.tournament.winner!==null){const order=spinFinishingOrder(active);if(!order)fail(409,'Spin finishing places are incomplete');settleSpinLedger(active.spinMatch,order)}validateSpinEntries()}if(settleTournamentWallet(rooms.get(id),walletsEnabled?wallet:null,id)&&result?.version!==undefined)result.version=rooms.get(id).version;return result}catch(error){if(snapshot){unpack(JSON.parse(snapshot));failed=true}throw error}finally{
     if(!failed){
     if(old?.multiTournament&&rooms.get(id)===old&&old.version===version)old.touched=oldTouched;
     advanceWaiting(rooms.get(id),table,Date.now());
@@ -790,7 +791,7 @@ rules=spinRules(rooms.get('local-spin-rules'));rooms.delete('local-spin-rules');
     const candidates=entries.filter(e=>e.table.open&&(!e.table.mode||e.table.mode==='cash')&&cashGroupRules(e.table)===key).sort((a,b)=>a===reference?-1:b===reference?1:a.table.id<b.table.id?-1:a.table.id>b.table.id?1:0);
     for(const row of candidates){
       if(rooms.get(row.room)?.players.some(p=>p?.account?.toLowerCase()===account))continue;
-      const wait=handle(rooms,row.room,'waiting',null,{},row.table,name,avatarFor,notes,wallet),summary=handle(rooms,row.room,'summary',null,{},row.table,name,avatarFor,notes,wallet);
+      const wait=handle(rooms,row.room,'waiting',null,{},row.table,name,avatarFor,notes,wallet,voiceFor),summary=handle(rooms,row.room,'summary',null,{},row.table,name,avatarFor,notes,wallet,voiceFor);
       if(wait.position&&!wait.offer||summary.waitingCount&&!wait.offer)continue;
       const seat=wait.offer?.seat??summary.seats.findIndex((p,i)=>!p&&!summary.reservedSeats.includes(i));
       if(seat<0)continue;
@@ -815,7 +816,7 @@ rules=spinRules(rooms.get('local-spin-rules'));rooms.delete('local-spin-rules');
     if(cashGroups().length>=1000)fail(409,'Local group receipt limit reached');
     const selected=rankCashGroupTables(available,command.preferences).slice(0,command.count);
     if(selected.length!==command.count)fail(409,'Not enough available tables in this cash group');
-    const seats=selected.map(row=>{const result=handle(rooms,row.room,'join',null,{name,useProfile:true,buyIn:command.buyIn,seat:row.seat,...(row.reservation?{reservation:row.reservation}:{})},row.table,name,avatarFor,notes,wallet);rooms.get(row.room).players[result.me].cashGroupOperation=command.operation;return {room:row.room,seat:result.me,issued:result.issued}});
+    const seats=selected.map(row=>{const result=handle(rooms,row.room,'join',null,{name,useProfile:true,buyIn:command.buyIn,seat:row.seat,...(row.reservation?{reservation:row.reservation}:{})},row.table,name,avatarFor,notes,wallet,voiceFor);rooms.get(row.room).players[result.me].cashGroupOperation=command.operation;return {room:row.room,seat:result.me,issued:result.issued}});
     (wallet.state.cashGroups??=[]).push({account,command,seats:seats.map(({room,seat})=>({room,seat}))});validateCashGroups();
     return {operation:command.operation,replayed:false,seats};
   });

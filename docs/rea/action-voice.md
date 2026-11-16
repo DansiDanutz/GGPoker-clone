@@ -1,6 +1,6 @@
 # Action Voice reconstruction — in progress, not installed
 
-The source/catalog/resource stage is complete; the player-facing feature is not yet wired. Live remains PR293. `voice-packs.mjs` is an unused candidate module, not a claim of working voice playback. Native source/image/sound identities are in action-voice-source.json.
+The source/catalog/resource stage and authenticated preference/current-seat projection backend are implemented on the candidate branch;the player-facing feature is not yet wired. Live remains PR293. `voice-packs.mjs` is an unused candidate module, not a claim of working voice playback. Native source/image/sound identities are in action-voice-source.json.
 
 VoicePack.list supplies14 packs in original order,defaultVDaniel and a separate GGPNL influencer restriction. The local candidate represents the normal owner catalog without inferring an operator account flag. Seven VoiceAction entries are ordered All-In,Raise,Bet,Check,Call,Fold,Straddle. Exact class spelling matters:VWilliams maps to VoiceBetWilliam,and All-In uses VoiceAllin. The original Vmale4 legacy alias is singularVWilliam,which is not a canonical pack;the candidate preserves its default fallback rather than silently inventing a fix. Catalog objects are frozen and invalid selectors cannot generate arbitrary cue/file paths.
 
@@ -23,3 +23,9 @@ Voice playback requires native userPlayer.isPlaying (status equals EGamePlayerSt
 ## Release gate
 
 Implement source carousel/selection/action preview/volume/Apply and Sound→MyPage navigation;authenticated account save and public seat metadata;source action-voice routing and independent volume/mute;safe exact media serving;browser decode of all98 cues;independent packs in separate sessions;full hand/payout and cold restart. Only after these pass should the candidate be installed. Native physical speaker timing and full-app fidelity remain unproven.
+
+## Candidate backend progress — not installed
+
+/local/voice accepts only a canonical14-pack ID,POST,same origin and an authenticated session;extra targeting fields are rejected. Atomic profile persistence preserves account credentials,sessions and avatar fields,and invalid saved voice IDs fail restoration. /local/me exposes only the canonical choice. Optional voice resolvers on ordinary rooms and both Rush pools project a public voicePacks array by authenticated stored account identity;guest/bot/default/null are explicit and display-name matching is never used. Profile changes do not themselves rewrite rooms,change chips or increment room revisions;normal due game ticks remain independent. Source startup and restore reload both wire the fresh profile resolver.
+
+RED/GREEN tests cover account isolation,write-failure retry,cold sessions,avatar retention,nickname impersonation,observer parity,read-only metadata and both Rush variants. Real HTTP/backup/invalid-model restore checks are required before counting backend integration verified. This current-profile projection is not an event-time voice stamp:action-trace snapshots/ordering,UI,98 browser decodes and actual table playback remain unfinished release gates.

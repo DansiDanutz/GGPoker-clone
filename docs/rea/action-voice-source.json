@@ -1270,7 +1270,7 @@
       "sha256": "7dd662e2bdc06077f6d72c90b304a26992179fe716ca3b9160fb4283104e1bf9"
     }
   ],
-  "status": "Source/catalog/resource stage only. UI,authenticated per-actor transport and runtime routing not implemented or installed.",
+  "status": "Source/catalog and authenticated preference/current-seat projection backend candidate;UI,action-time voice transport/playback and installation remain incomplete.",
   "nativePreferences": {
     "defaultPack": "VDaniel",
     "voiceVolume": 0.5,
@@ -1287,8 +1287,8 @@
   "remaining": [
     "Full browser decode of98clips",
     "Source carousel/apply/preview UI and14portrait packaging",
-    "Authenticated account save and public seat voice metadata",
     "Action trace-based actor/street/all-in call selection",
-    "Full separate-session hand,payout,cold restart and native comparison"
+    "Full separate-session hand,payout,cold restart and native comparison",
+    "Real HTTP/backup/invalid-model restore verification for candidate backend;event-time voice stamping remains unwired"
   ]
 }

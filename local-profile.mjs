@@ -1,3 +1,4 @@
+import {voicePack,isVoicePackId} from './voice-packs.mjs';
 import {avatarImage} from './avatar-image.mjs';
 import {randomBytes,scrypt,timingSafeEqual,createHash} from 'node:crypto';
 import {promisify} from 'node:util';
@@ -18,11 +19,13 @@ export function profiles(file){
    }
   }else accounts=saved;
  }catch(e){if(e.code!=='ENOENT')throw e}
+ for(const account of Object.values(accounts))if(account?.voicePackId!==undefined&&!isVoicePackId(account.voicePackId))throw Error('Invalid saved voice pack');
  const attempts=new Map(),sessionKey=token=>createHash('sha256').update(token).digest('hex');
  const cookieToken=req=>/(?:^|;)\s*localplayer=([0-9a-f]{48})(?:;|$)/.exec(req.headers.cookie||'')?.[1];
  // shortcut: one saved custom image per account; add a gallery if multiple uploads are required.
  function customAvatar(name){const custom=accounts[String(name).toLowerCase()]?.customAvatar;return custom?'/local/avatar-images/'+custom.hash+'.png':null}
  function avatar(name){const a=accounts[String(name).toLowerCase()];return a?.avatar==='custom'?customAvatar(name):a?.avatar??0}
+ function voice(name){return voicePack(accounts[String(name).toLowerCase()]?.voicePackId).id}
  function image(hash){const custom=Object.values(accounts).find(a=>a.customAvatar?.hash===hash)?.customAvatar;return custom?Buffer.from(custom.png,'base64'):null}
  function save(next,nextSessions=sessions){
   const live=new Map([...nextSessions].filter(([,session])=>session.until>Date.now()));
@@ -34,7 +37,7 @@ export function profiles(file){
  }
  async function handle(req,res,path,json){
   const nameOnSession=identity(req);
-  if(path==='/local/me')return nameOnSession?json(200,{name:nameOnSession,avatar:avatar(nameOnSession),...(customAvatar(nameOnSession)?{customAvatar:customAvatar(nameOnSession)}:{})}):json(401,{error:'Sign in locally'});
+  if(path==='/local/me')return nameOnSession?json(200,{name:nameOnSession,avatar:avatar(nameOnSession),voicePackId:voice(nameOnSession),...(customAvatar(nameOnSession)?{customAvatar:customAvatar(nameOnSession)}:{})}):json(401,{error:'Sign in locally'});
   if(req.method!=='POST'||req.headers.origin!=='http://'+req.headers.host)return json(403,{error:'Local form required'});
   if(path==='/local/logout'){
    const token=cookieToken(req);
@@ -43,6 +46,12 @@ export function profiles(file){
   }
   let raw='';for await(const c of req){raw+=c;if(raw.length>(path==='/local/avatar'?531024:1024))return json(413,{error:'Too large'})}
   let b;try{b=JSON.parse(raw)}catch{return json(400,{error:'Invalid form'})}
+  if(path==='/local/voice'){
+   if(!nameOnSession)return json(401,{error:'Sign in locally'});
+   if(!b||typeof b!=='object'||Array.isArray(b)||Object.keys(b).length!==1||!isVoicePackId(b.voicePackId))return json(400,{error:'Choose an available voice pack'});
+   const key=nameOnSession.toLowerCase();if(accounts[key].voicePackId!==b.voicePackId)save({...accounts,[key]:{...accounts[key],voicePackId:b.voicePackId}});
+   return json(200,{name:nameOnSession,voicePackId:voice(nameOnSession)});
+  }
   if(path==='/local/avatar'){
    if(!nameOnSession)return json(401,{error:'Sign in locally'});
    const key=nameOnSession.toLowerCase();let custom;
@@ -50,7 +59,7 @@ export function profiles(file){
    else if(b?.avatar==='custom'){if(!accounts[key].customAvatar)return json(400,{error:'Upload a custom avatar first'})}
    else if(!Number.isInteger(b?.avatar)||b.avatar<0||b.avatar>6)return json(400,{error:'Choose an available avatar'});
    save({...accounts,[key]:{...accounts[key],avatar:custom?'custom':b.avatar,...(custom?{customAvatar:custom}:{})}});
-   return json(200,{name:nameOnSession,avatar:avatar(nameOnSession),...(customAvatar(nameOnSession)?{customAvatar:customAvatar(nameOnSession)}:{})});
+   return json(200,{name:nameOnSession,avatar:avatar(nameOnSession),voicePackId:voice(nameOnSession),...(customAvatar(nameOnSession)?{customAvatar:customAvatar(nameOnSession)}:{})});
   }
   const name=b?.name,key=String(name).toLowerCase();
   if(!/^[a-z0-9][a-z0-9_-]{1,19}$/i.test(name||'')||typeof b.pin!=='string'||!/^\d{6}$/.test(b.pin))return json(400,{error:'Use a 2–20 character nickname and six-digit local PIN'});
@@ -63,5 +72,5 @@ export function profiles(file){
   const issued=randomBytes(24).toString('hex'),nextSessions=new Map(sessions);nextSessions.set(sessionKey(issued),{name:nextAccounts[key].name,until:Date.now()+43200000});save(nextAccounts,nextSessions);
   res.setHeader('Set-Cookie','localplayer='+issued+'; HttpOnly; SameSite=Strict; Path=/; Max-Age=43200');return json(200,{name:accounts[key].name})
  }
- return {identity,handle,avatar,image,names:()=>Object.values(accounts).map(a=>a.name)};
+ return {identity,handle,avatar,voice,image,names:()=>Object.values(accounts).map(a=>a.name)};
 }

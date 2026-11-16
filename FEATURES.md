@@ -4,7 +4,7 @@ Target: reproduce player-visible workflows using independent code and an owner-c
 
 ## Action Voice reconstruction — not installed
 
-Source-backed candidate catalog has14packs/7actions/98exact original clips and14original portrait identities. UI,authenticated per-actor transport and table playback remain unwired;live remains PR293. [Native workflow,rules and remaining gate](docs/rea/action-voice.md). Do not describe the player-facing voice feature as complete.
+Source-backed candidate catalog has14packs/7actions/98exact original clips and14original portrait identities. Authenticated account save/current-seat voice projection are implemented on the candidate branch;UI,event-time voice stamping and table playback remain unwired.Live remains PR293. [Native workflow,rules and remaining gate](docs/rea/action-voice.md). Do not describe the player-facing voice feature as complete.
 
 ## Functional Critical Alert audio
 

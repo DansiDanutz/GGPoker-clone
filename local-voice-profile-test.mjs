@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import {Readable} from 'node:stream';
+import {mkdtempSync,rmSync,readFileSync,mkdirSync,rmdirSync} from 'node:fs';
+import {join} from 'node:path';import {tmpdir} from 'node:os';
+import {profiles} from './local-profile.mjs';
+const directory=mkdtempSync(join(tmpdir(),'local-voice-')),file=join(directory,'players.json');let profile=profiles(file);
+async function call(path,{cookie='',body={},origin='http://127.0.0.1:1234',method='POST'}={}){const req=Readable.from([JSON.stringify(body)]);req.method=method;req.headers={cookie,origin,host:'127.0.0.1:1234'};let result;const headers={};await profile.handle(req,{setHeader:(k,v)=>headers[k]=v},path,(status,data)=>result={status,data});return {...result,headers}}
+try{
+ const a=await call('/local/create',{body:{name:'VoiceAlice',pin:'123456'}}),b=await call('/local/create',{body:{name:'VoiceBob',pin:'654321'}});const alice=a.headers['Set-Cookie'].split(';')[0],bob=b.headers['Set-Cookie'].split(';')[0];const before=JSON.parse(readFileSync(file));assert.equal(profile.voice('VoiceAlice'),'VDaniel');
+ assert.equal((await call('/local/voice',{cookie:alice,body:{voicePackId:'VGreg'}})).status,200);assert.equal(profile.voice('VoiceAlice'),'VGreg');assert.equal(profile.voice('VoiceBob'),'VDaniel');assert.equal((await call('/local/me',{cookie:alice,method:'GET'})).data.voicePackId,'VGreg');const saved=JSON.parse(readFileSync(file));assert.deepEqual(saved.sessions,before.sessions);assert.deepEqual({...saved.accounts.voicealice,voicePackId:undefined},{...before.accounts.voicealice,voicePackId:undefined});assert.deepEqual(saved.accounts.voicebob,before.accounts.voicebob);
+ for(const body of [{voicePackId:'__proto__'},{voicePackId:'../VDaniel'},{voicePackId:'Vmale1'},{voicePackId:1},{voicePackId:null},{voicePackId:'VGreg',name:'VoiceBob'},[],null,{}]){const bytes=readFileSync(file);assert.equal((await call('/local/voice',{cookie:alice,body})).status,400);assert.deepEqual(readFileSync(file),bytes)}
+ assert.equal((await call('/local/voice',{body:{voicePackId:'VGreg'}})).status,401);assert.equal((await call('/local/voice',{cookie:alice,body:{voicePackId:'VGreg'},origin:'https://foreign.invalid'})).status,403);assert.equal((await call('/local/voice',{cookie:alice,method:'GET'})).status,403);
+ mkdirSync(file+'.tmp');await assert.rejects(()=>call('/local/voice',{cookie:alice,body:{voicePackId:'VDoyle'}}));rmdirSync(file+'.tmp');assert.equal(profile.voice('VoiceAlice'),'VGreg');assert.equal((await call('/local/voice',{cookie:alice,body:{voicePackId:'VDoyle'}})).status,200);assert.equal((await call('/local/avatar',{cookie:alice,body:{avatar:3}})).status,200);assert.equal(profile.voice('VoiceAlice'),'VDoyle');
+ profile=profiles(file);assert.equal(profile.voice('VoiceAlice'),'VDoyle');assert.equal(profile.avatar('VoiceAlice'),3);assert.equal((await call('/local/me',{cookie:alice,method:'GET'})).status,200);assert.equal((await call('/local/voice',{cookie:bob,body:{voicePackId:'VSophia'}})).status,200);assert.equal(profile.voice('VoiceAlice'),'VDoyle');assert.equal(profile.voice('VoiceBob'),'VSophia');
+ console.log('PASS authenticated own voice preference:strict14-pack boundary,account isolation,session/PIN/avatar preservation,origin/method/guest rejection,failed-write retry and cold restart');
+}finally{rmSync(directory,{recursive:true,force:true})}

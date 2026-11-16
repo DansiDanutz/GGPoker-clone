@@ -19,8 +19,8 @@ const directory=process.env.POKER_DATA_DIR||join(homedir(),'.local/share/river-r
 const cashWalletsEnabled=process.env.POKER_REFERENCE_HOME==='1'&&host==='127.0.0.1'&&origin==='http://127.0.0.1:'+port;
 let restoring=false,restoreBlocked=false,activeRequests=0;recoverOwnerRestore(directory);
 let playerProfile=profiles(join(directory,'local-players.json'));
-let roomRequest=openRooms(join(directory,'rooms.json'),playerProfile.avatar,cashWalletsEnabled);
-let rushRequests={holdem:openRush(join(directory,'rush.json'),'holdem',playerProfile.avatar,roomRequest.notes,roomRequest.rushStore),plo:openRush(join(directory,'rush-plo.json'),'plo',playerProfile.avatar,roomRequest.notes,roomRequest.rushStore)};
+let roomRequest=openRooms(join(directory,'rooms.json'),playerProfile.avatar,cashWalletsEnabled,playerProfile.voice);
+let rushRequests={holdem:openRush(join(directory,'rush.json'),'holdem',playerProfile.avatar,roomRequest.notes,roomRequest.rushStore,playerProfile.voice),plo:openRush(join(directory,'rush-plo.json'),'plo',playerProfile.avatar,roomRequest.notes,roomRequest.rushStore,playerProfile.voice)};
 setInterval(()=>{if(restoring||restoreBlocked)return;try{for(const request of Object.values(rushRequests))request.tick()}catch{console.error('Rush timer could not save state; prior checkpoint retained')}},500).unref();
 const keyPath=join(directory,'owner.key'),db=join(directory,'tables.json');
 try{writeFileSync(keyPath,randomBytes(32).toString('hex'),{mode:0o600,flag:'wx'})}catch(e){if(e.code!=='EEXIST')throw e}
@@ -29,7 +29,7 @@ let tables=[{id:'practice',name:'Green Felt',stack:200,blind:4,open:true}];
 try{tables=JSON.parse(readFileSync(db,'utf8'))}catch(e){if(e.code!=='ENOENT')throw e}
 function loadRestoredModels(){
  const nextTables=JSON.parse(readFileSync(db,'utf8'));if(!Array.isArray(nextTables)||new Set(nextTables.map(t=>t?.id)).size!==nextTables.length||nextTables.some(t=>!t||typeof t.id!=='string'||!/^[a-z0-9-]{1,40}$/.test(t.id)||typeof t.name!=='string'||!t.name.trim()||t.name.length>60||!Number.isInteger(t.stack)||!Number.isInteger(t.blind)||t.blind<2||t.blind%2||t.stack<t.blind*4||t.stack>1000000||typeof t.open!=='boolean'||t.mode!==undefined&&!['cash','plo','plo5','plo6','shortdeck','aof','tournament'].includes(t.mode)||t.entryCost!==undefined&&(t.mode!=='tournament'||!Number.isSafeInteger(t.entryCost)||t.entryCost<0||t.entryCost>1000000)))throw Error('Invalid restored table definitions');
- const nextProfile=profiles(join(directory,'local-players.json')),nextRooms=openRooms(join(directory,'rooms.json'),nextProfile.avatar,cashWalletsEnabled),nextRush={holdem:openRush(join(directory,'rush.json'),'holdem',nextProfile.avatar,nextRooms.notes,nextRooms.rushStore),plo:openRush(join(directory,'rush-plo.json'),'plo',nextProfile.avatar,nextRooms.notes,nextRooms.rushStore)};
+ const nextProfile=profiles(join(directory,'local-players.json')),nextRooms=openRooms(join(directory,'rooms.json'),nextProfile.avatar,cashWalletsEnabled,nextProfile.voice),nextRush={holdem:openRush(join(directory,'rush.json'),'holdem',nextProfile.avatar,nextRooms.notes,nextRooms.rushStore,nextProfile.voice),plo:openRush(join(directory,'rush-plo.json'),'plo',nextProfile.avatar,nextRooms.notes,nextRooms.rushStore,nextProfile.voice)};
  return {playerProfile:nextProfile,roomRequest:nextRooms,rushRequests:nextRush,tables:nextTables};
 }
 const hostedId=id=>createHash('sha256').update('river-hosted:'+id).digest('hex').slice(0,48);
@@ -97,7 +97,7 @@ http.createServer(async(req,res)=>{
   try{return json(200,{account,...roomRequest.joinCashGroup(account,body,tables.map(table=>({room:hostedId(table.id),table})))})}catch(error){return json(error.status||500,{error:error.status?error.message:'Local group operation failed'})}
  }
  if(localHome&&path==='/local/wallet'&&req.method==='GET'){const account=playerProfile.identity(req);return account?json(200,{account,...roomRequest.wallet(account)}):json(401,{error:'Sign in locally'})}
- if(localHome&&['/local/me','/local/login','/local/create','/local/logout','/local/avatar'].includes(path))return await playerProfile.handle(req,res,path,json);
+ if(localHome&&['/local/me','/local/login','/local/create','/local/logout','/local/avatar','/local/voice'].includes(path))return await playerProfile.handle(req,res,path,json);
  if(localHome&&req.method==='GET'&&(path==='/'||['/launch.html','/seat.html','/seat.mjs','/playgg.html','/playgg.mjs','/playgg-carousel.mjs','/home-review.html'].includes(path)||['/home-art/native-group-roboto-bold-italic.ttf','/home-art/native-history-roboto.ttf','/home-art/native-history-roboto-italic.ttf','/home-art/native-hud-roboto-bold.ttf','/home-art/native-show-roboto-condensed-bold.ttf','/home-art/native-action-roboto-condensed.ttf'].includes(path)||/^\/home-art\/[a-zA-Z0-9_-]+\.(png|webp|json)$/.test(path))){
   const file=path==='/'?'launch.html':path.slice(1);
   let data;try{data=await readFile(file.startsWith('home-art/')?join(referenceArt,file.slice(9)):new URL(file,import.meta.url))}catch{return json(404,{error:'Reference asset unavailable'})}
